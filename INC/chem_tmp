@@ -1,0 +1,17 @@
+C $Header: /home/igsm-repository/INC/chem_tmp,v 1.1 2010/08/31 19:27:01 jscott Exp $
+C $Name:  $
+
+!==================================================================!
+!                                                                  !
+!   CHEM_TMP:   An include file consists of temperary COMMONs      !
+!                   for MIT Global Chemistry Model                 !
+!        -------------------------------------------------         !
+!   Author:		Chien Wang                                 !
+!			MIT Joint Program on Science and Policy    !
+!			    of Global Change                       !
+!   Last Revised on:    October 31, 1994                           !
+!                                                                  !
+!==================================================================!
+
+      common /chemhaha/cfcnsf(nlev)
+

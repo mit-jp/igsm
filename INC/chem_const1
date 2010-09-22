@@ -1,0 +1,53 @@
+C $Header: /home/igsm-repository/INC/chem_const1,v 1.1 2010/08/31 19:27:01 jscott Exp $
+C $Name:  $
+
+!	==================================================================
+!
+!	CHEM_CONST1:	An include parameter file consists of
+!			some chemical constants, e.g., Avogadro number
+!			and atomic weight of chemical species etc.
+!			for MIT Global Chemistry Model
+!	------------------------------------------------------------------
+!	Author:		Chien Wang
+!			MIT Joint Program on Science and Policy
+!				of Global Change
+!
+!       Revision History:
+!
+!       When    Who             What
+!       ----    ----------      -------
+!	060999	Chien Wang	
+!	051804	Chien Wang	rearranging
+!
+!	==================================================================
+
+	real, parameter :: Avogadro = 6.02217e+23
+
+	real, parameter :: 
+     &		 awN2    = 28.0134, awO2   = 31.9988,
+     &           awH2O   = 18.0152,                 
+     &           awO     = 15.9994, awO3   = 47.9982,
+     &           awCO    = 28.0104, awCO2  = 44.0098,
+     &           awH     = 01.0079, awHO   = 17.0073,
+     &           awHO2   = 33.0067, awH2O2 = 34.0146,
+     &           awNO    = 30.0061, awNO2  = 46.0055,
+     &           awNO3   = 62.0049, awN2O5 =108.0104,
+     &           awHNO3  = 63.0128, awHNO4 = 79.0122,                
+     &           awCH4   = 16.0426, awCH3  = 15.0347,
+     &           awCHO   = 29.0183, awCH2O = 30.0262,
+     &           awCH3O  = 31.0341, awCH3O2= 47.0335,
+     &           awCH3O2H= 48.0414,
+     &           awSO2   = 64.0588, awHOSO2= 81.0661,
+     &           awSO3   = 80.0582, awH2SO4= 98.0734,
+     &           awF11   =137.3675, awF12  =120.9054,
+     &           awN2O   = 44.0000,
+     &		 awHFC134a   = 101.024,
+     &		 awPFmethane =  88.000,
+     &		 awSF6       = 146.054,
+     &		 awHONO  = 47.0,    awALD2 = 46.0,
+     &		 awMEK   = 72.1,    awPAN  =121.1,
+     &		 awALKA  = 81.2,    awETHE = 28.0,
+     &		 awALKE  = 46.7,    awTOLU = 92.0,
+     &		 awAROM  =111.2
+
+

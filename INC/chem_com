@@ -1,0 +1,324 @@
+C $Header: /home/igsm-repository/INC/chem_com,v 1.1 2010/08/31 19:27:01 jscott Exp $
+C $Name:  $
+
+!	============================================================
+!
+!	CHEM_COM:    An include file consists of COMMONs describing
+!			mixing ratios of chemical species
+!			for MIT Global Chemistry Model
+!
+!		For version higher or equal to 2.05
+!
+!	------------------------------------------------------------
+!
+!	Author:		Chien Wang
+!			MIT Joint Program on Science and Policy
+!				of Global Change
+!
+!	------------------------------------------------------------
+!
+!	Revision History:
+!	
+!	When	Who		What
+!	----	----------	-------	
+!	052200	Chien Wang	add new meta components
+!	073100	Chien Wang	repack based on CliChem3 & M24x11,
+!				  and add cpp.
+!	091100	Chien Wang	add definition of o3top for N_LEV 11
+!	112800	Chien Wang	add extra edaily for meta particles
+!	121800	Chien Wang	change 124 to nyrchem
+!	092001	Chien Wang	add black carbon (bcarbon) and 
+!				    organic carbon (ocarbon)
+!
+!	==========================================================
+
+c----------------------------------------------------------
+c  Brief descriptions of variables:
+c    (subscript t represents value at previous time step)
+c
+c    cfc11:	Mixing ratio of cfc11
+c    cfc110:    Temp space for cfc11 calculation
+c    cfc11m:    Monthly averaged cfc11 concentration
+c    cfc11sd:   Total amount of stratospheric deduction
+c
+ 
+      common /chem1/
+     &		cfc11   (nlon,nlat,nlev),cfc110   (nlon,nlat,nlev),
+     &                                   cfc11m   (nlon,nlat,nlev),
+     &		cfc11sd,
+     &		cfc12   (nlon,nlat,nlev),cfc12m   (nlon,nlat,nlev),
+     &		cfc12sd,
+     &		xn2o    (nlon,nlat,nlev),xn2om    (nlon,nlat,nlev),
+     &		xn2osd 
+C#if ( defined CPL_CHEM )
+     &	,	hfc134a (nlon,nlat,nlev),hfc134am (nlon,nlat,nlev),
+     &		pfc     (nlon,nlat,nlev),pfcm     (nlon,nlat,nlev),
+     &		sf6	(nlon,nlat,nlev),sf6m	  (nlon,nlat,nlev),
+     &		bcarbon	(nlon,nlat,nlev),bcm	  (nlon,nlat,nlev),
+     &		ocarbon	(nlon,nlat,nlev),ocm	  (nlon,nlat,nlev),
+     &		bcod    (nlon,nlat,nlev),bcodm    (nlon,nlat,nlev),
+     &		ocod    (nlon,nlat,nlev),ocodm    (nlon,nlat,nlev)
+C#endif
+
+      common /chem2/
+     &		atomo    (nlon,nlat,nlev),
+     &		o1d      (nlon,nlat,nlev),
+     &		o3       (nlon,nlat,nlev),o3m       (nlon,nlat,nlev),
+     &		co       (nlon,nlat,nlev),com       (nlon,nlat,nlev),
+     &		zco2     (nlon,nlat,nlev),zco2m     (nlon,nlat,nlev),
+     &		atomh    (nlon,nlat,nlev),
+     &		ho       (nlon,nlat,nlev),
+     &		ho2      (nlon,nlat,nlev),hoxm      (nlon,nlat,nlev),
+     &		h2o2     (nlon,nlat,nlev),
+     &		xno      (nlon,nlat,nlev),
+     &		xno2     (nlon,nlat,nlev),xnoxm     (nlon,nlat,nlev),
+     &		xno3     (nlon,nlat,nlev),
+     &		xn2o5    (nlon,nlat,nlev),xnoym     (nlon,nlat,nlev),
+     &		hno3     (nlon,nlat,nlev),
+     &		ch4      (nlon,nlat,nlev),ch4m 	    (nlon,nlat,nlev),
+     &		ch3      (nlon,nlat,nlev),
+     &		cho      (nlon,nlat,nlev),
+     &		ch2o     (nlon,nlat,nlev),
+     &		ch3o     (nlon,nlat,nlev),
+     &		ch3o2    (nlon,nlat,nlev),
+     &		ch3o2h   (nlon,nlat,nlev),
+     &		so2      (nlon,nlat,nlev),so2m      (nlon,nlat,nlev),
+     &		hoso2    (nlon,nlat,nlev),
+     &		so3      (nlon,nlat,nlev),
+     &		h2so4    (nlon,nlat,nlev),h2so4m    (nlon,nlat,nlev),
+     &		sviod    (nlon,nlat,nlev),sviodm    (nlon,nlat,nlev)
+
+c----------------------------------------------------------
+c 083195:
+c  global averaged profiles for trace gases:
+c
+c	1	CO2
+c	2	N2O
+c	3	CH4
+c	4	F11
+c	5	F12
+c
+	common /glbgas/glbgas(nlev,5)
+
+c----------------------------------------------------------
+c    airmass:  air mass 
+c    airmass0: airmass/surface pressure, constant
+c   
+
+      common /airmass/airmass0(nlon,nlat,nlev),
+     &                airmass (nlon,nlat,nlev)
+
+c----------------------------------------------------------
+c    cmass:  mass exchange due to convections
+c            defined start from k=1 at k=2 of w layer
+c
+      common /cmass/cmass(nlon,nlat,nlev)
+
+c----------------------------------------------------------
+c ifghgpredict:		1 for on-line, 0 for off-line
+c ifaerpredict:		1 for aerosol, 0 for no aerosl
+c			      in radiative forcing:
+c 
+       common /chempar/FAERSOL,FBC
+
+
+c----------------------------------------------------------
+c  Brief descriptions of variables:
+c     p00, p11: pai 
+c     pvv:      pai*v
+c     fkt:      k of theta
+c
+c     meddy1:    index for eddy calculation
+c     monthstep: number of cumulative steps in a month
+
+#if ( defined CPL_CHEM )
+      common /chem_tmp1/p00(nlon,nlat),
+     &                  p11(nlon,nlat),
+     &                  p4chem0(nlon,nlat),
+     &                  p4chem1(nlon,nlat),
+     &                  pvv(nlon,nlat,nlev),
+     &                  pww(nlon,nlat,nlev)
+
+      common /chem_tmp2/fkt   (nlat,nlev),
+     &                  beta1 (nlat),
+     &                  beta2 (nlat),
+     &                  beta3 (nlat,nlev),
+     &                  beta4 (nlat,nlev),
+     &                  deltap(nlat,nlev),
+     &                  dp2dz (nlat,nlev)
+
+      common /chem_tmp3/meddy1
+ 
+c 013096 add myyear and mymonth before monthstep
+
+      common /chem_tmp4/iyearchem,
+     &   myyear,mymonth,monthstep
+
+#if ( N_LEV == 9 )
+c 051598 monthly mean o3 at top, k=1,2 - nlev1,nlev:
+      common /chem_tmp5/o3top (nlat,2,12)
+#endif
+#if ( N_LEV == 11 )
+      common /chem_tmp5/o3top (nlat,4,12)
+#endif
+#endif
+
+c----------------------------------------------------------
+c  edailyx:	daily emission amount of species x as functions
+c		  of latitude and integration year, from
+c		  1977 to 2100 (124 year in total). 
+c  ehpbl:	ratio of the 3rd vertical layer contribution
+c
+c  chemlight
+c   xnoxltnt:	annual NO production by lightning
+c   xnoxltnm:	percentage amount of monthly production
+c   xnoxltnd:	latitudinal distribution of NO production 
+c		  by lightning (also function of month)
+c	
+#if ( defined CPL_CHEM )
+      common /chememi/edailyf11     (nlon,nlat,nchemyr),
+     &                edailyf12     (nlon,nlat,nchemyr),
+     &                edailyn2o     (nlon,nlat,nchemyr),
+     &                edailyco      (nlon,nlat,nchemyr),
+     &                edailynox     (nlon,nlat,nchemyr),
+     &                edailych4     (nlon,nlat,nchemyr),
+     &                edailyso2     (nlon,nlat,nchemyr),
+     &                edailyco2     (nlon,nlat,nchemyr),
+     &                edailyhfc134a (nlon,nlat,nchemyr),
+     &                edailypfc     (nlon,nlat,nchemyr),
+     &                edailysf6     (nlon,nlat,nchemyr),
+     &  	      edailyuco     (nlon,nlat,nchemyr),
+     &	 	      edailyunmv    (nlon,nlat,nchemyr),
+     &	 	      edailyunox    (nlon,nlat,nchemyr),
+     &	 	      edailyusox    (nlon,nlat,nchemyr),
+     &                edailybc      (nlon,nlat,nchemyr),
+     &                edailynh3     (nlon,nlat,nchemyr),
+     &  	      edailyoc      (nlon,nlat,nchemyr),
+     &	 	      edailyubc     (nlon,nlat,nchemyr),
+     &	 	      edailyunh3    (nlon,nlat,nchemyr),
+     &	 	      edailyuoc     (nlon,nlat,nchemyr),
+     &                ehpbl         (nlon,nlat)
+
+      common /chemlight/xnoxltnt(nchemyr),
+     &                  xnoxltnm(12),
+     &                  xnoxltnd(nlon,nlat,12)
+#endif
+
+c----------------------------------------------------------
+c  Brief descriptions of variables:
+c
+c  ispecdata:	ratio of radiative flux in a given
+c		wavelength interval to total flux
+c		in 1/nm;  subscript represent wavelength
+c		directly in nm.
+c  
+c  airpress:	air pressure at each vertical layer for using
+c			in photochemical simulation
+c
+c  solarflux:	solar flux in w/m^2
+c
+
+#if ( defined CPL_CHEM )
+      common /rateconst/rk(nract)
+
+      common /specdata/specdata(201:800)
+
+      common /airpress/airpress(nlev)
+
+      common /solarf/solarflux(nlon,nlat,nlev),coszangle(nlon,nlat)
+
+c --- 090295
+c  rktable1 is the main table storing photochemical
+c       reaction rate or associated formulae as
+c       FUNCTION OF TEMPERATURE with interval of 0.5
+c       degree STARTED FROM 200.5 K to 300 K (300 elements)
+c       for the nract-th reaction
+c
+c  rktable2 is a additional table storing rk13, 15, & 20's
+c       rt00 formulae indexed as:
+c       1 for rk(13)
+c       2 for rk(15)
+c       3 for rk(20)
+
+        common /rktable/rktable1(34,300),
+     &                  rktable2(3,300)
+
+c --- 042596
+c  rktable3 includes photorates parameter for rk(1),rk(8),
+c	rk(17), rk(24), and rk(26), as well as cos znith angle:
+c	zangle = 0, 10, 20, 30, 40, 50, 60, 70, 78, 86
+c	
+	common /rktable3/cosza4rk(10),
+     &                   rk08gama(10),
+     &                   rk08aaa (10),
+     &                   rk01table(10),
+     &                   rk17table(10),
+     &                   rk24table(10),
+     &                   rk26table(10)
+
+
+c----------------------------------------------------------
+c  Brief descriptions of variables:
+c
+c    ddep:	Dry deposition speed in sigma/second
+c    ddepref:	Working array for zero speed species	
+c
+
+      common /cdrydep/
+     &              ddepo3    (nlon,nlat),
+     &              ddeph2o2  (nlon,nlat),
+     &              ddepno    (nlon,nlat),
+     &              ddepno2   (nlon,nlat),
+     &              ddepn2o5  (nlon,nlat),
+     &              ddephno3  (nlon,nlat),
+     &              ddepch3o2h(nlon,nlat),
+     &              ddepbc    (nlon,nlat),
+     &              ddepoc    (nlon,nlat),
+     &              ddepref   (nlon,nlat)
+
+c----------------------------------------------------------
+c  Brief descriptions of variables:
+c
+c    photo_species:	diagnostic photochemical production
+c			- monthly accumulated value in TGspecies
+c
+      common /photodiag/
+     &             photo_co  (nlon,nlat,nlev),
+     &             photo_ch4 (nlon,nlat,nlev),
+     &             photo_o3  (nlon,nlat,nlev),
+     &             photo_svi (nlon,nlat,nlev),
+     &             photo_no  (nlon,nlat,nlev),
+     &             photo_no2 (nlon,nlat,nlev),
+     &             photo_nv  (nlon,nlat,nlev),
+     &             photo_ch2o(nlon,nlat,nlev)
+#endif
+
+c----------------------------------------------------------
+c  Brief descriptions of variables:
+c
+c    chem_contr_para:	control parameters for chemistry
+c			model, mainly through chem.nml in cheminit.f
+c	bio_uptake:	biospheric uptake of co2 in Gt
+c	svi_intensity:	S(VI) aerosol forcing intensity
+c	ifcalairmass:	calculate airmass (1) or not (0)
+c	if_3gases:	if include hfc, pfc, and sf6 (1) or not (0)
+C	if_o3rad:	if use predicted o3 inr adiation (1) or not (0)
+c
+	common /chem_contr_para/bio_uptake,
+     &                          svi_intensity,
+     &                          nhr_for_chem,
+     &		                if_3gases,
+     &				if_o3rad				
+
+c ---------------------------------------------------------
+c  Brief descriptions of variables:
+c
+c    chem_cldss:  = cldss as large-scale cloud coverage (0:1)
+c    chem_cldmc:  = cldmc as convective cloud coverage (0:1)
+c
+	common /chem_clouds/chem_cldss(nlon,nlat,nlev),
+     &                      chem_cldmc(nlon,nlat,nlev)	
+
+c----------------------------------------------------------
+c  added for inclusion of ozone and sulfate albedo forcings
+	common /o3dev/o3dev(nlon,nlat,nlev+3)

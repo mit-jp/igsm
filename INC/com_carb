@@ -1,0 +1,36 @@
+C $Header: /home/igsm-repository/INC/com_carb,v 1.1 2010/08/31 19:27:01 jscott Exp $
+C $Name:  $
+
+C common blocks used in mixed layer ocean carbon model
+      parameter(nlat=N_LAT,nlatp1=nlat+1)
+      REAL pC_atm,TCO2_ml,pC_mla,WIND,TEMP,DIC_ml,area_ml,
+     &volume_ml,ED,DZ,DZO,R,Flux_atm_ml,dpCO2_atm_ml,depth_ml,
+     &Vpiston,diff_amp,Henry,K1,K2,Kb,Kw,H,HZ,pH,HCO3_ml,CO3_ml,
+     &CO2_ml,Hguess,AlkC,AlkB,AlkS,AlkW
+     
+      COMMON /comvar_carb/TCO2_ml(nlat),pC_mla(nlat),
+     &DIC_ml(nlat),
+     &volume_ml(nlat),
+     &Flux_atm_ml(nlat),dpCO2_atm_ml(nlat),
+     &Vpiston(nlat),diff_amp,Henry(nlat),K1(nlat),
+     &K2(nlat),Kb(nlat),Kw(nlat),H(nlat),HZ(nlat),pH(nlat),
+     &HCO3_ml(nlat),CO3_ml(nlat),CO2_ml(nlat),
+     &AlkC(nlat),AlkB(nlat),AlkS(nlat),AlkW(nlat)
+
+CB Gary commons for Gary
+      common/Garyclim/temp(nlat),wind(nlat),area_ml(nlat),area_srf(nlat)
+      common/Garydiff/depth_ml(nlat),edzon(nlat),dzg(lmo),dzog(lmo-1),
+     &Rco2(nlat,lmo)
+      common /Garyav/RCO2av(nlat,lmo),pC_atmav(nlat),pC_mlaav(nlat),
+     &Flux_atm_mlav(nlat),Hav(nlat),
+     &DIC_mlav(nlat),TCO2_mlav(nlat),AlkCav(nlat),
+     &AlkBav(nlat),AlkSav(nlat),AlkWav(nlat),
+     &CO2av(nlat),CO3av(nlat),ncallgary
+      real * 4 RCO2av,pC_atmav,pC_mlaav,
+     &Flux_atm_mlav,Hav,
+     &DIC_mlav,TCO2_mlav,AlkCav,
+     &AlkBav,AlkSav,AlkWav,
+     &CO2av,CO3av
+      common /Garyflux/pC_atm(nlat),wind_amp,fluxco2(nlat)
+      common /Garychem/Hguess(nlat)
+CE Gary commons for Gary

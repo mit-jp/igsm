@@ -1,0 +1,6 @@
+C $Header: /home/igsm-repository/INC/ODIFF.COM,v 1.1 2010/08/31 19:27:01 jscott Exp $
+C $Name:  $
+
+C     PARAMETERS FOR HEAT DIFFUSION INTO DEEP OCEAN
+      PARAMETER (LMO=N_LEVOCEAN,LMO1=LMO-1)
+C
