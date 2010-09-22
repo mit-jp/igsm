@@ -1,5 +1,3 @@
-C $Header: /home/igsm-repository/INC/PRNT.COM,v 1.1 2010/08/31 19:27:01 jscott Exp $
-C $Name:  $
 
       print *,'J=',JPR,' L=',LPR,' P PT PX'
       print *,P(1,JPR),PT(1,JPR),PX(1,JPR)

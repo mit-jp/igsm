@@ -1,5 +1,3 @@
-C $Header: /home/igsm-repository/INC/BD2G04.COM,v 1.1 2010/08/31 19:27:01 jscott Exp $
-C $Name:  $
 
 C**** COMMON BLOCK (D2G04)  2-D MEDIUM GRID            JANUARY 1993
 C**** TO CHANGE THE GRID, MODIFY THE NEXT LINE ONLY

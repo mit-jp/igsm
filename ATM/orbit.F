@@ -1,5 +1,3 @@
-C $Header: /home/igsm-repository/ATM/orbit.F,v 1.1 2010/08/30 15:36:35 jscott Exp $
-C $Name:  $
 
       SUBROUTINE ORBIT (OBLIQ,ECCN,OMEGT,DAY,SDIST,SIND,COSD,LAMBDA)    8201.
 C****                                                                   8202.

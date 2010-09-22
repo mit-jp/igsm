@@ -1,5 +1,3 @@
-C $Header: /home/igsm-repository/INC/BDOCEAN.COM,v 1.1 2010/09/03 19:29:54 jscott Exp $
-C $Name:  $
 
 C**** COMMON BLOCK (ML OCEAN)  
 C**** TO CHANGE THE GRID, MODIFY THE NEXT LINE ONLY

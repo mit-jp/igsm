@@ -1,5 +1,3 @@
-C $Header: /home/igsm-repository/INC/com_carb,v 1.1 2010/08/31 19:27:01 jscott Exp $
-C $Name:  $
 
 C common blocks used in mixed layer ocean carbon model
       parameter(nlat=N_LAT,nlatp1=nlat+1)

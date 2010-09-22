@@ -1,5 +1,3 @@
-# $Header: /home/igsm-repository/OCN_ML/Makefile,v 1.1 2010/09/03 19:37:33 jscott Exp $
-# $Name:  $
 
 ###################################################################
 ##  A makefile for making libs 					 ##

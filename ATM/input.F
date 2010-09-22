@@ -1,5 +1,3 @@
-C $Header: /home/igsm-repository/ATM/input.F,v 1.3 2010/09/02 22:02:10 jscott Exp $
-C $Name:  $
 
 #include "ctrparam.h"
 

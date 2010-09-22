@@ -1,5 +1,3 @@
-# $Header: /home/igsm-repository/ATM/Makefile,v 1.4 2010/09/02 20:44:22 jscott Exp $
-# $Name:  $
 
 INCDIR := ./
 LIBDIR := ./

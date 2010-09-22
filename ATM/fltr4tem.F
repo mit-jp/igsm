@@ -1,5 +1,3 @@
-C $Header: /home/igsm-repository/ATM/fltr4tem.F,v 1.1 2010/08/30 15:36:35 jscott Exp $
-C $Name:  $
 
 
         subroutine fltr4tem(z,iy)

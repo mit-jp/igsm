@@ -1,5 +1,3 @@
-C $Header: /home/igsm-repository/OCN_ML/driver_IGSM22.F,v 1.1 2010/09/03 19:37:33 jscott Exp $
-C $Name:  $
 
 !       ==========================================================
 !

@@ -1,5 +1,3 @@
-C $Header: /home/igsm-repository/META/metamodel.F,v 1.2 2010/08/23 22:06:44 jscott Exp $
-C $Name:  $
 
 #include "ctrparam.h"
 

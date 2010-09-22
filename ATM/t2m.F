@@ -1,5 +1,3 @@
-C $Header: /home/igsm-repository/ATM/t2m.F,v 1.1 2010/08/30 15:36:35 jscott Exp $
-C $Name:  $
 
       SUBROUTINE TZM(T,TH,Z,Z0,ZGS,PSMB,TG,TS,RIGS,WS,SHEAT,TGM,LR,EPS)
       PARAMETER(R=287.D0,G=9.8D0,CP=1007.D0,CAR=0.35,

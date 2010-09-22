@@ -1,5 +1,3 @@
-C $Header: /home/igsm-repository/INC/OCNDATA.COM,v 1.1 2010/09/03 19:29:54 jscott Exp $
-C $Name:  $
 
 C  common data for ML Ocean model
 

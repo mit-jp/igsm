@@ -1,5 +1,3 @@
-C $Header: /home/igsm-repository/INC/B83XX.COM,v 1.1 2010/08/31 19:27:01 jscott Exp $
-C $Name:  $
 
 C                                                                       
 C                   RADCOM:      CONTROL/INPUT PARAMETERS

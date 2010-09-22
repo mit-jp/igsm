@@ -1,5 +1,3 @@
-# $Header: /home/igsm-repository/META/Makefile,v 1.3 2010/09/01 15:06:37 jscott Exp $
-# $Name:  $
 
 ###################################################################
 ##  A makefile for making libs 					 ##

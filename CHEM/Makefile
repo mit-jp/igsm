@@ -1,5 +1,3 @@
-# $Header: /home/igsm-repository/CHEM/Makefile,v 1.1 2010/09/02 17:56:19 jscott Exp $
-# $Name:  $
 
 ###################################################################
 ##  A makefile for making libs 					 ##

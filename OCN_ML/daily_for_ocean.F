@@ -1,5 +1,3 @@
-C $Header: /home/igsm-repository/OCN_ML/daily_for_ocean.F,v 1.1 2010/09/03 19:37:33 jscott Exp $
-C $Name:  $
 
 #include "ctrparam.h"
 !	==========================================================

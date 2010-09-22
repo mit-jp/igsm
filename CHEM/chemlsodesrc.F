@@ -1,5 +1,3 @@
-C $Header: /home/igsm-repository/CHEM/chemlsodesrc.F,v 1.1 2010/09/02 17:56:19 jscott Exp $
-C $Name:  $
 
 c===============================================================c
 c	LSODESRC:	Collection of subroutines or functions  c	
