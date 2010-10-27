@@ -1299,7 +1299,7 @@ c    For TEM
       if(HPRNT)then
        print *,' radia TAU=',TAU
        print *,' after 860'
-       print 'B66',T(1,1,1)
+C       print '(B66)',T(1,1,1)
        print *,'COSZ1(1,1)',COSZ1(1,1),' COE(1)=',COE(1)
        print *,'SRHR'
        print *,(SRHR(1,1,L+1),L=1,LM)

@@ -1514,7 +1514,7 @@ CJRS         FDATA(I,JM0,2)=cflan(jmocean)
        close (767)
        print *,'Ratio of land precipitation to total'
        do j=1,jm
-        print('12f7.4'),(prlnd2total(j,n),n=1,12)
+        print '(12f7.4)',(prlnd2total(j,n),n=1,12)
        enddo
       print *,' FDATA(1,J,2)='
       print *,(FDATA(1,J,2),J=1,JM)

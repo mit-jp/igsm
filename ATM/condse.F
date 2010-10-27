@@ -274,10 +274,10 @@ c     RH0OLD=.65
       enddo
       print *, ' RHNEW=',RHNEW
       print *, ' RHNEW for j=23,34,46'
-      print '3x,3f10.4',RHNEW(23),RHNEW(34),RHNEW(46)
+      print '(3x,3f10.4)',RHNEW(23),RHNEW(34),RHNEW(46)
       print *, ' RHKP/RHNEW '
       do l=lm,1,-1
-        print 'i3,2f10.4',l,SIG(L)*P(1,23)+PTOP,RHKP(l,23)/RHNEW(23)
+        print '(i3,2f10.4)',l,SIG(L)*P(1,23)+PTOP,RHKP(l,23)/RHNEW(23)
       enddo
       CSCALE=.6                                                         3034.3
       IQ1=IM/4+1                                                        3035.
@@ -871,14 +871,14 @@ C     IF(DPHI.LT..5*(DWV(J)+DWV(J+1))*COEKD) BYTEM=1.E10                3223.
       DSE(L+1)=(DRYSTE+CLH*(SHSAT(L+1)-SHL(LB)))*BYTEM                  3227.
       IF (DSE(L+1).LT.DSE(L)) DSE(L+1)=DSE(L)                           3228.
 !     if(prnt)then
-!        print 'i4,3f10.4',l,TH(L+1),THEDGE,TH(L)
-!        print 'i4,2f10.4',l,DSE(L+1),DRYSTE*BYTEM
+!        print '(i4,3f10.4)',l,TH(L+1),THEDGE,TH(L)
+!        print '(i4,2f10.4)',l,DSE(L+1),DRYSTE*BYTEM
 !     endif
       TCLA(L+1)=TCLA(L)-TH(L+1)*(PDNK-PUPK)                             3229.
   240 PDNK=PUPK                                                         3230.
       if(prnt)then
         do l=LB,LMCM
-         print 'i4,3f10.4',l,SIG(l),TH(l)*PLK(L),DSE(L)
+         print '(i4,3f10.4)',l,SIG(l),TH(l)*PLK(L),DSE(L)
         enddo
       endif
       L=LMCMM1+2                                                        3231.

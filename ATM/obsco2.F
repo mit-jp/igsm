@@ -55,7 +55,7 @@ c     print *,'From obsco2 year=',iyearr,' nm=',nm,' co2an=',co2an
          enddo
        endif
        if(nm.eq.1)then
-        print '12f7.1,/,2(11f7.1,/,),12f7.1',atm_co2
+        print '(12f7.1,/,2(11f7.1,/,),12f7.1)',atm_co2
        endif
       return
       end
