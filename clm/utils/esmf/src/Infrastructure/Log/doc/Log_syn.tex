@@ -1,0 +1,13 @@
+% $Id%
+\section{Overview}
+
+This utility provides an organized method for writing diagnostic
+output.  In a large program
+writing to {\tt STDOUT, STDERR} often results in a mass of output that
+is either too cluttered to understand or that is lost due to pipe 
+re-direction.  The log provides a message output channel that organizes
+its output by the author, the time of writing, and the class of the 
+message.  This opens the way for standard unix tools like {\tt grep, sort, cut}
+and others to manipulate the output files (the output is guarenteed to show
+up in a pre-designated place) to sort through the results and retrieve
+the desired information.

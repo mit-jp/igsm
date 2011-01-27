@@ -1,0 +1,49 @@
+Code in this directory implements a set of general-purpose thread-safe timing
+routines, callable from Fortran or C.  Only the Fortran interface will be
+discussed here.  Normal usage is as follows:
+
+#include <gpt.inc>
+...
+t_setoptionf (timing_option, 0 or 1)
+...
+t_initializef ()
+...
+t_startf ('arbitrary_timer_name')
+...
+t_stopf ('arbitrary_timer_name')
+...
+t_prf (mpi_task_id)
+
+also
+
+t_stampf (wall, usr, sys)
+
+An arbitrary number of calls to t_setoptionf() preceeds a single call to
+t_initializef(), and all should be within a non-threaded code region.
+Default behavior with zero calls to t_setoptionf() is to output statistics
+for user time, system time, and wallclock time.  The function's purpose is to
+modify this default behavior.  For example, t_setoptionf (usrsys, 0) turns
+off user and system timings.  t_setoptionf (wall, 1) turns on wallclock
+timings.  Other options (e.g. pcl_l1dcache_miss) are not available in the
+committed code.  Include file gpt.inc need only be included where
+t_setoptionf() is called.
+
+An arbitrary sequence of (potentially nested) paired calls to t_startf() and
+t_stopf() with unique timer names of up to 15 characters each can then occur.
+The call to t_prf() will produce a summary of all timer values.  The argument
+to t_prf() is normally the MPI task id, but can be any integer.  The output
+file with the timing information will be named timing.<num>.  If threading
+was enabled and timing calls were made from within threaded regions of the
+code, a per-thread summary will be included in this output file.
+
+Stand-alone routine t_stampf(wall, usr, sys) can be called to return
+values for use in the application code.  The wallclock user, and system
+timestamps returned are real*8 numbers in units of seconds.
+
+The underlying library routine used to gather user and system times is
+times().  Unfortunately, the behavior of this routine is not consistent
+across platforms.  On IBM and Compaq, it is cumulative across threads.  On
+SGI and PC machines it is thread-specific.  This behavior will be reflected
+in the printed timings.  For example, on a 4-PE dedicated node the user time
+for a given routine called from within a threaded region may exceed the
+wallclock number by as much as a factor of 4 on IBM and Compaq machines.

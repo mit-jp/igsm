@@ -1,0 +1,72 @@
+% $Id$
+
+\section{Requirements}
+
+\subsection{Date and Time Utility Requirements}
+
+\begin{itemize}
+
+\item Support \htmlref{no-leap}{glos:noleap} and Gregorian calendars.
+
+\item Provide the following calculations:
+
+\begin{itemize}
+
+\item Given a date, compute a new date that is either earlier or later by a specified time interval.
+
+\item Given two values of date compute the time interval between them.
+
+\item Verify whether or not one date is later than another.
+
+\item Compute the \htmlref{day of year}{glos:dayofyear} given date.
+
+\end{itemize}
+
+\item Handle a variety of representations of time intervals.  The initial requirement is supporting a 
+precision of 1 second.  Future requirements include handling millisecond discretizations and floating 
+point representations of time intervals.
+
+\item Handle time intervals with a range of 20,000 years.
+ 
+\item Date to string conversion.
+\end{itemize}
+
+\subsection{Time Manager Requirements}
+\begin{itemize}
+
+\item User will specify timestep size, start and stop dates. User may optionally specify the base date. 
+By default the base date equals the start date.
+
+\item Support changing the timestep size during a simulation. 
+
+\item Provide functions to:
+
+\begin{itemize}
+\item Query timestep size, start and base dates.
+
+\item Query current timestep number and properties of the current timestep such as date, 
+time, and day of year at the endpoint of the current timestep.
+
+\item Convert between time and date.
+\end{itemize}
+
+\item Provide alarm functions:
+
+\begin{itemize}
+\item Alarms that go off periodically can be specified by a period and an offset.
+
+\item Alarms that go off when year and month boundaries are crossed.
+
+\item A component or parameterization queries whether its alarm is on or off.
+\end{itemize}
+
+\item Must be able to operate in a "restart" mode.
+
+\end{itemize}
+
+
+
+
+
+
+

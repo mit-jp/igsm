@@ -1,0 +1,129 @@
+% $Id$
+\documentclass[]{article}
+\usepackage{html}
+\usepackage[T1]{fontenc}
+
+\begin{document}
+\bodytext{BGCOLOR=white LINK=#083194 VLINK=#21004A}
+
+\begin{titlepage}
+
+\begin{latexonly}
+\noindent {\bf Community Climate System Model} \\
+\noindent National Center for Atmospheric Research, Boulder, CO \\
+\vspace{2in}
+\end{latexonly}
+
+\begin{center}
+{\Large\bf Timer Requirements} \\
+\medskip
+{\it Jim Rosinski, David Neckels }
+\end{center}
+
+\end{titlepage}
+
+\tableofcontents
+
+\newpage
+%\section{Synopsis}
+\input{Timer_syn}
+
+\section{Requirements}
+
+\subsection{Timer toolkit}
+
+\subsubsection{General Requirement}
+A general purpose timer library will handle the timing of
+code sections and reporting of the timing results.  The basic interface involve
+a start method, which begins a named timer, a stop method, which stops the
+timer, and a print which reports the results.
+
+\subsubsection{Process Granularity}
+
+The timer will have granularity to the process and thread level, supporting 
+threads and MPI.  When results of a named timer are reported the
+thread-id and process (MPI) will be reported in addition to the timer name.
+Timers will be able to resolve the time spent in a single
+thread and report this in a consistent manner on all platforms.
+
+The thread support will be either for Pthreads or OMP threads.  These threads do
+not work together, so the support will be for one, the other, or neither, and
+will be set at compile or run time.
+
+\subsubsection{Load balancing}
+
+Where possible the library should provide the option to enable an absolute
+timestamp at the start/stop pairs.  This will enable load balancing issues to
+be more easily analyzed.
+
+\subsection{Profiling Tools}
+
+Hardware counters, when available, will be harnessed to provide unified and
+portable profiling information.  Items such as cache hits/misses, MPI latency,
+bandwidth and flop counts will be collected and reported where possible.
+The calls to the profiling library will detect if the hardware counters are not
+accessible and will not halt the program, but will merely become stub routines
+and return immediately.   
+
+Existing profilers such as PCL \cite{pcl} and PAPI \cite{papi} will either be used
+or will influence the design of the library profiler.
+
+\subsection{Compile Time Disable/Enable}
+
+The library will contain compilation macros to allow all calls in the library
+to be simple returns if the flags are turned off.  This will allow production
+code to run without losing any speed loss incurred from the library.
+
+There will be compilation flags to enable/disable:
+
+\begin{itemize}
+\item{Threads}
+\item{MPI}
+\item{Profiling (possibly PCL or PAPI)}
+\end{itemize}
+
+When these flags are off, all calls to these libraries will be compiled out and
+the associated library will not need to be linked in, nor the headers
+included. This allows users on systems not supporting these functions to use
+the rest of the library, and it allows users who do not desire these
+capabilities to disable them.
+
+The library will also provide runtime flags such that if the library is
+compiled in it may still be turned off or set to various levels of vigour via switches.  
+These flags will be the same set as the compile set, with some additions.
+
+\subsection{Implied Requirements}
+
+The PCL or PAPI drivers will need to be installed on target platforms to enable profiling.
+
+\subsection{Restrictions}
+
+On some platforms the hardware counters are not available to the granularity specified
+above, so the profiler will only be able to resolve to the level supported on each
+platform.
+
+\section{Review Status}
+
+\noindent {\bf Requirements Review} \\
+
+\begin{tabular}{r p{1.3in} p{2in}}
+{\bf Review Date:} & <Date> \\ \\
+{\bf Reviewers:}   & Cecelia Deluca     & NCAR \\
+                   & Brian Kauffman     & NCAR \\
+                   & Tony Craig         & NCAR \\
+                   & Erik Kluzek        & NCAR \\
+                   & Nancy Norton       & NCAR \\
+                   & Keith Lindsay      & NCAR \\
+                   & Steve Gombosi      & NCAR \\
+                   & Jim Rosinski       & NCAR
+\end{tabular}
+%\section{Glossary}
+%\input{Timer_glos}
+
+%\section{Bibliography}
+\bibliography{Timer} 
+\bibliographystyle{plain}
+\addcontentsline{toc}{section}{Bibliography}
+
+\end{document}
+

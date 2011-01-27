@@ -1,0 +1,14 @@
+% $Id$
+\section{Overview}
+
+This utility provides an API for timing code sections and
+for general hardware profiling.
+
+The profiling portion of the library is built on the PCL \cite{pcl} utilities.
+The use of the utilities may require the installation of special drivers to access
+the profiling hardware registers.  These drivers come with the PCL distribution and
+will be installed with the distribution.  More information on how to obtain and install
+PCL is available on the PCL web site 
+\htmladdnormallink{(http://www.kfa-juelich.de/zam/PCL)}{http://www.kfa-juelich.de/zam/PCL)}.
+If PCL is not installed, the timing portion of the library will work, but the PCL options should not
+be enabled in the call to {\tt ESMF\_TimerInit}.  If they are, an error will be generated.

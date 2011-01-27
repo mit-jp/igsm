@@ -1,0 +1,64 @@
+# $Id$ 
+#
+#     See the file build/base_variables.defs for a complete explanation of all these fields
+#
+AR		   = ar
+AR_FLAGS	   = cr
+RM		   = rm -f
+OMAKE		   = ${MAKE}
+RANLIB		   = ranlib
+SHELL		   = /bin/sh
+SED		   = /bin/sed
+# ######################### C and Fortran compiler ########################
+#
+C_CC		   = mpcc_r 
+C_FC		   = mpxlf90_r  -qfixed=72
+C_FC_MOD           = -I
+C_CLINKER_SLFLAG   = -L
+C_FLINKER_SLFLAG   = -L
+C_CLINKER	   = mpcc_r  -bmaxdata:0x70000000 
+# you may need to add -bI:/usr/lpp/xlf/lib/lowsys.exp to C_LINKER
+C_FLINKER	   = mpxlf90_r  -bmaxdata:0x70000000
+C_CCV		   = unknown
+C_FCV		   = unknown
+C_SYS_LIB	   = /usr/lib/libxlf.a /usr/lib/libxlf90.a  -lisode
+# ---------------------------- BOPT - g options ----------------------------
+G_COPTFLAGS	   = -g  -qfullpath 
+G_FOPTFLAGS	   = -g  -qfullpath
+# ----------------------------- BOPT - O options -----------------------------
+#O_COPTFLAGS	   = -O3 -qarch=pwr2  -qmaxmem=4000 -w -qspill=3000
+#O_FOPTFLAGS	   = -O3  -qarch=pwr2 -w
+
+O_COPTFLAGS	   = -O3 -qfullpath -qmaxmem=4000 -w -qspill=3000
+O_FOPTFLAGS	   = -O3 -qfullpath -w
+# ########################## C++ compiler ##################################
+#
+CXX_CC		   = xlC_r -+
+CXX_FC		   = mpxlf_r
+CXX_CLINKER_SLFLAG = -L
+CXX_FLINKER_SLFLAG = -L
+CXX_CLINKER	   = mpCC_r
+CXX_FLINKER	   = mpCC_r
+CXX_CCV		   = unknown
+CXX_SYS_LIB	   = /usr/lib/libxlf.a /usr/lib/libxlf90.a  -lcomplex -lisode
+# ------------------------- BOPT - g_c++ options ------------------------------
+GCXX_COPTFLAGS	   = -g  -qfullpath
+GCXX_FOPTFLAGS	   = -g  -qfullpath 
+# ------------------------- BOPT - O_c++ options ------------------------------
+OCXX_COPTFLAGS	   = -O3  -qmaxmem=4000 -qspill=3000
+OCXX_FOPTFLAGS	   = -O3
+# -------------------------- BOPT - g_complex options ------------------------
+GCOMP_COPTFLAGS	   = -g  -qfullpath
+GCOMP_FOPTFLAGS	   = -g  -qfullpath
+# --------------------------- BOPT - O_complex options -------------------------
+OCOMP_COPTFLAGS	   = -O3  -qmaxmem=4000 -qspill=3000
+OCOMP_FOPTFLAGS	   = -O3
+
+
+PARCH		   = rs6000_sp
+
+include ${ESMF_DIR}/build/common_variables
+
+
+
+

@@ -1,0 +1,18 @@
+#!/bin/csh
+rm -f kclimate2tem438.ii kclimate2tem438.ti
+rm -f *.o *.ti *.ii
+
+#/usr/local/pgi524/linux86/5.2/bin/pgCC -c -v -lm -lC -lstd -lgcc -Mscalarsse -fpic kclimate2tem437.cxx *.cpp
+#/usr/local/pgi524/linux86/5.2/bin/pgCC -c -lm -lC -lstd -lgcc -Mscalarsse -fpic kclimate2tem437.cxx *.cpp
+#/usr/local/pgi524/linux86/5.2/bin/pgCC -shared -o LIBTEM.437.o *.o
+#/usr/local/pgi502/linux86/5.0/bin/pgCC -c -fastsse kclimate2tem437.cxx *.cpp
+
+#/usr/local/pgi502/linux86/5.0/bin/pgCC --prelink_objects  *.o
+
+#pgCC -c -lm -lC -lstd -lgcc -Mscalarsse -fpic kclimate2tem438.cxx *.cpp
+pgCC -c  -Mscalarsse -fpic kclimate2tem438.cxx *.cpp
+#pgCC -shared -o LIBTEM.437.o *.o
+
+ar -r  LIBTEM.438.a *.o 
+#mv -f LIBTEM.438.a ../../
+exit

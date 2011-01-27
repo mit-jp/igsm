@@ -1,0 +1,8 @@
+$ROOTDIR/main
+$ROOTDIR/biogeophys
+$ROOTDIR/ecosysdyn
+$ROOTDIR/riverroute
+$ROOTDIR/mksrfdata
+$ROOTDIR/atmclm_share
+$ROOTDIR/csm_share
+$ROOTDIR/utils/timing

@@ -1,0 +1,597 @@
+% $Header$
+% $Name$
+
+\documentclass[english]{article}
+% \usepackage[T1]{fontenc}
+% \usepackage[latin1]{inputenc}
+\usepackage{babel}
+\usepackage{theorem}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{supertabular}
+\usepackage{html}
+
+\newcommand{\abbr}{TMG }
+\newcommand{\docversion}{Draft1}
+
+\pagestyle{fancy}
+\lhead{\abbr Requirements: \docversion }
+\chead{}
+\rhead{}
+\lfoot{\abbr Requirements: \docversion }
+\cfoot{}
+\rfoot{\thepage\ of \pageref{LastPage}}
+
+%%
+
+\newtheorem{requirement}{\Large \abbr REQ}
+\newtheorem{subreq}{\abbr REQ}[requirement]
+
+\newenvironment
+{reqlist}
+{\begin{list} {} {} \rm \item[]}
+{\end{list}}
+
+\newcommand{\req}[1]{
+\begin{requirement}
+\addcontentsline{toc}{section}{R\arabic{requirement}{\it\bf\ #1}}
+{\Large #1}
+\end{requirement}
+}
+
+\newcommand{\sreq}[1]{
+\begin{subreq}
+\addcontentsline{toc}{section}{  R\arabic{requirement}.\arabic{subreq}{\it\ #1}}
+{#1}
+\end{subreq}
+}
+%%
+
+
+
+\makeatletter
+\makeatother
+
+\begin{document}
+
+\title{ESMF Time Manager Requirements Document}
+
+
+\author{Brian Eaton, Chris Hill}
+\date{}
+
+\maketitle
+
+\tableofcontents
+
+\newpage
+\part*{Part I - Overview}
+\addcontentsline{toc}{section}{Part I - Overview}
+
+
+\section{Introduction}
+
+This document lays out the detailed requirements for the ESMF Time Manager (\abbr). 
+The \abbr requirements document is the mechanism by which features that will be 
+included in the \abbr implementation are identified. The \abbr implementation 
+will contain features that derive from the requirements laid out in Part II of the 
+\abbr requirements document (this document) or from requirements laid out in 
+subsequent revisions of the \abbr requirements document or from the general 
+ESMF coding standards and practices documents.
+
+\section{Document Structure}
+
+This document contains a brief background section summarizing the overall role 
+of the \abbr. The terms section lists key terms that are used in the \abbr 
+requirements. The \abbr requirements section gives an itemized list of detailed 
+requirements. Each requirement item is numbered using a two level numbering 
+scheme. The primary number refers to a {\it broad requirement} and the 
+secondary number refers to {\it sub-requirements}. The {\it sub-requirements} 
+clarify and qualify the broad requirement they relate to. Background information
+is given after each requirement.
+
+
+\section{\abbr Background}
+
+Many of the components that will run and interact within the ESMF
+are prognostic simulation codes employing time-stepping approaches
+to solve a numerical implementation of a set of mathematical equations.
+Coordinating component to component interactions and coordinating interactions
+between components and external systems, from which data is ingested
+or to which data is exported, requires precise notions of time. The
+role of the \abbr is to provide a standard set of \char`\"{}time services\char`\"{}
+to components running under ESMF. The \abbr set of \char`\"{}time services\char`\"{}
+will be part of the ESMF Infrastructure layer. Including these services
+withing the ESMF Infrastructure layer permits
+
+\begin{itemize}
+\item Development of multiple components with compatible notions of time.
+\item Development of a robust, core library of common time functions.
+\end{itemize}
+
+The \abbr is not intended to be a comprehensive set of services for
+all time related operations. For example it will not include a complete
+time-zone capability that supports translation between all of the
+more than 300 time-zones used on the Earth today. However, the \abbr
+will provide a generic foundation for developing libraries that do
+provide bespoke time services. As such the \abbr is anticipated to
+be a library of software that is targeted at both ESMF component 
+developers and at specialized library developers.
+
+\section{\abbr Terms}
+
+\tablefirsthead{}
+\tablehead{\Large \bf \abbr Terms cont...\vspace{2mm} \\}
+\tabletail{}
+\tablelasttail{}
+
+\begin{supertabular}{ll}
+{\Large \bf alarm}&
+\multicolumn{1}{p{95mm}}{
+The \abbr implementation will provide a concept that supports behaviors 
+like the behavior of the alarm described in Part II. An alarm is an event 
+that occurs at a particular time (or set of times).  It is like a real 
+alarm on a real alarm clock except that, in order to determine whether 
+it is "ringing", an alarm is "read" by an explicit application action.
+
+
+}\\
+{\Large \bf clock}&
+\multicolumn{1}{p{95mm}}{
+The \abbr implementation will provide a concept that supports behaviors like 
+the behavior of the clock described in Part II. A clock in this document can 
+be thought of as having many of the attributes of a real clock. However, most 
+clocks used in ESMF components have a key difference to a real clock. Clocks 
+in an ESMF component are generally stepped forward by the component, as an 
+explicitly coded step within the overall component. The discussion of an 
+external clock requirement is the only exception to this behavior.
+
+}\\
+
+{\Large \bf priority}&
+\multicolumn{1}{p{95mm}}{
+Requirements are given a priority in order to help the ESMF development team 
+and software engineering manager schedule development work. The priority 
+categories used in the requirements documents are
+
+\vspace{1mm}
+
+{\bf Essential Priority:} This refers to a requirement that must be 
+implemented for the software to be of any practical use.
+
+\vspace{1mm}
+
+{\bf Very Useful Priority:} This refers to a requirement that is needed by 
+many components. If a very useful requirement is not implemented, then potentially 
+several groups will need to develop significant software of their own to meet 
+the requirement.
+
+\vspace{1mm}
+
+{\bf Useful Priority:} This refers to a requirement that is needed by one or more
+of the components in the ESMF test suite. If a useful priority requirement is not 
+implemented, then a group will need to develop or adapt some software of their own to 
+meet the requirement.
+
+\vspace{1mm}
+
+{\bf Optional Priority:} This refers to a requirement that is seen as valuable, but that
+is either not currently employed by existing applications or that can be
+implemented by application and library developers provided the appropriate
+base \abbr features allow for it. If time permits, optional priority 
+requirements will be implemented. Optional priority requirements are also factored into 
+implementation choices for higher priority requirements. Including optional priority
+requirements ensures that, as far as possible, implemented features will be compatible 
+with later addition of features to support the optional requirements.
+}\\
+
+\vspace{2mm}
+{}&{}\\
+\vspace{2mm}
+
+{\Large \bf \abbr} &
+\multicolumn{1}{p{95mm}}{Standard abbreviation for the ESMF Time Manager.
+}\\
+
+\vspace{2mm}
+
+{\Large \bf time instant}&
+\multicolumn{1}{p{95mm}}{Generic name for an absolute time and
+date specification. A time instant is made up of a time and date and an 
+associated calendar and time-zone. ``Jan 3rd 1999, 03.30:24.56s, UTC'' is one 
+example of a time instant. Another example of a time instant is 36.3719 seconds 
+in the default calendar and time zone.
+}\\
+
+\vspace{2mm}
+
+{\Large \bf time interval}&
+\multicolumn{1}{p{95mm}}{Generic name for a time and date period. Examples of 
+time intervals are 36.3719 seconds, 17 hours, 8 years and 3 days 4 hours.
+The precise meaning of units and hours and years is dependent on the calendar
+associated with the time interval.
+}
+\end{supertabular}
+
+\newpage
+\part*{Part II - \abbr Requirements}
+\addcontentsline{toc}{section}{Part II - \abbr Requirements}
+
+\req{Multiple clock and alarm support is required.}
+\sreq{Components should be able to create and manipulate multiple clocks and alarms.}
+\begin{reqlist}
+{\bf Background:} In many numerical approaches several different time-steps are 
+used for different elements of the system. Multiple clocks are important to keep
+track of these different time-steps. Ensemble simulations may also require
+members to proceed with different temporal trajectories, all within a single 
+component.\\
+{\bf Originators:} All participants.\\
+{\bf Priority:} Essential.
+\end{reqlist}
+\sreq{Components should be able to delete their clocks and alarms.}
+\begin{reqlist}
+{\bf Background:}
+Sometimes temporary clocks and alarms will be needed. A mechanism to both create and
+destroy alarms and clocks on the fly is required.
+\\
+{\bf Originators:} 
+All participants.
+\\
+{\bf Priority:} Very Useful.
+\end{reqlist}
+\sreq{Component should be able to get a list of their clocks and alarms.}
+\begin{reqlist}
+{\bf Background:}
+A useful bookkeeping feature would be the ability to find out what different
+clocks a component owns at any time.
+\\
+{\bf Originators:} 
+All participants.
+\\
+{\bf Priority:} Useful.
+\end{reqlist}
+
+\req{Cross-component clock and alarm queries and manipulations are required.}
+\begin{reqlist}
+\end{reqlist}
+
+\sreq{Components should be able to query the clock(s) or alarms of another
+        component and components should be able to manipulate certain clock(s) 
+        and alarms of another component.}
+\begin{reqlist}
+{\bf Background:}
+Synchronized shutdown notifications will be sent to components through clock
+and alarm settings. These notifications may be generated by a high-level control program
+or a coupler component. However, components should be able to determine 
+which clocks and alarms can be externally manipulated so that they can assume that
+certain clocks and alarms are private.
+
+{\bf Originators:} 
+All participants.
+\\
+{\bf Priority:} Essential.
+\end{reqlist}
+
+\sreq{Components should be able to "label" their clocks and alarms.}
+\begin{reqlist}
+{\bf Background:}
+When coordinating notions of time among components with several
+clocks or alarms, it is important to be able to identify the role of 
+each clock or alarm.
+For instance, a component might want to declare a master clock that 
+defines the overall time within a component, or components
+might need to declare a standard alarm that can be used
+by a higher-level driver layer or a coupler component to trigger 
+the generation of restart information or to trigger a clean shutdown.
+\\
+{\bf Originators:} 
+All participants.
+\\
+{\bf Priority:} Essential.
+\end{reqlist}
+
+
+\req{Multiple, widely used, schemes for specifying time instants 
+and time intervals are required.}
+\begin{reqlist}
+{\bf Background:}
+Different applications have differing needs for how time is represented.
+Some idealized simulations may not require a notion of a true calendar based
+time instant. Time
+relative to the start of the simulation is the relevant quantity
+for these applications. Nevertheless, standard time units such as milli-seconds, 
+seconds, minutes, hours and days are useful to these applications. However, the notion 
+of a formal calendar date
+is not relevant to these applications. Other applications require precise
+notions of calendar date relative to the current Gregorian calendar (with a 365.2425 days 
+average "year" and appropriate leaping) or relative
+to "standard" calendar conventions (for example a 360 day, 12$\times$30 day month year)
+for paleo-simulation. In some applications data ingestion cycles
+need to be precisely coordinated with an actual time instant as specified by standard 
+military and civil clock resources. In these cases leap seconds, which adjust navigational 
+clocks to accommodate ongoing variations in the Earth angular momentum budget
+(the difference between Coordinate Universal Time (UTC) and International
+Atomic Time (TAI)), are required.
+
+In principle, facilities for representing units could be layered on top
+of a TMG foundation layer that uses a single universal and uniform
+resolution clock, for example seconds and nano-seconds since the start of the universe 
+(this is similar to the TAI time that is maintained). However, calendar based 
+representations of time instants and time intervals are ubiquitous
+requirements of ESMF components. The TMG should therefore support
+a broad span of widely used schemes for specifying time. The supported schemes that
+are to be supported are listed below.
+\\
+{\bf Originators:} 
+All participants.
+\\
+{\bf Priority:} Very Useful.
+\end{reqlist}
+
+\sreq{Components should be able to use a flexible {\bf YY MM DD H M S MS O} form for specifying
+time instants and time intervals.}
+\begin{reqlist}
+{\bf Background:}
+For both a time instant and a time interval {\bf YY} is a year number,  
+{\bf MM} is a month number, {\bf DD} is a day number, {\bf H} is an hour number,
+{\bf M} is a minute number, {\bf S} is a second number, {\bf MS} is a millisecond number
+ and O is a time-zone offset (specified
+in whole hours and minutes) number. The valid ranges of these numbers for time instants 
+depend on the calendar in use. Valid ranges for fields in time intervals are limited by the
+overall validity range of the TMG.
+
+{\bf Priority:} Very Useful.
+\end{reqlist}
+
+\sreq{The \abbr should allow components to specify time instants that use 
+the Gregorian calendar and UTC times.}
+\begin{reqlist}
+{\bf Priority:} Essential.
+\end{reqlist}
+
+\sreq{The \abbr should provide a mechanism for translating Gregorian calendar time instants to and from 
+Julian days.}
+\begin{reqlist}
+{\bf Priority:} Useful.
+\end{reqlist}
+
+\sreq{The \abbr should provide support for a "generic", simple calendar.}
+\begin{reqlist}
+{\bf Background:}
+Often it is useful to perform an idealized simulation with a calendar
+that is an approximation to an actual calendar. A commonly used
+configuration is a 360 day year containing 12 months of 30 days each.
+Each day is exactly 86400 seconds. The period of rotation is
+assumed to be exactly one day and the orbital period around the Sun
+is assumed to be exactly one year.
+These settings are a useful approximation for the Earth. However, for other
+planets, or for idealised parameter space exploration experiments, the year 
+length and day length need to be adjusted. The TMG generic calendar
+should allow flexible specification of year and day lengths.
+
+{\bf Priority:} Essential.
+\end{reqlist}
+
+\sreq{A component should only need to specify the {\bf YY MM DD H M S MS O} fields
+that are relevant to that component.}
+\begin{reqlist}
+{\bf Background:}
+If, for example, a component only needs to step forward in whole month intervals, then
+it should be possible to specify \abbr time instants and time intervals in months only. 
+The other fields should then default to appropriate values for the calendar.
+{\bf Priority:} Very Useful.
+\end{reqlist}
+
+\sreq{The ability to synchorise or ``attach'' a clock to an external 
+source should be supported.}
+\begin{reqlist}
+{\bf Background:} Forecast scenarios require latching key events to 
+actual wall-clock time.
+
+{\bf Priority:} Useful.
+\end{reqlist}
+
+
+\req{Continuation of \abbr state over ``multi-stage'' calculations is required.}
+\begin{reqlist}
+{\bf Background:} Clocks and alarms need to continue from their prior state when an
+application is stopped and restarted.
+
+{\bf Priority:} Very Useful.
+\end{reqlist}
+
+\req{Time resolutions and durations consistent with a very broad range
+of Earth science related applications are required.}
+\begin{reqlist}
+{\bf Background:} Many components can be applied to a broad range of 
+problems spanning time-scales of seconds to millions of years.
+
+{\bf Priority:} Essential.
+\end{reqlist}
+
+\sreq{Time resolution of at less than or equalt to one millionth of a
+second should be supported.}
+\begin{reqlist}
+{\bf Background:} Many component applications can be (and are) applied to 
+problems involving small-scale fluid processes. These simulations may 
+well employ time-steps of less than one second. Simulations that are 
+performed in conjunction with laboratory experiments may involve sensor 
+data, using sensors that can sample up to a rate of $10^6$ samples per 
+second ( 1MS/s ).
+
+{\bf Priority:} Essential.
+\end{reqlist}
+
+\sreq{Simulations with durations of at least 100,000 years, and 
+preferably up to one-hundred million years should be supported.}
+\begin{reqlist}
+{\bf Background:} 
+Hundred thousand year time scales arise very readily from studies involving
+orbital variations that may influence glacial and inter-glacial transitions.
+Ensembles of calculations that look at the impact
+of plate configurations on climate can potentially span scenarios
+covering millions of years (mantle convection occurs over many millions of
+years). The \abbr could provide a useful, universal clock
+to such simulations, provided it is designed to support a sufficiently
+broad range of times. \footnote{
+Note - a pair of 64-bit integers can represent, in seconds
+and atto-seconds ($10^{-18}s$), a time range of about 300 biliion years!}
+
+{\bf Priority:} Useful
+\end{reqlist}
+
+\req{Sufficient time instant and time interval accuracy is required.}
+\sreq{Truly drift and truncation free behaviors should be supported.}
+\begin{reqlist}
+{\bf Background:}
+An option must be available to create time intervals and time instants that
+are free from truncation. An example of no drift behavior is as follows:
+
+if adding (or subtracting) a time interval, $i_{1}$, to a time 
+instant $\tau_{init}$ yields a new time instant $\tau_{final}$ i.e.
+
+$\tau_{final}=\tau_{init}+i_1 $
+
+then it must be possible to specify a fractional time 
+interval $i_{2} = \frac{1}{2}\times i_{1}$ such that
+
+$\tau_{final}=\tau_{init}+i_1\equiv\tau_{init}+i_2+i_2 $
+
+and similarly for $i_{3} = \frac{1}{3}\times i_{1}$, $i_{n,m} = \frac{n}{m}\times i_{1}$.
+Such behavior is not possible with finite-precision floating point arithmetic.
+
+
+
+{\bf Priority:} Essential
+\end{reqlist}
+
+\sreq{Clock accuracy comparable with numerical scheme accuracy should be supported.}
+\begin{reqlist}
+{\bf Background:} Applications that employ an adaptive time-step for their numerical
+procedures need to be able to drive their time manager clocks with that step.
+This should be possible even for application time steps that are arbitrary 
+floating point numbers i.e. not a whole number of seconds, or minutes.
+
+{\bf Priority:} Essential
+\end{reqlist}
+
+\sreq{Applications should be able to query the actual values used in a clock or alarm.}
+\begin{reqlist}
+{\bf Priority:} Essential
+\end{reqlist}
+
+\req{Flexible support for manipulating clock and alarm settings is required}
+\sreq{Time intervals should be able to increment and decrement time 
+instants.}
+\begin{reqlist}
+{\bf Background:} Alarms will only be triggered when time is advanced.
+Alarms are triggered when a time interval goes from being less than
+the current time instant for the alarm to a time greater than or equal to the current
+time instant for the alarm. It should be possible to request
+a clock setting increment that will not trigger an alarm.
+
+{\bf Priority:} Essential
+\end{reqlist}
+\sreq{Both once-only and periodic alarm settings should be supported}
+\begin{reqlist}
+{\bf Background:} Alarms can be set to happen at a single time
+instant only or at a repeating time instant. Repeating time instants
+should include every occurence of a particular day, on a certain
+day of each month, at the start of a month, at the end of a month,
+at the middle of a month.
+
+{\bf Priority:} Essential
+\end{reqlist}
+
+\req{Time instant comparison support is required}
+\sreq{Support for testing a pair of time instants for equality is required.}
+\begin{reqlist}
+{\bf Priority:} Essential
+\end{reqlist}
+\sreq{Support for calculating the time interval between a pair of time 
+instants is required.}
+\begin{reqlist}
+{\bf Background:} Calculating the difference between
+times with integer fraction representation in such a way that
+the integer fractions are preserved is technically difficult
+( well at least I can't think how to do it in general).
+Time differences are only required to be returned as time intervals
+that use finite precision. There is no requirement for
+inifinite precision time intervals to be returned as
+the result of a time difference calculation.
+
+{\bf Priority:} Essential
+\end{reqlist}
+
+\req{Support for a variety of time output formats is required}
+\begin{reqlist}
+{\bf Background:} It is not possible to be define a single I/O format 
+for textual output of time settings.
+A facility to format times flexibly would be useful
+for providing appropriate I/O, for example ``%x'' style 
+or ``cout >>'' style format specifiers.
+
+{\bf Priority:} Optional
+\end{reqlist}
+
+\def\refname{Reference Material}
+\def\bibname{Reference Material}
+\begin{thebibliography}{99}
+
+\bibitem{1}
+\textsl{International Earth Rotation Service (IERS)}
+\begin{rawhtml}<A href=http://hpiers.obspm.fr>\end{rawhtml}
+http://hpiers.obspm.fr \\
+\begin{rawhtml}</A>\end{rawhtml}
+\begin{rawhtml}<A href=http://hpiers.obspm.fr/eop-pc/products/bulletins.htm>\end{rawhtml}
+IERS Bulletins \\
+\begin{rawhtml}</A>\end{rawhtml}
+\begin{rawhtml}<A href=http://hpiers.obspm.fr/eop-pc/models/constants.html>\end{rawhtml}
+IERS Constants \\
+\begin{rawhtml}</A>\end{rawhtml}
+
+\bibitem{2}
+\begin{rawhtml}<A href=//www.cgd.ucar.edu/cms/eaton/netcdf/NCAR-CSM.html>\end{rawhtml}
+\textsl{CSM Time Conventions} 
+\begin{rawhtml}</A>\end{rawhtml}
+
+\bibitem{3}
+\begin{rawhtml}<A href=http://www.omg.org>\end{rawhtml}
+\textsl{OMG\\} 
+\begin{rawhtml}</A>\end{rawhtml}
+CORBA Time Service Specification Version 1.0
+\begin{rawhtml}<A href=ftp://ftp.omg.org/pub/docs/formal/00-06-26.pdf>\end{rawhtml}
+ftp://ftp.omg.org/pub/docs/formal/00-06-26.pdf
+\begin{rawhtml}</A>\end{rawhtml}
+
+\bibitem{4}
+\begin{rawhtml}<A href=http://www.usno.navy.mil>\end{rawhtml}
+US Naval Observatory\\
+\begin{rawhtml}</A>\end{rawhtml}
+\begin{rawhtml}<A href=http://tycho.usno.navy.mil>\end{rawhtml}
+US Naval Observatory Time Pages\\
+\begin{rawhtml}</A>\end{rawhtml}
+
+\bibitem{5}
+\begin{rawhtml}<A href=http://www.w3.org/TR/NOTE-datetime>\end{rawhtml}
+W3C Date and Time Note
+\begin{rawhtml}</A>\end{rawhtml}
+
+\bibitem{6}
+\begin{rawhtml}<A href=http://www.boulder.nist.gov/timefreq/general/faq.htm>\end{rawhtml}
+NIST Time and Date Material
+\begin{rawhtml}</A>\end{rawhtml}
+
+\bibitem{6}
+\begin{rawhtml}<A href=http://www.tondering.dk/claus/calendar.html>\end{rawhtml}
+A Calendar FAQ.
+\begin{rawhtml}</A>\end{rawhtml}
+
+\bibitem{7}
+\begin{rawhtml}<A href=http://www.mcs.vuw.ac.nz/technical/software/SGML/doc/iso8601/ISO8601.html>\end{rawhtml}
+Some notes on the ISO8601 time and date specification standard.
+\begin{rawhtml}</A>\end{rawhtml}
+
+\end{thebibliography}
+
+\end{document}

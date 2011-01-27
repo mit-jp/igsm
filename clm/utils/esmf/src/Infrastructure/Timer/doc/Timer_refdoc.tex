@@ -1,0 +1,57 @@
+% $Id$
+\documentclass[]{article}
+\usepackage{html}
+\usepackage[T1]{fontenc}
+
+\begin{document}
+\bodytext{BGCOLOR=white LINK=#083194 VLINK=#21004A}
+
+\begin{titlepage}
+
+\begin{latexonly}
+\noindent {\bf Community Climate System Model} \\
+\noindent National Center for Atmospheric Research, Boulder, CO \\
+\vspace{2in}
+\end{latexonly}
+
+\begin{center}
+{\Large\bf Timer Library Reference} \\
+{\it Jim Rosinski, David Neckels}
+\end{center}
+
+\end{titlepage}
+
+\tableofcontents
+
+\newpage
+%\section{Synopsis}
+\input{Timer_oview}
+
+%\section{Architecture}
+%\input{Timer_arch}
+
+\newpage
+\section{Timer Class}
+
+%\subsection{Description}
+\input{Timer_desc}
+
+\subsection{Use and Examples}
+\input{Timer_example}
+
+%\section{Glossary}
+\input{Timer_glos}
+
+\section{Bibliography}
+\bibliography{Timer} 
+\bibliographystyle{plain}
+\addcontentsline{toc}{section}{Bibliography}
+
+\setcounter{section}{1}
+
+\section*{Appendix A:  Fortran Interface}
+\addcontentsline{toc}{section}{Appendix:  Fortran Interface}
+
+\input{ESMF_TimerMod}
+
+\end{document}

@@ -1,0 +1,98 @@
+\subsubsection{General Usage}
+The basic sequence for use of the library is to first call {\tt ESMF\_TimerInit}, either
+once to initialize the behavior of all timers, or multiple times to initialize individual
+timers (see Appendix A for further descriptions of any individual function).
+
+Next, the {\tt ESMF\_TimerStart} function is called before entering a code section of interest.  When
+the section completes, the {\tt ESMF\_TimerStop} function is called.  This may be repeated 
+for different timers and/or for the same timer.
+
+Lastly, the information collected by the timer is output.  This is done via a call to 
+{\tt ESMF\_TimerPrint}.  This function prints a timer or all timers to a {\tt ESMF\_Log} 
+object.  If the log object is not given, it prints to the standard application log 
+(see {\tt ESMF\_App for details}.  Otherwise any user created log object may be specified.
+  The call also takes either the {\tt ESMF\_ALL\_TIMERS} handle, in which event it prints all
+timers, or the name of a specific timer, in which event it prints that timer only.
+
+\subsubsection{Code Example}
+The following code segment shows a basic use of the timer library.
+
+\begin{verbatim}
+        program TimerEx
+        Use ESMF_AppMod
+        Use ESMF_TimerMod
+        implicit none
+        type(ESMF_App) :: app
+        character*7 timerName
+        integer :: i
+
+! An application must be initialized for the library to be used.
+        app = ESMF_AppNew()
+
+! This call initializes all default timers.  It enables the tracking/reporting
+! of user and system time, wall-clock time, and floating point instructions.  
+! The list is ended with a 0 to signal the end of the option.
+        call ESMF_TimerInit(ESMF_ALL_TIMERS,
+     &       ESMF_USRSYS, 1,  ESMF_WALL, 1,
+     &       ESMF_FP_INSTR, 1, 0)
+
+! Create an outer-loop timer to time the total execution.  This timer demonstrates
+! that the start/stop pairs may be nested, provided that the nesting uses different
+! timer names.
+        call ESMF_TimerStart("End2End")
+
+! Create a timer for a subroutine that is called once.
+! Start the timer.
+        call ESMF_TimerStart("Task1")
+
+! Call the subroutine.
+        call task1()
+
+! End the timer.
+        call ESMF_TimerStop("Task1")
+
+! Create a timer for a task that is called several times.  This timer
+! will contain both the sum of the times and stats.
+        do i=1,3
+          call ESMF_TimerStart("Task2")
+          call task2()
+          call ESMF_TimerStop("Task2")
+        enddo
+
+! Stop the outer-loop timer.
+        call ESMF_TimerStop("End2End")
+
+! Create a report for all three timers to the standard log-file.
+        call ESMF_TimerPrint(name=ESMF_ALL_TIMERS)
+
+! The application must be destroyed to finalize the program.
+        call ESMF_AppDelete(app)
+        end program
+
+\end{verbatim}
+
+\subsubsection{Example Output}
+
+The following is an example output file from the library:
+
+\begin{verbatim}
+Wallclock timer cost est.:   24.000 usec per start/stop pair
+CPU timer cost est.:         24.000 usec per start/stop pair
+CPU accumulation interval is 0.01 seconds
+Clock speed is 195 MHz
+
+Stats for thread 0:
+Name        Called   Usr     Sys     Usr+Sys   Wallclock Max      Min     FP instr
+End2End     1        6.990   0.010   7.000     7.145     7.145    7.145   1.049e+08
+  Task1     1        1.750   0.000   1.750     1.880     1.880    1.880   2.621e+07
+  Task2     3        5.240   0.000   5.240     5.263     1.755    1.754   7.864e+07
+
+
+TIMER OVERHEAD (wallclock seconds) =     0.002252
+
+\end{verbatim}
+
+Each timer is listed, with the requested stats from each.  Notice that the {\tt Task2} timer was
+called three times.  The totals for that timer are listed, as well as the minimum and maximum
+times for any single call.  The timer gives an estimate as to the overhead of the library.  The number
+of floating point instructions appears in the right column.

@@ -1,0 +1,13 @@
+Code copied from the following sources:
+
+clm : /home/jscott/adam/CLM/4MIT2D/src
+ - from /home/jscott/CLM_BUILD64_TEM:
+  - mitbuild.jscott.csh (as prebuild.csh)
+   - $INC_NETCDF, $LIB_NETCDF, $NETCDF environment variables are set by "module
+     load netcdf"
+   - $CSMDATA is set to a directory which doesn't exist. Must not be important?
+  - Makefile.tem437 (as Makefile)
+    - FFLAGS is set to include -c, which is wrong
+  - Make_lib
+tem : /home/jscott/TEM438_64
+tools : files from /home/jscott/CLM_BUILD64_TEM

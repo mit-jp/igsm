@@ -1,0 +1,11 @@
+% $Id$
+\subsection{Restrictions}
+
+\begin{itemize}
+\item{\bf Printf type format strings}
+
+All printf format strings are recognized by {\tt MFM\_LogPrint}.
+However, you must use the {\tt ``\%lf''} (long float) format string to print a double,
+since the underlying library has to know the specific type of each argument.
+The usual {\tt ``\%f''} may be used to print a float.
+\end{itemize}

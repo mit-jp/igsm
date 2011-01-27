@@ -1,0 +1,115 @@
+\subsubsection{General Use}
+
+Any number of {\tt ESMF\_Log's} may be created using {\tt ESMF\_LogNew}.  Each
+log will have a unique file-name stem, which is passed to this call.  In the event that
+the process is not using MPI or the option for a single output file is selected, all
+output will go directly to a file with the stem name.  Otherwise one file will be
+created for each MPI process with the stem followed by the process number as the 
+output file name.
+
+
+
+\subsubsection{Example Program}
+
+The following program creates several {\tt ESMF\_Log's} and uses them to
+output various messages.
+
+\begin{verbatim}
+        program LogEx
+        Use ESMF_AppMod
+        Use ESMF_LogMod
+        implicit none
+
+        integer :: ivar, i, ierr
+        real(8) :: dvar 
+        real(4) :: fvar 
+        type(ESMF_Log) :: log, testlog
+        type(ESMF_App) :: app
+
+! Create the application.  Every ESMF program must create an app.
+        app = ESMF_AppNew()
+! Create a new log with stem "logfile".
+        log = ESMF_LogNew("logfile", ESMF_LOGSTATE_VERBOSE, 1)
+! Create another log with stem "testlog".
+        testlog = ESMF_LogNew("testlog",
+     &  ESMF_LOGSTATE_VERBOSE, 0)
+
+! Test printing a string.
+        call ESMF_LogPrint(testlog, ESMF_LOGLEVEL_INFO,
+     &  "AAA: Hello Logfile")
+
+! Set some various types of variables with values.
+        ivar = 2
+        dvar = 3.1459
+        fvar = 0.145987
+
+! Demonstrate printing the variables in different formats.
+        call ESMF_LogPrint(testlog, ESMF_LOGLEVEL_ERROR,
+     &  "Assorted Vars:%s%08d\ndvar=%.2lf,fvar=%.4f\n",
+     &  "i=", ivar, dvar, fvar)
+
+! Flush the testlog output.
+        call ESMF_LogFlush(testlog)
+        
+! Demonstrate the use of the log in a threaded section.
+!$OMP PARALLEL DO PRIVATE (i)
+        do i=1, 10 
+                call ESMF_LogPrint(log, ESMF_LOGLEVEL_INFO,
+     &  "Hello from do loop, iter= %d\n", i)
+
+        call ESMF_LogPrint(testlog, ESMF_LOGLEVEL_INFO, 
+     &  "Called from OMP Parallel do\n")
+        enddo
+!$OMP END PARALLEL DO
+
+! Delete the log when finished.  This closes output files and does
+! the necessary cleanup.
+        call ESMF_LogDelete(testlog)
+        call ESMF_LogDelete(log)
+
+! Each app must delete the app handle.  This finializes the program.
+        call ESMF_AppDelete(app)
+
+        end program 
+\end{verbatim}
+
+\subsubsection{Output Matrix}
+
+The following matrix determines which messages are output in a given log state.
+\smallskip
+\noindent
+\begin{tabular}{|p{1.5in}p{1.0in}p{1.0in}p{1.0in}|} \hline
+                  &| {\bf Log Level} & & \\ \hline
+{\bf Log State}   &| {\bf INFO }& {\bf ERROR } & {\bf TIMER} \\ \hline
+{\bf QUIET}       &| off & off & off \\ \hline
+{\bf NORMAL}      &| on & on & off \\ \hline
+{\bf TIMER}       &| off & off & on \\ \hline
+{\bf VERBOSE}     &| on & on  & on  \\ \hline
+\end{tabular}
+
+\subsubsection{Example Program Output}
+
+\noindent
+{\bf Output from testlog}
+\begin{verbatim}
+>>Time=0000.00662,PID=0,TID=0,ERROR  :Assorted Vars:i=0000000
+>>Time=0000.00662,PID=0,TID=0,ERROR  :dvar=3.15,fvar=0.1460
+>>Time=0000.09440,PID=0,TID=1,INFO   :Called from OMP Parallel do
+>>Time=0000.09487,PID=0,TID=2,INFO   :Called from OMP Parallel do
+\end{verbatim}
+
+\noindent
+{\bf Output from logfile}
+\begin{verbatim}
+>>Time=0000.09349,PID=0,TID=0,INFO   :Hello from do loop, iter= 1
+>>Time=0000.09421,PID=0,TID=3,INFO   :Hello from do loop, iter= 9
+\end{verbatim}
+
+Each line of output in the log file is prepended with a descriptor line.  The time,
+process Id, thread Id, and logging level appear before each 
+line of output.  This allows for unix tools like {\tt grep} to be used to 
+post-process the output file.  Sorting several files by the time field allows the user
+to get a single file which shows the relative flow of events.  If
+the output is cut after the ``:'', the output appears exactly as it would if a simple
+{\tt write} or {\tt printf} statement were used.
+

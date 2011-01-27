@@ -1,0 +1,62 @@
+% $Id$
+\documentclass[]{article}
+\usepackage{html}
+\usepackage[T1]{fontenc}
+
+\begin{document}
+\bodytext{BGCOLOR=white LINK=#083194 VLINK=#21004A}
+
+\begin{titlepage}
+
+\begin{latexonly}
+\noindent {\bf Community Climate System Model} \\
+\noindent National Center for Atmospheric Research, Boulder, CO \\
+\vspace{2in}
+\end{latexonly}
+
+\begin{center}
+{\Large\bf App Design} \\
+\medskip
+{\it David Neckels}
+\end{center}
+
+\end{titlepage}
+
+\tableofcontents
+
+\newpage
+%\section{Synopsis}
+\input{App_syn}
+
+\section{App Class}
+
+%\subsection{Description}
+%\input{App_desc}
+
+%\subsection{Specification}
+\input{App_def}
+
+\input{App_res}
+
+\input{App_fut}
+
+\section{Review Status}
+
+\noindent{\bf Design Review} \\
+
+\begin{tabular}{r p{1.3in} p{2in}}
+{\bf Review Date:} & <Date> \\ \\
+{\bf Reviewers:}   & Reviewer           & <Institution> \\
+                   & Reviewer           & <Institution> \\
+                   & Reviewer           & <Institution>
+\end{tabular}
+
+%\section{Glossary}
+%\input{App_glos}
+
+%\section{Bibliography}
+\bibliography{App} 
+\bibliographystyle{plain}
+\addcontentsline{toc}{section}{Bibliography}
+
+\end{document}

@@ -1,0 +1,103 @@
+% $Id$
+The timing library and profiling library will be implemented as a single unit.  
+\subsubsection{Subroutines}
+
+\begin{itemize}
+\item{\bf MFM\_TimerInit}
+Configures and sets options for the timer.  Establishes which types of
+profiling and timing statistics are to be collected.  Also initializes any
+internal data structures needed for the library.  If the {\tt name} field is 
+set to {\tt MFM\_ALL\_TIMERS}, the basic timer options are set.  Any timer that
+is created after this call will utilize the options set with {\tt
+MFM\_ALL\_TIMERS} unless a separate call to {\tt MFM\_TimerInit} is made with
+that timer name.  If special behavior is desired for a given timer, the init
+function may be called with the name of the timer as the first argument.  When
+this specific name is
+given, the options specified apply to timers of that name only (If the timer is
+used in more than one thread there can be multiples with the same name).  This 
+function Should be called in a non-threaded code section.
+
+\begin{verbatim}
+        subroutine MFM_TimerInit(name, option1, value1, option2, value2, ...)
+        character*(*) :: name            ! Timer name or "MFM_ALL_TIMERS" for all timers
+        integer :: option1               ! The option to set
+        integer :: value2                ! The value of option1
+        ! etc...
+\end{verbatim}
+
+Option values are either one (enable) or zero (disable).  The possible options
+are:
+\begin{itemize}
+\item{\tt MFM\_STUB\_TIMERS} Causes all calls to timer functions to return immediately.
+\item{\tt MFM\_USRSYS} (Measure) User and system time.
+\item{\tt MFM\_WALL} Wall clock times.
+\item{\tt MFM\_LD1CACHE\_MISS} Level 1 cache misses.
+\item{\tt MFM\_LD2CACHE\_MISS} Level 2 cache misses.
+\item{\tt MFM\_CYCLES} Clock cycles in this process/thread.
+\item{\tt MFM\_ELAPSED} Elapsed clock cycles (all programs).
+\item{\tt MFM\_FP\_INSTR} Floating point instructions.
+\item{\tt MFM\_LOADSTORE\_INSTR} Load and store instructions.
+\item{\tt MFM\_INSTR} Instruction count.
+\item{\tt MFM\_STALL} Sum of cycles the process/thread is stalled.
+
+\end{itemize}
+
+\item{\bf MFM\_TimerStart}
+
+This function makes a timer/profiler start counting.
+
+\begin{verbatim}
+        subroutine MFM_TimerStart(name)
+        character(*) :: name        ! The timer name.
+\end{verbatim}
+
+Each timing event will be done via the start/stop pairs.  A timer may be called
+multiple times, but within a given thread, the {\tt MFM\_TimerStart} routine
+must not be called twice without an intervening call to {\tt MFM\_TimerStop}.
+If a start call is made before a start, the timer will print an error
+message and ignore the particular timing event.  The timer will continue to operate
+if called again in a correct sequence.
+An internal list of named  timers is kept, so repeated calls find the original
+timer and re-use it.  These timers will keep averages, minimums and maximums,
+and this will be printed in calls to {\tt MFM\_Timer\_Print}.
+
+\item{\bf MFM\_TimerStop}
+
+Stops a named timer.
+\begin{verbatim}
+        subroutine MFM_TimerStop(name)
+        character*(*) :: name        ! The timer name.
+\end{verbatim}
+
+\item{\bf MFM\_TimerReset}
+
+Resets the given timer.  Zeros all accumulated times.
+
+\begin{verbatim}
+        subroutine MFM_TimerReset(name)
+        character *(*):: name
+\end{verbatim}
+
+\item{\bf MFM\_TimerPrint}
+
+Prints the results of the timer using the given {\tt ESMF\_Log}.  The name should be
+from a previous stop/start pair or {\tt MFM\_ALL\_TIMERS} for all timers.  The routine prints
+the timer to the specified logging channel.
+
+\begin{verbatim}
+        subroutine MFM_TimerPrint(name, log)
+        character *(*):: name
+        MFM_LogHandle :: log
+\end{verbatim}
+
+\item{\bf MFM\_TimerStamp}
+
+Returns a time stamp as an 8 byte float.  
+
+\begin{verbatim}
+        subroutine MFM_TimerStamp(stamp)
+        real(8) :: stamp
+\end{verbatim}
+
+
+\end{itemize}

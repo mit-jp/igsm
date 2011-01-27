@@ -1,0 +1,67 @@
+% $Id$
+\documentclass[]{article}
+\usepackage{html}
+\usepackage[T1]{fontenc}
+
+\begin{document}
+\bodytext{BGCOLOR=white LINK=#083194 VLINK=#21004A}
+
+\begin{titlepage}
+
+\begin{latexonly}
+\noindent {\bf Community Climate System Model} \\
+\noindent National Center for Atmospheric Research, Boulder, CO \\
+\vspace{2in}
+\end{latexonly}
+
+\begin{center}
+{\Large\bf Timer/Profiler Design} \\
+\medskip
+{\it Jim Rosinski, David Neckels}
+\end{center}
+
+\end{titlepage}
+
+\tableofcontents
+
+\newpage
+%\section{Synopsis}
+\input{Timer_syn}
+
+\section{Timer Module}
+
+%\subsection{Description}
+\input{Timer_desc}
+
+\subsection{F90 Interface}
+\input{Timer_def}
+
+\input{Timer_res}
+
+\input{Timer_fut}
+
+\section{Review Status}
+
+\noindent {\bf Design Review} \\
+
+\begin{tabular}{r p{1.3in} p{2in}} 
+{\bf Review Date:} & 4 October, 2001     \\ \\   
+{\bf Reviewers:}   & Cecelia Deluca     & NCAR \\ 
+                   & Brian Kauffman     & NCAR \\ 
+                   & Erik Kluzek        & NCAR \\ 
+                   & Keith Lindsay      & NCAR \\ 
+                   & Brian Eaton        & NCAR \\ 
+                   & Jim Rosinski       & NCAR
+\end{tabular}
+
+
+%\section{Glossary}
+%\input{Timer_glos}
+
+\section{Bibliography}
+\bibliography{Timer} 
+\bibliographystyle{plain}
+\addcontentsline{toc}{section}{Bibliography}
+
+\end{document}
+
