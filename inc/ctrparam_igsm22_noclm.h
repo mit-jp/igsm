@@ -48,7 +48,8 @@
 !
 ! === defines 3D ocean
 !
-#define OCEAN_3D 1
+!#define OCEAN_3D 1
+#define ML_2D 1
 
 !
 ! === coupling ocean co2 model

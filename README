@@ -1,13 +1,56 @@
-Code copied from the following sources:
+The Massachusetts Institute of Technology Integrated Global System Model
+========================================================================
 
-clm : /home/jscott/adam/CLM/4MIT2D/src
- - from /home/jscott/CLM_BUILD64_TEM:
-  - mitbuild.jscott.csh (as prebuild.csh)
-   - $INC_NETCDF, $LIB_NETCDF, $NETCDF environment variables are set by "module
-     load netcdf"
-   - $CSMDATA is set to a directory which doesn't exist. Must not be important?
-  - Makefile.tem437 (as Makefile)
-    - FFLAGS is set to include -c, which is wrong
-  - Make_lib
-tem : /home/jscott/TEM438_64
-tools : files from /home/jscott/CLM_BUILD64_TEM
+This file contains some information on building the IGSM from source. For more
+on the contents of the source tree, see the commit history at using 'git log',
+or at http://svante.mit.edu/git/?p=igsm.git.
+
+CONTENTS
+--------
+
+    atm -- atmosphere model
+   chem -- atmospheric chemistry model
+    clm -- "Community Land Model"
+    inc -- include files
+   meta -- urban metamodel
+ ocn_ml -- Two-dimensional, multi-layer (ml) ocean model
+    tem -- "Terrestrial Ecosystem Model"
+
+DEPENDENCIES
+------------
+The following third-party packages are included in the code:
+
+ clm/utils/esmf -- Earth System Modelling Framework (ESMF) [1]
+
+BUILD
+-----
+The following process has only been tested on svante.mit.edu -- a Fedora Core
+14 x86_64 system with GNU Make 3.82 [2], PGI 9.0.4 and NetCDF 3.6.2.
+
+ 1. Load the PGI [3] compilers and the NetCDF [4] libraries:
+
+    $ module load pgi netcdf
+
+ 2. Create or edit the file inc/ctrparam.h. An example is provided at
+    inc/ctrparam_igsm22_noclm.h.
+
+ 3. In the root directory, type:
+
+    $ make
+
+An executable named 'igsm22' is produced in the root directory. Currently there
+is no automatic configuration script, and no build options (for target
+directories, modules, features, etc.); the build can only be configured by
+manually editing various include files.
+
+EXECUTE
+-------
+(To be added)
+
+REFERENCES
+----------
+1. http://www.earthsystemmodeling.org/
+2  http://www.gnu.org/software/make/
+3. http://www.pgroup.com/
+4. http://www.unidata.ucar.edu/software/netcdf/
+
