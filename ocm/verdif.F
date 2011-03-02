@@ -1,0 +1,62 @@
+      SUBROUTINE DIFFUSCO2 (LMO,JM,DT,ALPHA,ED,DML,VL,DZ,DZO,R)           
+C****                                                               
+C**** THIS SUBROUTINE CALCULATES THE VERTICAL MIXING OF A TRACER, R,  
+C**** BY DIFFUSION.  LM IS THE NUMBER OF VERTICAL LAYERS.  DT (S) IS 
+C**** THE TIME STEP.  ALPHA DETERMINES THE TIME SCHEME RANGING FROM  
+C**** 0 FOR EXPLICIT TO 1 FOR FULLY IMPLICIT.  DZ (M) IS THE DEPTH OF  
+C**** THE LAYERS, AND DZO (M) IS THE DISTANCE BETWEEN THE CENTERS OF  
+C**** THE LAYERS.  ED (M**2/S) IS THE DIFFUSION COEFFICIENT BETWEEN  
+C**** ADJACENT LAYERS.  R(JM,LMO) IS THE TRACER CONCENTRATION.              
+C****                                                              
+      DIMENSION ED(JM),R(JM,LMO),DML(JM),VL(JM)
+      DIMENSION DZ(LMO),DZO(LMO-1),AM(LMO),BM(LMO),CM(LMO),DM(LMO)
+      data ifirst /1/
+      if (ifirst.eq.1) then
+        print *,'Vertical diffusion coefficients from DIFFUSCO2'
+        print *,ED
+        ifirst = 0
+      endif
+C**** DEFINE THE VERTICAL LAYERING                               
+      LM=LMO                                                    
+      LMM1=LM-1                                                
+C**** LOOP OVER THE HORIZONTAL GRID POINTS               
+  100 DO 500 J=1,JM                                     
+      if(VL(J).gt.0.0)then
+C**** SET UP TRIDIAGONAL MATRIX ENTRIES AND RIGHT HAND SIDES         
+      DZ(1)=DML(J)
+      DZO(1)=0.5*(DZ(1)+DZ(2))
+cprint *,' from verdif'
+cprint *,j,ed(j),dml(j),dt,alpha
+cprint *,dz
+cprint *,dzo
+      AM(1)=DZ(1)+ALPHA*DT*ED(J)/DZO(1)                           
+      DM(1)=DZ(1)*R(J,1)                                         
+     *  -(1.-ALPHA)*DT*ED(J)*(R(J,1)-R(J,2))/DZO(1)         
+      L=1                                                        
+  110 BM(L)=-ALPHA*DT*ED(J)/DZO(L)                            
+      CM(L+1)=-ALPHA*DT*ED(J)/DZO(L)                         
+      IF(L.GE.LM-1) GO TO 120                                 
+      L=L+1                                                  
+      AM(L)=DZ(L)+ALPHA*DT*(ED(J)/DZO(L-1)+ED(J)/DZO(L))
+      DM(L)=DZ(L)*R(J,L)                                 
+     *  +(1.-ALPHA)*DT*(ED(J)*(R(J,L-1)-R(J,L))/DZO(L-1)   
+     *  -ED(J)*(R(J,L)-R(J,L+1))/DZO(L))                  
+      GO TO 110                                                
+  120 AM(LM)=DZ(LM)+ALPHA*DT*ED(J)/DZO(LM-1)                
+      DM(LM)=DZ(LM)*R(J,LM)                                
+     *  +(1.-ALPHA)*DT*ED(J)*(R(J,LM-1)-R(J,LM))/DZO(LM-1)   
+C**** ELIMINATE LOWER OFF-DIAGONAL ENTRIES FROM THE MATRIX EQUATION 
+      DO 210 L=2,LM                                                
+      AM(L)=AM(L)-BM(L-1)*CM(L)/AM(L-1)                           
+  210 DM(L)=DM(L)-DM(L-1)*CM(L)/AM(L-1)                          
+C**** ELIMINATE UPPER OFF-DIAGONAL ENTRIES FROM THE MATRIX EQUATION  
+      DO 310 LX=2,LM                                                
+      L=1+LM-LX                                                    
+  310 DM(L)=DM(L)-DM(L+1)*BM(L)/AM(L+1)                           
+C**** SOLVE THE REDUCED MATRIX EQUATION TO CALCULATE THE NEW R   
+      DO 410 L=1,LM                                             
+  410 R(J,L)=DM(L)/AM(L)                                     
+      endif
+  500 CONTINUE                                                
+      RETURN                                                 
+      END                                                   

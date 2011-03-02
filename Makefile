@@ -15,7 +15,7 @@ CXXFLAGS = -Mscalarsse -fpic
 TARGET = igsm22
 
 # atm must be last for link to succeed?
-MODULES = tem ml chem meta atm
+MODULES = tem ocm ml chem meta atm
 
 LIBS = $(patsubst %,lib%.a,$(MODULES))
 clm_LIBS = -L$(realpath ./clm) -lclm -lesmf -L$(LIB_NETCDF) -lnetcdf -lnetcdff
@@ -36,10 +36,13 @@ meta_OBJS = $(patsubst %.F,%.o,$(meta_SRCS))
 ml_SRCS = $(wildcard ocn_ml/*.F)
 ml_OBJS = $(patsubst %.F,%.o,$(ml_SRCS))
 
+ocm_SRCS = $(wildcard ocm/*.F)
+ocm_OBJS = $(patsubst %.F,%.o,$(ocm_SRCS))
+
 tem_SRCS = $(wildcard tem/*.cpp)
 tem_OBJS = $(patsubst %.cpp,%.o,$(tem_SRCS))
 
-OBJECTS = $(atm_OBJS) $(chem_OBJS) $(clm_OBJS) $(emiprep_OBJS) $(meta_OBJS) $(ml_OBJS) $(tem_OBJS)
+OBJECTS = $(atm_OBJS) $(chem_OBJS) $(clm_OBJS) $(emiprep_OBJS) $(meta_OBJS) $(ml_OBJS) $(ocm_OBJS) $(tem_OBJS)
 
 all: $(TARGET) prep
 
@@ -50,6 +53,7 @@ atm: libatm.a($(atm_OBJS))
 chem: libchem.a($(chem_OBJS))
 meta: libmeta.a($(meta_OBJS))
 ml: libml.a($(ml_OBJS))
+ocm: libocm.a($(ocm_OBJS))
 tem: libtem.a($(tem_OBJS))
 
 clm: clm/libclm.a clm/libesmf.a

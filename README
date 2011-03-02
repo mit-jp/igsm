@@ -15,6 +15,7 @@ emiprep -- 'prep'rocessor for EPPA 5 'emi'ssions
     inc -- include files
    meta -- urban metamodel
  ocn_ml -- Two-dimensional, multi-layer (ml) ocean model
+    ocm -- Ocean carbon model
     tem -- "Terrestrial Ecosystem Model"
 
 DEPENDENCIES
