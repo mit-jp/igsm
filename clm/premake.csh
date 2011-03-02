@@ -143,28 +143,6 @@ setenv CSMDATA $CLMDIR/inputdata
 ## In general do not need to edit below this point
 ##=======================================================================
 
-##------------------------------------------------------
-## build preproc.h in ./obj directory
-## define OFFLINE if offline mode
-## define LSMLON  to number of longitudes on land grid
-## define LSMLAT  to number of latitudes  on land grid
-## define RTM     if using RTM river routing
-## define STOCHASTIC if using stochastic forcing routine
-## define PCP2PFT if using precip. distr. across PFTs
-## define COUP_TEM if coupling with TEM
-##------------------------------------------------------
-#cat >! preproc.h <<EOF
-#define OFFLINE
-#define LSMLON $LSMLON
-#define LSMLAT $LSMLAT
-#define COUP_MIT2D
-#define ONE_RESTART
-#define PCP2PFT
-#define STOCHASTIC
-#define COUP_TEM
-#EOF
-##define COUP_TEM adam had this defined in his build??
-
 ##-----------------------------------------------------
 ##!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ## OTHER COMPILE OPTIONS FOR IGSM2 USAGE
@@ -197,20 +175,6 @@ if ($NTHREADS > 1) then
 else
   setenv SMP FALSE
 endif
-
-##------------------------------------------------------
-## build Filepath 
-##------------------------------------------------------
-#cat >! Filepath <<EOF
-#$ROOTDIR/main
-#$ROOTDIR/biogeophys
-#$ROOTDIR/ecosysdyn
-#$ROOTDIR/riverroute
-#$ROOTDIR/mksrfdata
-#$ROOTDIR/atmclm_share
-#$ROOTDIR/csm_share
-#$ROOTDIR/utils/timing
-#EOF
 
 ##------------------------------------------------------
 ## build executable
