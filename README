@@ -11,6 +11,7 @@ CONTENTS
     atm -- atmosphere model
    chem -- atmospheric chemistry model
     clm -- "Community Land Model"
+emiprep -- 'prep'rocessor for EPPA 5 'emi'ssions
     inc -- include files
    meta -- urban metamodel
  ocn_ml -- Two-dimensional, multi-layer (ml) ocean model
@@ -45,6 +46,17 @@ manually editing various include files.
 
 EXECUTE
 -------
+
+### Preprocessing
+The `emiprep` binary reads a file called `eppa5chm.put` from the current
+directory and generates several files that are read by the IGSM. `eppa5chm.put`
+can be obtained by copying the `chm.put` file produced by EPPA.
+
+Only the EPPA 5 preprocessor is currently included. It is uncertain whether this
+preprocessor also works for EPPA 4 output.
+
+### Running
+
 (To be added)
 
 REFERENCES
@@ -53,4 +65,3 @@ REFERENCES
 2  http://www.gnu.org/software/make/
 3. http://www.pgroup.com/
 4. http://www.unidata.ucar.edu/software/netcdf/
-
