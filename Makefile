@@ -47,7 +47,11 @@ OBJECTS = $(atm_OBJS) $(chem_OBJS) $(clm_OBJS) $(emiprep_OBJS) $(meta_OBJS) $(ml
 all: $(TARGET) prep
 
 $(TARGET): $(MODULES) clm
-	$(FC) -fastsse -o $@ $(clm_LIBS) $(LIBS)
+# commented: following (temporary) line has correct link order
+#	$(FC) -fastsse -o $@ $(clm_LIBS) $(LIBS)
+	$(FC) -fastsse -o $@ libml.a libatm.a libocm.a -L$(realpath ./clm) -lclm \
+		-lesmf libtem.a libchem.a libmeta.a -L$(LIB_NETCDF) -lnetcdff \
+		-lnetcdf -lnetcdf_c++ -lstd -lC -lm -lpgc -lgcc -lc -lstdc++
 
 atm: libatm.a($(atm_OBJS))
 chem: libchem.a($(chem_OBJS))

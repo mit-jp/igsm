@@ -16,7 +16,7 @@
 
 # old value -- Paul Kishimoto
 #setenv ROOTDIR /home/jscott/adam/CLM/4MIT2D
-setenv ROOTDIR /home/pnk/projects/igsm/clm
+setenv ROOTDIR $PWD
 setenv CLMDIR $ROOTDIR
 
 # 2. Set directory to build the executable in
