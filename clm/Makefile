@@ -112,17 +112,18 @@ CPPDEF  := -DNO_SHR_VMATH -DHIDE_SHR_MSG
 all: $(TARGET) libs
 libs: libclm.a libesmf.a
 
-# Get list of files and determine objects and dependency files
-# Optionally build only a single dependency file for all .o files
-#   using perl scripts mkSrcfiles and mkDepends
-
+# 'depends.mk' contains a list of make rules for the files in Srcfiles
 depends.mk: Filepath Srcfiles
 	./depends.pl $^ >$@
 
+# 'Filepath' contains a list of directories to search for the CLM source
 Filepath:
 	./premake.csh
+	# copy source files appropriate for TEM437 coupling
+	cp $(wildcard main/TEM437/*.F90) .
 	sed 's@$$ROOTDIR@'$(ROOTDIR)'@' Filepath.in >Filepath
 
+# 'Srcfiles' contains a list of all .F, .c and .F90 files
 Srcfiles: Filepath
 	find . `cat $^` -maxdepth 1 \( -name "*.[Fc]" -o -name "*.F90" \) \
 	-printf "%f\n" | sort | uniq >$@
@@ -132,12 +133,14 @@ OBJS    := $(addsuffix .o, $(basename $(SOURCES)))
 
 $(OBJS): depends.mk preproc.h lnd.stdin
 
+# create the file 'preproc.h'
 LSMLON := 1
 LSMLAT := 46
 preproc.h:
 	sed -e 's/$$LSMLON/'$(LSMLON)'/' -e 's/$$LSMLAT/'$(LSMLAT)'/' \
 	preproc.h.in >preproc.h
 
+# create the file 'lnd.stdin'
 CSMDATA := $(ROOTDIR)/inputdata
 lnd.stdin:
 	sed -e 's@$$CSMDATA@'$(CSMDATA)'@' lnd.stdin.in >lnd.stdin

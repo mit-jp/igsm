@@ -4,75 +4,61 @@
 ## 	  MIT Joint Program for Global Change	                 ##
 ###################################################################
 
+# directory for header files
 INCDIR = ./inc
 
-# --- for PGI/LINUX
+# compilers and flags for PGI/LINUX
 FC       = pgf90
 FFLAGS   = -I$(INCDIR) -r8 -i4 -Mdalign -Msave
 CXX      = pgCC
 CXXFLAGS = -Mscalarsse -fpic
 
-TARGET = igsm22
-
-# atm must be last for link to succeed?
-MODULES = tem ocm ml chem meta atm
-
-LIBS = $(patsubst %,lib%.a,$(MODULES))
-clm_LIBS = -L$(realpath ./clm) -lclm -lesmf -L$(LIB_NETCDF) -lnetcdf -lnetcdff
-
+# lists of source files for IGSM modules, not including CLM
 atm_SRCS = $(wildcard atm/*.F)
-atm_OBJS = $(patsubst %.F,%.o,$(atm_SRCS))
-
 chem_SRCS = $(wildcard chem/*.F)
-chem_OBJS = $(patsubst %.F,%.o,$(chem_SRCS))
-
-# FIXME: not all of the .F90 files in emiprep are used. Why?
-emiprep_SRCS = emiprep/eppanew_mod.F90 emiprep/testeppanew.F90
-emiprep_OBJS = $(patsubst %.F90,%.o,$(emiprep_SRCS))
-
 meta_SRCS = $(wildcard meta/*.F)
-meta_OBJS = $(patsubst %.F,%.o,$(meta_SRCS))
-
 ml_SRCS = $(wildcard ocn_ml/*.F)
-ml_OBJS = $(patsubst %.F,%.o,$(ml_SRCS))
-
 ocm_SRCS = $(wildcard ocm/*.F)
-ocm_OBJS = $(patsubst %.F,%.o,$(ocm_SRCS))
-
 tem_SRCS = $(wildcard tem/*.cpp)
-tem_OBJS = $(patsubst %.cpp,%.o,$(tem_SRCS))
 
-OBJECTS = $(atm_OBJS) $(chem_OBJS) $(clm_OBJS) $(emiprep_OBJS) $(meta_OBJS) $(ml_OBJS) $(ocm_OBJS) $(tem_OBJS)
+# source files for the emissions preprocessor
+emiprep_SRCS = $(wildcard emiprep/*.F90)
 
-all: $(TARGET) prep
+# targets for IGSM. The syntax 'libfoo.a(foo.o)' compiles foo.F and updates it
+# in the library libfoo.o
+igsm_OBJECTS = libatm.a($(atm_SRCS:.F=.o)) \
+	libchem.a($(chem_SRCS:.F=.o)) \
+	clm/libclm.a \
+	clm/libesmf.a \
+	libmeta.a($(meta_SRCS:.F=.o)) \
+	libml.a($(ml_SRCS:.F=.o)) \
+	libocm.a($(ocm_SRCS:.F=.o)) \
+	libtem.a($(tem_SRCS:.cpp=.o)) \
 
-$(TARGET): $(MODULES) clm
-# commented: following (temporary) line has correct link order
-#	$(FC) -fastsse -o $@ $(clm_LIBS) $(LIBS)
-	$(FC) -fastsse -o $@ libml.a libatm.a libocm.a -L$(realpath ./clm) -lclm \
-		-lesmf libtem.a libchem.a libmeta.a -L$(LIB_NETCDF) -lnetcdff \
-		-lnetcdf -lnetcdf_c++ -lstd -lC -lm -lpgc -lgcc -lc -lstdc++
+# libraries to link for IGSM — order is important
+igsm_LIBS = -L. -lml -latm -locm -Lclm -lclm -lesmf -ltem -lchem -lmeta \
+	-L$(LIB_NETCDF) -lnetcdff -lnetcdf -lnetcdf_c++ \
+	-lstd -lC -lm -lpgc -lgcc -lc -lstdc++
 
-atm: libatm.a($(atm_OBJS))
-chem: libchem.a($(chem_OBJS))
-meta: libmeta.a($(meta_OBJS))
-ml: libml.a($(ml_OBJS))
-ocm: libocm.a($(ocm_OBJS))
-tem: libtem.a($(tem_OBJS))
+# excutables to build
+all: igsm22 prep
 
-clm: clm/libclm.a clm/libesmf.a
+igsm22: $(igsm_OBJECTS)
+	# link the resulting libraries
+	$(FC) -fastsse -o $@ $(igsm_LIBS)
 
 clm/%.a:
+	# trigger the makefile in the CLM subdirectory
 	cd clm && make libs
 
-#prep: FFLAGS = -I./emiprep -r8 -i4 -Mdalign -Msave
-prep: $(emiprep_OBJS)
+prep: $(emiprep_SRCS:.F90=.o)
 	$(FC) -fastsse -o $@ $^
 
 clean:
-	rm -f $(LIBS) $(OBJECTS) $(TARGET) prep
+	rm -f igsm22 prep *.a
 	cd clm && make clean
 
-# Implicit rule for .F90 files. Rules for .c, .F etc. are defined by default.
+# Pattern rule for .F90 files. Rules for .c, .F etc. are defined by default.
 %.o: %.F90
 	$(FC) $(FFLAGS) $(CPPFLAGS) -c $< -o $@
+

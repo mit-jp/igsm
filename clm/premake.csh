@@ -5,24 +5,11 @@
 # at T42 model resolution using RTM river routing
 ##-------------------------------------------------------------------------------
 
-
 ##-------------------------------------------------------------------------------
 ## USER MODIFICATION:
 ## Define necesessary environment and build namelist
 ## Some of the environment variables will be used by the Makefile
 ##-------------------------------------------------------------------------------
-
-# 1. Set root directory for CLM source distribution
-
-# old value -- Paul Kishimoto
-#setenv ROOTDIR /home/jscott/adam/CLM/4MIT2D
-setenv ROOTDIR $PWD
-setenv CLMDIR $ROOTDIR
-
-# 2. Set directory to build the executable in
-
-# commented -- Paul Kishimoto
-#setenv MODEL_EXEDIR /home/jscott/CLM_BUILD64_TEM/exe
 
 # 3. Set NTASKS and NTHREADS
 # NTHREADS is the number of Open-MP threads.  
@@ -61,10 +48,6 @@ else
    exit 1
 endif
 
-# 4. Set model resolution and determine 
-
-
-
 # 5. Set required library and include paths
 
 if ($OS == 'IRIX64') then
@@ -97,13 +80,9 @@ else if ($OS == 'OSF1') then
   setenv LIB_NETCDF /usr/local/lib64/r4i4
 endif
 
-# 6. Set root directory for input data
-
-setenv CSMDATA $CLMDIR/inputdata
-
 # 7. Create an input parameter namelist file
 
-# commented -- Paul Kishimoto
+# commented -- Paul Kishimoto. CSMDATA used to be something like $ROOTDIR/inputdata
 #mkdir -p $MODEL_EXEDIR;
 #cd $MODEL_EXEDIR
 #cat >! lnd.stdin <<EOF
@@ -180,11 +159,6 @@ endif
 ## build executable
 ##------------------------------------------------------
 
-#  Copy source files appropriate for TEM437 coupling
-cp main/TEM437/histFileMod.F90 .
-cp main/TEM437/program_igsm.F90 .
-cp main/TEM437/program_off.F90 .
-
 # Copy source files appropriate for pcp frequency trend uncertainty
 if ( $PCPTREND == 'do' ) then
   echo ' Copying PCP trend files '
@@ -192,6 +166,4 @@ if ( $PCPTREND == 'do' ) then
   cp PCPFREQ/clm_varsur.F90 .
   cp PCPFREQ/surfFileMod.F90 .
 endif
-
-#make
 
