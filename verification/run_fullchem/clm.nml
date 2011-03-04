@@ -1,0 +1,32 @@
+
+ &clmexp
+ caseid         = '501.09'
+ ctitle         = 'Climate chemistry run from 1991 to 2100 '
+ offline_atmdir = '/home/jscott/ATM2D_DATA/CLMDATA/atmdat.nc'
+ finidat        = 'clm.restart.501.09.1991.nc'
+ rpntpath       = 'pntr.501.09.out'
+ fsurdat        = '/home/jscott/ATM2D_DATA/CLMDATA/igsmveg-data.001x046.lakes.nc'
+ fstochdat      = '/home/jscott/ATM2D_DATA/CLMDATA/stochastic-data.001x046.default.nc'
+ fstochdat      = '/home/jscott/ATM2D_DATA/CLMDATA/stochastic-data.001x046.median400.nc'
+ fpcp2pft       = '/home/jscott/ATM2D_DATA/CLMDATA//pcp2pft-data.001x046.nc',
+ fpftcon        = '/home/jscott/ATM2D_DATA/CLMDATA//pft-physiology'
+ frivinp_rtm    = '/home/jscott/ATM2D_DATA/CLMDATA//rdirc.05'
+ nsrest         =  0
+ nelapse        =  -730000
+ dtime          =  3600
+ start_ymd      =  10101
+ start_tod      =  0
+ irad           = -5
+ wrtdia         = .true.
+ mss_irt        =  0
+ hist_dov2xy    = .true.,.false.,.false,.false.
+ hist_nhtfrq    =  0,0,-24,-1
+ hist_nhtfrq    =  -8760,0,-24,-1
+ hist_fincl2    = 'H2OSOI','TBOT','QVEGE','QVEGT','QSOIL','SOILICE','SOILLIQ','QDRAI','QOVER','SNOWLIQ','SNOWICE'
+ hist_fincl3    = 'H2OSOI','TSOI','QSTRM','STRMDUR','STORMS','TBOT'
+ hist_fincl4    = 'H2OSOI'
+ hist_mfilt     =  1,1,365,8760
+ hist_ndens(1)  =  2
+ hist_crtinic   = 'YEARLY'
+ /
+

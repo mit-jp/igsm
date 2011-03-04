@@ -1,0 +1,10 @@
+ &COUPLE_PARM
+  dtcouple=24
+  dtcouple=1
+  dtatm=1
+  dtocn=1
+  startYear = 1991
+  endYear = 2100
+  taveDump=100
+ &END
+
