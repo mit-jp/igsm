@@ -9,7 +9,7 @@ INCDIR = ./inc
 
 # compilers and flags for PGI/LINUX
 FC       = pgf90
-FFLAGS   = -I$(INCDIR) -r8 -i4 -Mdalign -Msave
+FFLAGS   = -I$(INCDIR) -r8 -i4
 CXX      = pgCC
 CXXFLAGS = -Mscalarsse -fpic
 
@@ -33,7 +33,13 @@ igsm_OBJECTS = libatm.a($(atm_SRCS:.F=.o)) \
 	libmeta.a($(meta_SRCS:.F=.o)) \
 	libml.a($(ml_SRCS:.F=.o)) \
 	libocm.a($(ocm_SRCS:.F=.o)) \
-	libtem.a($(tem_SRCS:.cpp=.o)) \
+	libtem.a($(tem_SRCS:.cpp=.o))
+
+# compile flags for specific parts of the model
+libatm.a(%.o): FFLAGS += -Mdalign -Msave
+libchem.a(%.o): FFLAGS += -Mdalign -fast
+libml.a(%.o): FFLAGS += -Mdalign -Msave
+libocm.a(%.o): FFLAGS += -Msave
 
 # libraries to link for IGSM — order is important
 igsm_LIBS = -L. -lml -latm -locm -Lclm -lclm -lesmf -ltem -lchem -lmeta \
