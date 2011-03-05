@@ -1,0 +1,14 @@
+#PBS -l nodes=1
+#PBS -q long
+#PBS -N igsm22
+#PBS -j oe
+
+source /etc/profile.d/modules.csh
+module load pgi
+module load netcdf
+
+cd $PBS_O_WORKDIR
+
+../../igsm22 < tem.go > stdout.txt
+
+exit 0
