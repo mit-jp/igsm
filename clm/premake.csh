@@ -128,7 +128,7 @@ endif
 ##!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ##-----------------------------------------------------
 
-setenv PCPTREND notdo
+setenv PCPTREND do
 
 ##------------------------------------------------------
 ## build misc.h in ./obj directory
@@ -161,9 +161,14 @@ endif
 
 # Copy source files appropriate for pcp frequency trend uncertainty
 if ( $PCPTREND == 'do' ) then
-  echo ' Copying PCP trend files '
+  echo ' Copying PCPFREQ PCP trend files '
   cp PCPFREQ/atmdrvMod.F90 .
   cp PCPFREQ/clm_varsur.F90 .
   cp PCPFREQ/surfFileMod.F90 .
+else 
+  echo ' Copying Default PCP trend files '
+  cp Default/atmdrvMod.F90 .
+  cp Default/clm_varsur.F90 .
+  cp Default/surfFileMod.F90 .
 endif
 

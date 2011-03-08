@@ -6,3 +6,4 @@
 #define PCP2PFT
 #define STOCHASTIC
 #define COUP_TEM
+#define PCPTRND
