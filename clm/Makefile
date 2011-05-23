@@ -167,163 +167,6 @@ debug: $(OBJS)
 UNAMES := $(shell uname -s)
 
 #------------------------------------------------------------------------
-# AIX
-#------------------------------------------------------------------------
-
-ifeq ($(UNAMES),AIX)
-
-ifeq ($(SMP),$(null))
-  SMP := TRUE
-endif
-
-ESMF_ARCH  := rs6000_sp
-CPP        := /lib/cpp
-CC         := xlc_r
-CFLAGS     := $(cpp_path) -O2 -DAIX $(CPPDEF)
-FPPFLAGS   := -WF,-DAIX,$(subst $(space),$(comma),$(CPPDEF))
-FFLAGS     := $(cpp_path) $(FPPFLAGS) -qarch=auto -qrealsize=8 -qdpc=e -qmaxmem=-1\
-		-qspillsize=2500 -I$(ESMF_MOD)/$(ESMF_ARCH) \
-		-g -qfullpath
-FREEFLAGS  := -qsuffix=f=f90:cpp=F90
-FIXEDFLAGS := -qfixed=132
-LDFLAGS    := -bmaxdata:0x80000000 -bmaxstack:0x10000000 -lmass
-
-# Use the thread-safe compilers even when using enabling openMP.
-ifeq ($(SPMD),TRUE)
-  FC := mpxlf90_r
-else
-  FC := xlf90_r
-  FFLAGS += -WF,-DHIDE_MPI
-endif
-
-ifeq ($(DEBUG),TRUE)
-#
-# Bounds checking is unreliable on the IBM.
-# Sometimes you can get it to go if you turn threading off (by deleting -qsmp=omp)
-# Only turn float-trapping on for debug mode as it's a 20% performance hit.
-#
-  FFLAGS += -qinitauto=FF911299 -qflttrap=ov:zero:inv:en
-  ifeq ($(SMP),TRUE)
-    FFLAGS += -qsmp=omp:noopt
-    LDFLAGS += -qsmp=omp:noopt
-  endif
-else
-# Inline when not debugging
-  FFLAGS += -O2 -Q
-  ifeq ($(SMP),TRUE)
-    FFLAGS += -qsmp=omp
-    LDFLAGS += -qsmp=omp
-  endif
-endif
-
-.F.o:
-	$(FC) -c $(FIXEDFLAGS) $(FFLAGS) $<
-
-.F90.o:
-	$(FC) -c $(FREEFLAGS) $(FFLAGS) $<
-
-.c.o:
-	cc -c  $(CFLAGS) $<
-
-endif
-
-#------------------------------------------------------------------------
-# SGI
-#------------------------------------------------------------------------
-
-ifeq ($(UNAMES),IRIX64)
-
-# default is either pure SPMD or pure SMP parallelism
-ifeq ($(SMP),$(null))
-  ifeq ($(SPMD),TRUE)
-    SMP := FALSE
-  else
-    SMP := TRUE
-  endif
-endif
-
-ESMF_ARCH := IRIX64
-FC        := f90
-CPP       := /lib/cpp
-CPPFLAGS  := -P
-CFLAGS    := $(cpp_path) -64 -DIRIX64 -O2 $(CPPDEF)
-FFLAGS     = $(cpp_path) -64 -r8 -i4 -c -cpp -extend_source -DIRIX64 \
-		$(CPPDEF) -I$(ESMF_MOD)/$(ESMF_ARCH)
-# -mp is used at load time even when SMP=FALSE to satisfy external
-# references (pthreads) in the timing library
-LDFLAGS    = -64 -mp
-
-ifeq ($(SPMD),TRUE)
-  FFLAGS  += -I$(INC_MPI)
-  LDFLAGS += -L$(LIB_MPI) -lmpi 
-else
-  FFLAGS  += -DHIDE_MPI
-endif
-
-ifeq ($(SMP),TRUE)
-# Only enable OpenMP, not SGI specific parallelism
-  FFLAGS  += -mp -MP:dsm=OFF -MP:old_mp=OFF
-endif
-
-# WARNING: -mp and -g together cause wrong answers
-ifeq ($(DEBUG),TRUE)
-  FFLAGS  += -g -DEBUG:trap_uninitialized=ON -C
-else
-  FFLAGS  += -O2
-endif
-
-.F.o:
-	$(FC) $(FFLAGS) $<
-
-.F90.o:
-	$(FC) $(FFLAGS) $<
-.c.o:
-	cc -c  $(cpp_path) $(CFLAGS) $<
-
-endif
-
-#------------------------------------------------------------------------
-# SUN
-#------------------------------------------------------------------------
-
-ifeq ($(UNAMES),SunOS)
-ESMF_ARCH = solaris
-FC	:= f90
-FC77	:= f77
-CPP     := /usr/ccs/lib/cpp
-CFLAGS  := $(cpp_path) -DSUNOS $(CPPDEF)
-
-# Don't use OpenMP on Solaris as it currently causes problems
-FFLAGS  := $(cpp_path) -xs -stackvar -Qoption f90comp -r8const \
-		-xtypemap=real:64,integer:32 -e -DSUNOS -DHIDE_MPI \
-		-M$(ESMF_MOD)/$(ESMF_ARCH) $(CPPDEF)
-LDFLAGS := -L/opt/SUNWspro/lib -lf77compat -openmp -fast
-SPEC_FFLAGS := $(cpp_path) -r8 -i4 -c
-
-ifeq ($(DEBUG),TRUE)
-  FFLAGS += -g -dalign
-  SPEC_FFLAGS += -g -dalign
-else
-  # Inline code when not debugging
-  # Use symbol table (-g) as make execution stable and can find out where problems are.
-  # Turn off aggressive optimization options (fsimple=1, fns=no) so the climate
-  # will be similar to climate on the IBM
-  FFLAGS += -inline=%auto -fast -g -fsimple=1 -fns=no -O4
-endif
-
-ifeq ($(SPMD),TRUE)
-  FFLAGS  += -I$(INC_MPI)
-  LDFLAGS += -L$(LIB_MPI) -lmpich -lnsl -lsocket
-else
-  FFLAGS  += -DHIDE_MPI
-endif
-
-.F90.o:
-	$(FC) -c $(FFLAGS) $<
-
-endif
-
-#------------------------------------------------------------------------
 # Linux
 #------------------------------------------------------------------------
 
@@ -379,7 +222,7 @@ ifeq ($(FC),pgf90)
     SMP := TRUE
   endif
 
-  FFLAGS    := $(cpp_path) -C -r8 -i4 $(CPPDEF) -Mlarge_arrays -Mbounds \
+  FFLAGS    := $(cpp_path) -C -r8 -i4 $(CPPDEF) -Mlarge_arrays \
                -Mrecursive -Mdalign -Mextend -DLINUX -DPGF90 \
                -I$(ESMF_MOD)/$(ESMF_ARCH)
   FREEFLAGS := -Mfree
@@ -463,51 +306,6 @@ endif
 
 endif
 
-#------------------------------------------------------------------------
-# OSF1
-#------------------------------------------------------------------------
-
-ifeq ($(UNAMES),OSF1)
-
-ESMF_ARCH     := alpha
-CFLAGS        := $(cpp_path) -DOSF1 -O2 -omp $(CPPDEF)
-FC            := f90
-FFLAGS        := $(cpp_path) $(CPPDEF) -r8 -i4 -c -omp -automatic -fpe3 \
-			-I$(ESMF_MOD)/$(ESMF_ARCH) -check omp_bindings
-FFLAGS_DOTF90 := -DOSF1 -free -fpe3
-FFLAGS_DOTF   := -extend_source -omp -automatic
-LDFLAGS       := -omp 
-
-ifeq ($(DEBUG),TRUE)
-  FFLAGS += -g3 -C
-else
-# Inline when not debugging
-  FFLAGS += -O3 -inline speed
-endif
-
-ifeq ($(NO_SWITCH),$(null))
-  NO_SWITCH := FALSE
-endif
-ifeq ($(SPMD),TRUE)
-  FFLAGS  += -I$(INC_MPI) 
-  LDFLAGS += -lmpi
-else
-  FFLAGS  += -DHIDE_MPI
-endif
-ifneq ($(NO_SWITCH),TRUE)
-  LDFLAGS += -lelan
-endif
-
-.F.o:
-	$(FC) $(FFLAGS) $(FFLAGS_DOTF) $<
-
-.F90.o:
-	$(FC) $(FFLAGS) $(FFLAGS_DOTF90) $<
-
-.c.o:
-	cc -c  $(CFLAGS) $<
-
-endif
 
 #------------------------------------------------------------------------
 # Targets/rules that depend on architecture specific variables.
@@ -530,7 +328,7 @@ endif
 
 .PHONY: clean realclean
 clean:
-	rm -rf esmf libesmf.a
+	rm -rf esmf libesmf.a libclm.a
 # Files generated by premake.sh
 	rm -f Filepath *.F90 misc.h preproc.h lnd.stdin
 	rm -f depends.mk Srcfiles *.o *.mod *.stb $(TARGET)
