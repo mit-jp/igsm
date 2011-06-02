@@ -1,4 +1,4 @@
-C $Header: /home/igsm-repository/OCN_ML/atm2d_init_vars.F,v 1.1 2010/09/03 19:37:33 jscott Exp $
+C $Header: /u/gcmpack/MITgcm/pkg/atm2d/atm2d_init_vars.F,v 1.6 2011/06/02 21:33:21 jscott Exp $
 C $Name:  $
 
 #include "ctrparam.h"
@@ -19,7 +19,7 @@ C     myThid - thread number for this instance of the routine.
 
 C     === Local variables ===
       INTEGER j
-#ifdef CPL_CHEM
+#ifdef PREDICTED_AEROSOL
         print *,' Before eppaemission'
         CALL eppaemission (0)
 #endif
