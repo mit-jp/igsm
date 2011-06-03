@@ -1,4 +1,3 @@
-
 #include "ctrparam.h"
 
 !	==========================================================
@@ -45,9 +44,6 @@ C****                                                                   1505.
 #include "AGRID.h"
 #endif
 
-cjrs done in driver.h #if ( defined CPL_TEM )
-cjrs#include "TEM.h"
-cjrs#endif
 !
 ! === Chien Wang 062904
 !
@@ -178,7 +174,6 @@ c jrs      common/TIMESTEPS/dtatm,dtocn
       common/atmos_lo/fland_atm(jm0)  !jrs not sure this does anything
 
 #if ( defined CLM )
-cjrs alreadyin DRIVER.h#include "CLM.COM"
       dimension clmlice(jm0),baresoil(jm0),
      &  w1maxclm(jm0),w2maxclm(jm0),vmaskclm(jm0)
       character * 120 lineclm
@@ -549,7 +544,171 @@ c
 !
 !       Chien 080400
 !
-#include "assign.inc"
+!#include "assign.inc" 
+!	================================================================
+!
+!	ASSIGN.F      A include file containing OPEN or ASSIGN lines
+!	----------------------------------------------------------------
+!	Author:		Chien Wang
+!			MIT Joint Program on Science and Policy of
+!				Global Change
+!			April 19, 1994
+!	----------------------------------------------------------------
+!
+!	Revision History:
+!
+!	------	-----------	------------------------------
+!	032698	Chien Wang	rev.
+!	080300	Chien Wang	add cpp
+!
+!	================================================================
+
+!cfname = chemout(1:len_trim(chemout))//'/'//'mit2d.out'
+!open (06, file=cfname,status='unknown')
+
+!
+!Chemistry-model
+!
+! 1. Open initial atmospheric condition to start simulation:
+
+! 2. Open a given data set to initialize simulation:
+      print *,' From assign',chemdata,chemout
+      id2=index(chemdata," ")
+      open(120,file=chemdata(1:id2-1)//'chem.nml',status='old')
+C     open(120 moved from chemint.F
+C     file chem.nml moved to chemdata
+
+#if ( N_LAT == 24 ) && ( N_LEV == 9 )
+      open(163,file=chemdata(1:id2-1)//'init-data_24x9',
+     &        form='unformatted',
+     &        status='old')
+
+      open(160,file=chemdata(1:id2-1)//'init-data2_24x9',
+     &        form='unformatted',
+     &        status='old')
+
+      open(162,file=chemdata(1:id2-1)//'topo3_24x9',
+     &        form='unformatted',
+     &        status='old')
+#endif
+#if ( N_LAT == 46 ) && ( N_LEV == 11 )
+      id1=index(chem_init," ")
+      print *,'INITIAL DATA FOR CHEMISTRY'
+      print *,chem_init
+c     open(163,file=chemdata(1:id2-1)//'init-data_46x11',
+      open(163,file=chemdata(1:id2-1)//chem_init(1:id1-1),
+     &        form='unformatted',
+     &        status='old')
+
+      id1=index(chem_init2," ")
+      print *,chem_init2
+c     open(160,file=chemdata(1:id2-1)//'init-data2_46x11',
+      open(160,file=chemdata(1:id2-1)//chem_init2(1:id1-1),
+     &        form='unformatted',
+     &        status='old')
+
+!     New init file hfc, pfc, and sf6 for Dec 1990
+      id1=index(chem_init4pfc," ")
+      print *,chem_init2
+      open(161,file=chemdata(1:id2-1)//chem_init4pfc(1:id1-1),
+     &        form='unformatted',
+     &        status='old')
+
+      open(162,file=chemdata(1:id2-1)//'topo3_46x11',
+     &        form='unformatted',
+     &        status='old')
+#endif
+c     open(164,file=chemdata(1:id2-1)//'edaily.dat',
+c    &        form='unformatted',
+c    &        status='old')
+
+!     open(164,file=emiss_data,
+!    &        form='unformatted',
+!    &        status='old')
+
+!     open(664,file=SO2ERATIO,
+!    &        form='formatted',
+!    &        status='old')
+!      moved to input.F
+
+      open(165,file=chemdata(1:id2-1)//'rktable.dat',
+     &        form='unformatted',
+     &        status='old')
+
+! 3. Open a data file to save rawdata:
+
+c closed 032697:
+
+c      open(166,file='OUTPUT/cfcn2o',
+c     &        form='unformatted',
+c     &        status='new')
+c      open(171,file='OUTPUT/hox',
+c     &        form='unformatted',
+c     &        status='new')
+c      open(172,file='OUTPUT/nox',
+c     &        form='unformatted',
+c     &        status='new')
+c      open(173,file='OUTPUT/hcs',
+c     &        form='unformatted',
+c     &        status='new')
+c      open(174,file='OUTPUT/sox',
+c     &        form='unformatted',
+c     &        status='new')
+
+      cfname = chemout(1:len_trim(chemout))//'/'//'globalmean'
+      open(176,file=cfname,
+     &        status='new')
+
+      cfname = chemout(1:len_trim(chemout))//'/'//'globalmean2'
+      open(180,file=cfname,
+     &         status='new')
+     
+      cfname = chemout(1:len_trim(chemout))//'/'//'meta'
+      open(181,file=cfname,
+     &        form='unformatted',
+     &        status='new')
+
+      cfname = chemout(1:len_trim(chemout))//'/'//'budget'
+      open(167, file=cfname,status='unknown')
+
+      cfname = chemout(1:len_trim(chemout))//'/'//'monthly'
+      open(169,file=cfname,
+     &        form='unformatted',
+     &        status='new')
+
+      cfname = chemout(1:len_trim(chemout))
+     &          //'/'//'monthly2'
+      open(179,file=cfname,
+     &         form='unformatted',
+     &         status='new')
+! ===
+
+      cfname = chemout(1:len_trim(chemout))//'/'//'photodiag'
+      open(177,file=cfname,	!032697
+     &        form='unformatted',
+     &        status='new')
+
+c 5. Open a data file to save diagnostic output:
+
+!      open(168,file='OUTPUT/cfc11nsf_monthly',
+!     &        form='unformatted',
+!     &        status='new')
+
+        cfname = chemout(1:len_trim(chemout))
+     &           //'/'//'chemrenew.dat'
+	open(178,file=cfname,
+     &        form='unformatted',
+     &        status='unknown')
+
+        if(ISTRTCHEM.eq.1)then
+
+C  open statment moved from cheminit.F file number change to 279
+        cfname = chemrstfl(1:len_trim(chemrstfl))
+          open(279,file=cfname,
+     &             form='unformatted',
+     &             status='unknown')
+
+        endif
 !
 #endif
 
