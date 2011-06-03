@@ -200,6 +200,22 @@ c
       common /chemlight/xnoxltnt(nchemyr),
      &                  xnoxltnm(12),
      &                  xnoxltnd(nlon,nlat,12)
+
+#if ( defined ACCRI )
+      common /accriemi/COaccri(nlon,nlat,nlev_accri,12),
+     &                 NOaccri(nlon,nlat,nlev_accri,12),
+     &                 NO2accri(nlon,nlat,nlev_accri,12),
+     &                 BCaccri(nlon,nlat,nlev_accri,12),
+     &                 OCaccri(nlon,nlat,nlev_accri,12),
+     &                 CO2accri(nlon,nlat,nlev_accri,12),
+     &                 CH2Oaccri(nlon,nlat,nlev_accri,12),
+     &                 SO2accri(nlon,nlat,nlev_accri,12),
+     &                 H2Oaccri(nlon,nlat,nlev_accri,12)
+       real  NOaccri,NO2accri
+      common /accriemi/p_accri(0:nlev_accri),scale_accri(nchemyr),
+      common /accrip/ps4accri(nlon,nlat)
+#endif
+
 #endif
 
 c----------------------------------------------------------

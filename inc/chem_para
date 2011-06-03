@@ -79,4 +79,7 @@
 !    meta_nvar:	Variable number for the meta model
 !
 	integer, parameter :: meta_nvar = 58	!65
+#if ( defined ACCRI )
+        integer, parameter :: nlev_accri = 33   !
+#endif
 
