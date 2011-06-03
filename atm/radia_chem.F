@@ -92,11 +92,13 @@ c
       common/COMCLD/READGHG,PCLOUD,WRCLD,NWRCLD,NWRCL,INYEAR,JNDAY
      &,CFAEROSOL,ALFA,CFBC,cfvolaer
       COMMON/ADDALB/BVSURFA,XVSURFA,BNSURFA,XNSURFA
-      dimension STAERMN(JM0,12,2000),JDY(12)
+      dimension STAERMN(JM0,12,2000),STAERGL(2000),SAYEARS(2000)
+     &  ,JDY(12)
       DATA JDY/31,59,90,120,151,181,212,243,278,304,334,365/
       common/cldfdb/coefcl(3),CLDFEED
       common/aexpc/AEXP,ISTRT1
       common/ SNOWALB/FRSNALB
+      common/ S0XR/S0RATE,CFS0X
       dimension CLDSSF(JM0,LM0),CLDMCF(JM0,LM0)
      &,BSO4LAND(JM0),BSO4OCEAN(JM0),BSO4TOTAL(JM0)
       dimension DSWSRF(jm0),DLWSRF(jm0),DSWVIS(jm0),DSWNIR(jm0)
@@ -229,8 +231,11 @@ c     print '(13f7.3)',DGLAT
    40 RTAU(LR)=0.                                                       5088.   
       DPMICE=10.                                                        5089.   
 C     S0X=1.                                                            5089.1  
+      KSTREND=S0RATE*100.
+      print *,'S0RATE=',S0RATE,' KSTREND=',KSTREND
+      print *,'From first call of radia CFS0X=',CFS0X
 #if ( defined VOL_AER )
-      call read_staer (NYVADAT,STAERMN)
+      call read_staer (NYVADAT,STAERMN,STAERGL,SAYEARS)
 #else
       FVOL=0.0
 #endif
@@ -261,7 +266,25 @@ C**** RADIATION AVERAGING IN I AND J       4       2       2            5110.
       JDAYR=JDAY
       JYEARR=JYEAR
       IALTER=MOD(NSTEP,NRAD*IJRA)/(NRAD*JRA)                            5114.   
-      S0=S0X*1367./RSDIST                                               5115.   
+      TNOW=JYEAR+(JDAY-.5)/365.                                         5127.1
+      IF (JDAY.NE.JDLAST.AND.KSTREND.NE.0) then
+        IF (KSTREND.GT.0) then
+           if(abs(CFS0X-1.0).gt.1.e3)then
+             print *,'Wrong setting KSTREND=',KSTREND,' CFS0X=',
+     &      CFS0X
+           endif
+           S0X=S0X0*(1.+S0RATE/70.*(TNOW-INYEAR))
+c          print *,'From  radia S0X0=',S0X0,' S0X=',S0X
+c          print *,'S0X=',S0X,' TNOW=',TNOW
+        ELSE
+           print *,'From radia TNOW= S0X=',TNOW,S0X
+           call obssolar(S0X,TNOW)
+           S0X=S0X/1367.
+        ENDIF
+      ENDIF
+      S0=S0X*1367./RSDIST                                               5115.
+      S0R=S0
+!     JDLAST=JDAY                                                       5129.   
 C**** CALCULATE AVERAGE COSINE OF ZENITH ANGLE FOR CURRENT COMP3 STEP   5116.   
 C****   AND RADIATION PERIOD                                            5117.   
       ROT1=TWOPI*TOFDAY/24.                                             5118.   

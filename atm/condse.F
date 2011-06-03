@@ -228,6 +228,9 @@ c     RH0OLD=.65
       RH45=0.8	
       RH0=0.925	! 2359
       RH45=0.875	! 2359
+!     RH45=0.9	! 470.10
+!     RH45=0.85	! 480.10
+!     RH45=0.80	! 490.10
       print *,' RH0=',RH0,' RH45=',RH45
       RHAV=0.5*(RH0+RH45)
       DRH=0.5*(RH0-RH45)
@@ -250,19 +253,20 @@ c     RH0OLD=.65
 #endif
         enddo
         do l=4,6	! Middle clouds
-!       do l=4,5	! Middle clouds 2355
+!       do l=4,5	! Middle clouds 460.10
          RHKP(l,j)=0.9*RHNEW(j) ! 2352
          RHKP(l,j)=0.875*RHNEW(j) ! 2358
          RHKP(l,j)=0.925*RHNEW(j) ! 2366
          RHKP(l,j)=0.95*RHNEW(j) ! 2367
         enddo
         do l=7,9	! High clouds
-!       do l=6,9	! High clouds 2355
+!       do l=6,9	! High clouds 460.10
          RHKP(l,j)=0.9*RHNEW(j) ! 2352
          RHKP(l,j)=0.925*RHNEW(j) ! 2353
          RHKP(l,j)=0.95*RHNEW(j) ! 2354
          RHKP(l,j)=0.975*RHNEW(j) ! 2357
          RHKP(l,j)=0.985*RHNEW(j) ! 2358
+!        RHKP(l,j)=0.995*RHNEW(j) ! 490
 #if ( !defined CLM )
          RHKP(l,j)=0.99*RHNEW(j)  ! 2905.06
          RHKP(l,j)=0.995*RHNEW(j)  ! 2906.06 2907.06
@@ -871,8 +875,8 @@ C     IF(DPHI.LT..5*(DWV(J)+DWV(J+1))*COEKD) BYTEM=1.E10                3223.
       DSE(L+1)=(DRYSTE+CLH*(SHSAT(L+1)-SHL(LB)))*BYTEM                  3227.
       IF (DSE(L+1).LT.DSE(L)) DSE(L+1)=DSE(L)                           3228.
 !     if(prnt)then
-!        print '(i4,3f10.4)',l,TH(L+1),THEDGE,TH(L)
-!        print '(i4,2f10.4)',l,DSE(L+1),DRYSTE*BYTEM
+!        print 'i4,3f10.4',l,TH(L+1),THEDGE,TH(L)
+!        print 'i4,2f10.4',l,DSE(L+1),DRYSTE*BYTEM
 !     endif
       TCLA(L+1)=TCLA(L)-TH(L+1)*(PDNK-PUPK)                             3229.
   240 PDNK=PUPK                                                         3230.

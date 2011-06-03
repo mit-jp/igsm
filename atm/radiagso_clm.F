@@ -82,12 +82,14 @@ C                                                                       5035.
       common/COMCLD/READGHG,PCLOUD,WRCLD,NWRCLD,NWRCL,INYEAR,JNDAY
      &,CFAEROSOL,ALFA,CFBC,cfvolaer
       COMMON/ADDALB/BVSURFA,XVSURFA,BNSURFA,XNSURFA
-      dimension STAERMN(JM0,12,150),JDY(12)
+      dimension STAERMN(JM0,12,2000),STAERGL(2000),SAYEARS(2000)
+     &  ,JDY(12)
       DATA JDY/31,59,90,120,151,181,212,243,278,304,334,365/
       common/cldfdb/coefcl(3),CLDFEED
       common/aexpc/AEXP,ISTRT1
       common/ SNOWALB/FRSNALB
       common/ S0XR/S0RATE
+      COMMON/CO2TRND/ALFFOR,CO2TR,YEARGT,CO2IN,INYRAD
       dimension CLDSSF(JM0,LM0),CLDMCF(JM0,LM0)
      &,BSO4LAND(JM0),BSO4OCEAN(JM0)
       dimension DSWSRF(jm0),DLWSRF(jm0),DSWVIS(jm0),DSWNIR(jm0)
@@ -218,15 +220,27 @@ C     S0X=1.                                                            5089.1
         S0XAV=0.0
         RSDISTAV=0.0
       ELSE
-        S0X=1365./1367.
-        print *,'Run with fixed solar constant=',S0X*1367.
+         call obssolar(S0X,YEARGT+0.5)
+         S0X=S0X/1367.
+        print *,'Run with fixed solar constant=',S0X*1367.,
+     &  ' for year ', YEARGT
       ENDIF
       RVOL=0.012
 #if ( defined VOL_AER )
-      call read_staer (NYVADAT,STAERMN)
+      call read_staer (NYVADAT,STAERMN,STAERGL,SAYEARS)
 #else
-      FVOL=0.0045
-      print *,'STAEROSOL for 1860 FVOL=',FVOL
+          call read_staer (NYVADAT,STAERMN,STAERGL,SAYEARS)
+!         FVOL=0.0045
+!         FVOL=0.0007
+        do n=1,NYVADAT
+          if(abs(SAYEARS(n)-YEARGT).lt.0.1) then
+            FVOL=STAERGL(n)
+           go to 768
+          endif
+        enddo
+  768   continue
+        RVOL=0.012
+        print *,'STAEROSOL for ',YEARGT,' FVOL=',FVOL
 #endif
       CALL RADIA0 (IO,JM,CO2,READGHG)                                   5090.   
          INCHM=NRAD/NDYN                                                5091.   
@@ -498,7 +512,8 @@ C**** CONDITIONS AT NON-POLAR POINTS                                    5141.
       JLAT=J                                                            5145.1  
 #if ( defined VOL_AER )
 c     RVOL=0.012
-      JYEARAER=min(JYEAR-1849,NYVADAT)
+      iYAER=SAYEARS(1)
+      JYEARAER=min(JYEAR-iYAER+1,NYVADAT)
       FVOL=cfvolaer*STAERMN(J,MNAER,JYEARAER)
       FGOLDU(1)=(RVOL+FVOL)/RVOL
       if (j.eq.-1)then

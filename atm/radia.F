@@ -1,4 +1,3 @@
-
 #include "ctrparam.h"
       SUBROUTINE RADIA                                                  5001.   
 C****                                                                   5002.   
@@ -22,8 +21,8 @@ C****                                                                   5004.
       real ODATA2(JM0,2),GDATA2(JM0,14),BDATA2(JM0,2),FDATA2(JM0,2),
      *     RQT2(JM0,3)
       common/SURRAD/TRSURF(JM0,4),SRSURF(JM0,4)
-      common/FORAERSOL/FORSULF,FORBC
-      logical FORSULF,FORBC
+      common/FORAERSOL/FORSULF,FORBC,FORVOL,FORGHG
+      logical FORSULF,FORBC,FORVOL,FORGHG
 C     COMMON/WORK4/ IS BEING USED BY THE RADIATION ROUTINES             5013.   
 C                                                                       5014.   
 C                   RADCOM:      CONTROL/INPUT PARAMETERS               5015.   
@@ -70,6 +69,9 @@ c
       common/conprn/HPRNT
       common/COMCLD/READGHG,PCLOUD,WRCLD,NWRCLD,NWRCL,INYEAR,JNDAY
      &,CFAEROSOL,ALFA,CFBC,cfvolaer
+      dimension STAERMN(JM0,12,2000),STAERGL(2000),SAYEARS(2000)
+     &  ,JDY(12)
+      DATA JDY/31,59,90,120,151,181,212,243,278,304,334,365/
       common/ghstfor/GHSFALB,GHSF,ALBCF,FVOLADD,STRARFOR,S0FOR,CO2FOR,
      &  CO2F,ghostfv(LM0+1),ghostf(LM0+1,JM0),ghflux(LM0+1,JM0)
       logical GHSFALB,GHSF,GSOEQ,STRARFOR,S0FOR,CO2FOR
@@ -234,6 +236,7 @@ C     S0X=1.                                                            5089.1
 #if ( defined FIXED_FOR )
          print *,'Run with fixed forcing'
 #endif
+        FGOLDU(1)=1.
 C
       if(GSOEQ)then
          if(KSTREND.ne.0)then
@@ -241,31 +244,34 @@ C
            print *,' GSOEQ=',GSOEQ,' KSTREND=',KSTREND
 c          stop
          endif
-         if(YEARGT.eq.1860)then
-C         For an equilibrium run for 1860 conditions for GSO runs
-          print *,
-     &   'An equilibrium run for 1860 conditions for GSO runs'
-         S0X=1365.3596/1367.
+         print *,
+     &   'An equilibrium run for ',YEARGT,' conditions'
+         call obssolar(S0X,YEARGT+0.5)
+         S0X=S0X/1367.
           print *,'Sconstant=',S0X*1367.
-          FVOL=0.0045
-         elseif(YEARGT.eq.1875)then
-C         For an equilibrium run for 1875 conditions for GSO runs
-          print *,
-     &   'An equilibrium run for 1875 conditions for GSO runs'
-         S0X=1364.61/1367.
-          print *,'Sconstant=',S0X*1367.
-          FVOL=0.0007
-         else
-           print *,'Wrong setting of GSOEQ and YEARGT'
-           print *,' GSOEQ=',GSOEQ,' YEARGT=',YEARGT
-           stop
-         endif
+          call read_staer (NYVADAT,STAERMN,STAERGL,SAYEARS)
+!         FVOL=0.0045
+!         FVOL=0.0007
+        do n=1,NYVADAT
+          if(abs(SAYEARS(n)-YEARGT).lt.0.1) then
+            FVOL=STAERGL(n)
+           go to 768
+          endif
+        enddo
+  768   continue
         RVOL=0.012
         FGOLDU(1)=(RVOL+FVOL)/RVOL
         print *,'Additional STAER=',FVOL,
      &   '   FGOLDU(1)=',FGOLDU(1)
 C
       endif
+#if ( defined VOL_AER )
+      print *,'With volcanic forcing cfvolaer=',cfvolaer
+        FGOLDU0=FGOLDU(1)
+      if(.not.GSOEQ)then
+       call read_staer (NYVADAT,STAERMN,STAERGL,SAYEARS)
+      endif
+#endif
       if(CO2FOR)then
 	print *,' Forcing due to ',CO2F,'xCO2 is calculated',
      *   'in stead of cloud forcing'
@@ -278,6 +284,14 @@ C
 	print *,' Forcing due to black carbon ',
      *   'is calculated in stead of cloud forcing'
       endif
+      if(FORVOL) then
+        print *,'VOL AEROSOL FORCING ',
+     *   'is calculated in stead of cloud forcing'
+       endif
+      if(FORGHG) then
+        print *,'GHG FORCING ',
+     *   'is calculated in stead of cloud forcing'
+       endif
       if(STRARFOR)then
         RVOL=0.012
         FVOL=FVOLADD
@@ -306,6 +320,10 @@ c       print *,' 2D ghost forcing'
       endif
       S0X=CFS0X*S0X
       S0X0=S0X
+      if(S0FOR)then
+        print *,' Initial value for solar constant=',S0X0*1367
+      endif
+
 !        print *,'Before CALL RADIA0'
       CALL RADIA0 (IO,JM,CO2,READGHG)                                   5090.   
 !        print *,'After CALL RADIA0'
@@ -336,6 +354,7 @@ C**** RADIATION AVERAGING IN I AND J       4       2       2            5110.
       JYEARR=JYEAR
       IALTER=MOD(NSTEP,NRAD*IJRA)/(NRAD*JRA)                            5114.   
       TNOW=JYEAR+(JDAY-.5)/365.                                         5127.1  
+!     print *,'RADIA JDAY=',JDAY
       IF (JDAY.NE.JDLAST.AND.KSTREND.NE.0) then
         IF (KSTREND.GT.0) then
            if(abs(CFS0X-1.0).gt.1.e3)then
@@ -346,14 +365,24 @@ C**** RADIATION AVERAGING IN I AND J       4       2       2            5110.
 c          print *,'From  radia S0X0=',S0X0,' S0X=',S0X
 c          print *,'S0X=',S0X,' TNOW=',TNOW
         ELSE
-           print *,'From radia TNOW=',TNOW
            call obssolar(S0X,TNOW)
+           if(JDAY.eq.1.and.MODRD.EQ.0) then
+           print *,'From radia TNOW,S0X',TNOW,S0X
+           print *,JDAY,JDLAST
+           endif
            S0X=S0X/1367.
         ENDIF
       ENDIF
       S0=S0X*1367./RSDIST                                               5115.   
       S0R=S0
 !        print *,'S0=',S0
+#if ( defined VOL_AER )
+          do MNAER=1,12
+           if (JDAY.le.JDY(MNAER)) go to 458
+          enddo
+ 458      continue
+c         print *,' MNAER=', MNAER,' MONTH=',JMONTH
+#endif
 C**** CALCULATE AVERAGE COSINE OF ZENITH ANGLE FOR CURRENT COMP3 STEP   5116.   
 C****   AND RADIATION PERIOD                                            5117.   
       ROT1=TWOPI*TOFDAY/24.                                             5118.   
@@ -578,14 +607,21 @@ C**** CONDITIONS AT NON-POLAR POINTS                                    5141.
       MODRJ=MOD(J+JALTER,JRA)                                           5143.   
       IMAX=IM                                                           5144.   
   160 XFRADJ=.2+1.2*COSP(J)*COSP(J)                                     5145.   
-      JLAT=J                                                            5145.1  
-      if(GSOEQ)then
-C
-      RVOL=0.012
-      FVOL=0.0045
+#if ( defined VOL_AER )
+c     RVOL=0.012
+      iYAER=SAYEARS(1)
+      JYEARAER=min(JYEAR-iYAER+1,NYVADAT)
+      FVOL=cfvolaer*STAERMN(J,MNAER,JYEARAER)
       FGOLDU(1)=(RVOL+FVOL)/RVOL
-C
+      if (j.eq.140)then
+        print *,'From radia'
+        print *,MNAER,JYEAR,JYEARAER
+        print *,cfvolaer
+        print *,'RVOL=',RVOL,' FVOL=',FVOL
       endif
+#endif
+
+      JLAT=J                                                            5145.1  
       IF(MODRJ.EQ.0) CALL RCOMPJ                                        5146.   
       SWIN(j,1)=0.0
       SWNET(j,1)=0.0
@@ -684,7 +720,8 @@ C**** clear sky condinion
       else
          CLEAR(J)=0
       endif
-       if(STRARFOR.or.CO2FOR.or.S0FOR.or.FORBC)then
+       if(STRARFOR.or.CO2FOR.or.S0FOR.or.FORBC.
+     &    or.FORVOL.or.FORGHG)then
          CLEAR(J)=0
        endif
 C****                                                                   5247.   
@@ -808,16 +845,23 @@ c     FGOLDU(2)=XFRADJ*(1.-PEARTH)                                      5277.
 c     FGOLDU(3)=XFRADJ*PEARTH                                           5278.   
       FGOLDU(2)=XFRADJ*(1.-PLAND)
       FGOLDU(3)=XFRADJ*PLAND
+      if(FORGHG)then
+        CALL FORGET(TNOW,KTREND,1)
+        CALL RCOMPT
+        CALL RCOMPJ 
+      endif
       if(CO2FOR)then
-       IF (KTREND.GT.0) THEN
-        CALL FORGET(TNOW,KTREND,0)
-       ELSE
         FULGAS(2)=CO2
-       ENDIF
       endif
 !
 #if ( defined IPCC_EMI )
         FULGAS(2)=CO2
+      IF(DMOD(TAU,365.*24.).EQ.0..and.J.eq.-JM/2) then
+        print *,'IPCC_EMI CO2 from radia ', CO2
+        print *,'FULGAS(2)=',FULGAS(2)
+       print *,"tau=",tau,j,ii
+       CALL WRITER (1,0)
+      endif
 #endif
 
 #if ( defined FIXED_FOR )
@@ -884,6 +928,7 @@ c         print *,'S0 for real calculation=',S0
       IF(DMOD(TAU,365.*24.).EQ.0..and.J.eq.JM/2) then
        print *,' tau=',TAU,' J=',J
        CALL WRITER (1,0)
+       print *,-TRNFLB(1),TRNFLB(LM+4),TRNFLB(LM+1),TRDFLB(1)
       endif
 c     CALL WRITER (13)                                                  5280.   
       SRHR(I,J,1)=SRHR(I,J,1)+SRNFLB(1)*PTYPE
@@ -1102,11 +1147,22 @@ C
        elseif(CO2FOR)then
          FULGAS(2)=CO2F
        elseif(S0FOR)then
-c         print *,'For S0FOR ',S0X0,CFS0X,S0X
           S0=S0X0/CFS0X*1367./RSDIST
-c         print *,'S0 for forcing calculation=',S0
+          if(JDAY.eq.1.and.MODRD.EQ.0) then
+          if(J.eq.24)then
+          print *,'For S0FOR ',S0X0,CFS0X,S0X
+          print *,'S0 for forcing calculation=',
+     &          S0*RSDIST
+          endif
+          endif
        elseif(FORBC)then
         FBC=0.0
+       elseif(FORGHG)then
+        CALL FORGET(YEARGT,KTREND,1)
+        CALL RCOMPT
+        CALL RCOMPJ 
+       elseif(FORVOL)then
+        FGOLDU(1)=FGOLDU0
        else
         CSS=0.
         CMC=0.
@@ -1119,6 +1175,13 @@ c         print *,'S0 for forcing calculation=',S0
        endif
   568  continue
         CALL RCOMPX
+       if(FORGHG)then
+        IF(DMOD(TAU,365.*24.).EQ.0..and.J.eq.JM/2) then
+         print *,' For CLEAR tau=',TAU,' J=',J
+         CALL WRITER (1,0)
+         print *,-TRNFLB(1),TRNFLB(LM+4),TRNFLB(LM+1),TRDFLB(1)
+        ENDIF
+        endif
       endif  ! CLEAR
        SRHRCL(J)=SRNFLB(1)
        TRHRCL(J)=-TRNFLB(1)
@@ -1243,7 +1306,8 @@ C****                                                                   5506.
       DO 820 I=1,IMAX                                                   5511.   
  820  RQT(I,J,LR)=RQT(I,J,LR)+(SRHRS(I,J,LR)*COSZ2(I,J)                 5512.   
      *  +TRHRS(I,J,LR))*COE(LR+LM)                                      5513.   
-  840 DO 860 J=1,JM                                                     5514.   
+  840 JDLAST=JDAY 
+      DO 860 J=1,JM                                                     5514.   
 #if ( defined HR_DATA )
           dswhr(j)=DSWSRF(j)*COSZ1(1,j)
           dlwhr(j)=DLWSRF(j)
@@ -1299,7 +1363,7 @@ c    For TEM
       if(HPRNT)then
        print *,' radia TAU=',TAU
        print *,' after 860'
-C       print '(B66)',T(1,1,1)
+       print 'B66',T(1,1,1)
        print *,'COSZ1(1,1)',COSZ1(1,1),' COE(1)=',COE(1)
        print *,'SRHR'
        print *,(SRHR(1,1,L+1),L=1,LM)

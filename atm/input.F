@@ -39,6 +39,7 @@ C****                                                                   1505.
 #include "RADCOM.COM"
 #include "run.COM" 
 #include "DRIVER.h"
+#include "ORB.h"
 
 #if ( defined OCEAN_3D )
 #include "AGRID.h"
@@ -121,6 +122,7 @@ c==== 012201
      *  AERFOR,AERF4BC,
      *  S0RATE,CFS0X,
      *  CFAEROSOL,CFBC,
+     &  YEARORB,ORBTRANS,
      &  cfocdif,rkv,diffcar0,ocarcont,ocarindata,
 !       Kvc=diffcar0+cfocdif*Kvh
      *  file1,file2,plotfl,nwrfl,qffile,clfile,wrcldf,clmsen,cfdif0,
@@ -135,8 +137,8 @@ c==== 012201
      &  ,chem_init,chem_init2,chem_init4pfc,chemrstfl
      &	  ,oco2file,co2rfile,caruptfile,flrco2av
      &  ,flin_nep,last_clm,SEN_dat,nemdatdir
-     &  ,GHSFALB,GHSF,ALBCF,FVOLADD,ghostfile,fl_volaer
-     &  ,STRARFOR,GSOEQ,CO2FOR,CO2F,FORSULF,FORBC,S0FOR,FORVOL
+     &  ,GHSFALB,GHSF,ALBCF,FVOLADD,ghostfile,fl_volaer,fl_orbital
+     &  ,STRARFOR,GSOEQ,CO2FOR,CO2F,FORSULF,FORBC,S0FOR,FORVOL,FORGHG
      &  ,VEGCH,vegfile,TRVEG
      &  ,fclmlice,fbaresoil,fwmax,fprratio,o3datadir,CLIMO3
      &  ,OCNGEOM,ocngmfile,ocndata4atm
@@ -147,16 +149,19 @@ Cjrs     &  ,dtatm,dtocn
      &  ,init_co2
       character * 120 init_co2
 #endif
-      character * 120 ocngmfile,ocndata4atm,fl_volaer
+      character * 120 ocngmfile,ocndata4atm,fl_volaer,fl_orbital
       character * 120 vegfile
      &  ,fclmlice,fbaresoil,fwmax,fprratio,o3datadir
       common/wrcom/wr25,TRANSR,CONTRR,OBSFOR
 c jrs      common/TIMESTEPS/dtatm,dtocn
       LOGICAL LFR,NLFR,wr25,TRANSR,WRCLD,CONTRR,CLDFEED,OBSFOR
      &,GHSF,VEGCH,TRVEG,GSOEQ,OCNGEOM,GHSFALB,STRARFOR,CO2FOR
-     & ,FORSULF,FORBC,S0FOR,FORVOL
-      common/FORAERSOL/FORSULF,FORBC,FORVOL
+     & ,FORSULF,FORBC,S0FOR,FORVOL,FORGHG
+     &  ,ORBTRANS
+      common/ORBITAL/YEARORB,ORBTRANS,OBLIQ,ECCN,OMEGT
+      common/FORAERSOL/FORSULF,FORBC,FORVOL,FORGHG
       common/vaerosol/fl_volaer
+      common/orbitalfl/fl_orbital
       common/eqgso/GSOEQ
       common/ghstfor/GHSFALB,GHSF,ALBCF,FVOLADD,STRARFOR,S0FOR,CO2FOR,
      &  CO2F,ghostfv(LM0+1),ghostf(LM0+1,JM0)
@@ -208,20 +213,6 @@ cjrs alreadyin DRIVER.h#include "CLM.COM"
       DATA EDPERD/1./,EDPERY/365./                                      1527.   
       DATA JDOFM/0,31,59,90,120,151,181,212,243,273,304,334,365/
       DATA JDPERY/365/
-!     dimension GHGBGR1860(5),GHGBGR1958(5),GHGBGR1977(5),
-!    &  GHGBGR1980(5), GHGBGR1765(5),GHGBGR1991(5),GHGBGR2000(5)
-!    &  ,GHGBGR1990(5)
-!     DATA GHGBGR1765/280.0,0.275,0.791,0.00E-6,00.0E-6/
-!     DATA GHGBGR1860/286.4,0.276,0.805,0.00E-6,00.0E-6/
-!     DATA GHGBGR1958/314.9,0.291,1.224,7.60E-6,29.6E-6/
-!     DATA GHGBGR1977/331.8,0.292,1.613,13.2e-6,25.2e-6/
-!     DATA GHGBGR1980/337.9,0.301,1.547,166.6e-6,300.0e-6/
-!     DATA GHGBGR1990/351.0,0.308,1.67,500.6e-6,470.0e-6/
-c     DATA GHGBGR1991/355.7,0.310,1.704,268.6e-6,492.0e-6/
-C     average for years 1990 and 1991 from  ghgdata.GISS.modified.dat
-!     DATA GHGBGR1991/352.7,0.3091,1.681,5.21E-04,4.855E-04/
-!     average for years 2000 and 2001 from  ghgdata.GISS.dat
-!     DATA GHGBGR2000/368.75,0.316,1.735,5.825E-04,5.35E-04/
 
 
 C                                                                       1527.5  
@@ -256,6 +247,8 @@ C
       ALFFOR=0.
       S0RATE=0.
       YEARGT=1958.
+      YEARORB=2000.
+      ORBTRANS=.false.
       CO2IN=280.
       INYRAD=1.
       coefcl(1)=0.
@@ -269,6 +262,7 @@ C
       FORSULF=.true.
       FORBC=.false.
       FORVOL=.false.
+      FORGHG=.false.
       CO2FOR=.false.
       S0FOR=.false.
       CO2F=2.0
@@ -302,12 +296,16 @@ cc    ALFA = 8.0*1.e3
       oco2file = 'undefined'
       co2rfile = 'undefined'
       fl_volaer = 'undefined'
+      fl_orbital = 'undefined'
       SO2_EM = 'undefined'
       sulf1986 = 'undefined'
       sulf2050 = 'undefined'
       sulfamp = 'undefined'
       caruptfile = 'undefined'
       flrco2av = 'undefined'
+#if ( defined IPCC_EMI )
+      init_co2 = 'undefined'
+#endif
       ISTRT1=0
       ISTRTCHEM=0
       ISTWRC=0
@@ -527,8 +525,8 @@ c
          read(599) ghostf
          close(599)
       endif
-#ifndef CPL_CHEM 
-#ifdef PREDICTED_BC
+#if ( !defined CPL_CHEM )
+#if ( defined PREDICTED_BC)
       if(READGHG.eq.0)then
 !      data for BC only
        print *,'Data for black carbon'
@@ -538,151 +536,21 @@ c
 #endif
 #endif
 
-#ifdef CPL_CHEM
+c
+#if ( defined CPL_CHEM )
 !
-!Chemistry-model
+! --- assign input and output files
+!       Note: Due to historical reasons, no all files are
+!               assigned here - in case you want to search
+!               something use
+!               grep -i "needed characters" *.F
 !
-! 1. Open initial atmospheric condition to start simulation:
-
-! 2. Open a given data set to initialize simulation:
-      print *,' From assign',chemdata,chemout
-      id2=index(chemdata," ")
-      open(120,file=chemdata(1:id2-1)//'chem.nml',status='old')
-C     open(120 moved from chemint.F
-C     file chem.nml moved to chemdata
-
-#if ( N_LAT == 24 ) && ( N_LEV == 9 )
-      open(163,file=chemdata(1:id2-1)//'init-data_24x9',
-     &        form='unformatted',
-     &        status='old')
-
-      open(160,file=chemdata(1:id2-1)//'init-data2_24x9',
-     &        form='unformatted',
-     &        status='old')
-
-      open(162,file=chemdata(1:id2-1)//'topo3_24x9',
-     &        form='unformatted',
-     &        status='old')
-#endif
-#if ( N_LAT == 46 ) && ( N_LEV == 11 )
-      id1=index(chem_init," ")
-      print *,'INITIAL DATA FOR CHEMISTRY'
-      print *,chem_init
-c     open(163,file=chemdata(1:id2-1)//'init-data_46x11',
-      open(163,file=chemdata(1:id2-1)//chem_init(1:id1-1),
-     &        form='unformatted',
-     &        status='old')
-
-      id1=index(chem_init2," ")
-      print *,chem_init2
-c     open(160,file=chemdata(1:id2-1)//'init-data2_46x11',
-      open(160,file=chemdata(1:id2-1)//chem_init2(1:id1-1),
-     &        form='unformatted',
-     &        status='old')
-
-!     New init file hfc, pfc, and sf6 for Dec 1990
-      id1=index(chem_init4pfc," ")
-      print *,chem_init2
-      open(161,file=chemdata(1:id2-1)//chem_init4pfc(1:id1-1),
-     &        form='unformatted',
-     &        status='old')
-
-      open(162,file=chemdata(1:id2-1)//'topo3_46x11',
-     &        form='unformatted',
-     &        status='old')
-#endif
-c     open(164,file=chemdata(1:id2-1)//'edaily.dat',
-c    &        form='unformatted',
-c    &        status='old')
-
-!     open(164,file=emiss_data,
-!    &        form='unformatted',
-!    &        status='old')
-
-!     open(664,file=SO2ERATIO,
-!    &        form='formatted',
-!    &        status='old')
-!      moved to input.F
-
-      open(165,file=chemdata(1:id2-1)//'rktable.dat',
-     &        form='unformatted',
-     &        status='old')
-
-! 3. Open a data file to save rawdata:
-
-c closed 032697:
-
-c      open(166,file='OUTPUT/cfcn2o',
-c     &        form='unformatted',
-c     &        status='new')
-c      open(171,file='OUTPUT/hox',
-c     &        form='unformatted',
-c     &        status='new')
-c      open(172,file='OUTPUT/nox',
-c     &        form='unformatted',
-c     &        status='new')
-c      open(173,file='OUTPUT/hcs',
-c     &        form='unformatted',
-c     &        status='new')
-c      open(174,file='OUTPUT/sox',
-c     &        form='unformatted',
-c     &        status='new')
-
-      cfname = chemout(1:len_trim(chemout))//'/'//'globalmean'
-      open(176,file=cfname,
-     &        status='new')
-
-      cfname = chemout(1:len_trim(chemout))//'/'//'globalmean2'
-      open(180,file=cfname,
-     &         status='new')
-     
-      cfname = chemout(1:len_trim(chemout))//'/'//'meta'
-      open(181,file=cfname,
-     &        form='unformatted',
-     &        status='new')
-
-      cfname = chemout(1:len_trim(chemout))//'/'//'budget'
-      open(167, file=cfname,status='unknown')
-
-      cfname = chemout(1:len_trim(chemout))//'/'//'monthly'
-      open(169,file=cfname,
-     &        form='unformatted',
-     &        status='new')
-
-      cfname = chemout(1:len_trim(chemout))
-     &          //'/'//'monthly2'
-      open(179,file=cfname,
-     &         form='unformatted',
-     &         status='new')
-! ===
-
-      cfname = chemout(1:len_trim(chemout))//'/'//'photodiag'
-      open(177,file=cfname,	!032697
-     &        form='unformatted',
-     &        status='new')
-
-c 5. Open a data file to save diagnostic output:
-
-!      open(168,file='OUTPUT/cfc11nsf_monthly',
-!     &        form='unformatted',
-!     &        status='new')
-
-        cfname = chemout(1:len_trim(chemout))
-     &           //'/'//'chemrenew.dat'
-	open(178,file=cfname,
-     &        form='unformatted',
-     &        status='unknown')
-
-        if(ISTRTCHEM.eq.1)then
-
-C  open statment moved from cheminit.F file number change to 279
-        cfname = chemrstfl(1:len_trim(chemrstfl))
-          open(279,file=cfname,
-     &             form='unformatted',
-     &             status='unknown')
-
-        endif
-
+!               You have my sympathy.
+!
+!       Chien 080400
+!
+#include "assign.inc"
+!
 #endif
 
 c     open file for carbon uptake
@@ -703,6 +571,13 @@ c     open(333,file=caruptfile,status='new',form='formatted')
 #endif
 
 ce    open statments
+      if(GSOEQ)then
+       if (abs(YEARGT-YEARORB).gt.0.1) then
+         print *,'Wrong setting for  GSOEQ run'
+         print *,'YEARGT=',YEARGT,' YEARORB=',YEARORB
+         stop
+       endif
+       endif
       call bgrghg(YEARGT)
 #if ( defined IPCC_EMI )
 !     if(YEARGT.eq.1765)then
@@ -710,6 +585,9 @@ ce    open statments
        open (unit=861,file=init_co2,
      &     status='OLD',form='formatted')
        read (861,*)xco2init
+!!!
+!!!     xco2init=GHGBGR(1)
+!!!
        CO2=xco2init/GHGBGR(1)
        print *,'IPCC EMI CO2=',CO2
 !     else
@@ -1514,7 +1392,7 @@ CJRS         FDATA(I,JM0,2)=cflan(jmocean)
        close (767)
        print *,'Ratio of land precipitation to total'
        do j=1,jm
-        print '(12f7.4)',(prlnd2total(j,n),n=1,12)
+        print('(12f7.4)'),(prlnd2total(j,n),n=1,12)
        enddo
       print *,' FDATA(1,J,2)='
       print *,(FDATA(1,J,2),J=1,JM)
@@ -1711,6 +1589,21 @@ c     VADATA(K,4,3)=0.1*VADATA(K,4,3)
 
       CALL RINIT (IRAND)                                                1865.   
 C     CALL IJSET (IM,JM,FDATA(1,1,2))                                   1866.   
+      print *,'Orbital parameters from input'
+      print *,fl_orbital
+      CALL read_orbital
+      if (.not.ORBTRANS)then
+       do i=1,nyorbit
+        if (abs(yorbit(i)-YEARORB).lt.0.5) then
+          OBLIQ=obliqh(i)
+          ECCN=eccenh(i)
+          OMEGT=180.+perih(i)
+        endif
+       enddo
+      print *,'Orbital parameters from input'
+      print *,'YEARORB=',YEARORB,'OBLIQ=',OBLIQ
+      print *,'ECCN=',ECCN,'OMEGT=',OMEGT
+      endif
       WRITE (6,INPUTZ)                                                  1867.   
 C     information for main program
       AEXPA=AEXP

@@ -53,11 +53,13 @@ c     land and ocean fraction respectively
        do ny=1,2000
         read (577,*,end=500),IYSULF(ny),CF86(ny)
         if(IYSULF(ny).eq.1986)cfref=CF86(ny)
+!       print *,IYSULF(ny),CF86(ny)
        enddo
  500   continue
        NYS=ny-1
        close (575)
        close (577)
+       print *,'NYS=',NYS
        print *,'Sulfate data for years ',IYSULF(1),IYSULF(NYS)
        print *,' BSO4LD86'
        print ('(6F7.4)'),(BSO4LD86(J)*1.e6,j=1,JM)

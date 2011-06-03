@@ -49,6 +49,7 @@ C                                                                       9105.3
       common /ATCO2/atm_co2(nlat)
       LOGICAL wr25,TRANSR,CONTRR,OBSFOR
       common/wrcom/wr25,TRANSR,CONTRR,OBSFOR
+      dimension XNOWO(5)
       NGAS=5                                                            9105.4  
       print *,'From FORSET TREF=',TREF,' KTREND=',KTREND
       IF(KTREND.EQ.1) CALL ATREND(XREF,TREF,NGAS)                       9105.5  
@@ -118,6 +119,7 @@ C                                                                       9109.4
       IF(KTREN.EQ.5) CALL GTREND(XNOW,TNOW,NGAS)
       IF(KTREN.EQ.4) CALL BMTRND(XNOW,TNOW,NGAS)
       IF(KTREN.EQ.6) CALL BMTRNDMG(XNOW,TNOW,NGAS)
+        XNOWO = XNOW
 c     IF(KTREN.GE.21.and.KTREN.LE.29) 
 c    &    CALL STBTRND(XNOW,TNOW,NGAS,KTREN)
 c     if(KTREN.LE.5)then
@@ -142,7 +144,9 @@ c        print *,'From forset XNOW(1)=',XNOW(1)
 c        print *,'From forset FULGAS(2)=',FULGAS(2),FULGAS(2)*PPMV58(2)
       if(.not.OBSFOR)then
        IF(KWRITE.EQ.1) then
-         print *,'From forset XNOW(1)=',XNOW(1)
+!        print *,'From forset XNOW(1)=',XNOW(1)
+         print '(a20,5F10.2)','From forset XNOW=',(XNOW(i),i=1,ngas)
+         print '(a10,5F10.2)','FULGAS =',FULGAS(2),(FULGAS(i),i=6,9)
        ENDIF
        do j=1,nlat
         atm_co2(j)=XNOW(1)
@@ -157,7 +161,8 @@ C                                                                       9110.6
   210 XDAT(I)=XNOW(I)                                                   9111.2  
       IYEAR=TNOW                                                        9111.3  
       WRITE(6,6200) IYEAR,SDT0,(XDT0(I),I=1,5),(XNOW(I),I=1,5)          9111.4  
-     +             ,(XRAT(I),I=1,5)                                     9111.5  
+     +             ,(XNOWO(I),I=1,5)                                     9111.5  
+!    +             ,(XRAT(I),I=1,5)                                     9111.5  
  6200 FORMAT(1X,I4,F6.3,5F8.4,1X,F8.2,4F8.4,1X,5F8.4)                   9111.6  
       NSPACE=IYEAR-(IYEAR/10)*10                                        9111.7  
       IF(NSPACE.EQ.0) WRITE(6,6010)                                     9111.8  

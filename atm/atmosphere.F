@@ -48,12 +48,12 @@ C**** Like D2G04 but run on work station.                                  0.5
 #include "chem_com"
 
 #if ( defined CPL_CHEM )
-!
+
 #include "chem_tmp"
 	integer hrcnt, cnt3hr(8)	! for ozone impact
 	real  sfc3hro3(nlat,8)
 creal*4  sfc3hro3(nlat,8)
-!
+
 #endif
 
       COMMON/INTA/COE1(01,01,01),COE2(01,01,01)                            1.1  
@@ -134,7 +134,6 @@ C  For TEM
 
 #if ( defined OCEAN_3D || defined ML_2D )
 #include "AGRID.h"
-Cjrs elimated COM file/moved elsewhere#include "HRD4OCN.COM"
         dimension oimeltt(jm0),dhdtav(jm0),devdtav(jm0)
 #endif
 
@@ -195,7 +194,6 @@ C **** CLEAR SKY
 !	Chien 080400
 !
 
-!#include "assign.inc"
 c
       if(FIRST) then
 c
@@ -291,7 +289,7 @@ c    &		 status='unknown')
      	hrcnt         = 1
      	cnt3hr(:)     = 0
 	sfc3hro3(:,:) = 0.0
-!
+
 #endif
 
        print *,' IRAND=',IRAND
@@ -450,7 +448,6 @@ C       CLOSE(876)
        rewind 876
       endif
 
-cjrs next line per Andrei instruction 10/12/07
       adupt= 0.0
 
        aduptd=adupt/(365.*JM)
@@ -482,7 +479,7 @@ cjrs next line per Andrei instruction 10/12/07
       endif
 #endif
 !#endif
-CJRS removed below from ocean_3d
+
 #ifdef ML_2D
          do j=1,jm
            do i=1,io
@@ -573,7 +570,6 @@ cjrs change var name to arunoff
            solarnet_ice(j)=0.
            solarinc_ocean(j)=0.
            solarnet_ocean(j)=0.
-Cjrs not used anymore (?)           surfpr(j)=0.
            naveo(j)=0.
            navei(j)=0.
            navrad(j)=0.
@@ -1031,23 +1027,33 @@ C**** RADIATION, SOLAR AND THERMAL                                       149.
 #include "PRNT.COM"
       print *,' IRAND=',IRAND
       endif
+
 #if ( defined PREDICTED_GASES || defined PREDICTED_AEROSOL )
-#if ( defined FIXED_FOR )
+
+#    if ( defined FIXED_FOR )
          CALL RADIA
-#else
+#    else
       call radia_chem
-#endif
+#    endif
+
 #else
-      if(OBSFOR) then
-#if ( defined FIXED_FOR )
-         CALL RADIA
-#else
+
+#    if ( defined SVI_ALBEDO )
          CALL RADIAGSO
-#endif
-      else
+#    else
+       if(OBSFOR) then
+#        if ( defined FIXED_FOR )
+          CALL RADIA
+#        else
+          CALL RADIAGSO
+#        endif
+       else
          CALL RADIA                   
-      endif
+       endif
+#    endif
+
 #endif
+
       if(HPRNT)then
       print *,' main after radia',' TAU=',TAU
 #include "PRNT.COM"
@@ -1268,8 +1274,8 @@ C                                                                        196.
       JMONTHPR=JMONTH
       JYEARPR=JYEAR
       CALL DAILY_NEW                                                     197.   
-c     print *,' AFTER DAILY_NEW IDAY=',IDAY,' IYEAR=',IYEAR
-c     print *,' JYEAR=',JYEAR,' JDAY=',JDAY
+!     print *,' AFTER DAILY_NEW IDAY=',IDAY,' IYEAR=',IYEAR
+!     print *,' JYEAR=',JYEAR,' JDAY=',JDAY
 #if( !defined OCEAN_3D && !defined ML_2D )
       CALL DAILY_OCEAN
 c     print *,' AFTER DAILY_OCEAN IDAY=',IDAY,' IYEAR=',IYEAR
@@ -1311,6 +1317,11 @@ c      enddo
 c      print *,' CO2 before emission ',zxy/jm
 
       timeinday=1./(365.)          !daily emission
+#if ( defined ACCRI )
+       do j=1,jm
+      ps4accri(1,j) = p(1,j)
+       enddo
+#endif
       call chememission(timeinday)
 
 c      zxy=0.
@@ -1444,8 +1455,10 @@ C    For ocean carbon model
 c  Annual oceanic CO2 uptake
        do j=1,jm
          OCUPT=OCUPT+fluxco2(j)
+          ocumn=ocumn+fluxco2(j)
+          fluxco2mn(j)=fluxco2mn(j)+fluxco2(j)
        enddo
-!      print *,' OCUPT=',OCUPT*12.e-15
+       print *,' OCUPT=',OCUPT*12.e-15
 
 #if ( defined CPL_CHEM )
 !

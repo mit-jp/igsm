@@ -1,4 +1,3 @@
-
 #include "ctrparam.h"
 
         subroutine eppaemission (iyr)
@@ -8,11 +7,21 @@
 #include "chem_com"
 #include "BD2G04.COM"
 #include "chem_meta"
-      parameter (neppa=124)
+      parameter (neppa=124,naccri=110)
+#endif
+
       character * 120 emiss_data,SO2ERATIO
+
+#if ( defined ACCRI )
+     &  ,accri_data,accri_scaling
+#endif
       namelist /EPPA/ LYEAREM,emiss_data,SO2ERATIO
+#if ( defined ACCRI )
+     &  ,accri_data,accri_scaling
+#endif
       common /SO2EMIN/SO2EM
       data ifirst / 0 /
+#if ( defined CPL_CHEM )
       common /EPPAEMISS/  edailyf11eppa     (nlon,nlat,neppa),
      &           edailyf12eppa     (nlon,nlat,neppa),
      &           edailyn2oeppa     (nlon,nlat,neppa),
@@ -36,21 +45,29 @@
      &           edailyuoceppa     (nlon,nlat,neppa),
      &           n_total_urbaneppa (nlat,neppa),
      &           n_urbaneppa       (3,nlat,neppa)
+#if ( defined ACCRI )
+      real scale_accri_eppa(neppa)
+#endif
+#endif
 
       if (ifirst.eq.0) then
       open(535,file='eppaemis.dat')
+       print *,' CALL EPPAEMISSION'
       read (535,NML=EPPA)
       close (535)
+#if ( defined CPL_CHEM )
       open(164,file=emiss_data,
      &        form='unformatted',
      &        status='old')
+#endif
       open(664,file=SO2ERATIO,
      &        form='formatted',
      &        status='old')
 
       read(664,'(f10.6)')SO2EM
-       print *,' SO2EM=',SO2EM
+       print *,' SO2EM=from eppaemissions ',SO2EM
 
+#if ( defined CPL_CHEM )
       read(164)edailyf11eppa,
      &         edailyf12eppa,
      &         edailyn2oeppa,
@@ -78,9 +95,27 @@
         close (164)
         close (664)
         print *,'Emissioms for ',neppa,' years'
+#if ( defined ACCRI )
+      print *,' Run with ACCRI emissions with H2O'
+      print *,accri_data
+      open(264,file=accri_data,
+     &        form='unformatted',
+     &        status='old')
+
+      open(265,file=accri_scaling,
+     &        form='formatted',
+     &        status='old')
+
+      read(264)p_accri
+      print *,'p_accri'
+      print *,p_accri
+#endif
+#endif
+
         ifirst = 1
 	return
 	endif 	! first
+#if ( defined CPL_CHEM )
         iyremi  = iyr-1976       !year from starting point
         myyearlast  = min(LYEAREM-1976,neppa)  !last year of emission
         print *,' EPPAEMISION myyearlast=',myyearlast
@@ -116,7 +151,32 @@
             n_urban (k,j,1)= n_urbaneppa(k,j,iyremi)
          enddo
        enddo
-   
+#if ( defined ACCRI )
+      print *,'Reading ACCRI emissions for year ',iyr
+      read(264)COaccri,
+     &        NOaccri,
+     &        NO2accri,
+     &        BCaccri,
+     &        OCaccri,
+     &        CO2accri,
+     &        SO2accri,
+!    &        CH2Oaccri
+     &        CH2Oaccri,
+     &        H2Oaccri
+      print*,'COaccri=',COaccri(1,23,1,1),
+     &        'NOaccri=',NOaccri(1,23,1,1),
+     &        'NO2accri=',NO2accri(1,23,1,1),
+     &        'BCaccri=',BCaccri(1,23,1,1),
+     &        'OCaccri=',OCaccri(1,23,1,1),
+     &        'CO2accri=',CO2accri(1,23,1,1),
+     &        'SO2accri=',SO2accri(1,23,1,1),
+     &        'CH2Oaccri=',CH2Oaccri(1,23,1,1),
+     &        'H2Oaccri=',H2Oaccri(1,23,1,1)
+!       print *,'H2Oaccri'
+!       print *,(H2Oaccri(1,23,1,nm),nm=1,12)
+         scale_accri(1)=1.0
 #endif
+#endif
+   
 	return
 	end

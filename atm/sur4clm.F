@@ -121,8 +121,11 @@ C****                                                                   5874.
 c     print *,'sur4clm TAU=',TAU
       NSTEPS=NSURF*NSTEP/NDYN                                           5875.   
       IF(IFIRST.NE.1) GO TO 50                                          5876.   
+      ZGSL = 100.
+      ZGSL = 30.
       print *,' SURFACE FOR CLM'
-      print *,' ZGS=30 m for LAND '
+!     print *,' ZGS=30 m for LAND '
+      print *,' ZGS=',ZGSL,' m for LAND '
       WMGMIN=8.
       print *,'WMGMIN 4 LAND=',WMGMIN
       IFIRST=0                                                          5877.   
@@ -250,7 +253,8 @@ C**** ZERO OUT QUANTITIES TO BE SUMMED OVER SURFACE TYPES               6002.
       QSS=0.                                                            6007.   
 C****                                                                   6032.   
  2400 IF(PLAND.LE.0.) GO TO 5000                                        6074.   
-      ZGS=30.                                                           6078.   
+!     ZGS=30.                                                           6078.   
+      ZGS=ZGSL
       IF(PLICE.LE.0.) GO TO 2600                                        6080.   
 C****                                                                   6081.   
 C**** LAND ICE                                                          6082.   

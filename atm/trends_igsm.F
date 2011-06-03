@@ -251,13 +251,13 @@ c     f11 includes other long-lived gases
         XGASS(4)=xx
         call ghgint(xx,xxf12,ny2,YEAR)
         XGASS(5)=xx
-        if(ncall.eq.2)then
+        if(ncall.le.3)then
            print *,'BMTRND from FORGET'
            print *,' year=',year
            print *,'YEAR0=',YEAR0
         print *,' XGASS'
         print *,XGASS
         endif
-        if(ncall.lt.3)ncall=ncall+1
+        if(ncall.lt.4)ncall=ncall+1
       return
       end
