@@ -102,6 +102,7 @@ C **** CLEAR SKY
       common/clrsk/CLEAR(JM0),NCLR(JM0),AJCLR(JM0,12),BJCLR(JM0,12),
      * CJCLR(JM0,12)
       integer CLEAR
+      real FULCO2,FULCH4,FULN2O,FULF11,FULF12
 C     AJCLR
 C            1  SW INC AT P0            RD (AJ(1))
 C            2  SW ABS BELOW P0         RD (AJ(2))
@@ -400,7 +401,7 @@ C****   AND RADIATION PERIOD                                            5117.
        print *,' CLDMC'
        print *,(CLDMC(1,7,L),L=1,LM)
       endif
-cprint *,' form radia TAU=',TAU,'MODRD=',MODRD
+!print *,' form radia TAU=',TAU,'MODRD=',MODRD
 C
       IF(MODRD.NE.0) GO TO 840                                          5121.   
 C
@@ -432,10 +433,20 @@ c    &           *28.97296245/44.0*1.e-3,j=1,jm)
           endif
         endif
 #endif
-      endif
+      endif	! JMONTH.ne.JMLAST
       JMLAST=JMONTH
-      IF (JDAY.NE.JDLAST.AND.KTREND.GT.0) 
-     &    CALL FORGET(TNOW,KTREND,KWRITE)
+!print *,' form radia TAU=',TAU,'MODRD=',MODRD
+C
+      IF (JDAY.NE.JDLAST.AND.KTREND.GT.0) THEN
+         CALL FORGET(TNOW,KTREND,KWRITE)
+         if(FORGHG.or.CO2FOR) then
+         FULCO2=FULGAS(2)
+         FULN2O=FULGAS(6)
+         FULCH4=FULGAS(7)
+         FULF11=FULGAS(8)
+         FULF12=FULGAS(9)
+         endif
+      ENDIF
       IF (JDAY.NE.JDLAST)then
 #ifdef PREDICTED_GASES
         call chemglobal(P)
@@ -461,7 +472,7 @@ C
 	end do	! k
 	end do 	! j
        endif
-      ENDIF
+      ENDIF	! JDAY.NE.JDLAST
       JDLAST=JDAY                                                       5129.   
          IHOUR=1.5+TOFDAY                                               5130.   
       if(CLDFEED)then
@@ -846,17 +857,27 @@ c     FGOLDU(3)=XFRADJ*PEARTH                                           5278.
       FGOLDU(2)=XFRADJ*(1.-PLAND)
       FGOLDU(3)=XFRADJ*PLAND
       if(FORGHG)then
-        CALL FORGET(TNOW,KTREND,1)
-        CALL RCOMPT
-        CALL RCOMPJ 
+        FULGAS(2)=FULCO2
+        FULGAS(6)=FULN2O
+        FULGAS(7)=FULCH4
+        FULGAS(8)=FULF11
+        FULGAS(9)=FULF12
+!       CALL SETLAP
+!       CALL RCOMPT
+!       CALL RCOMPJ 
       endif
       if(CO2FOR)then
-        FULGAS(2)=CO2
+        if (KTREND.GT.0) THEN
+         FULGAS(2)=FULCO2
+        else
+         FULGAS(2)=CO2
+        endif
       endif
 !
 #if ( defined IPCC_EMI )
         FULGAS(2)=CO2
-      IF(DMOD(TAU,365.*24.).EQ.0..and.J.eq.-JM/2) then
+!     IF(DMOD(TAU,365.*24.).EQ.0..and.J.eq.-JM/2) then
+      IF(DMOD(TAU,365.*24.).EQ.0..and.J.eq.1) then
         print *,'IPCC_EMI CO2 from radia ', CO2
         print *,'FULGAS(2)=',FULGAS(2)
        print *,"tau=",tau,j,ii
@@ -925,7 +946,8 @@ c         print *,'S0 for real calculation=',S0
             CALL WRITER(12)
             if(ii.ge.2)IRFIRST=0
           endif
-      IF(DMOD(TAU,365.*24.).EQ.0..and.J.eq.JM/2) then
+      IF(DMOD(TAU,30.*24.).EQ.0..and.J.eq.JM/2) then
+!     IF(DMOD(TAU,30.*24.).EQ.0..and.J.eq.1) then
        print *,' tau=',TAU,' J=',J
        CALL WRITER (1,0)
        print *,-TRNFLB(1),TRNFLB(LM+4),TRNFLB(LM+1),TRDFLB(1)
@@ -1158,9 +1180,10 @@ C
        elseif(FORBC)then
         FBC=0.0
        elseif(FORGHG)then
-        CALL FORGET(YEARGT,KTREND,1)
-        CALL RCOMPT
-        CALL RCOMPJ 
+        CALL FORGET(YEARGT,KTREND,0)
+!       CALL SETLAP
+!       CALL RCOMPT
+!       CALL RCOMPJ 
        elseif(FORVOL)then
         FGOLDU(1)=FGOLDU0
        else
@@ -1175,8 +1198,9 @@ C
        endif
   568  continue
         CALL RCOMPX
-       if(FORGHG)then
-        IF(DMOD(TAU,365.*24.).EQ.0..and.J.eq.JM/2) then
+       if(FORGHG.or.CO2FOR)then
+        IF(DMOD(TAU,30.*24.).EQ.0..and.J.eq.JM/2) then
+!       IF(DMOD(TAU,30.*24.).EQ.0..and.J.eq.1) then
          print *,' For CLEAR tau=',TAU,' J=',J
          CALL WRITER (1,0)
          print *,-TRNFLB(1),TRNFLB(LM+4),TRNFLB(LM+1),TRDFLB(1)
@@ -1196,7 +1220,7 @@ C
 !       print *,' TRHRCL(j)=',TRHRCL(j)
 !       print *,' TRINCL(j)=',TRINCL(j)
 !     endif
-!     endif
+!      endif
        COSZ=COSZ2(I,J)    
        do L=LM,1,-1
         AJL(J,L,46)=AJL(J,L,46)-TRNFLB(L+1)*PTYPE
@@ -1306,8 +1330,8 @@ C****                                                                   5506.
       DO 820 I=1,IMAX                                                   5511.   
  820  RQT(I,J,LR)=RQT(I,J,LR)+(SRHRS(I,J,LR)*COSZ2(I,J)                 5512.   
      *  +TRHRS(I,J,LR))*COE(LR+LM)                                      5513.   
-  840 JDLAST=JDAY 
-      DO 860 J=1,JM                                                     5514.   
+!     JDLAST=JDAY 
+  840 DO 860 J=1,JM                                                     5514.   
 #if ( defined HR_DATA )
           dswhr(j)=DSWSRF(j)*COSZ1(1,j)
           dlwhr(j)=DLWSRF(j)
