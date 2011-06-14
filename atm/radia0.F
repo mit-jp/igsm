@@ -131,10 +131,6 @@ c   06/20/2005
 c        CALL RCOMP1 (521,0,60)
          print *,'Before CALL RCOMP1'
          CALL RCOMP1 (521,0,60,KTREND)
-C Next 3 lines added 6/14/11, changing old ensemble 20th century results
-         do i=1,1000
-           TAULAP0(i)=TAULAP(i)
-         enddo
          print *,'After CALL RCOMP1'
 c        if(READGHG.lt.0.5) CALL WRITER (1,0)                           4554.   
       RETURN                                                            4555.   
