@@ -88,20 +88,24 @@ C  Convert masking depth over land and ocean ice to meters of water
 C     FOR THE 'REAL' TRANSIENT EXPERIMENT USE CO2=-FLOAT(KTREND)-AVGAER 4553.15 
 C     TO USE THE DEFAULTS EXCEPT FOR CO2 SET CO2.GT.0.                  4553.2  
       KTREND=-CO2                                                       4553.25 
-       print *,' KTREND=',KTREND
+      print *,' KTREND=',KTREND
 
-#if ( defined PREDICTED_GASES  && !defined FIXED_FOR )
-        LAPGAS=0
-        IMG(2)=9
-       print *,' RADIA0 Chem ',1,READGHG,LAPGAS
-#endif
+C conditional block below commented out 6/14/11
+C#if ( defined PREDICTED_GASES  && !defined FIXED_FOR )
+C        LAPGAS=0
+C        IMG(2)=9
+C       print *,' RADIA0 Chem ',1,READGHG,LAPGAS
+C#endif
 
+      LAPGAS=0
+      IMG(2)=9
       IF (CO2.GT.0.) GO TO 50                                           4553.3  
       NTRCE=1                                                           4553.35 
       ITR(1)=1                                                          4553.4  
       IF (KTREND.EQ.0) KFORCE=26789                                     4553.45 
       FGOLDU(6)=1.                                                      4553.5  
-      LAPGAS=2                                                          4553.55 
+C Next line commented out 6/14/11, changing old ensemble 20th century results
+C      LAPGAS=2                                                         4553.55 
 C     FULGAS(8)=0.                                                      4553.6  
 C     FULGAS(9)=0.                                                      4553.65 
 C     FGOLDU(1)=.005/.012                                               4553.7  
@@ -127,6 +131,10 @@ c   06/20/2005
 c        CALL RCOMP1 (521,0,60)
          print *,'Before CALL RCOMP1'
          CALL RCOMP1 (521,0,60,KTREND)
+C Next 3 lines added 6/14/11, changing old ensemble 20th century results
+         do i=1,1000
+           TAULAP0(i)=TAULAP(i)
+         enddo
          print *,'After CALL RCOMP1'
 c        if(READGHG.lt.0.5) CALL WRITER (1,0)                           4554.   
       RETURN                                                            4555.   
