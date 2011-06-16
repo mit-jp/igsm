@@ -249,9 +249,9 @@ c     ncallgary=0
         focean(j)=(1-FDATA(1,J,2))
         DEPTHML(j)=ZOAV(j)
       end do    !       j
-        print *,' RCO2'
+!        print *,' RCO2'
 !       print 5001,((Rco2(j,k),j=1,jm),k=1,LMO)
-        print 5001,((Rco2(j,k)*1.e2,j=1,jm),k=1,LMO)
+!        print 5001,((Rco2(j,k)*1.e2,j=1,jm),k=1,LMO)
         dzog(1)=10./SQRT(1.7010587)
         dzg(2)=10.
         do l=2,lmo-1
@@ -1458,7 +1458,7 @@ c  Annual oceanic CO2 uptake
           ocumn=ocumn+fluxco2(j)
           fluxco2mn(j)=fluxco2mn(j)+fluxco2(j)
        enddo
-       print *,' OCUPT=',OCUPT*12.e-15
+!       print *,' OCUPT=',OCUPT*12.e-15
 
 #if ( defined CPL_CHEM )
 !
