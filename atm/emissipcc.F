@@ -25,16 +25,16 @@ C
       data NDAYMN /31,28,31,30,31,30,31,31,30,31,30,31/
 
       common/boxmod/YEAR0
-      common /bmtrdata/co2_data
+      common /emisdata/emiss_data
       common/ BACKGRGHG/GHGBGR(5)
-      character * 64 co2_data
+      character * 120 emiss_data
       character * 10 name,scen(5)
       logical first
       data first /.true./
       data ncall /1/
       if(first)then
          nsc=KTREN-KTREN/10*10
-         open (unit=561,file=co2_data,
+         open (unit=561,file=emiss_data,
      *     status='OLD',form='formatted')
          read (561,*)name
          read (561,*)name,scen
@@ -132,7 +132,7 @@ C     \==========================================================/
 C        
 C      
 C     For IPCC stabilisation simulations with CO2 emissions
-C     CO2 emissions  from file co2_data
+C     CO2 emissions  from file emiss_data
 C     Concentrations of other GHGs are
 c     those for 1765.
 C     DATA are annual means, but they are
@@ -151,21 +151,21 @@ c     common /Garyflux/pC_atm(jm0),wind_amp,fluxco2(jm0)
       data NDAYMN /31,28,31,30,31,30,31,31,30,31,30,31/
   
       common/boxmod/YEAR0
-      common /bmtrdata/co2_data
+      common /emisdata/emiss_data
       common /ipccdata/init_co2
       common/ BACKGRGHG/GHGBGR(5)
-      character * 120 co2_data
+      character * 120 emiss_data
       character * 30 name
       logical first
       data first /.true./
       data ncall /1/
       if(first)then
-         id2=index(co2_data," ")
-         open (unit=561,file=co2_data,
+         id2=index(emiss_data," ")
+         open (unit=561,file=emiss_data,
      *     status='OLD',form='formatted')
          read (561,*)name
          read (561,*)name
-!        print *,' Simulation with emission scenario ',co2_data(1:id2-1)
+!        print *,' Simulation with emission scenario ',emiss_data(1:id2-1)
          print *,' Simulation with emission scenario ',name
        do 50 i=1,nyd
          read (561,*,end=500),eghgyr(i),xemi(i)
@@ -228,7 +228,7 @@ c       endif
       common/boxmod/YEAR0
       dimension xxf(ny),iyeare(ny)
 !     print *,ny,iyeare(1),xxf(1)
-      do i=1,ny
+      do i=1,ny-1
        year1=iyeare(i)+0.5
        year2=iyeare(i+1)+0.5
 c      if(year.gt.iyeare(i).and.year.le.iyeare(i+1))go to 100

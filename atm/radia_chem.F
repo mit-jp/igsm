@@ -163,7 +163,7 @@ C****                                                                   5069.
          nrbyyr=24*365/5
          nrcldmax=20*nrbyyr
 c     print *,' CLOUDS for ',nrcldmax/nrbyyr,' years'
-      KTREND=-CO2
+!     KTREND=-CO2
       JDAY00=-1
       print *,' Radiation for Climate-chemistry model'
       print *,' READGHG=',READGHG
@@ -329,8 +329,8 @@ c         print *,' MNAER=', MNAER,' MONTH=',JMONTH
       JMLAST=JMONTH
 c     print *,'FROM radia, JDAY=',JDAY,' JDLAST=',JDLAST
 c     print *,' KTREND=',KTREND
-      IF (JDAY.NE.JDLAST.AND.KTREND.GT.0) 
-     &    CALL FORGET(TNOW,KTREND,KWRITE)
+!     IF (JDAY.NE.JDLAST.AND.KTREND.GT.0) 
+!    &    CALL FORGET(TNOW,KTREND,KWRITE)
       IF (JDAY.NE.JDLAST)then
       
 #ifdef PREDICTED_GASES

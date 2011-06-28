@@ -58,6 +58,7 @@ C                                                                       9105.3
       IF(KTREND.EQ.5) CALL GTREND(XREF,TREF,NGAS)
       IF(KTREND.EQ.4) CALL BMTRND(XREF,TREF,NGAS)
       IF(KTREND.EQ.6) CALL BMTRNDMG(XREF,TREF,NGAS)
+      IF(KTREND.EQ.7) CALL BMTRNDMG(XREF,TREF,NGAS)
 c     IF(KTREND.GE.21.and.KTREND.LE.29) 
 c    &    CALL STBTRND(XREF,TREF,NGAS,KTREND)
       DO 100 I=1,NGAS                                                   9105.8  
@@ -86,7 +87,7 @@ C                                                                       9106.6
          print *,'PPMV58 after GTREND'
          print *,PPMV58
       endif
-      IF(KTREND.EQ.6) then
+      IF(KTREND.EQ.6.or.KTREND.EQ.7) then
          print *,'PPMV58 after BMTRNDMG'
          print *,PPMV58
       endif
@@ -119,6 +120,7 @@ C                                                                       9109.4
       IF(KTREN.EQ.5) CALL GTREND(XNOW,TNOW,NGAS)
       IF(KTREN.EQ.4) CALL BMTRND(XNOW,TNOW,NGAS)
       IF(KTREN.EQ.6) CALL BMTRNDMG(XNOW,TNOW,NGAS)
+      IF(KTREN.EQ.7) CALL BMTRNDMG(XNOW,TNOW,NGAS)
         XNOWO = XNOW
 c     IF(KTREN.GE.21.and.KTREN.LE.29) 
 c    &    CALL STBTRND(XNOW,TNOW,NGAS,KTREN)
@@ -132,25 +134,29 @@ c     endif
       FULGAS(7)=XNOW(3)/XREF(3)                                         9110.3  
       FULGAS(8)=XNOW(4)/XREF(4)                                         9110.4  
       FULGAS(9)=XNOW(5)/XREF(5)                                         9110.5  
-!     IF(KTREND.EQ.6) then
-!        print *,'From forget'
-!        print *,'XNOW'
-!        print *,XNOW
-!        print *,'XREF'
-!        print *,XREF
-!        print *,'FULGAS(8)=',FULGAS(8),FULGAS(8)*PPMV58(8)
-!     endif
-c        print *,'From forset XNOW(1)=',XNOW(1)
-c        print *,'From forset FULGAS(2)=',FULGAS(2),FULGAS(2)*PPMV58(2)
+      IF(KTREN.EQ.-7) then
+         print *,'From forget'
+         print *,'XNOW'
+         print *,XNOW
+         print *,'XREF'
+         print *,XREF
+         print *,'FULGAS(8)=',FULGAS(8),FULGAS(8)*PPMV58(8)
+      endif
+!        print *,'From forset TNOW=',TNOW,' KTREN=',KTREN
+!        print *,'From forset XNOW=',(XNOW(i),i=1,5)
+!        print *,'From forset FULGAS=',(FULGAS(i),i=2,9)
+!        print *,'From forset FULGAS(2)=',FULGAS(2),FULGAS(2)*PPMV58(2)
       if(.not.OBSFOR)then
        IF(KWRITE.EQ.1) then
 !        print *,'From forset XNOW(1)=',XNOW(1)
          print '(a20,5F10.2)','From forset XNOW=',(XNOW(i),i=1,ngas)
          print '(a10,5F10.2)','FULGAS =',FULGAS(2),(FULGAS(i),i=6,9)
        ENDIF
+#if ( !defined IPCC_EMI )
        do j=1,nlat
         atm_co2(j)=XNOW(1)
        enddo
+#endif
       endif
 C                                                                       9110.6  
       IF(KWRITE.NE.1) GO TO 220                                         9110.7  

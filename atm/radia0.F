@@ -17,6 +17,8 @@ C****                                                                   4505.
      *  ,DEGLAT(46),DEGLON(72)                                          4510.   
       COMMON/SCJL/SINJ,COSJ
       COMMON/CO2TRND/ALFFOR,CO2TR,YEARGT,CO2IN,INYRAD
+     & ,YEARGG,YEARS0,YEARSA,YEARVA
+     & ,KTREND
 C                                                                       4511.   
 C                   RADCOM:      CONTROL/INPUT PARAMETERS               4512.   
 C                                                                       4513.   
@@ -87,25 +89,28 @@ c     DMLICE=0.01
 C  Convert masking depth over land and ocean ice to meters of water
 C     FOR THE 'REAL' TRANSIENT EXPERIMENT USE CO2=-FLOAT(KTREND)-AVGAER 4553.15 
 C     TO USE THE DEFAULTS EXCEPT FOR CO2 SET CO2.GT.0.                  4553.2  
-      KTREND=-CO2                                                       4553.25 
-      print *,' KTREND=',KTREND
+!     KTREND=-CO2                                                       4553.25 
+       print *,' KTREND=',KTREND
 
-C conditional block below commented out 6/14/11
-C#if ( defined PREDICTED_GASES  && !defined FIXED_FOR )
-C        LAPGAS=0
-C        IMG(2)=9
-C       print *,' RADIA0 Chem ',1,READGHG,LAPGAS
-C#endif
+!#ifdef PREDICTED_GASES
+#if ( defined PREDICTED_GASES  && !defined FIXED_FOR )
+        LAPGAS=0
+        IMG(2)=9
+       print *,' RADIA0 Chem ',1,READGHG,LAPGAS
+#endif
 
-      LAPGAS=0
-      IMG(2)=9
+#if ( !defined OLD_LAPGAS )
+        LAPGAS=0
+        IMG(2)=9
+#endif
       IF (CO2.GT.0.) GO TO 50                                           4553.3  
       NTRCE=1                                                           4553.35 
       ITR(1)=1                                                          4553.4  
       IF (KTREND.EQ.0) KFORCE=26789                                     4553.45 
       FGOLDU(6)=1.                                                      4553.5  
-C Next line commented out 6/14/11, changing old ensemble 20th century results
-C      LAPGAS=2                                                         4553.55 
+#if ( defined OLD_LAPGAS )
+      LAPGAS=2                                                          4553.55 
+#endif
 C     FULGAS(8)=0.                                                      4553.6  
 C     FULGAS(9)=0.                                                      4553.65 
 C     FGOLDU(1)=.005/.012                                               4553.7  

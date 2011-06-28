@@ -82,6 +82,8 @@ c
       common/ S0XR/S0RATE,CFS0X
       common/ BACKGRGHG/GHGBGR(5)
       COMMON/CO2TRND/ALFFOR,CO2TR,YEARGT,CO2IN,INYRAD
+     & ,YEARGG,YEARS0,YEARSA,YEARVA
+     & ,KTREND
       dimension CLDSSF(JM0,LM0),CLDMCF(JM0,LM0)
      &,BSO4LAND(JM0),BSO4OCEAN(JM0),BSO4TOTAL(JM0)
      &,bcodmn(JM0,LM0,12)
@@ -170,7 +172,7 @@ c     print *,'Background GHGs'
          nrcldmax=20*nrbyyr
 c     print *,' CLOUDS for ',nrcldmax/nrbyyr,' years'
       print *,'RADIA'
-      KTREND=-CO2
+!     KTREND=-CO2
       JDAY00=-1
       if(CLDFEED)then
 c     print *,' radia.f coefcl=',coefcl
@@ -247,14 +249,23 @@ c          stop
          endif
          print *,
      &   'An equilibrium run for ',YEARGT,' conditions'
-         call obssolar(S0X,YEARGT+0.5)
+         YEARVA=YEARGT
+         YEARS0=YEARGT
+      endif
+         if(KSTREND.eq.0)then
+         call obssolar(S0X,YEARS0+0.5)
          S0X=S0X/1367.
-          print *,'Sconstant=',S0X*1367.
-          call read_staer (NYVADAT,STAERMN,STAERGL,SAYEARS)
-!         FVOL=0.0045
-!         FVOL=0.0007
+          print *,'Sconstant for year ',YEARS0,S0X*1367.
+         endif
+#if ( defined VOL_AER )
+      print *,'With volcanic forcing cfvolaer=',cfvolaer
+        FGOLDU0=1.
+        print *,'FGOLDU0=',FGOLDU0
+       call read_staer (NYVADAT,STAERMN,STAERGL,SAYEARS)
+#else
+       call read_staer (NYVADAT,STAERMN,STAERGL,SAYEARS)
         do n=1,NYVADAT
-          if(abs(SAYEARS(n)-YEARGT).lt.0.1) then
+          if(abs(SAYEARS(n)-YEARVA).lt.0.1) then
             FVOL=STAERGL(n)
            go to 768
           endif
@@ -262,16 +273,9 @@ c          stop
   768   continue
         RVOL=0.012
         FGOLDU(1)=(RVOL+FVOL)/RVOL
-        print *,'Additional STAER=',FVOL,
+        print *,'STAEROSOL for year ',YEARVA,' STAER=',FVOL,
      &   '   FGOLDU(1)=',FGOLDU(1)
-C
-      endif
-#if ( defined VOL_AER )
-      print *,'With volcanic forcing cfvolaer=',cfvolaer
-        FGOLDU0=FGOLDU(1)
-      if(.not.GSOEQ)then
-       call read_staer (NYVADAT,STAERMN,STAERGL,SAYEARS)
-      endif
+        FGOLDU1=FGOLDU(1)
 #endif
       if(CO2FOR)then
 	print *,' Forcing due to ',CO2F,'xCO2 is calculated',
@@ -384,6 +388,7 @@ c          print *,'S0X=',S0X,' TNOW=',TNOW
  458      continue
 c         print *,' MNAER=', MNAER,' MONTH=',JMONTH
 #endif
+!
 C**** CALCULATE AVERAGE COSINE OF ZENITH ANGLE FOR CURRENT COMP3 STEP   5116.   
 C****   AND RADIATION PERIOD                                            5117.   
       ROT1=TWOPI*TOFDAY/24.                                             5118.   
@@ -438,7 +443,11 @@ c    &           *28.97296245/44.0*1.e-3,j=1,jm)
 !print *,' form radia TAU=',TAU,'MODRD=',MODRD
 C
       IF (JDAY.NE.JDLAST.AND.KTREND.GT.0) THEN
+        if(KTREND.NE.7) then
          CALL FORGET(TNOW,KTREND,KWRITE)
+        else
+         CALL FORGET(YEARGG,KTREND,KWRITE)
+        endif
          if(FORGHG.or.CO2FOR) then
          FULCO2=FULGAS(2)
          FULN2O=FULGAS(6)
@@ -619,16 +628,18 @@ C**** CONDITIONS AT NON-POLAR POINTS                                    5141.
       IMAX=IM                                                           5144.   
   160 XFRADJ=.2+1.2*COSP(J)*COSP(J)                                     5145.   
 #if ( defined VOL_AER )
-c     RVOL=0.012
+      RVOL=0.012
       iYAER=SAYEARS(1)
       JYEARAER=min(JYEAR-iYAER+1,NYVADAT)
       FVOL=cfvolaer*STAERMN(J,MNAER,JYEARAER)
       FGOLDU(1)=(RVOL+FVOL)/RVOL
-      if (j.eq.140)then
-        print *,'From radia'
+      FGOLDU1=FGOLDU(1)
+      if (j.eq.-JM/2)then
+        print *,'From radia j=',j
         print *,MNAER,JYEAR,JYEARAER
         print *,cfvolaer
         print *,'RVOL=',RVOL,' FVOL=',FVOL
+      print *,'FGOLDU1=',FGOLDU1,' FGOLDU0=',FGOLDU0
       endif
 #endif
 
@@ -862,9 +873,6 @@ c     FGOLDU(3)=XFRADJ*PEARTH                                           5278.
         FULGAS(7)=FULCH4
         FULGAS(8)=FULF11
         FULGAS(9)=FULF12
-!       CALL SETLAP
-!       CALL RCOMPT
-!       CALL RCOMPJ 
       endif
       if(CO2FOR)then
         if (KTREND.GT.0) THEN
@@ -872,6 +880,9 @@ c     FGOLDU(3)=XFRADJ*PEARTH                                           5278.
         else
          FULGAS(2)=CO2
         endif
+      endif
+      if(FORVOL)then
+        FGOLDU(1)=FGOLDU1
       endif
 !
 #if ( defined IPCC_EMI )
@@ -946,7 +957,7 @@ c         print *,'S0 for real calculation=',S0
             CALL WRITER(12)
             if(ii.ge.2)IRFIRST=0
           endif
-      IF(DMOD(TAU,30.*24.).EQ.0..and.J.eq.JM/2) then
+      IF(DMOD(TAU,365.*24.).EQ.0..and.J.eq.JM/2) then
 !     IF(DMOD(TAU,30.*24.).EQ.0..and.J.eq.1) then
        print *,' tau=',TAU,' J=',J
        CALL WRITER (1,0)
@@ -1181,9 +1192,6 @@ C
         FBC=0.0
        elseif(FORGHG)then
         CALL FORGET(YEARGT,KTREND,0)
-!       CALL SETLAP
-!       CALL RCOMPT
-!       CALL RCOMPJ 
        elseif(FORVOL)then
         FGOLDU(1)=FGOLDU0
        else
@@ -1199,7 +1207,7 @@ C
   568  continue
         CALL RCOMPX
        if(FORGHG.or.CO2FOR)then
-        IF(DMOD(TAU,30.*24.).EQ.0..and.J.eq.JM/2) then
+        IF(DMOD(TAU,365.*24.).EQ.0..and.J.eq.JM/2) then
 !       IF(DMOD(TAU,30.*24.).EQ.0..and.J.eq.1) then
          print *,' For CLEAR tau=',TAU,' J=',J
          CALL WRITER (1,0)

@@ -90,6 +90,8 @@ C                                                                       5035.
       common/ SNOWALB/FRSNALB
       common/ S0XR/S0RATE
       COMMON/CO2TRND/ALFFOR,CO2TR,YEARGT,CO2IN,INYRAD
+     & ,YEARGG,YEARS0,YEARSA,YEARVA
+     & ,KTREND
       dimension CLDSSF(JM0,LM0),CLDMCF(JM0,LM0)
      &,BSO4LAND(JM0),BSO4OCEAN(JM0)
       dimension DSWSRF(jm0),DLWSRF(jm0),DSWVIS(jm0),DSWNIR(jm0)
@@ -158,7 +160,7 @@ c
          nrbyyr=24*365/5
          nrcldmax=20*nrbyyr
 c     print *,' CLOUDS for ',nrcldmax/nrbyyr,' years'
-      KTREND=-CO2
+!     KTREND=-CO2
       JDAY00=-1
       print *,' RADIAGSO'
       if(CLDFEED)then
@@ -220,10 +222,10 @@ C     S0X=1.                                                            5089.1
         S0XAV=0.0
         RSDISTAV=0.0
       ELSE
-         call obssolar(S0X,YEARGT+0.5)
+         call obssolar(S0X,YEARS0+0.5)
          S0X=S0X/1367.
         print *,'Run with fixed solar constant=',S0X*1367.,
-     &  ' for year ', YEARGT
+     &  ' for year ', YEARS0
       ENDIF
       RVOL=0.012
 #if ( defined VOL_AER )
@@ -233,14 +235,14 @@ C     S0X=1.                                                            5089.1
 !         FVOL=0.0045
 !         FVOL=0.0007
         do n=1,NYVADAT
-          if(abs(SAYEARS(n)-YEARGT).lt.0.1) then
+          if(abs(SAYEARS(n)-YEARVA).lt.0.1) then
             FVOL=STAERGL(n)
            go to 768
           endif
         enddo
   768   continue
         RVOL=0.012
-        print *,'STAEROSOL for ',YEARGT,' FVOL=',FVOL
+        print *,'STAEROSOL for ',YEARVA,' FVOL=',FVOL
 #endif
       CALL RADIA0 (IO,JM,CO2,READGHG)                                   5090.   
          INCHM=NRAD/NDYN                                                5091.   
@@ -343,8 +345,22 @@ c          print *,'S0X=',S0X,' TNOW=',TNOW
       JMLAST=JMONTH
       IF (JDAY.NE.JDLAST.AND.KTREND.GT.0) then
 c         print *,'TNOW=',TNOW
-          CALL FORGET(TNOW,KTREND,KWRITE)
+        if(KTREND.NE.7) then
+         CALL FORGET(TNOW,KTREND,KWRITE)
+        else
+         CALL FORGET(YEARGG,KTREND,KWRITE)
+        endif
+      ENDIF
+#if ( defined IPCC_EMI )
+        FULGAS(2)=CO2
+!     IF(DMOD(TAU,365.*24.).EQ.0..and.J.eq.-JM/2) then
+      IF(DMOD(TAU,365.*24.).EQ.0..and.J.eq.1) then
+        print *,'IPCC_EMI CO2 from radiagso ', CO2
+        print *,'FULGAS(2)=',FULGAS(2)
+       print *,"tau=",tau
+       CALL WRITER (1,0)
       endif
+#endif
  
       IF (JDAY.NE.JDLAST)then
 
@@ -376,7 +392,6 @@ c          print *,'S0X=',S0X,' TNOW=',TNOW
 #ifdef PREDICTED_GASES
 	call chemglobal(P)
 #endif
-
       call sulfr(BSO4LAND,BSO4OCEAN,TNOW)
 !
 c    for sulfate.4x5.1986.new.dat
@@ -1228,6 +1243,7 @@ C****                                                                   5506.
            if (ALBAER-ALBC.lt.-1.e10) then
              print *,'Wrong ALBAER and ALBC'
              print *,J,ALBAER,ALBC
+             print '(4F15.5)',ALBV(j),ALBN(j),ALBVC(j),ALBNC(j)
              BSO4=BSO4LAND(J)
              AERAL= BETA*ALFA*BSO4
              if(COSZA(1,J).ge.0.01)then

@@ -35,9 +35,11 @@ C****                                                                   1005.
       dimension sst1(JM0,3),sst2(JM0,3),dsst(JM0,3),intem(3),
      &  sstmin(12,2)
      &       ,miceo(JM0)
+#if ( defined ORBITAL_FOR )
       common/ORBITAL/YEARORB,ORBTRANS,OBLIQ,ECCN,OMEGT
 #include "ORB.h"
       LOGICAL ORBTRANS
+#endif
       common/qfl/QFLUX(JM0,0:13),ZOAV(JM0),QFLUXT(JM0)
 !     common/TSUR/TSURFC(JM0,0:13),TSURFT(JM0),TSURFD(JM0),DTSURF(JM0)
 #include "TSRF.COM"
@@ -62,15 +64,18 @@ C****                                                                   1005.
       DATA JDOFM/0,31,59,90,120,151,181,212,243,273,304,334,365/        1012.
       DATA JDPERY/365/,JMPERY/12/,EDPERY/365./,Z1I/.1/,RHOI/916.6/      1013.
 C**** ORBITAL PARAMETERS FOR EARTH FOR YEAR 2000 A.D.                   1014.
+#if ( defined ORBITAL_FOR )
       DATA SOLS/173./,APHEL/186./
-!     DATA SOLS/173./,APHEL/186./,OBLIQ/23.44/,ECCN/.0167/              1015.
-!     DATA OMEGT/282.9/
+#else
+      DATA SOLS/173./,APHEL/186./,OBLIQ/23.44/,ECCN/.0167/              1015.
+      DATA OMEGT/282.9/
+#endif
 C****                                                                   1016.
 C**** THE GLOBAL MEAN PRESSURE IS KEPT CONSTANT AT PSF MILLIBARS        1017.
 C****                                                                   1018.
 C**** CALCULATE THE CURRENT GLOBAL MEAN PRESSURE                        1019.
-  100 SMASS=0.                                                          1020.
 c       print *,' from Daily KOCEAN=',KOCEAN
+  100 SMASS=0.                                                          1020.
       nsrps=nsrps+1
       DO 120 J=1,JM                                                     1021.
       SPRESS=0.                                                         1022.
@@ -119,10 +124,11 @@ C**** CALCULATE SOLAR ANGLES AND ORBIT POSITION                         1044.
       print *,' DAILY_ATM IDAY=',IDAY,' IYEAR=',IYEAR
       print *,' JYEAR=',JYEAR,' JDAY=',JDAY
       print *,' JDATE=',JDATE,' JMONTH=',JMONTH
-      if(.not.ORBTRANS) then
-      print *,'OBLIQ=',OBLIQ
-      print *,'ECCN=',ECCN,'OMEGT=',OMEGT
-      endif
+#if ( !defined ORBITAL_FOR )
+       print *,'ORBITAL PARAMETERS FOR EARTH FOR YEAR 2000 A.D.'
+       print *,'OBLIQ=',OBLIQ
+       print *,'ECCN=',ECCN,'OMEGT=',OMEGT
+#endif
          ifirst=0
        endif
       JDSAVE=JDAY                                                       1044.5
@@ -137,20 +143,30 @@ c     MONTH=7                                                           1044.55
 !     COSD=COS(DEC)                                                     1048.
 !     03/03/06
 !     Fixed calculation of incoming solar radiation
+#if ( defined ORBITAL_FOR )
       if (ORBTRANS.and.JDAY.eq.1)then
-       do i=1,nyorbit
-        if (abs(yorbit(i)-JYEAR).lt.0.5) then
-          OBLIQ=obliqh(i)
-          ECCN=eccenh(i)
-          OMEGT=180.+perih(i)
-        endif
-       enddo
+       if (JYEAR.le.yorbit(nyorbit)) then
+        do i=1,nyorbit
+         if (abs(yorbit(i)-JYEAR).lt.0.5) then
+           OBLIQ=obliqh(i)
+           ECCN=eccenh(i)
+           OMEGT=180.+perih(i)
+         endif
+        enddo
       print *,' Orbital parameter changed'
       print *,' JYEAR=',JYEAR,' JDAY=',JDAY
       print *,' JDATE=',JDATE,' JMONTH=',JMONTH
+       else
+           OBLIQ=obliqh(nyorbit)
+           ECCN=eccenh(nyorbit)
+           OMEGT=180.+perih(nyorbit)
+       print *,' Orbital parameter for year ',yorbit(nyorbit), 
+     &  'are used'
+       endif
       print *,'OBLIQ=',OBLIQ
       print *,'ECCN=',ECCN,'OMEGT=',OMEGT
       endif
+#endif
       CALL ORBIT (OBLIQ,ECCN,OMEGT,JDAY-0.5,RSDIST,SIND,COSD,LAMBDA)
       if(JDATE.le.16)then
        do 7231 j=1,JM

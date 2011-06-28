@@ -186,7 +186,7 @@ C
 C
       real XGASS(NGAS)
       dimension xf11(nyd),xf12(nyd),xco2(nyd),xn2o(nyd),
-     *xch4(nyd),ighgyr(nyd)
+     *xch4(nyd),ighgyr(nyd),iyear(nyd1)
       real xxf11(nyd1),xxf12(nyd1),xxco2(nyd1),xxn2o(nyd1),xxch4(nyd1)
       common/boxmod/YEAR0
       common /bmtrdata/co2_data
@@ -218,13 +218,17 @@ c     f11 includes other long-lived gases
       ny1=ny+1
       ny2=ny+2
       YEAR0=ighgyr(1)-1
+      iyear(1)=YEAR0
+      do i=1,ny1
+       iyear(i+1)=ighgyr(i)
+      enddo
         print *,'From FORSET'
         print *,' TREF=',YEAR
         print *,' XREF'
         print *,XGASS
         print *,' year=',year
-        print *,' ghgdata for ',ny,' years from ', ighgyr(1), ' to '
-     &  , ighgyr(ny)
+        print *,' ghgdata for ',ny+1,' years from ', ighgyr(1), ' to '
+     &  , ighgyr(ny1)
   501    format(i4,2f8.2)
          xxco2(1)=2.*xco2(1)-xco2(2)
          xxn2o(1)=2.*xn2o(1)-xn2o(2)
@@ -241,18 +245,28 @@ c     f11 includes other long-lived gases
          first=.false.
          return
       endif
-        call ghgint(xx,xxco2,ny2,YEAR)
+!       call ghgint(xx,xxco2,ny2,YEAR)
+!       XGASS(1)=xx
+!       call ghgint(xx,xxn2o,ny2,YEAR)
+!       XGASS(2)=xx
+!       call ghgint(xx,xxch4,ny2,YEAR)
+!       XGASS(3)=xx
+!       call ghgint(xx,xxf11,ny2,YEAR)
+!       XGASS(4)=xx
+!       call ghgint(xx,xxf12,ny2,YEAR)
+        XGASS(5)=xx
+        call ghgint1(xx,xxco2,iyear,ny2,YEAR)
         XGASS(1)=xx
-        call ghgint(xx,xxn2o,ny2,YEAR)
+        call ghgint1(xx,xxn2o,iyear,ny2,YEAR)
         XGASS(2)=xx
-        call ghgint(xx,xxch4,ny2,YEAR)
+        call ghgint1(xx,xxch4,iyear,ny2,YEAR)
         XGASS(3)=xx
-        call ghgint(xx,xxf11,ny2,YEAR)
+        call ghgint1(xx,xxf11,iyear,ny2,YEAR)
         XGASS(4)=xx
-        call ghgint(xx,xxf12,ny2,YEAR)
+        call ghgint1(xx,xxf12,iyear,ny2,YEAR)
         XGASS(5)=xx
         if(ncall.le.3)then
-           print *,'BMTRND from FORGET'
+           print *,'BMTRNDMG from FORGET'
            print *,' year=',year
            print *,'YEAR0=',YEAR0
         print *,' XGASS'

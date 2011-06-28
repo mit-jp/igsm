@@ -1,3 +1,4 @@
+
 #include "ctrparam.h"
 
 !	==========================================================
@@ -38,12 +39,17 @@ C****                                                                   1505.
 #include "RADCOM.COM"
 #include "run.COM" 
 #include "DRIVER.h"
+#if ( defined ORBITAL_FOR )
 #include "ORB.h"
+#endif
 
 #if ( defined OCEAN_3D )
 #include "AGRID.h"
 #endif
 
+cjrs done in driver.h #if ( defined CPL_TEM )
+cjrs#include "TEM.h"
+cjrs#endif
 !
 ! === Chien Wang 062904
 !
@@ -115,6 +121,7 @@ c==== 012201
      *  KM,KINC,COEK,INDAY,IMONTH,LDAY,LMONTH,LYEAR,AEXP,               1519.5  
      *  READGHG,wr25,LFR,ISTRT1,PCLOUD,QFCOR,TRANSR,WRCLD,NWRCLD,CONTRR,
      *  ISTWRC,CLDFEED,OBSFOR,ALFFOR,YEARGT,CO2IN,ISTRTCHEM,
+     &  YEARGG,YEARS0,YEARSA,YEARVA,
      *  AERFOR,AERF4BC,
      *  S0RATE,CFS0X,
      *  CFAEROSOL,CFBC,
@@ -142,8 +149,9 @@ c==== 012201
      &  ,PRTREND
 Cjrs     &  ,dtatm,dtocn
 #if ( defined IPCC_EMI )
-     &  ,init_co2
-      character * 120 init_co2
+     &  ,init_co2,emiss_data
+      character * 120 init_co2,emiss_data
+      common /emisdata/emiss_data
 #endif
       character * 120 ocngmfile,ocndata4atm,fl_volaer,fl_orbital
       character * 120 vegfile
@@ -154,7 +162,9 @@ c jrs      common/TIMESTEPS/dtatm,dtocn
      &,GHSF,VEGCH,TRVEG,GSOEQ,OCNGEOM,GHSFALB,STRARFOR,CO2FOR
      & ,FORSULF,FORBC,S0FOR,FORVOL,FORGHG
      &  ,ORBTRANS
+#if ( defined ORBITAL_FOR )
       common/ORBITAL/YEARORB,ORBTRANS,OBLIQ,ECCN,OMEGT
+#endif
       common/FORAERSOL/FORSULF,FORBC,FORVOL,FORGHG
       common/vaerosol/fl_volaer
       common/orbitalfl/fl_orbital
@@ -166,6 +176,8 @@ c jrs      common/TIMESTEPS/dtatm,dtocn
      &,CFAEROSOL,ALFA,CFBC,cfvolaer
       common/ BACKGRGHG/GHGBGR(5)
       COMMON/CO2TRND/ALFFOR,CO2TR,YEARGT,CO2IN,INYRAD
+     & ,YEARGG,YEARS0,YEARSA,YEARVA
+     & ,KTREND
       common/ S0XR/S0RATE,CFS0X
       common/cldfdb/coefcl(3),CLDFEED,SEN_dat
       common/diff/cfdiff,rkv
@@ -174,6 +186,7 @@ c jrs      common/TIMESTEPS/dtatm,dtocn
       common/atmos_lo/fland_atm(jm0)  !jrs not sure this does anything
 
 #if ( defined CLM )
+cjrs alreadyin DRIVER.h#include "CLM.COM"
       dimension clmlice(jm0),baresoil(jm0),
      &  w1maxclm(jm0),w2maxclm(jm0),vmaskclm(jm0)
       character * 120 lineclm
@@ -242,6 +255,10 @@ C
       ALFFOR=0.
       S0RATE=0.
       YEARGT=1958.
+       YEARGG=YEARGT
+       YEARS0=YEARGT
+       YEARSA=YEARGT
+       YEARVA=YEARGT
       YEARORB=2000.
       ORBTRANS=.false.
       CO2IN=280.
@@ -300,6 +317,7 @@ cc    ALFA = 8.0*1.e3
       flrco2av = 'undefined'
 #if ( defined IPCC_EMI )
       init_co2 = 'undefined'
+      emiss_data = 'undefined'
 #endif
       ISTRT1=0
       ISTRTCHEM=0
@@ -544,7 +562,8 @@ c
 !
 !       Chien 080400
 !
-!#include "assign.inc" 
+!#include "assign.inc"
+!
 !	================================================================
 !
 !	ASSIGN.F      A include file containing OPEN or ASSIGN lines
@@ -638,7 +657,6 @@ c    &        status='old')
 ! 3. Open a data file to save rawdata:
 
 c closed 032697:
-
 c      open(166,file='OUTPUT/cfcn2o',
 c     &        form='unformatted',
 c     &        status='new')
@@ -709,7 +727,7 @@ C  open statment moved from cheminit.F file number change to 279
      &             status='unknown')
 
         endif
-!
+
 #endif
 
 c     open file for carbon uptake
@@ -747,8 +765,8 @@ ce    open statments
 !!!
 !!!     xco2init=GHGBGR(1)
 !!!
-       CO2=xco2init/GHGBGR(1)
-       print *,'IPCC EMI CO2=',CO2
+!      CO2=xco2init/GHGBGR(1)
+!      print *,'IPCC EMI CO2=',CO2
 !     else
 !        print *,' Wrong YEARGT ', YEARGT
 !        stop
@@ -1126,9 +1144,9 @@ c       if(iyearocm.ne.JYEAR) then
 
       endif        ! endif for ISTRT1
 #if ( defined CPL_OCEANCO2 && defined ML_2D )
-       print *,'Rco2 from input'
+!      print *,'Rco2 from input'
 !        print *,(Rco2(j,1),j=1,jm)
-         print *,Rco2
+!        print *,Rco2
 #endif
 
       if(KOCEAN.eq.1) then
@@ -1159,8 +1177,10 @@ c     endif
 C**** UPDATE C ARRAY FROM INPUTZ                                        1747.   
   500 READ (514,INPUTZ)                                                 1748.   
 !      nrad=NDYN
+       KTREND=-CO2
 #if ( defined IPCC_EMI )
        CO2=xco2init/GHGBGR(1)
+       print *,'IPCC EMI CO2=',CO2
 #endif
       INYRAD=INYEAR
       JNDAY=INDAY+JDOFM(IMONTH)
@@ -1748,10 +1768,13 @@ c     VADATA(K,4,3)=0.1*VADATA(K,4,3)
 
       CALL RINIT (IRAND)                                                1865.   
 C     CALL IJSET (IM,JM,FDATA(1,1,2))                                   1866.   
+#if ( defined ORBITAL_FOR )
       print *,'Orbital parameters from input'
       print *,fl_orbital
       CALL read_orbital
-      if (.not.ORBTRANS)then
+      if (ORBTRANS)then
+      print *,'Run with changing orbital parameters '
+      else
        do i=1,nyorbit
         if (abs(yorbit(i)-YEARORB).lt.0.5) then
           OBLIQ=obliqh(i)
@@ -1759,10 +1782,13 @@ C     CALL IJSET (IM,JM,FDATA(1,1,2))                                   1866.
           OMEGT=180.+perih(i)
         endif
        enddo
-      print *,'Orbital parameters from input'
+      print *,'Run with fixed orbital parameters '
       print *,'YEARORB=',YEARORB,'OBLIQ=',OBLIQ
       print *,'ECCN=',ECCN,'OMEGT=',OMEGT
       endif
+#else
+            print *,'Run with default orbital parameters '
+#endif
       WRITE (6,INPUTZ)                                                  1867.   
 C     information for main program
       AEXPA=AEXP
