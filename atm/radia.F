@@ -236,6 +236,11 @@ C     S0X=1.                                                            5089.1
       KSTREND=S0RATE*100.
       print *,'S0RATE=',S0RATE,' KSTREND=',KSTREND
       print *,'From first call of radia CFS0X=',CFS0X
+      S0X0=S0X
+      if(S0FOR)then
+        print *,' Initial value for solar constant=',S0X0*1367
+      endif
+
 #if ( defined FIXED_FOR )
          print *,'Run with fixed forcing'
 #endif
@@ -245,25 +250,17 @@ C
          if(KSTREND.ne.0)then
            print *,'Wrong setting of GSOEQ and KSTREND'
            print *,' GSOEQ=',GSOEQ,' KSTREND=',KSTREND
-c          stop
+           stop
          endif
+#if ( defined VOL_AER )
+           print *,'Wrong setting of GSOEQ and VOL_AER'
+           stop
+#endif
          print *,
      &   'An equilibrium run for ',YEARGT,' conditions'
          YEARVA=YEARGT
          YEARS0=YEARGT
-      endif
-         if(KSTREND.eq.0)then
-         call obssolar(S0X,YEARS0+0.5)
-         S0X=S0X/1367.
-          print *,'Sconstant for year ',YEARS0,S0X*1367.
-         endif
-#if ( defined VOL_AER )
-      print *,'With volcanic forcing cfvolaer=',cfvolaer
-        FGOLDU0=1.
-        print *,'FGOLDU0=',FGOLDU0
-       call read_staer (NYVADAT,STAERMN,STAERGL,SAYEARS)
-#else
-       call read_staer (NYVADAT,STAERMN,STAERGL,SAYEARS)
+        call read_staer (NYVADAT,STAERMN,STAERGL,SAYEARS)
         do n=1,NYVADAT
           if(abs(SAYEARS(n)-YEARVA).lt.0.1) then
             FVOL=STAERGL(n)
@@ -276,6 +273,25 @@ c          stop
         print *,'STAEROSOL for year ',YEARVA,' STAER=',FVOL,
      &   '   FGOLDU(1)=',FGOLDU(1)
         FGOLDU1=FGOLDU(1)
+         if(KSTREND.eq.0)then
+         call obssolar(S0X,YEARS0+0.5)
+         S0X=S0X/1367.
+          print *,'Sconstant for year ',YEARS0,S0X*1367.
+         endif
+      else
+         if(KSTREND.eq.0)then
+           print *,' Run with fixed solar constan ',S0X*1367.
+         endif
+      endif
+#if ( defined VOL_AER )
+      print *,'With volcanic forcing cfvolaer=',cfvolaer
+        FGOLDU0=1.
+        print *,'FGOLDU0=',FGOLDU0
+       call read_staer (NYVADAT,STAERMN,STAERGL,SAYEARS)
+#else
+      if(.not.GSOEQ)then
+      print *,'No volcanic forcing FGOLDU(1)=',FGOLDU(1)
+      endif
 #endif
       if(CO2FOR)then
 	print *,' Forcing due to ',CO2F,'xCO2 is calculated',
@@ -324,11 +340,6 @@ c          stop
 c       print *,' 2D ghost forcing'
       endif
       S0X=CFS0X*S0X
-      S0X0=S0X
-      if(S0FOR)then
-        print *,' Initial value for solar constant=',S0X0*1367
-      endif
-
 !        print *,'Before CALL RADIA0'
       CALL RADIA0 (IO,JM,CO2,READGHG)                                   5090.   
 !        print *,'After CALL RADIA0'

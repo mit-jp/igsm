@@ -222,27 +222,15 @@ C     S0X=1.                                                            5089.1
         S0XAV=0.0
         RSDISTAV=0.0
       ELSE
-         call obssolar(S0X,YEARS0+0.5)
-         S0X=S0X/1367.
-        print *,'Run with fixed solar constant=',S0X*1367.,
-     &  ' for year ', YEARS0
+         if(KSTREND.eq.0)then
+           print *,' Run with fixed solar constan ',S0X*1367.
+         endif
       ENDIF
       RVOL=0.012
 #if ( defined VOL_AER )
       call read_staer (NYVADAT,STAERMN,STAERGL,SAYEARS)
 #else
-          call read_staer (NYVADAT,STAERMN,STAERGL,SAYEARS)
-!         FVOL=0.0045
-!         FVOL=0.0007
-        do n=1,NYVADAT
-          if(abs(SAYEARS(n)-YEARVA).lt.0.1) then
-            FVOL=STAERGL(n)
-           go to 768
-          endif
-        enddo
-  768   continue
-        RVOL=0.012
-        print *,'STAEROSOL for ',YEARVA,' FVOL=',FVOL
+       print *,'No volcanic forcing FGOLDU(1)=',FGOLDU(1)
 #endif
       CALL RADIA0 (IO,JM,CO2,READGHG)                                   5090.   
          INCHM=NRAD/NDYN                                                5091.   
