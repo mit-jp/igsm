@@ -1,4 +1,3 @@
-
 #include "ctrparam.h"
 
 !	==========================================================
@@ -512,7 +511,9 @@ C       CLOSE(876)
 #else
       if(.not.OBSFOR) then
         CFF=1.
+#if ( !defined FIXED_PCO2 )
         if (CO2.gt.0.0)CFF=CO2
+#endif
         do j=1,jm
           atm_co2(j)=CFF*GHGBGR(1)
         enddo

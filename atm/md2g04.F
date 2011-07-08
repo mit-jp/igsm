@@ -311,7 +311,8 @@ C                                                                       9119.1
       XR=XREF(K)                                                        9119.4  
       ITER=0                                                            9119.5  
       DTK=XDT0(K)                                                       9119.6  
-      IF(XN.EQ.XR) GO TO 200                                            9119.7  
+!     IF(XN.EQ.XR) GO TO 200                                            9119.7  
+      IF(abs(XN-XR).le.1.e-10) GO TO 200  
       IF(KFOR(K).EQ.0) GO TO 200                                        9119.8  
       GO TO (110,120,130,140,150),K                                     9119.9  
       GO TO 200                                                         9120.   
@@ -391,7 +392,9 @@ C                                                                       9131.7
       XR=XREF(K)                                                        9132.   
       ITER=0                                                            9132.1  
       DTK=XDT0(K)                                                       9132.2  
-      IF(XN.EQ.XR) GO TO 200                                            9132.3  
+!     print *,'From DXDT3D',k,xn,xr-xn
+!     IF(XN.EQ.XR) GO TO 200                                            9132.3  
+      IF(abs(XN-XR).le.1.e-10) GO TO 200  
       IF(KFOR(K).EQ.0) GO TO 200                                        9132.4  
       GO TO (110,120,130,140,150),K                                     9132.5  
       GO TO 200                                                         9132.6  
@@ -456,6 +459,7 @@ C                                                                       9131.7
       IF(ITER.LT.15.AND.ABS(DT).GT.1.E-05) GO TO 151                    9138.5  
       GO TO 190                                                         9138.6  
  190  XNOW(K)=XN                                                        9138.7  
+!     print *,'From DXDT3D',k,xn,xr
  200  CONTINUE                                                          9138.8  
       RETURN                                                            9138.9  
       END                                                               9139.   

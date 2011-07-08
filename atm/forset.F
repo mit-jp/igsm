@@ -152,7 +152,7 @@ c     endif
          print '(a20,5F10.2)','From forset XNOW=',(XNOW(i),i=1,ngas)
          print '(a10,5F10.2)','FULGAS =',FULGAS(2),(FULGAS(i),i=6,9)
        ENDIF
-#if ( !defined IPCC_EMI )
+#if ( !defined IPCC_EMI && !defined FIXED_PCO2)
        do j=1,nlat
         atm_co2(j)=XNOW(1)
        enddo
