@@ -1,0 +1,15 @@
+ &par
+  jm=46,lm=11,im=1,im0=72
+  nmf=1
+  yearf=1991
+  yearl=2101
+ &end
+ &ave
+  datafr     = 'ANNUALLY'
+  ivr        = 35,
+  var        = 'GLOBAL'
+  opf        = .false.
+  flaver     = './antsrf.out',
+  floutascii = './antsrf.txt',
+  flname     = './plot.out'
+ &end
