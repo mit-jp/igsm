@@ -1,0 +1,11 @@
+*.GLB
+*.out
+.temstate*
+budget
+chemrenew.dat
+globalmean*
+meta
+mittem4.log
+monthly*
+name.tmp
+photodiag

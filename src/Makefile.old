@@ -8,9 +8,9 @@
 INCDIR = ./inc
 
 # compilers and flags for PGI/LINUX
-FC       = pgf90
+FC       = @FC@
 FFLAGS   = -I$(INCDIR) -r8 -i4
-CXX      = pgCC
+CXX      = @CXX@
 CXXFLAGS = -Mscalarsse -fpic
 
 # lists of source files for IGSM modules, not including CLM
@@ -19,7 +19,7 @@ chem_SRCS = $(wildcard chem/*.F)
 meta_SRCS = $(wildcard meta/*.F)
 ml_SRCS = $(wildcard ocn_ml/*.F)
 ocm_SRCS = $(wildcard ocm/*.F)
-tem_SRCS = $(wildcard tem/4.3.8/*.cpp)
+tem_SRCS = $(wildcard tem/@TEM_VERSION@/*.cpp)
 
 # source files for the emissions preprocessor
 emiprep_SRCS = $(wildcard emiprep/*.F90)
@@ -28,8 +28,8 @@ emiprep_SRCS = $(wildcard emiprep/*.F90)
 # in the library libfoo.o
 igsm_OBJECTS = libatm.a($(atm_SRCS:.F=.o)) \
 	libchem.a($(chem_SRCS:.F=.o)) \
-	clm/2.1/libclm.a \
-	clm/2.1/libesmf.a \
+	clm/@CLM_VERSION@/libclm.a \
+	clm/@CLM_VERSION@/libesmf.a \
 	libmeta.a($(meta_SRCS:.F=.o)) \
 	libml.a($(ml_SRCS:.F=.o)) \
 	libocm.a($(ocm_SRCS:.F=.o)) \
@@ -62,7 +62,7 @@ prep: $(emiprep_SRCS:.F90=.o)
 
 clean:
 	rm -f igsm22 prep *.a
-	cd clm/2.1 && make clean
+	cd clm/@CLM_VERSION@ && make clean
 
 # Pattern rule for .F90 files. Rules for .c, .F etc. are defined by default.
 %.o: %.F90
