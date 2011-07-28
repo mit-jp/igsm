@@ -8,15 +8,18 @@ or at http://svante.mit.edu/git/?p=igsm.git.
 CONTENTS
 --------
 
-    atm -- atmosphere model
-   chem -- atmospheric chemistry model
-    clm -- "Community Land Model"
-emiprep -- 'prep'rocessor for EPPA 5 'emi'ssions
-    inc -- include files
-   meta -- urban metamodel
- ocn_ml -- Two-dimensional, multi-layer (ml) ocean model
-    ocm -- Ocean carbon model
-    tem -- "Terrestrial Ecosystem Model"
+ data -- Common data files (grids, etc.) for running the model
+  src -- Source code for the modules of the model, including…
+          atm -- atmosphere model
+         chem -- atmospheric chemistry model
+          clm -- Community Land Model <http://www.cgd.ucar.edu/tss/clm>
+          inc -- INClude files common to all modules
+         meta -- urban METAmodel
+       ocn_ml -- two-dimensional, Multi-Layer (ML) OCeaN model
+          ocm -- Ocean Carbon Model
+          tem -- Terrestrial Ecosystem Model
+ util -- Utilities including pre- and post-processing scripts
+tests -- Example input files for common use cases
 
 DEPENDENCIES
 ------------
@@ -29,6 +32,10 @@ BUILD
 The following process has only been tested on svante.mit.edu -- a Fedora Core
 14 x86_64 system with GNU Make 3.82 [2], PGI 9.0.4 and NetCDF 3.6.2.
 
+(0) If building directly from version control: in the root directory, type:
+
+    $ autoreconf
+
  1. Load the PGI [3] compilers and the NetCDF [4] libraries:
 
     $ module load pgi netcdf
@@ -38,12 +45,12 @@ The following process has only been tested on svante.mit.edu -- a Fedora Core
 
  3. In the root directory, type:
 
+    $ ./configure
     $ make
 
-An executable named 'igsm22' is produced in the root directory. Currently there
-is no automatic configuration script, and no build options (for target
-directories, modules, features, etc.); the build can only be configured by
-manually editing various include files.
+An executable named 'igsm22' is produced in the src/ directory. Some basic
+documentation of options can be obtained by typing './configure --help', but
+the build process is still mostly undocumented.
 
 EXECUTE
 -------
