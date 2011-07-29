@@ -1,0 +1,34 @@
+
+ $chem_name_list
+	bio_uptake     = 2.1,
+	svi_intensity  = 3.0,
+	nhr_for_chem   = 3,
+ $END
+
+! === for biospheric uptake of co2:
+
+	bio_uptake = 1.1,	;GtC for low case
+	bio_uptake = 2.1,	;GtC for reference
+	bio_uptake = 3.1,	;GtC for high case
+
+! === for s(vi) aerosol forcing intensity:
+
+	svi_intensity  = 1.5,	;high(1.0dir + 2.0ind)*0.5
+	svi_intensity  = 3.0,	;ref (1.0dir + 2.0ind)*1.0
+	svi_intensity  = 6.0,	;low (1.0dir + 2.0ind)*2.0
+	
+! === for frequency of gaseous chemistry in hour:
+
+	nhr_for_chem   = 3,	;call chemtrop() every 3 hours
+	
+! === for including hfc, pfc, and sf6:
+
+	if_3gases      = 1	;calculate 3 gases
+	if_3gases      = 0	;not calculate 3 gases
+
+! === for using predicted o3 in radiation:
+
+	if_o3rad       = 1	;yes
+	if_o3rad       = 0	;not
+	
+
