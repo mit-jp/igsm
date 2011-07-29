@@ -109,7 +109,8 @@ VPATH := $(ESMF_LIB)/$(ESMF_ARCH):$(subst $(space),:,$(VPATH))
 TARGET  := $(MODEL_EXEDIR)/$(EXENAME)
 CPPDEF  := -DNO_SHR_VMATH -DHIDE_SHR_MSG 
 
-all: $(TARGET) libs
+#all: $(TARGET) libs
+all: libs
 libs: libclm.a libesmf.a
 
 # 'depends.mk' contains a list of make rules for the files in Srcfiles

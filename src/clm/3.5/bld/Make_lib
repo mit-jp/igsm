@@ -1,0 +1,10 @@
+#!/bin/csh
+
+cd /home/jscott/CLM35_BUILD_mangled_11_1980/exe/
+rm -r LIB
+mkdir LIB
+cd LIB
+cp ../*.o .
+rm program_igsm.o
+ar -r LIBCLM.V35.a *.o
+ar -tv LIBCLM.V35.a  
