@@ -9,12 +9,15 @@ CLMFLAGS := -maxpft 16 \
 	-tem off \
 	-usr_src $(CLMROOT)/bld/usr.src
 
-all:
+all: libclm.a
+
+libclm.a:
 	cp src/main/IGSM2/* src/main/
 	cp src/biogeophys/IGSM2/* src/biogeophys/
 	mkdir -p exe
-	cd exe && ../bld/configure $(CLMFLAGS) && make \
-	  && rm program_igsm.o && ar r libclm.a *.o
+	cd exe && ../bld/configure $(CLMFLAGS) && make
+	rm exe/program_igsm.o
+	ar r libclm.a exe/*.o
 
 clean:
-	rm -r exe
+	rm -r exe libclm.a

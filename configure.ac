@@ -19,25 +19,30 @@ AC_ARG_WITH([clm],
     [select version of the Common Land Model: 2.1 (default) or 3.5.])],
   [CLM_VERSION=$withval],
   [CLM_VERSION=2.1])
+CLM_LDADD=""
 if test "$CLM_VERSION" != no; then
   CLM_DIR="clm/$CLM_VERSION"
+  CLM_LDADD+="-L$CLM_DIR -lclm"
+  if test "$CLM_VERSION" = 2.1; then
+    CLM_LDADD+=" -lesmf"
+  fi
 fi
-AM_CONDITIONAL(WITH_CLM, [test "$CLM_VERSION" != no])
 AC_SUBST(CLM_DIR)
-AC_SUBST(CLM_VERSION)
+AC_SUBST(CLM_LDADD)
 
 # Package option for TEM version
-AC_ARG_WITH([clm],
+AC_ARG_WITH([tem],
   [AS_HELP_STRING([--with-tem],
     [select version of the Terrestrial Ecosystem Model: 4.3.8 (default) or 4.4b.])],
   [TEM_VERSION=$withval],
   [TEM_VERSION=4.3.8])
+TEM_LDADD=""
 if test "$TEM_VERSION" != no; then
   TEM_DIR="tem/$TEM_VERSION"
+  TEM_LDADD+="-L$TEM_DIR -ltem"
 fi
-AM_CONDITIONAL(WITH_TEM, [test "$TEM_VERSION" != no])
 AC_SUBST(TEM_DIR)
-AC_SUBST(TEM_VERSION)
+AC_SUBST(TEM_LDADD)
 
 
 ### Build environment
