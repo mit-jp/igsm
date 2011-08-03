@@ -15,7 +15,7 @@ libclm.a:
 	cp src/main/IGSM2/* src/main/
 	cp src/biogeophys/IGSM2/* src/biogeophys/
 	mkdir -p exe
-	cd exe && ../bld/configure $(CLMFLAGS) && make
+	cd exe && ../bld/configure $(CLMFLAGS) && make nolink
 	rm exe/program_igsm.o
 	ar r libclm.a exe/*.o
 

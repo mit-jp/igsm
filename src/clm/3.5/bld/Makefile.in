@@ -108,6 +108,7 @@ endif
 $(MODEL_EXEDIR)/$(EXENAME): $(OBJS)
 	$(LINKER) -o $@ $(OBJS) -L$(LIB_NETCDF) -lnetcdf -lnetcdff $(LDFLAGS)
 
+nolink: $(OBJS)
 
 # Compilation rules:
 .SUFFIXES:

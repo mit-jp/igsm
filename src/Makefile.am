@@ -1,11 +1,28 @@
-SUBDIRS = atm chem $(CLM_DIR) ocm ocn_ml meta $(TEM_DIR)
-DIST_SUBDIRS = atm chem clm/2.1 clm/3.5 ocm ocn_ml meta tem/4.3.8 tem/4.4b
+SUBDIRS = atm \
+	chem \
+	$(CLM_DIR) \
+	ocm \
+	ocn_ml \
+	meta \
+	$(TEM_DIR)
+
+DIST_SUBDIRS = atm \
+	chem \
+	clm/2.1 clm/3.5 \
+	ocm \
+	ocn_ml \
+	meta \
+	tem/4.3.8 tem/4.4b
 
 bin_PROGRAMS = igsm22
 
-# There is no top-level source file for the IGSM; set _SOURCES blank so automake
-# doesn't go looking for "igsm22.c".
-igsm22_SOURCES =
+# The driver routines are only built for the igsm22 executable.
+igsm22_SOURCES = driver/atm2d_init_fixed.F \
+	driver/atm2d_init_vars.F \
+	driver/driver_IGSM22.F \
+	driver/forward_step_atm2d.F
+
+igsm22_FFLAGS = -Mdalign -Msave
 
 # Use the PGI Fortran, rather than C/C++, linker.
 igsm22_LINK = $(FC) -fastsse -o $@
@@ -27,5 +44,5 @@ igsm22_LDADD = ocn_ml/libml.a \
 	$(TEM_LDADD) \
 	chem/libchem.a \
 	meta/libmeta.a \
-	-lnetcdff -lnetcdf -lnetcdf_c++ \
+	$(NETCDF_LDADD) \
 	$(FCLIBS) -lstd -lC -lgcc -lc -lstdc++

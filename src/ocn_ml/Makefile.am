@@ -2,12 +2,8 @@ noinst_LIBRARIES = libml.a
 
 libml_a_FFLAGS = -Mdalign -Msave
 
-libml_a_SOURCES = atm2d_init_fixed.F \
-	atm2d_init_vars.F \
-	daily_for_ocean.F \
-	driver_IGSM22.F \
+libml_a_SOURCES = daily_for_ocean.F \
 	flux_atm2ocean.F \
-	forward_step_atm2d.F \
 	ground_ocean.F \
 	init_ocean.F \
 	mlocean.F \

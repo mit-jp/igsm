@@ -47,14 +47,14 @@ The following process has only been tested on svante.mit.edu -- a Fedora Core
 
 (0) If building directly from version control: in the root directory, type:
 
-    $ autoreconf
+    $ autoreconf --install
 
  1. Load the PGI [4] compilers and the NetCDF [5] libraries:
 
     $ module load pgi netcdf
 
- 2. Create or edit the file inc/ctrparam.h. An example is provided at
-    inc/ctrparam_igsm22_noclm.h.
+ 2. Create or edit the file src/inc/ctrparam.h. An example is provided at
+    src/inc/ctrparam_igsm22_noclm.h.
 
  3. In the root directory, type:
 
@@ -67,6 +67,11 @@ the build process is still mostly undocumented.
 
 EXECUTE
 -------
+
+N.B. Before running any of the experiments in the tests/ directory, copy the
+entire directory out of the source tree into a separate location. This avoids
+confusion when the experiments alter the files or create new ones, or updates
+to the source also change the experiment input files.
 
 ### Preprocessing
 The `emiprep` binary reads a file called `eppa5chm.put` from the current

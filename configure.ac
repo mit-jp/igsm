@@ -88,6 +88,9 @@ AC_FUNC_REALLOC
 AC_CHECK_FUNCS([gettimeofday memset modf pow strcasecmp strchr])
 
 # Custom flags
+NETCDF_LDADD="-lnetcdff -lnetcdf -lnetcdf_c++"
+# TODO: test if -lnetcdff90 exists
+AC_SUBST(NETCDF_LDADD)
 # Include paths to NetCDF when linking. LIB_NETCDF is defined by 'module load
 # netcdf'.
 LDFLAGS="$LDFLAGS -L${LIB_NETCDF}"
