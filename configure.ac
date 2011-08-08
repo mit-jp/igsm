@@ -5,8 +5,11 @@
 AC_PREREQ([2.66])
 AC_INIT(igsm, [1.0], [globalchange@mit.edu])
 AM_INIT_AUTOMAKE
-#AC_CONFIG_SRCDIR([src/clm/2.1/misc.h])
-AC_CONFIG_HEADERS([config.h])
+AC_CONFIG_SRCDIR([src/atm/atmosphere.F])
+# TODO: src/inc/ctrparam.h is a template for IGSM-related preprocessor symbols
+# only. The symbols defined by the tests under 'Build environment' are not
+# currently written anywhere. Decide if these are necessary.
+AC_CONFIG_HEADERS([src/inc/ctrparam.h])
 
 
 ### Package options
@@ -44,6 +47,17 @@ fi
 AC_SUBST(TEM_DIR)
 AC_SUBST(TEM_LDADD)
 
+# Package option for user source overrides
+AC_ARG_WITH([usr-src],
+  [AS_HELP_STRING([--with-usr-src],
+    [path to a directory containing replacements for IGSM source files (default ./src/usr)])],
+  [USR_SRCDIR=`eval "echo $withval"`],
+  [USR_SRCDIR=no])
+if test ! -d "$USR_SRCDIR"; then
+  AC_MSG_NOTICE([user source directory '$USR_SRCDIR' does not exist])
+  USR_SRCDIR=""
+fi
+# no AC_SUBST call; this variable isn't used outside this file
 
 ### Build environment
 # TODO: Figure out how to invoke 'module load' when the user runs 'configure'.
@@ -95,9 +109,44 @@ AC_SUBST(NETCDF_LDADD)
 # netcdf'.
 LDFLAGS="$LDFLAGS -L${LIB_NETCDF}"
 FFLAGS="$FFLAGS -r8 -i4"
-# FIXME: find a way to avoid using pwd here (use an autoconf variable)
-CPPFLAGS="$CPPFLAGS -I`pwd`/src/inc"
 CXXFLAGS="$CXXFLAGS -Mscalarsse -fpic"
+
+
+### User source overrides
+# clean up old symlinks to files the user was overriding on the last invocation
+# of 'configure': look for all symlinks
+for f in `find . -type l`; do
+  # check that the symlink ('foo.F') has a matching backup ('foo.F.dist')
+  if test -f "$f.dist"; then
+    # delete the symlink
+    AC_MSG_NOTICE([restoring original version of $f])
+    rm $f
+    # restore the backup
+    mv $f.dist $f
+  fi
+done
+# only process the overrides if --with-usr-src was provided and a valid path was
+# given
+if test -n "$USR_SRCDIR"; then
+  LINKS=""
+  # consider each of the user's overrides, which are in $USR_SRCDIR
+  for f in `find $USR_SRCDIR -type f`; do
+    # look for a file elsewhere in src/ with the same name
+    bn=`basename $f`
+    orig=`find src -path $USR_SRCDIR -prune -o \( -name "$bn*" -print0 \)`
+    if test -n "$orig" -a -f "$orig" -a ! -f "$orig.dist"; then
+      # the file exists, it's not a symlink, and there's no backup 'foo.F.dist'
+      # make a backup of the original
+      AC_MSG_NOTICE([creating a backup of $orig])
+      mv $orig $orig.dist
+      # add this to the list of files to be symlinked
+      LINKS="$LINKS `dirname $orig`/$bn:$f"
+    fi
+  done
+  # make autoconf create the symlinks to the user overrides
+  AC_CONFIG_LINKS([$LINKS])
+fi
+
 
 ### Defines.
 # The current effect of these lines is that config.h will contain the same set
@@ -105,7 +154,7 @@ CXXFLAGS="$CXXFLAGS -Mscalarsse -fpic"
 # TODO: choose dynamically or define command-line options, as appropriate.
 AC_DEFINE(N_LAT, 46, [Number of latitudinal grid points])
 AC_DEFINE(N_LEV, 11, [Number of vertical pressure layers])
-AC_DEFINE(N_LONO, 72, [TODO: document this])
+AC_DEFINE(N_LON0, 72, [TODO: document this])
 AC_DEFINE(N_LEVOCEAN, 11, [Number of vertical layers in diffusive ocean model (either 11 or 12)])
 
 # Only one of the following two lines

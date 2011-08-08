@@ -6,16 +6,7 @@ To-Do List
   - ctrparams.h is generated according to user options to 'configure', and with
     proper #defines to run the chosen set of modules.
 
-- Allow the user to pick between different major releases, e.g. TEM 4.4b vs.
-  4.3.7, or CLM 2.1 vs. 3.5. N.B. the build procedure for these two versions of
-  CLM is very different.
-
-- Implement VPATH for all modules so as to seamlessly allow user code
-  modifications.
-
-- Separate driver-related .F files from src/ocn_ml into a their own library.
-  These files are shared with the 3D ocean. Some driver code could also be moved
-  to the ATM module.
+- Move some subroutines (which?) from src/driver to src/atm.
 
 - Add more verification experiments, including maybe:
   - atm-only

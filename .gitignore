@@ -2,6 +2,7 @@
 *.a
 *.mod
 *.o
+.deps
 stamp-h1
 Makefile
 Makefile.in
@@ -16,4 +17,5 @@ Makefile.in
 /missing
 /src/igsm22
 /src/clm/2.1/utils/esmf/build/*/machineinfo.h
+/src/clm/3.5/exe
 /util/analysis/antsrf
