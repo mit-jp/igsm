@@ -1,3 +1,5 @@
+AM_CPPFLAGS = -I$(top_srcdir)/src/inc
+
 noinst_LIBRARIES = libml.a
 
 libml_a_FFLAGS = -Mdalign -Msave

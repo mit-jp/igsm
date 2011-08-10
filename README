@@ -45,7 +45,7 @@ BUILD
 The following process has only been tested on svante.mit.edu -- a Fedora Core
 14 x86_64 system with GNU Make 3.82 [3], PGI 9.0.4 and NetCDF 3.6.2.
 
-(0) If building directly from version control: in the root directory, type:
+(0) If building directly from version control, in the root directory type:
 
     $ autoreconf --install
 
@@ -58,7 +58,9 @@ The following process has only been tested on svante.mit.edu -- a Fedora Core
 
  3. In the root directory, type:
 
-    $ ./configure
+    $ mkdir build
+    $ cd build
+    $ ../configure
     $ make
 
 An executable named 'igsm22' is produced in the src/ directory. Some basic

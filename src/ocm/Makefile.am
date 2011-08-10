@@ -1,3 +1,5 @@
+AM_CPPFLAGS = -I$(top_srcdir)/src/inc
+
 noinst_LIBRARIES = libocm.a
 
 libocm_a_FFLAGS = -Msave

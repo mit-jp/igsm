@@ -1,0 +1,2 @@
+noinst_HEADERS = AGRID.h \
+	BD2G04.COM

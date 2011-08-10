@@ -147,3 +147,5 @@
 
 /* Define to rpl_realloc if the replacement function should be used. */
 #undef realloc
+
+/* Add custom IGSM preprocessor #defines below this line **********************/

@@ -10,13 +10,21 @@ AC_CONFIG_SRCDIR([src/atm/atmosphere.F])
 # only. The symbols defined by the tests under 'Build environment' are not
 # currently written anywhere. Decide if these are necessary.
 AC_CONFIG_HEADERS([src/inc/ctrparam.h])
-
+AH_BOTTOM([/* Add custom IGSM preprocessor #defines below this line **********************/])
 
 ### Package options
 # This section defines the command-line options accepted by 'configure'. For
 # usage instructions, run './configure --help'.
 
-# Package option for CLM version. De
+# Package option for 2D or 3D ocean
+AC_ARG_ENABLE([mitgcm],
+  [AS_HELP_STRING([--enable-mitgcm],
+    [instead of the 2D ocean, produce libraries suitable for linking with the MITgcm three-dimensional ocean model, and don't produce an igsm22 executable. Disabled by default])],
+  [ocean=3D],
+  [ocean=2D])
+AM_CONDITIONAL([IGSM_BIN], [test "$ocean" = "2D"])
+
+# Package option for CLM version
 AC_ARG_WITH([clm],
   [AS_HELP_STRING([--with-clm],
     [select version of the Common Land Model: 2.1 (default) or 3.5.])],
@@ -51,13 +59,18 @@ AC_SUBST(TEM_LDADD)
 AC_ARG_WITH([usr-src],
   [AS_HELP_STRING([--with-usr-src],
     [path to a directory containing replacements for IGSM source files (default ./src/usr)])],
-  [USR_SRCDIR=`eval "echo $withval"`],
-  [USR_SRCDIR=no])
-if test ! -d "$USR_SRCDIR"; then
-  AC_MSG_NOTICE([user source directory '$USR_SRCDIR' does not exist])
-  USR_SRCDIR=""
+  [usr_srcdir=`eval "echo $withval"`],
+  [usr_srcdir=no])
+if test "$usr_srcdir" = "yes"; then
+  # user gave --with-usr-src but no directory; assume it's src/usr
+  usr_srcdir="$srcdir/src/usr"
+elif test "$usr_srcdir" = "no" -o ! -d "$usr_srcdir"; then
+  # something besides --without-usr-src was given, but doesn't exist
+  AC_MSG_NOTICE([user source directory '$usr_srcdir' does not exist])
+  usr_srcdir=""
 fi
 # no AC_SUBST call; this variable isn't used outside this file
+
 
 ### Build environment
 # TODO: Figure out how to invoke 'module load' when the user runs 'configure'.
@@ -103,48 +116,34 @@ AC_CHECK_FUNCS([gettimeofday memset modf pow strcasecmp strchr])
 
 # Custom flags
 NETCDF_LDADD="-lnetcdff -lnetcdf -lnetcdf_c++"
-# TODO: test if -lnetcdff90 exists
 AC_SUBST(NETCDF_LDADD)
 # Include paths to NetCDF when linking. LIB_NETCDF is defined by 'module load
 # netcdf'.
-LDFLAGS="$LDFLAGS -L${LIB_NETCDF}"
-FFLAGS="$FFLAGS -r8 -i4"
-CXXFLAGS="$CXXFLAGS -Mscalarsse -fpic"
+LDFLAGS+=" -L${LIB_NETCDF}"
+FFLAGS+=" -r8 -i4"
+CXXFLAGS+=" -Mscalarsse -fpic"
 
 
 ### User source overrides
-# clean up old symlinks to files the user was overriding on the last invocation
-# of 'configure': look for all symlinks
-for f in `find . -type l`; do
-  # check that the symlink ('foo.F') has a matching backup ('foo.F.dist')
-  if test -f "$f.dist"; then
-    # delete the symlink
-    AC_MSG_NOTICE([restoring original version of $f])
-    rm $f
-    # restore the backup
-    mv $f.dist $f
-  fi
-done
 # only process the overrides if --with-usr-src was provided and a valid path was
 # given
-if test -n "$USR_SRCDIR"; then
-  LINKS=""
-  # consider each of the user's overrides, which are in $USR_SRCDIR
-  for f in `find $USR_SRCDIR -type f`; do
+if test -n "$usr_srcdir"; then
+  usr_links=""
+  # consider each of the user's files in $usr_srcdir as a candidate
+  for f in `find $usr_srcdir -type f`; do
     # look for a file elsewhere in src/ with the same name
     bn=`basename $f`
-    orig=`find src -path $USR_SRCDIR -prune -o \( -name "$bn*" -print0 \)`
-    if test -n "$orig" -a -f "$orig" -a ! -f "$orig.dist"; then
-      # the file exists, it's not a symlink, and there's no backup 'foo.F.dist'
-      # make a backup of the original
-      AC_MSG_NOTICE([creating a backup of $orig])
-      mv $orig $orig.dist
-      # add this to the list of files to be symlinked
-      LINKS="$LINKS `dirname $orig`/$bn:$f"
+    orig=`find $srcdir/src -path $usr_srcdir -prune -o \( -name "$bn*" -print0 \)`
+    if test -n "$orig"; then
+      # a file was found 
+      # path fragment for the target
+      opath=`dirname $orig | sed "s@$srcdir/src/@@"`
+      # add it to the list of files to be symlinked
+      usr_links += "src/$opath/$bn:$f"
     fi
   done
-  # make autoconf create the symlinks to the user overrides
-  AC_CONFIG_LINKS([$LINKS])
+  # let configure create the actual symlinks
+  AC_CONFIG_LINKS([$usr_links])
 fi
 
 
@@ -183,8 +182,17 @@ AC_DEFINE(NYR_CHEM, 1, [Number of year of chemistry model integration (124 for p
 #AC_DEFINE(O3_FORCED, 1, [Use forced ozone scenario (ifo3forced). If CPL_CHEM is def'd, this parameter is excluded])
 #AC_DEFINE(SVI_ALBEDO, 1, [Modify albedo to simulate sulfate aerosol forcing (ifsulfalb). If CPL_CHEM is def'd, this parameter is excluded])
 
-# TODO: document this
+# TODO: document these
 #AC_DEFINE(VOL_AER)
+#AC_DEFINE(FIXED_PCO2)
+#AC_DEFINE(DATA4TEM)
+#AC_DEFINE(ACCRI)
+#AC_DEFINE(HR_DATA)
+#AC_DEFINE(ORBITAL_FOR)
+#AC_DEFINE(IPCC_EMI)
+#AC_DEFINE(FIXED_FOR)
+#AC_DEFINE(OLD_LAPGAS)
+#AC_DEFINE(GHS_ALB)
 
 
 ### Output Makefiles
@@ -192,6 +200,7 @@ AC_CONFIG_FILES([Makefile
 	src/Makefile
 	src/atm/Makefile
 	src/chem/Makefile
+	src/inc/Makefile
 	src/meta/Makefile
 	src/ocm/Makefile
 	src/ocn_ml/Makefile

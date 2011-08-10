@@ -1,6 +1,5 @@
 *~
 *.a
-*.mod
 *.o
 .deps
 stamp-h1

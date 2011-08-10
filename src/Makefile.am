@@ -1,6 +1,7 @@
 SUBDIRS = atm \
 	chem \
 	$(CLM_DIR) \
+	inc \
 	ocm \
 	ocn_ml \
 	meta \
@@ -9,10 +10,15 @@ SUBDIRS = atm \
 DIST_SUBDIRS = atm \
 	chem \
 	clm/2.1 clm/3.5 \
+	inc \
 	ocm \
 	ocn_ml \
 	meta \
 	tem/4.3.8 tem/4.4b
+
+AM_CPPFLAGS = -I$(top_srcdir)/src/inc
+
+if IGSM_BIN
 
 bin_PROGRAMS = igsm22
 
@@ -46,3 +52,5 @@ igsm22_LDADD = ocn_ml/libml.a \
 	meta/libmeta.a \
 	$(NETCDF_LDADD) \
 	$(FCLIBS) -lstd -lC -lgcc -lc -lstdc++
+
+endif
