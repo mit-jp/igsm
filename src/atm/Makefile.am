@@ -6,7 +6,6 @@ libatm_a_FFLAGS = -Mdalign -Msave
 
 libatm_a_SOURCES = atmosphere.F \
 	bgrghg.F \
-	check_lib.F \
 	check_settings.F \
 	chemglobal.F \
 	chemtemco2.F \
