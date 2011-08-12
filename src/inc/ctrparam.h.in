@@ -1,5 +1,23 @@
 /* src/inc/ctrparam.h.in.  Generated from configure.ac by autoheader.  */
 
+/* Coupling CLM */
+#undef CLM
+
+/* Coupling chemistry */
+#undef CPL_CHEM
+
+/* Coupling parameterized urban airshed model (meta) */
+#undef CPL_META
+
+/* Coupling natural emission model */
+#undef CPL_NEM
+
+/* Coupling ocean CO2 model */
+#undef CPL_OCEANCO2
+
+/* Coupling chemistry */
+#undef CPL_TEM
+
 /* Define to dummy `main' function (if any) required to link to the Fortran
    libraries. */
 #undef F77_DUMMY_MAIN
@@ -90,6 +108,9 @@
 /* Define to 1 if the system has the type `_Bool'. */
 #undef HAVE__BOOL
 
+/* Including "3 gases" */
+#undef INC_3GASES
+
 /* Two-dimensional ocean */
 #undef ML_2D
 
@@ -108,6 +129,15 @@
 
 /* TODO: document this */
 #undef N_LON0
+
+/* Use forced ozone scenario (ifo3forced) */
+#undef O3_FORCED
+
+/* Use predicted ozone in radiation module */
+#undef O3_RAD
+
+/* Three-dimensional ocean */
+#undef OCEAN_3D
 
 /* Name of package */
 #undef PACKAGE
@@ -130,11 +160,29 @@
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
 
+/* Use predicted aerosol concentrations by chemistry model to calculate
+   radiative forcing (ifaerpredict) */
+#undef PREDICTED_AEROSOL
+
+/* Use predicted black carbon concentrations by chemistry model to calculate
+   radiative forcing */
+#undef PREDICTED_BC
+
+/* Use predicted concentrations of chemical species by chemistry model to
+   calculate radiative forcing (ifghgpredict) */
+#undef PREDICTED_GASES
+
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS
 
+/* Modify albedo to simulate sulfate aerosol forcing (ifsulfalb) */
+#undef SVI_ALBEDO
+
 /* Version number of package */
 #undef VERSION
+
+/* TODO: document this symbol */
+#undef VOL_AER
 
 /* Define to `__inline__' or `__inline' if that's what the C compiler
    calls it, or to nothing if 'inline' is not supported under any name.  */
@@ -148,4 +196,6 @@
 /* Define to rpl_realloc if the replacement function should be used. */
 #undef realloc
 
-/* Add custom IGSM preprocessor #defines below this line **********************/
+/* Add custom IGSM preprocessor #defines below this comment. Some
+  known (but undocumented) symbols include: ACCRI, DATA4TEM, FIXED_FOR,
+  FIXED_PCO2, GHS_ALB, HR_DATA, IPCC_EMI, OLD_LAPGAS, ORBITAL_FOR               */
