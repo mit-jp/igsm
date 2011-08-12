@@ -26,7 +26,6 @@ c
          stop
        endif
 
-       call check_lib
        if(nlev.ne.nlev_l)then
          print *,' N_LEV inconsistent with N_LEV_LIB'
          print *,'N_LEV_MODEL=',nlev,' N_LEV_LIB=',nlev_l
