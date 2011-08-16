@@ -1,15 +1,17 @@
-# For the meanings of macros AC_ and AM_, see the documentation for autoconf and
-# automake:
+# For the meanings of macros AC_*, AH_*, and AM_, see the documentation for
+# autoconf and automake:
 # - http://www.gnu.org/software/autoconf/manual/autoconf.html
 # - http://www.gnu.org/software/automake/manual/automake.html
+
+### Initialization
 AC_PREREQ([2.66])
 AC_INIT(igsm, [1.0], [globalchange@mit.edu])
 AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([src/atm/atmosphere.F])
-# TODO: src/inc/ctrparam.h is a template for IGSM-related preprocessor symbols
-# only. The symbols defined by the tests under 'Build environment' are not
-# currently written anywhere. Decide if these are necessary.
+# Generate ctrparam.h
 AC_CONFIG_HEADERS([src/inc/ctrparam.h])
+# Keep a comment at the bottom of ctrparam.h(.in) indicating where the user can
+# set custom symbols
 AH_BOTTOM([/* Add custom IGSM preprocessor #defines below this comment. Some known (but
    undocumented) symbols are: ACCRI, DATA4TEM, FIXED_FOR, FIXED_PCO2, GHS_ALB,
    HR_DATA, IPCC_EMI, OLD_LAPGAS, and ORBITAL_FOR.                            */])
@@ -22,17 +24,14 @@ AH_BOTTOM([/* Add custom IGSM preprocessor #defines below this comment. Some kno
 # Package option for model configurations
 AC_ARG_WITH([setup],
   [AS_HELP_STRING([--with-setup],
-    [model version to compile: either 'climate', 'historical' or 'fullchem' \
-    (default)])],
-  [model=$withval],
+    [model version to compile: either 'climate' (implies --without-tem), \
+    'historical' or 'fullchem' (default)])],
+  [if test $withval != climate -a $withval != historical -a $withval != fullchem; then
+     AC_MSG_ERROR([invalid value '$withval' for --with-setup; try --help])
+   else
+     model=$withval
+   fi],
   [model=fullchem])
-case $model in
-climate|historical|fullchem)
-  true
-  ;;
-*)
-  AC_MSG_ERROR([invalid value '$model' for --with-setup; try --help])
-esac
 
 # Package option for ocean carbon
 AC_ARG_ENABLE([ocncarbon],
@@ -67,27 +66,28 @@ AC_ARG_ENABLE([mitgcm],
     executable])],
   [ocean=3D],
   [ocean=2D])
+# See src/Makefile.am
 AM_CONDITIONAL([IGSM_BIN], [test $ocean = 2D])
 
 # Package option for CLM version
 AC_ARG_WITH([clm],
   [AS_HELP_STRING([--with-clm],
-    [select version of the Common Land Model: ARG=2.1 (default) or 3.5])],
+    [select version of the Common Land Model: ARG=2.1 (default) or 3.5; \
+     --without-clm implies --without-tem])],
   [CLM_VERSION=$withval],
   [CLM_VERSION=2.1])
-CLM_LDADD=""
 if test $CLM_VERSION != no; then
   # Define for ctrparam.h
   AC_DEFINE(CLM, 1, [Coupling CLM])
-  # Compiler and linker flags
-  CLM_DIR="clm/$CLM_VERSION"
-  CLM_LDADD+="-L$CLM_DIR -lclm"
+  # Compiler and linker flags: pass to src/Makefile.am
+  AC_SUBST(CLM_DIR, [clm/$CLM_VERSION])
+  AC_CONFIG_LINKS([src/$CLM_DIR:$srcdir/src/$CLM_DIR])
+  CLM_LDADD="-L$CLM_DIR -lclm"
   if test $CLM_VERSION = 2.1; then
     CLM_LDADD+=" -lesmf"
   fi
+  AC_SUBST(CLM_LDADD)
 fi
-AC_SUBST(CLM_DIR)
-AC_SUBST(CLM_LDADD)
 
 # Package option for TEM version
 AC_ARG_WITH([tem],
@@ -95,20 +95,21 @@ AC_ARG_WITH([tem],
     [select version of the Terrestrial Ecosystem Model: ARG=4.3.8 (default) or \
     4.4b; requires --with-clm])],
   [TEM_VERSION=$withval],
-  [TEM_VERSION=4.3.8])
-TEM_LDADD=""
+  [if test $model = climate -o $CLM_VERSION = no; then
+     TEM_VERSION=no
+   else
+     TEM_VERSION=4.3.8
+   fi])
 if test $CLM_VERSION = no -a $TEM_VERSION != no; then
   AC_MSG_ERROR([cannot give both --with-tem and --without-clm])
 elif test $TEM_VERSION != no; then
   # Defines for ctrparam.h
   AC_DEFINE(CPL_TEM, 1, [Coupling chemistry])
   AC_DEFINE(CPL_NEM, 1, [Coupling natural emission model])
-  # Compiler and linker flags
-  TEM_DIR="tem/$TEM_VERSION"
-  TEM_LDADD+="-L$TEM_DIR -ltem"
+  # Compiler and linker flags: pass to src/Makefile.am
+  AC_SUBST(TEM_DIR, [tem/$TEM_VERSION])
+  AC_SUBST(TEM_LDADD, ["-L$TEM_DIR -ltem"])
 fi
-AC_SUBST(TEM_DIR)
-AC_SUBST(TEM_LDADD)
 
 # Package option for user source overrides
 AC_ARG_WITH([usr-src],
@@ -117,15 +118,14 @@ AC_ARG_WITH([usr-src],
     files, or 'src/usr' if not given])],
   [usr_srcdir=`eval "echo $withval"`],
   [usr_srcdir=no])
-if test "$usr_srcdir" = "yes"; then
+if test "$usr_srcdir" = yes; then
   # user gave --with-usr-src but no directory; assume it's src/usr
   usr_srcdir="$srcdir/src/usr"
-elif test "$usr_srcdir" = "no" -o ! -d "$usr_srcdir"; then
+elif test "$usr_srcdir" = no -o ! -d "$usr_srcdir"; then
   # something besides --without-usr-src was given, but doesn't exist
   AC_MSG_NOTICE([user source directory '$usr_srcdir' does not exist])
   usr_srcdir=""
 fi
-# no AC_SUBST call; this variable isn't used outside this file
 
 
 ### Build environment
@@ -139,10 +139,6 @@ AC_PROG_CXX(pgCC)
 AC_PROG_CC(pgcc)
 # Fortran 77 compiler
 AC_PROG_F77
-# TODO: the following three checks may not be necessary. Remove if possible.
-AC_F77_DUMMY_MAIN
-AC_F77_LIBRARY_LDFLAGS
-AC_F77_MAIN
 # Fortran 90+ compiler
 AC_PROG_FC(pgf90)
 # FIXME: this is cheating. The IGSM modules atm, ocm, ocn_ml and meta contain
@@ -195,7 +191,7 @@ if test -n "$usr_srcdir"; then
       # path fragment for the target
       opath=`dirname $orig | sed "s@$srcdir/src/@@"`
       # add it to the list of files to be symlinked
-      usr_links += "src/$opath/$bn:$f"
+      usr_links+="src/$opath/$bn:$f"
     fi
   done
   # let configure create the actual symlinks
@@ -207,7 +203,7 @@ fi
 # Common defines for all model configurations
 AC_DEFINE(N_LAT, 46, [Number of latitudinal grid points])
 AC_DEFINE(N_LEV, 11, [Number of vertical pressure layers])
-AC_DEFINE(N_LON0, 72, [TODO: document this])
+AC_DEFINE(N_LON0, 72, [TODO: document this symbol])
 
 # Defines depending on 2D vs. 3D ocean
 if test $ocean = 2D; then
@@ -233,7 +229,6 @@ if test $model = fullchem; then
   # more options for chemistry runs only
   AC_DEFINE(INC_3GASES, 1, [Including "3 gases"])
   AC_DEFINE(O3_RAD, 1, [Use predicted ozone in radiation module])
-else
   if test $meta = yes; then
     AC_DEFINE(CPL_META, 1, [Coupling parameterized urban airshed model (meta)])
   fi
@@ -250,20 +245,21 @@ if test $model = historical; then
 fi
 
 if test $model = historical -o $model = fullchem; then
-  # TODO: document this symbol
   AC_DEFINE(VOL_AER, 1, [TODO: document this symbol])
 fi
 
-# TODO: document these
-#AC_DEFINE(ACCRI)
-#AC_DEFINE(DATA4TEM)
-#AC_DEFINE(FIXED_FOR)
-#AC_DEFINE(FIXED_PCO2)
-#AC_DEFINE(GHS_ALB)
-#AC_DEFINE(HR_DATA)
-#AC_DEFINE(IPCC_EMI)
-#AC_DEFINE(OLD_LAPGAS)
-#AC_DEFINE(ORBITAL_FOR)
+# Undocumented defines
+if false; then
+  AC_DEFINE(ACCRI, 1, [TODO: document this symbol])
+  AC_DEFINE(DATA4TEM, 1, [TODO: document this symbol])
+  AC_DEFINE(FIXED_FOR, 1, [TODO: document this symbol])
+  AC_DEFINE(FIXED_PCO2, 1, [TODO: document this symbol])
+  AC_DEFINE(GHS_ALB, 1, [TODO: document this symbol])
+  AC_DEFINE(HR_DATA, 1, [TODO: document this symbol])
+  AC_DEFINE(IPCC_EMI, 1, [TODO: document this symbol])
+  AC_DEFINE(OLD_LAPGAS, 1, [TODO: document this symbol])
+  AC_DEFINE(ORBITAL_FOR, 1, [TODO: document this symbol])
+fi
 
 
 ### Output Makefiles

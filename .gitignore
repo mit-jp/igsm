@@ -1,5 +1,6 @@
 *~
 *.a
+*.mod
 *.o
 .deps
 stamp-h1
@@ -7,10 +8,12 @@ Makefile
 Makefile.in
 /aclocal.m4
 /autom4te.cache
+/build
 /config.h*
 /config.status
 /config.log
 /configure
+/ctrparam-test
 /depcomp
 /install-sh
 /missing

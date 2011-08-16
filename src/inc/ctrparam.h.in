@@ -1,5 +1,8 @@
 /* src/inc/ctrparam.h.in.  Generated from configure.ac by autoheader.  */
 
+/* TODO: document this symbol */
+#undef ACCRI
+
 /* Coupling CLM */
 #undef CLM
 
@@ -18,13 +21,8 @@
 /* Coupling chemistry */
 #undef CPL_TEM
 
-/* Define to dummy `main' function (if any) required to link to the Fortran
-   libraries. */
-#undef F77_DUMMY_MAIN
-
-/* Define to alternate name for `main' routine that is called from a `main' in
-   the Fortran libraries. */
-#undef F77_MAIN
+/* TODO: document this symbol */
+#undef DATA4TEM
 
 /* Define to dummy `main' function (if any) required to link to the Fortran
    libraries. */
@@ -36,6 +34,15 @@
 /* Define to alternate name for `main' routine that is called from a `main' in
    the Fortran libraries. */
 #undef FC_MAIN
+
+/* TODO: document this symbol */
+#undef FIXED_FOR
+
+/* TODO: document this symbol */
+#undef FIXED_PCO2
+
+/* TODO: document this symbol */
+#undef GHS_ALB
 
 /* Define to 1 if you have the <fcntl.h> header file. */
 #undef HAVE_FCNTL_H
@@ -108,8 +115,14 @@
 /* Define to 1 if the system has the type `_Bool'. */
 #undef HAVE__BOOL
 
+/* TODO: document this symbol */
+#undef HR_DATA
+
 /* Including "3 gases" */
 #undef INC_3GASES
+
+/* TODO: document this symbol */
+#undef IPCC_EMI
 
 /* Two-dimensional ocean */
 #undef ML_2D
@@ -127,7 +140,7 @@
 /* Number of vertical layers in diffusive ocean model (either 11 or 12) */
 #undef N_LEVOCEAN
 
-/* TODO: document this */
+/* TODO: document this symbol */
 #undef N_LON0
 
 /* Use forced ozone scenario (ifo3forced) */
@@ -138,6 +151,12 @@
 
 /* Three-dimensional ocean */
 #undef OCEAN_3D
+
+/* TODO: document this symbol */
+#undef OLD_LAPGAS
+
+/* TODO: document this symbol */
+#undef ORBITAL_FOR
 
 /* Name of package */
 #undef PACKAGE
@@ -196,6 +215,6 @@
 /* Define to rpl_realloc if the replacement function should be used. */
 #undef realloc
 
-/* Add custom IGSM preprocessor #defines below this comment. Some
-  known (but undocumented) symbols include: ACCRI, DATA4TEM, FIXED_FOR,
-  FIXED_PCO2, GHS_ALB, HR_DATA, IPCC_EMI, OLD_LAPGAS, ORBITAL_FOR               */
+/* Add custom IGSM preprocessor #defines below this comment. Some known (but
+   undocumented) symbols are: ACCRI, DATA4TEM, FIXED_FOR, FIXED_PCO2, GHS_ALB,
+   HR_DATA, IPCC_EMI, OLD_LAPGAS, and ORBITAL_FOR.                            */

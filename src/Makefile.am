@@ -16,9 +16,9 @@ DIST_SUBDIRS = atm \
 	meta \
 	tem/4.3.8 tem/4.4b
 
-AM_CPPFLAGS = -I$(top_srcdir)/src/inc
-
 if IGSM_BIN
+
+AM_CPPFLAGS = -I$(top_srcdir)/src/inc
 
 bin_PROGRAMS = igsm22
 
