@@ -204,6 +204,8 @@ fi
 AC_DEFINE(N_LAT, 46, [Number of latitudinal grid points])
 AC_DEFINE(N_LEV, 11, [Number of vertical pressure layers])
 AC_DEFINE(N_LON0, 72, [TODO: document this symbol])
+AC_DEFINE(NYR_CHEM, 1, [Number of year of chemistry model integration (124 for
+    period from 1977 to 2100)]) #this need in chem common blocks, always included
 
 # Defines depending on 2D vs. 3D ocean
 if test $ocean = 2D; then
@@ -218,8 +220,6 @@ fi
 if test $model = fullchem; then
   AC_DEFINE(CPL_CHEM, 1, [Coupling chemistry])
   # NYR_CHEM, PREDICTED_* always accompany CPL_CHEM
-  AC_DEFINE(NYR_CHEM, 1, [Number of year of chemistry model integration (124 for
-    period from 1977 to 2100)])
   AC_DEFINE(PREDICTED_GASES, 1, [Use predicted concentrations of chemical
     species by chemistry model to calculate radiative forcing (ifghgpredict)])
   AC_DEFINE(PREDICTED_AEROSOL, 1, [Use predicted aerosol concentrations by
