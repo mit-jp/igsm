@@ -1,0 +1,6 @@
+This directory exists for building the model. Place any source overrides here;
+to override ../src/atm/example.F, create the file src/atm/example.F in this
+directory.[1] Configure the build by typing '../configure'. See ../README for
+more information
+
+1. This feature not available for src/clm.

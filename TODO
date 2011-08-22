@@ -1,11 +1,6 @@
 To-Do List
 ==========
 
-- Add to configure.ac until:
-  - The user can choose which modules are compiled.
-  - ctrparams.h is generated according to user options to 'configure', and with
-    proper #defines to run the chosen set of modules.
-
 - Move some subroutines (which?) from src/driver to src/atm.
 
 - Add more verification experiments, including maybe:

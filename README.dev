@@ -1,0 +1,11 @@
+The Massachusetts Institute of Technology Integrated Global System Model
+========================================================================
+
+This file contains some information for those hacking on or developing the IGSM,
+not just using it.
+
+SOURCE OVERRIDES
+----------------
+
+The model is built in a separate directory using what is called a VPATH build...
+
