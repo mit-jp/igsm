@@ -4,11 +4,12 @@
 !	This subroutine checks model settings
 !
       subroutine check_settings
-      common/libset/nlev_l,nlat_l,nlon_l
 
 c       Checking of consistency of model settings
 c
+#ifdef ML_2D
        LMO=N_LEVOCEAN
+#endif
        nlev=N_LEV
        nlat=N_LAT
        nlon0=N_LON0
@@ -26,17 +27,6 @@ c
          stop
        endif
 
-       if(nlev.ne.nlev_l)then
-         print *,' N_LEV inconsistent with N_LEV_LIB'
-         print *,'N_LEV_MODEL=',nlev,' N_LEV_LIB=',nlev_l
-         stop
-       endif
-       if(nlat.ne.nlat_l)then
-         print *,' N_LAT inconsistent with N_LAT_LIB'
-         print *,'N_LAT_MODEL=',nlat,' N_LAT_LIB=',nlat_l
-         stop
-       endif
-       print *,'nlev=',nlev
 C
 C   RUNS WITH CHEMISTRY
 C
