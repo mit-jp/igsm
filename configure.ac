@@ -206,12 +206,12 @@ AC_DEFINE(N_LEV, 11, [Number of vertical pressure layers])
 AC_DEFINE(N_LON0, 72, [TODO: document this symbol])
 AC_DEFINE(NYR_CHEM, 1, [Number of year of chemistry model integration (124 for
     period from 1977 to 2100)]) #this need in chem common blocks, always included
+AC_DEFINE(N_LEVOCEAN, 11, [Number of vertical layers in diffusive ocean model
+    (either 11 or 12)])  #code here not properly if-defed, always include
 
 # Defines depending on 2D vs. 3D ocean
 if test $ocean = 2D; then
   AC_DEFINE(ML_2D, 1, [Two-dimensional ocean])
-  AC_DEFINE(N_LEVOCEAN, 11, [Number of vertical layers in diffusive ocean model
-    (either 11 or 12)])
 else
   AC_DEFINE(OCEAN_3D, 1, [Three-dimensional ocean])
 fi
