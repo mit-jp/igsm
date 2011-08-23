@@ -10,13 +10,15 @@ To-Do List
   - atm-clm-tem-chem (and eventually w/ 3D ocean)
   …only the last is set up at present.
 
-- Implement automatic testing to see if check-ins break code.
+- Implement automatic testing (e.g. with http://hudson-ci.org ) to see if
+  check-ins break code.
 
 - Populate data/ with helper/non-run-specific data files, or provide a tarball
   at a standard location and a script to pull them down.
 
-- Document what these files are, where they come from, what they contain, etc.
+- Documentation:
+  - ./data/ files: purpose, sources, format
+  - ./tests/run_fullchem: line-by-line explanation of name.dat, tem.go,
+    eppaemis.dat.
 
-- Documentation of pretty much for everything else!
-
-- Add 3D ocean to source control and the build system.
+- Add the MITgcm 3D ocean to source control and the build system.

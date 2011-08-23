@@ -1,11 +1,113 @@
 The Massachusetts Institute of Technology Integrated Global System Model
 ========================================================================
 
-This file contains some information for those hacking on or developing the IGSM,
-not just using it.
+This file contains some information for those making modifications to the IGSM
+code or the build system. Users interested in simply compiling and running a
+common version of the model should consult README.
+
+
+OPTIONAL FEATURES
+-----------------
+The build system does not provide an interface to all features of the IGSM. In
+particular, there are some preprocessor symbols that may be defined manually. To
+do this, there are three options, in order of increasing permanence:
+
+ 1. In the build directory, edit the file src/inc/ctrparam.h, adding custom
+    #define statements where indicated. This must be repeated (or the file
+    restored from a backup copy) every time the build is reconfigured.
+ 2. Edit the file src/inc/ctrparam.h.in, adding custom #define statements at the
+    bottom of the file, where indicated. Reconfigure the build. This must be
+    repeated (or the file restored from a backup copy) every time auto(re)conf
+    is run, and will affect all builds configured from the same script.
+ 3. Edit the file configure.ac near the comment "Unusual defines". Move the
+    AC_DEFINE() calls between the "always ON" and "always OFF" sections as
+    necessary. Run autoreconf and then reconfigure the build. This will also
+    affect all builds configured from the same script.
+
+For a list of available symbols, see configure.ac. For information on how to use
+these, consult Jeff Scott <jscott@MIT.EDU> or Andrei Sokolov <sokolov@MIT.EDU>.
+No other documentation is currently available.
+
 
 SOURCE OVERRIDES
 ----------------
+The build system performs a "VPATH build", which allows selective replacement of
+files in the codebase.
 
-The model is built in a separate directory using what is called a VPATH build...
+  When configure is invoked in the build directory (e.g. './build'), a directory
+structure and Makefiles are produced, but no source files. When the build is
+started (with 'make'), the following occurs for each source file:
+
+ - First, a file is sought in the current directory. If found, it is compiled.
+
+ - Next, the file is sought *outside* of the build tree, in the original /src
+   directory.
+
+  Thus, in order to override the source file 'src/atm/example.F', the user may
+place a source file named 'example.F' (with changes) in 'build/src/atm'.
+
+  There are some limitations to this system:
+
+ - It does not work for CLM. Because CLM has its own build system, the CLM
+   source is symlinked from within the build directory ('build/src/clm/x.x' is a
+   symbolic link to 'src/clm/x.x') and the IGSM build simply invokes the
+   standard CLM build. To modify CLM source, copy the existing file to, for
+   example 'src/clm/2.1/main/example.F90.orig', and make your changes in
+   'src/clm/2.1/main/example.F90'.
+
+ - It will not automatically detect *new* source files. In order to do this,
+   please read through "Adding new sources" below.
+
+
+BUILD SYSTEM
+------------
+The build system uses the GNU Autotools suite: autoconf, automake, autoheader,
+etc. Complete information on these can be found in their respective manuals:
+ - http://www.gnu.org/software/autoconf/manual/autoconf.html
+ - http://www.gnu.org/software/automake/manual/automake.html
+
+In particular these should be consulted for the semantics of specific macros
+like AC_*, AH_*, and AM_*, see the documentation for autoconf and automake.
+
+Some key files are:
+
+ - Makefile.am, Makefile.in: these exist in all source directories. Makefile.am
+   is preprocessed by auto(re)conf into files like Makefile.in. When the build
+   is configured, actual Makefiles are produced from Makefile.in and placed in
+   the build directory.
+ - src/inc/ctrparam.h.in: a template header file that is used to produce
+   ctrparam.h when the build is configured. Unlike the Makefile.in, there is no
+   'ctrparam.h.am'; instead, ctrparam.h.in is produced via autoheader inspecting
+   the contents of configure.ac.
+ - configure.ac: this source file is processed into configure by auto(re)conf.
+
+Some simple tasks are detailed below.
+
+### Adding new sources
+
+  Automake requires an explicit listing of the source files to be compiled and
+linked into each executable or library. For an explanation of why, see
+http://www.gnu.org/software/automake/manual/automake.html#Wildcards
+
+  For most IGSM modules, the files are listed one per line in Makefile.am in the
+module directory. Like so:
+
+  libatm_a_SOURCES = atmosphere.F \
+          bgrghg.F \
+          check_settings.F \
+          chemglobal.F \
+          (more files)
+
+When a new source file is added, it must also be added to Makefile.am. For easy
+reading, the lists are in alphabetical order. After this is done, autoreconf
+must be run in the top-level directory to regenerate Makefile.in, and any
+build(s) must be reconfigured with the new 'configure' script.
+
+
+USING GIT
+---------
+If you make improvements to the IGSM code, you may wish to commit them to the
+git repository so that others may to use them. To do this, you will need contact
+Jeff Scott <jscott@MIT.EDU> to obtain commit access, and read the git
+documentation (type 'man git').
 

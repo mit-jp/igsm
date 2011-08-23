@@ -1,7 +1,4 @@
-# For the meanings of macros AC_*, AH_*, and AM_, see the documentation for
-# autoconf and automake:
-# - http://www.gnu.org/software/autoconf/manual/autoconf.html
-# - http://www.gnu.org/software/automake/manual/automake.html
+# Configure script for MIT IGSM. See README.dev
 
 ### Initialization
 AC_PREREQ([2.66])
@@ -14,7 +11,8 @@ AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([src/atm/atmosphere.F])
 # …but that we are not in the top source directory
 if test -z "$srcdir" -o "$srcdir" = "."; then
-  AC_MSG_ERROR([must be invoked from within a build directory. See ./build/README.])
+  AC_MSG_ERROR([must be invoked from within a build directory. See
+    ./build/README.])
 fi
 # generate ctrparam.h
 AC_CONFIG_HEADERS([src/inc/ctrparam.h])
@@ -137,8 +135,6 @@ AC_HEADER_STDC
 AC_C_INLINE
 
 # Checks for library functions.
-AC_FUNC_MALLOC
-AC_FUNC_REALLOC
 AC_CHECK_FUNCS([gettimeofday memset modf pow strcasecmp strchr])
 
 # Common compiler flags for IGSM code
@@ -217,7 +213,8 @@ AC_DEFINE(N_LAT, 46, [Number of latitudinal grid points])
 AC_DEFINE(N_LEV, 11, [Number of vertical pressure layers])
 AC_DEFINE(N_LEVOCEAN, 11, [Number of vertical layers in diffusive ocean model
   (either 11 or 12)])  #code here not properly if-defed, always include
-AC_DEFINE(N_LON0, 72, [TODO: document this symbol])
+AC_DEFINE(N_LON0, 72, [Number of longitudinal grid points; unused, but must be
+  must be 72 for N_LAT=46 (per atm/check_settings.F)])
 AC_DEFINE(NYR_CHEM, 1, [Number of year of chemistry model integration (124 for
   period from 1977 to 2100)]) #this need in chem common blocks, always included
 
@@ -267,23 +264,31 @@ if test $model = historical; then
 fi
 
 if test $model = historical -o $model = fullchem; then
-  AC_DEFINE(VOL_AER, 1, [TODO: document this symbol])
+  AC_DEFINE(VOL_AER, 1, [Include aerosol forcing due to volcanic activitiy])
 fi
 
-# Undocumented defines
+# Unusual defines. See README.dev for information on how to use these.
 if true; then
   # always ON
-  AC_DEFINE(OLD_LAPGAS, 1, [TODO: document this symbol])
+  AC_DEFINE(OLD_LAPGAS, 1, [Use an old way of handling greenhouse effects of
+    different gases in atm/radia0.F (for backwards compatibility)])
 else
   # always OFF
-  AC_DEFINE(ACCRI, 1, [TODO: document this symbol])
-  AC_DEFINE(DATA4TEM, 1, [TODO: document this symbol])
-  AC_DEFINE(FIXED_FOR, 1, [TODO: document this symbol])
-  AC_DEFINE(FIXED_PCO2, 1, [TODO: document this symbol])
-  AC_DEFINE(GHS_ALB, 1, [TODO: document this symbol])
-  AC_DEFINE(HR_DATA, 1, [TODO: document this symbol])
-  AC_DEFINE(IPCC_EMI, 1, [TODO: document this symbol])
-  AC_DEFINE(ORBITAL_FOR, 1, [TODO: document this symbol])
+  AC_DEFINE(ACCRI, 1, [Include GHG emissions from aviation. Requires accri_data
+    and accri_scaling defined in eppaemis.dat])
+  AC_DEFINE(DATA4TEM, 1, [Save data for offline simulations with CLM/TEM])
+  AC_DEFINE(FIXED_FOR, 1, [Run model with fixed GHG forcing. TEM and OCM will
+    see changing CO2, while radiation code uses GHGs in the start year (yeargt
+    in name.dat)])
+  AC_DEFINE(FIXED_PCO2, 1, [Fix CO2 for TEM and OCM])
+  AC_DEFINE(GHS_ALB, 1, [TODO: remove this symbol (1 reference in
+    atm/r95mit.F)])
+  AC_DEFINE(HR_DATA, 1, [(with DATA4TEM) write data hourly])
+  AC_DEFINE(IPCC_EMI, 1, [Use a simple carbon model with carbon emissions from
+    the file specified by co2_data in name.dat])
+  AC_DEFINE(ORBITAL_FOR, 1, [Use radiative forcing adjusted for Earth's
+    orbital parameters. If undefined, the default from a (which?) NASA GISS
+    model is used])
 fi
 
 
