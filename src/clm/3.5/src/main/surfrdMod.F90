@@ -1295,10 +1295,10 @@ contains
 
        if (maxpatch_pft < numpft+1) then
           do m=1,maxpatch_pft
-             pctpft_lunit(nl,m) = float(nint(pctpft_lunit(nl,m)))
+             pctpft_lunit(nl,m) = float(nint(10000000.*pctpft_lunit(nl,m)))/10000000.
           end do
           do m=1,maxpatch_cft
-             pctcft_lunit(nl,m) = float(nint(pctcft_lunit(nl,m)))
+             pctcft_lunit(nl,m) = float(nint(10000000.*pctcft_lunit(nl,m)))/10000000.
           end do
        end if
                    
