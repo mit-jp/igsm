@@ -25,6 +25,18 @@ module clm_varctl
   integer :: nsrest                             ! 0: initial run. 1: restart: 3: branch
   logical, public :: brnch_retain_casename = .false. ! true => allow case name to remain the same for branch run
                                                      ! by default this is not allowed
+! Erwan Monier for AR5/IGSM land-use change
+  logical,public :: dynamic_pft = .false.    ! by default, the percent pft is fixed
+                                              ! true => percent pft is dynamic
+                                              ! and varies annually
+                                              ! added by Erwan Monier
+                                              ! (07/12/2011)  
+  integer        :: rampYear_dynpft          ! if non-zero, the percent pft is ramped at this year
+
+! CAS (9/2011) to allow for changing orbital parameters
+  logical,public :: orbitfix = .true.
+  integer        :: orbityr
+
 !
 ! Initial file variables
 !
