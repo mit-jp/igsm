@@ -1,0 +1,500 @@
+
+Do you want to run the model only for steady state conditions ? 
+ Enter 0 for transient simulation
+ Enter 1 for steady state simulation
+equil = 0
+
+
+Do you want to use spatially explicit data for intial conditions? 
+  Enter 0 for NO:
+  Enter 1 if spatially explicit data represents the state of TEM at equilibrium conditions:
+  Enter 2 if spatially explicit data represents the state of TEM at the end of a specific year:
+istateflag = 2
+
+Please enter the name of the file containing the initial TEM state data: 
+               (e.g., TEMINIT.GIS) 
+/net/m08/d1/sokolov/IGSM2.2/AR5/CLM21//2305.11//temstate850.init
+
+Please enter the year that you wish to use as the initial TEM state: 849
+
+What is the first year of the transient climate data?
+850
+
+850
+
+
+How many years do you run for transient simulations ? 
+transtime = 1
+
+RTIME = 2
+
+
+
+How many elements are in the gridded data sets? 46
+
+How do you locate your grid cells?
+Enter 0 for column/row:
+Enter 1 for longitude/latitude: 1
+
+
+
+For how many grid cells would you like a timestamp?
+After 'x' number of grid cells
+Enter 0 for no timestamp): 92
+
+
+Do you want to start at the beginning of the GIS files?
+  Enter 1 for YES
+  Enter 0 for NO: 1
+
+
+
+
+Do you want to finish at the end of the GIS files?
+  Enter 1 for YES
+  Enter 0 for NO: 1
+
+
+
+Do you have transient solar radiation data?:
+Enter 0 for no:
+Enter 1 for yes: 
+tcldsflag = 1
+
+
+Do you have transient air temperature data?:
+Enter 0 for No:
+Enter 1 for Yes: 
+ttairflag = 1
+
+
+Do you have transient precipitation data?:
+Enter 0 for No:
+Enter 1 for Yes: 
+tprecflag = 1
+
+Do you have transient O3 data?:
+Enter 0 for No:
+Enter 1 for Yes: 
+to3flag = 1
+
+
+
+Enter the initial concentration of carbon dioxide in ppmv: 279.27
+
+Enter the final equilibrium concentration of carbon dioxide in ppmv: 279.27
+
+Do you have transient CO2 data?:
+Enter 0 for No:
+Enter 1 for annual transient CO2 data: Enter 2 for monthly transient CO2 data: tco2flag = 2
+
+Do you want to generate CH4 fluxes?:
+Enter 0 for No:
+Enter 1 for Yes: ch4flag = 1
+
+Do you want to run the Methane Dynamics Model?:
+Enter 0 for No (run NEM-CH4 instead):
+Enter 1 for Yes: 0
+
+Do you want to generate N2O fluxes?:
+Enter 0 for No:
+Enter 1 for Yes: n2oflag = 1
+
+
+Enter name of the file prescribing vegetation mosaics (.ECD):
+/home/sokolov/IGSM2/TEMDATA/TEM44b/igsmcomm44a.ecd
+
+Do you have transient land use data?:
+Enter 0 for No:
+Enter 1 for Yes: 0
+
+Please enter the first part of the file name containing the maximun number of cohort data
+        (e.g., MXCOHRTS) 
+/home/sokolov/IGSM2/TEMDATA/TEM44b/igsmpotmxcohrts4x36044a
+
+Please enter the file extension (include the '.'): .mit
+
+Please enter the first part of the file name containing the cohort data: 
+               (e.g., COHORT) 
+/home/sokolov/IGSM2/TEMDATA/TEM44b/igsmpotlulcchrts4x36044a
+
+Please enter the file extension (include the '.'): 
+.mit
+
+Do you want to run the terrestrial ecosystem model (TEM)?
+  Enter 0 for No
+  Enter 1 for Yes
+temflag = 1
+
+
+Do you want to allow available N to fluctuate?
+  Enter 0 for No
+  Enter 1 for Yes: 
+avlnflag = 1
+
+
+Do you want nitrogen feedback on GPP?
+  Enter 0 for No
+  Enter 1 for Yes: 
+nfeed = 1
+
+
+Do you want to solve for baseline soil nitrogen?
+  Enter 0 for No
+  Enter 1 for Yes: 
+baseline = 1
+
+
+Do you want to run the model with moisture limitation?
+  Enter 0 for No
+  Enter 1 for Yes: 
+moistlim = 1
+
+
+Do you want to run the model with ozone?
+  Enter 0 for No
+  Enter 1 for Yes: 
+o3flag = 1
+
+
+How many years do you want to wait before checking equilibrium conditions? 
+strteq = 10
+
+
+Enter the maximum number of years for the model to run: 
+maxyears = 3000
+
+
+Enter the maximum number of attempts to reach a solution: 
+maxnrun = 3
+
+
+What absolute tolerance do you want to use for checking equilibrium
+of the water cycle? wtol = 0.01
+
+
+What absolute tolerance do you want to use for checking equilibrium
+of the carbon cycle?
+ctol = 1
+
+
+What absolute tolerance do you want to use for checking equilibrium
+of the nitrogen cycle?
+ntol = 0.02
+
+
+
+What year do you want to start collecting output data? startyr = 850
+
+
+What year do you want to stop collecting output data? endyr = 950
+How often (x years) should data be collected after the initial year? diffyr = 1
+
+Enter the proportional tolerance for the integrator: 0.01
+
+Enter the maximum number of iterations in the integrator: 20
+
+Enter the maximum number of times in a month that the
+integrator can reach the maximum number of iterations: 100
+Enter name of the soil (.ECD) data file with parameter values: /home/sokolov/IGSM2/TEMDATA/TEM437/tsoil43d.ecd
+Enter name of the data file containing the rooting depths:
+               (e.g., ROOTZVEG.ECD)
+/home/sokolov/IGSM2/TEMDATA/TEM437/trotz43d.ecd
+Enter name of the file with the vegetation parameter values (.ECD):/net/m08/d1/sokolov/IGSM2.2/AR5/CLM21//2305.11//tveg43d.ecd
+
+Enter name of the file with leaf parameter values (.ECD):/home/sokolov/IGSM2/TEMDATA/TEM437/tleaf43d.ecd
+
+Enter name of the file with microbe parameter values (.ECD)
+dependent upon vegetation: /home/sokolov/IGSM2/TEMDATA/TEM437/tmcrv43d.ecd
+
+Enter name of file (.ECD) with the NEM N2O parameter values:
+
+
+Please enter the number of community types with calibration data:12
+Enter name of the site (.ECD) data file with the parameter values cmnt
+1: /home/sokolov/IGSM2/TEMDATA/TEM438/ice43801.dat
+2: /home/sokolov/IGSM2/TEMDATA/TEM438/tpd43801.dat
+3: /home/sokolov/IGSM2/TEMDATA/TEM438/tmt43801.dat
+4: /home/sokolov/IGSM2/TEMDATA/TEM438/bon43801.dat
+5: /home/sokolov/IGSM2/TEMDATA/TEM438/hvc43801.dat
+6: /home/sokolov/IGSM2/TEMDATA/TEM438/hvd43801.dat
+7: /home/sokolov/IGSM2/TEMDATA/TEM438/pwn43801.dat
+8: /home/sokolov/IGSM2/TEMDATA/TEM438/cur43801.dat
+9: /home/sokolov/IGSM2/TEMDATA/TEM438/duc43801.dat
+10: /home/sokolov/IGSM2/TEMDATA/TEM438/gua43801.dat
+11: /home/sokolov/IGSM2/TEMDATA/TEM438/tai43801.dat
+12: /home/sokolov/IGSM2/TEMDATA/TEM438/gua2_43801.dat
+
+Please enter the name of the file containing the soil texture data:
+               (e.g., TEXTURE.GIS) 
+/home/sokolov/IGSM2/TEMDATA/igsmsoilchar4x360b1.mit
+
+Please enter the name of the file containing the soil layer characteristics data:
+               (e.g., SOILLAYER.GIS) 
+/home/sokolov/IGSM2/TEMDATA/igsmslayerchar4x360b1.mit
+
+Please enter the name of the file containing the elevation data: 
+               (e.g., ELEV.GIS) 
+/home/sokolov/IGSM2/TEMDATA/kigsmelev.mit
+
+
+Enter the factor for changing C:N per ppmv of enhanced CO2:
+                     (Enter 0.0 for no change): 
+telmnt[0].tem.veg.dc2n = 0.000519
+
+
+Do you wish spatially explicit output data from TEM?
+  Enter 0 for no
+  Enter 1 for yes: 
+telmnt[0].tem.predflag = 1
+
+
+
+           POSSIBLE OUTPUT VARIABLES:
+
+      VEGC   SOILORGC   VSTRUCTN    VSTOREN   SOILORGN     AVAILN   UNRMLEAF 
+      LEAF        LAI        FPC   VEGINGPP        GPP     FOZONE   FINDOZON 
+  VEGINNPP        NPP        GPR    RVMAINT    RVGRWTH       LTRC         RH 
+    NINPUT    AGFERTN   VEGINNUP     VEGNUP     VEGSUP     VEGLUP    VNMOBIL 
+  VNRESORB       LTRN   MICRONUP    NETNMIN      NLOST   IRRIGATE      INEET 
+       EET      TOTEC     TOTALC       VEGN   SNOWPACK     AVAILW     SMOIST 
+       VSM       PCTP        NEP        NCE   CH4EMISS    CH4CSMP    CH4FLUX 
+  CO2NFLUX   CO2DNFLX     NOFLUX    N2OFLUX   N2ONFLUX   N2ODNFLX     N2FLUX 
+       PET    AGPRODC    PROD10C   PROD100C   TOTPRODC     RESIDC   CRPSTUBC 
+  AGFPRODN    PROD10N   PROD100N   TOTPRODN     RESIDN   CRPSTUBN   CONVERTC 
+  VCONVRTC   SCONVRTC     SLASHC      CFLUX   CONVERTN   VCONVRTN   SCONVRTN 
+    SLASHN    NRETENT   NVRETENT   NSRETENT   AGFPRODC               FRESIDC 
+   FRESIDN   AGPRODFC   AGPRODFN    RESIDFC    RESIDFN    PRDF10C    PRDF10N 
+   PRD10FC    PRD10FN   PRDF100C   PRDF100N   PRD100FC   PRD100FN   TOTFPRDC 
+  TOTFPRDN   TOTPRDFC   TOTPRDFN      CROPC    NATVEGC      CROPN    NATVEGN 
+  CROPSTRN    NATSTRN   CROPSTON    NATSTON   CRPUNMLF   NATUNMLF   CROPLEAF 
+   NATLEAF    CROPLAI     NATLAI    CROPFPC     NATFPC   CRPINGPP   NATINGPP 
+   CROPGPP     NATGPP   CRPINNPP   NATINNPP    CROPNPP     NATNPP    CROPGPR 
+    NATGPR    CRPRMNT   NATRVMNT    CRPRGRW    NATRGRW   CROPLTRC    NATLTRC 
+  CRPINNUP   NATINNUP    CROPNUP    NATVNUP    CROPSUP    NATVSUP    CROPLUP 
+   NATVLUP   CRPNMOBL   NATVNMBL   CRPNRSRB    NVNRSRB   CROPLTRN    NATLTRN 
+      NIRR        PAR       TAIR       PREC    SURFRUN   DRAINAGE    ATMSCO2 
+     AOT40 
+
+
+
+How many variables are to be mapped (max 155) in output files?21
+
+Please enter output variable: 
+1 NPP
+2 CFLUX
+3 VEGC
+4 SOILORGC
+5 N2OFLUX
+6 CH4FLUX
+7 PREC
+8 TAIR
+9 INEET
+10 SMOIST
+11 PAR
+12 NIRR
+13 PET
+14 EET
+15 PCTP
+16 SNOWPACK
+17 GPP
+18 RH
+19 GPR
+20 VEGN
+21 SOILORGN
+Enter the name of the OUTPUT file to contain NPP:  NPP.GLB
+Enter the name of the OUTPUT file to contain CFLUX:  CFLX.GLB
+Enter the name of the OUTPUT file to contain VEGC:  VEGC.GLB
+Enter the name of the OUTPUT file to contain SOILORGC:  SOLC.GLB
+Enter the name of the OUTPUT file to contain N2OFLUX:  N2O.GLB
+Enter the name of the OUTPUT file to contain CH4FLUX:  CH4.GLB
+Enter the name of the OUTPUT file to contain PREC:  PRE.GLB
+Enter the name of the OUTPUT file to contain TAIR:  TAIR.GLB
+Enter the name of the OUTPUT file to contain INEET:  INEET.GLB
+Enter the name of the OUTPUT file to contain SMOIST:  SMOIST.GLB
+Enter the name of the OUTPUT file to contain PAR:  PAR.GLB
+Enter the name of the OUTPUT file to contain NIRR:  NIRR.GLB
+Enter the name of the OUTPUT file to contain PET:  PET.GLB
+Enter the name of the OUTPUT file to contain EET:  NET.GLB
+Enter the name of the OUTPUT file to contain PCTP:  PCTP.GLB
+Enter the name of the OUTPUT file to contain SNOWPACK:  SNOWPACK.GLB
+Enter the name of the OUTPUT file to contain GPP:  GPP.GLB
+Enter the name of the OUTPUT file to contain RH:  RH.GLB
+Enter the name of the OUTPUT file to contain GPR:  GPR.GLB
+Enter the name of the OUTPUT file to contain VEGN:  VEGN.GLB
+Enter the name of the OUTPUT file to contain SOILORGN:  SOLN.GLB
+Do you want to save the state of TEM as a spatially explicit data set each year?
+1
+
+Enter the pathname to the two files that save the 'state' of TEM every other year:
+/net/m08/d1/sokolov/IGSM2.2/AR5/CLM21//2305.11/
+
+
+Do you want to save the state of TEM as a spatially explicit data set for a specified year? 
+  Enter 0 for NO:
+  Enter 1 for saving the state of TEM at equilibrium conditions:
+  Enter 2 for saving the state of TEM at the end of a specific year:
+2
+
+Please enter the name of the file to contain the 'state' of TEM: 
+               (e.g., TEMSTATE.GIS) 
+temstate950.kc400.00.2305.11
+
+Please enter the year that you wish to save the TEM state: 950
+
+
+
+Finished cell 0 (-999999.9 , -999999.9)  TOTYR = -99 TOL = 0.010000 Wed Jul 13 21:40:21 2011
+Finished cell 1 (0.0 , -90.0)  TOTYR = -99 TOL = 0.010000 Wed Jul 13 21:40:21 2011
+Finished cell 2 (0.0 , -86.0)  TOTYR = -99 TOL = 0.010000 Wed Jul 13 21:40:21 2011
+Finished cell 3 (0.0 , -82.0)  TOTYR = -99 TOL = 0.010000 Wed Jul 13 21:40:21 2011
+Finished cell 4 (0.0 , -78.0)  TOTYR = -99 TOL = 0.010000 Wed Jul 13 21:40:21 2011
+Finished cell 5 (0.0 , -74.0)  TOTYR = -99 TOL = 0.010000 Wed Jul 13 21:40:21 2011
+Finished cell 6 (0.0 , -70.0)  TOTYR = -99 TOL = 0.010000 Wed Jul 13 21:40:21 2011
+Finished cell 7 (0.0 , -66.0)  TOTYR = -99 TOL = 0.010000 Wed Jul 13 21:40:21 2011
+Finished cell 8 (0.0 , -62.0)  TOTYR = -99 TOL = 0.010000 Wed Jul 13 21:40:21 2011
+Finished cell 9 (0.0 , -58.0)  TOTYR = -99 TOL = 0.010000 Wed Jul 13 21:40:21 2011
+Finished cell 10 (0.0 , -54.0)  TOTYR = 849 TOL = 0.010000 Wed Jul 13 21:40:21 2011
+Finished cell 11 (0.0 , -50.0)  TOTYR = 849 TOL = 0.010000 Wed Jul 13 21:40:21 2011
+Finished cell 12 (0.0 , -46.0)  TOTYR = 849 TOL = 0.010000 Wed Jul 13 21:40:21 2011
+Finished cell 13 (0.0 , -42.0)  TOTYR = 849 TOL = 0.010000 Wed Jul 13 21:40:21 2011
+Finished cell 14 (0.0 , -38.0)  TOTYR = 849 TOL = 0.010000 Wed Jul 13 21:40:22 2011
+Finished cell 15 (0.0 , -34.0)  TOTYR = 849 TOL = 0.010000 Wed Jul 13 21:40:22 2011
+Finished cell 16 (0.0 , -30.0)  TOTYR = 849 TOL = 0.010000 Wed Jul 13 21:40:22 2011
+Finished cell 17 (0.0 , -26.0)  TOTYR = 849 TOL = 0.010000 Wed Jul 13 21:40:22 2011
+Finished cell 18 (0.0 , -22.0)  TOTYR = 849 TOL = 0.010000 Wed Jul 13 21:40:22 2011
+Finished cell 19 (0.0 , -18.0)  TOTYR = 849 TOL = 0.010000 Wed Jul 13 21:40:22 2011
+Finished cell 20 (0.0 , -14.0)  TOTYR = 849 TOL = 0.010000 Wed Jul 13 21:40:22 2011
+Finished cell 21 (0.0 , -10.0)  TOTYR = 849 TOL = 0.010000 Wed Jul 13 21:40:22 2011
+Finished cell 22 (0.0 , -6.0)  TOTYR = 849 TOL = 0.010000 Wed Jul 13 21:40:22 2011
+Finished cell 23 (0.0 , -2.0)  TOTYR = 849 TOL = 0.010000 Wed Jul 13 21:40:22 2011
+Finished cell 24 (0.0 , 2.0)  TOTYR = 849 TOL = 0.010000 Wed Jul 13 21:40:22 2011
+Finished cell 25 (0.0 , 6.0)  TOTYR = 849 TOL = 0.010000 Wed Jul 13 21:40:22 2011
+Finished cell 26 (0.0 , 10.0)  TOTYR = 849 TOL = 0.010000 Wed Jul 13 21:40:22 2011
+Finished cell 27 (0.0 , 14.0)  TOTYR = 849 TOL = 0.010000 Wed Jul 13 21:40:22 2011
+Finished cell 28 (0.0 , 18.0)  TOTYR = 849 TOL = 0.010000 Wed Jul 13 21:40:22 2011
+Finished cell 29 (0.0 , 22.0)  TOTYR = 849 TOL = 0.010000 Wed Jul 13 21:40:22 2011
+Finished cell 30 (0.0 , 26.0)  TOTYR = 849 TOL = 0.010000 Wed Jul 13 21:40:22 2011
+Finished cell 31 (0.0 , 30.0)  TOTYR = 849 TOL = 0.010000 Wed Jul 13 21:40:22 2011
+Finished cell 32 (0.0 , 34.0)  TOTYR = 849 TOL = 0.010000 Wed Jul 13 21:40:22 2011
+Finished cell 33 (0.0 , 38.0)  TOTYR = 849 TOL = 0.010000 Wed Jul 13 21:40:22 2011
+Finished cell 34 (0.0 , 42.0)  TOTYR = 849 TOL = 0.010000 Wed Jul 13 21:40:22 2011
+Finished cell 35 (0.0 , 46.0)  TOTYR = 849 TOL = 0.010000 Wed Jul 13 21:40:22 2011
+Finished cell 36 (0.0 , 50.0)  TOTYR = 849 TOL = 0.010000 Wed Jul 13 21:40:22 2011
+Finished cell 37 (0.0 , 54.0)  TOTYR = 849 TOL = 0.010000 Wed Jul 13 21:40:22 2011
+Finished cell 38 (0.0 , 58.0)  TOTYR = 849 TOL = 0.010000 Wed Jul 13 21:40:22 2011
+Finished cell 39 (0.0 , 62.0)  TOTYR = 849 TOL = 0.010000 Wed Jul 13 21:40:22 2011
+Finished cell 40 (0.0 , 66.0)  TOTYR = 849 TOL = 0.010000 Wed Jul 13 21:40:22 2011
+Finished cell 41 (0.0 , 70.0)  TOTYR = 849 TOL = 0.010000 Wed Jul 13 21:40:22 2011
+Finished cell 42 (0.0 , 74.0)  TOTYR = 849 TOL = 0.010000 Wed Jul 13 21:40:22 2011
+Finished cell 43 (0.0 , 78.0)  TOTYR = 849 TOL = 0.010000 Wed Jul 13 21:40:22 2011
+Finished cell 44 (0.0 , 82.0)  TOTYR = -99 TOL = 0.010000 Wed Jul 13 21:40:22 2011
+Finished cell 45 (0.0 , 86.0)  TOTYR = -99 TOL = 0.010000 Wed Jul 13 21:40:22 2011
+Finished cell 46 (0.0 , 90.0)  TOTYR = -99 TOL = 0.010000 Wed Jul 13 21:40:22 2011
+Finished year -99 at Wed Jul 13 21:40:22 2011
+Finished cell 47 (0.0 , -90.0)  TOTYR = 850 TOL = 0.010000 Wed Jul 13 21:42:34 2011
+Finished cell 48 (0.0 , -86.0)  TOTYR = 850 TOL = 0.010000 Wed Jul 13 21:42:34 2011
+Finished cell 49 (0.0 , -82.0)  TOTYR = 850 TOL = 0.010000 Wed Jul 13 21:42:34 2011
+Finished cell 50 (0.0 , -78.0)  TOTYR = 850 TOL = 0.010000 Wed Jul 13 21:42:34 2011
+Finished cell 51 (0.0 , -74.0)  TOTYR = 850 TOL = 0.010000 Wed Jul 13 21:42:34 2011
+Finished cell 52 (0.0 , -70.0)  TOTYR = 850 TOL = 0.010000 Wed Jul 13 21:42:34 2011
+Finished cell 53 (0.0 , -66.0)  TOTYR = 850 TOL = 0.010000 Wed Jul 13 21:42:34 2011
+Finished cell 54 (0.0 , -62.0)  TOTYR = 850 TOL = 0.010000 Wed Jul 13 21:42:34 2011
+Finished cell 55 (0.0 , -58.0)  TOTYR = 850 TOL = 0.010000 Wed Jul 13 21:42:34 2011
+Finished cell 56 (0.0 , -54.0)  TOTYR = 850 TOL = 0.010000 Wed Jul 13 21:42:34 2011
+Finished cell 57 (0.0 , -50.0)  TOTYR = 850 TOL = 0.010000 Wed Jul 13 21:42:34 2011
+Finished cell 58 (0.0 , -46.0)  TOTYR = 850 TOL = 0.010000 Wed Jul 13 21:42:34 2011
+Finished cell 59 (0.0 , -42.0)  TOTYR = 850 TOL = 0.010000 Wed Jul 13 21:42:34 2011
+Finished cell 60 (0.0 , -38.0)  TOTYR = 850 TOL = 0.010000 Wed Jul 13 21:42:34 2011
+Finished cell 61 (0.0 , -34.0)  TOTYR = 850 TOL = 0.010000 Wed Jul 13 21:42:34 2011
+Finished cell 62 (0.0 , -30.0)  TOTYR = 850 TOL = 0.010000 Wed Jul 13 21:42:34 2011
+Finished cell 63 (0.0 , -26.0)  TOTYR = 850 TOL = 0.010000 Wed Jul 13 21:42:34 2011
+Finished cell 64 (0.0 , -22.0)  TOTYR = 850 TOL = 0.010000 Wed Jul 13 21:42:34 2011
+Finished cell 65 (0.0 , -18.0)  TOTYR = 850 TOL = 0.010000 Wed Jul 13 21:42:34 2011
+Finished cell 66 (0.0 , -14.0)  TOTYR = 850 TOL = 0.010000 Wed Jul 13 21:42:34 2011
+Finished cell 67 (0.0 , -10.0)  TOTYR = 850 TOL = 0.010000 Wed Jul 13 21:42:34 2011
+Finished cell 68 (0.0 , -6.0)  TOTYR = 850 TOL = 0.010000 Wed Jul 13 21:42:35 2011
+Finished cell 69 (0.0 , -2.0)  TOTYR = 850 TOL = 0.010000 Wed Jul 13 21:42:35 2011
+Finished cell 70 (0.0 , 2.0)  TOTYR = 850 TOL = 0.010000 Wed Jul 13 21:42:35 2011
+Finished cell 71 (0.0 , 6.0)  TOTYR = 850 TOL = 0.010000 Wed Jul 13 21:42:35 2011
+Finished cell 72 (0.0 , 10.0)  TOTYR = 850 TOL = 0.010000 Wed Jul 13 21:42:35 2011
+Finished cell 73 (0.0 , 14.0)  TOTYR = 850 TOL = 0.010000 Wed Jul 13 21:42:35 2011
+Finished cell 74 (0.0 , 18.0)  TOTYR = 850 TOL = 0.010000 Wed Jul 13 21:42:35 2011
+Finished cell 75 (0.0 , 22.0)  TOTYR = 850 TOL = 0.010000 Wed Jul 13 21:42:35 2011
+Finished cell 76 (0.0 , 26.0)  TOTYR = 850 TOL = 0.010000 Wed Jul 13 21:42:35 2011
+Finished cell 77 (0.0 , 30.0)  TOTYR = 850 TOL = 0.010000 Wed Jul 13 21:42:35 2011
+Finished cell 78 (0.0 , 34.0)  TOTYR = 850 TOL = 0.010000 Wed Jul 13 21:42:35 2011
+Finished cell 79 (0.0 , 38.0)  TOTYR = 850 TOL = 0.010000 Wed Jul 13 21:42:35 2011
+Finished cell 80 (0.0 , 42.0)  TOTYR = 850 TOL = 0.010000 Wed Jul 13 21:42:35 2011
+Finished cell 81 (0.0 , 46.0)  TOTYR = 850 TOL = 0.010000 Wed Jul 13 21:42:35 2011
+Finished cell 82 (0.0 , 50.0)  TOTYR = 850 TOL = 0.010000 Wed Jul 13 21:42:35 2011
+Finished cell 83 (0.0 , 54.0)  TOTYR = 850 TOL = 0.010000 Wed Jul 13 21:42:35 2011
+Finished cell 84 (0.0 , 58.0)  TOTYR = 850 TOL = 0.010000 Wed Jul 13 21:42:35 2011
+Finished cell 85 (0.0 , 62.0)  TOTYR = 850 TOL = 0.010000 Wed Jul 13 21:42:35 2011
+Finished cell 86 (0.0 , 66.0)  TOTYR = 850 TOL = 0.010000 Wed Jul 13 21:42:36 2011
+Finished cell 87 (0.0 , 70.0)  TOTYR = 850 TOL = 0.010000 Wed Jul 13 21:42:36 2011
+Finished cell 88 (0.0 , 74.0)  TOTYR = 850 TOL = 0.010000 Wed Jul 13 21:42:36 2011
+Finished cell 89 (0.0 , 78.0)  TOTYR = 850 TOL = 0.010000 Wed Jul 13 21:42:36 2011
+Finished cell 90 (0.0 , 82.0)  TOTYR = 850 TOL = 0.010000 Wed Jul 13 21:42:36 2011
+Finished cell 91 (0.0 , 86.0)  TOTYR = 850 TOL = 0.010000 Wed Jul 13 21:42:36 2011
+Finished cell 92 (0.0 , 90.0)  TOTYR = 850 TOL = 0.010000 Wed Jul 13 21:42:36 2011
+Finished year 850 at Wed Jul 13 21:42:36 2011
+Finished cell 93 (0.0 , -90.0)  TOTYR = 851 TOL = 0.010000 Wed Jul 13 21:44:48 2011
+Finished cell 94 (0.0 , -86.0)  TOTYR = 851 TOL = 0.010000 Wed Jul 13 21:44:48 2011
+Finished cell 95 (0.0 , -82.0)  TOTYR = 851 TOL = 0.010000 Wed Jul 13 21:44:48 2011
+Finished cell 96 (0.0 , -78.0)  TOTYR = 851 TOL = 0.010000 Wed Jul 13 21:44:48 2011
+Finished cell 97 (0.0 , -74.0)  TOTYR = 851 TOL = 0.010000 Wed Jul 13 21:44:48 2011
+Finished cell 98 (0.0 , -70.0)  TOTYR = 851 TOL = 0.010000 Wed Jul 13 21:44:48 2011
+Finished cell 99 (0.0 , -66.0)  TOTYR = 851 TOL = 0.010000 Wed Jul 13 21:44:48 2011
+Finished cell 100 (0.0 , -62.0)  TOTYR = 851 TOL = 0.010000 Wed Jul 13 21:44:48 2011
+Finished cell 101 (0.0 , -58.0)  TOTYR = 851 TOL = 0.010000 Wed Jul 13 21:44:48 2011
+Finished cell 102 (0.0 , -54.0)  TOTYR = 851 TOL = 0.010000 Wed Jul 13 21:44:48 2011
+Finished cell 103 (0.0 , -50.0)  TOTYR = 851 TOL = 0.010000 Wed Jul 13 21:44:48 2011
+Finished cell 104 (0.0 , -46.0)  TOTYR = 851 TOL = 0.010000 Wed Jul 13 21:44:48 2011
+Finished cell 105 (0.0 , -42.0)  TOTYR = 851 TOL = 0.010000 Wed Jul 13 21:44:48 2011
+Finished cell 106 (0.0 , -38.0)  TOTYR = 851 TOL = 0.010000 Wed Jul 13 21:44:48 2011
+Finished cell 107 (0.0 , -34.0)  TOTYR = 851 TOL = 0.010000 Wed Jul 13 21:44:48 2011
+Finished cell 108 (0.0 , -30.0)  TOTYR = 851 TOL = 0.010000 Wed Jul 13 21:44:48 2011
+Finished cell 109 (0.0 , -26.0)  TOTYR = 851 TOL = 0.010000 Wed Jul 13 21:44:48 2011
+Finished cell 110 (0.0 , -22.0)  TOTYR = 851 TOL = 0.010000 Wed Jul 13 21:44:48 2011
+Finished cell 111 (0.0 , -18.0)  TOTYR = 851 TOL = 0.010000 Wed Jul 13 21:44:49 2011
+Finished cell 112 (0.0 , -14.0)  TOTYR = 851 TOL = 0.010000 Wed Jul 13 21:44:49 2011
+Finished cell 113 (0.0 , -10.0)  TOTYR = 851 TOL = 0.010000 Wed Jul 13 21:44:49 2011
+Finished cell 114 (0.0 , -6.0)  TOTYR = 851 TOL = 0.010000 Wed Jul 13 21:44:49 2011
+Finished cell 115 (0.0 , -2.0)  TOTYR = 851 TOL = 0.010000 Wed Jul 13 21:44:49 2011
+Finished cell 116 (0.0 , 2.0)  TOTYR = 851 TOL = 0.010000 Wed Jul 13 21:44:49 2011
+Finished cell 117 (0.0 , 6.0)  TOTYR = 851 TOL = 0.010000 Wed Jul 13 21:44:49 2011
+Finished cell 118 (0.0 , 10.0)  TOTYR = 851 TOL = 0.010000 Wed Jul 13 21:44:49 2011
+Finished cell 119 (0.0 , 14.0)  TOTYR = 851 TOL = 0.010000 Wed Jul 13 21:44:49 2011
+Finished cell 120 (0.0 , 18.0)  TOTYR = 851 TOL = 0.010000 Wed Jul 13 21:44:49 2011
+Finished cell 121 (0.0 , 22.0)  TOTYR = 851 TOL = 0.010000 Wed Jul 13 21:44:49 2011
+Finished cell 122 (0.0 , 26.0)  TOTYR = 851 TOL = 0.010000 Wed Jul 13 21:44:49 2011
+Finished cell 123 (0.0 , 30.0)  TOTYR = 851 TOL = 0.010000 Wed Jul 13 21:44:49 2011
+Finished cell 124 (0.0 , 34.0)  TOTYR = 851 TOL = 0.010000 Wed Jul 13 21:44:49 2011
+Finished cell 125 (0.0 , 38.0)  TOTYR = 851 TOL = 0.010000 Wed Jul 13 21:44:49 2011
+Finished cell 126 (0.0 , 42.0)  TOTYR = 851 TOL = 0.010000 Wed Jul 13 21:44:49 2011
+Finished cell 127 (0.0 , 46.0)  TOTYR = 851 TOL = 0.010000 Wed Jul 13 21:44:49 2011
+Finished cell 128 (0.0 , 50.0)  TOTYR = 851 TOL = 0.010000 Wed Jul 13 21:44:49 2011
+Finished cell 129 (0.0 , 54.0)  TOTYR = 851 TOL = 0.010000 Wed Jul 13 21:44:50 2011
+Finished cell 130 (0.0 , 58.0)  TOTYR = 851 TOL = 0.010000 Wed Jul 13 21:44:50 2011
+Finished cell 131 (0.0 , 62.0)  TOTYR = 851 TOL = 0.010000 Wed Jul 13 21:44:50 2011
+Finished cell 132 (0.0 , 66.0)  TOTYR = 851 TOL = 0.010000 Wed Jul 13 21:44:50 2011
+Finished cell 133 (0.0 , 70.0)  TOTYR = 851 TOL = 0.010000 Wed Jul 13 21:44:50 2011
+Finished cell 134 (0.0 , 74.0)  TOTYR = 851 TOL = 0.010000 Wed Jul 13 21:44:50 2011
+Finished cell 135 (0.0 , 78.0)  TOTYR = 851 TOL = 0.010000 Wed Jul 13 21:44:50 2011
+Finished cell 136 (0.0 , 82.0)  TOTYR = 851 TOL = 0.010000 Wed Jul 13 21:44:50 2011
+Finished cell 137 (0.0 , 86.0)  TOTYR = 851 TOL = 0.010000 Wed Jul 13 21:44:50 2011
+Finished cell 138 (0.0 , 90.0)  TOTYR = 851 TOL = 0.010000 Wed Jul 13 21:44:50 2011
+Finished year 851 at Wed Jul 13 21:44:50 2011
+Finished year 852 at Wed Jul 13 21:47:04 2011
+Finished year 853 at Wed Jul 13 21:49:18 2011
+Finished year 854 at Wed Jul 13 21:51:32 2011
+Finished year 855 at Wed Jul 13 21:53:46 2011
+Finished year 856 at Wed Jul 13 21:56:00 2011
+Finished year 857 at Wed Jul 13 21:58:15 2011
+Finished year 858 at Wed Jul 13 22:00:29 2011
+Finished year 859 at Wed Jul 13 22:02:43 2011
+Finished year 860 at Wed Jul 13 22:04:57 2011
+Finished year 861 at Wed Jul 13 22:07:11 2011
+Finished year 862 at Wed Jul 13 22:09:25 2011
+Finished y
