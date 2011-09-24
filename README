@@ -25,7 +25,7 @@ src/ -- Source code for the modules of the model, including…
     meta/ -- urban METAmodel
     ocn_ml/ -- two-dimensional, Multi-Layer (ML) OCeaN model
     ocm/ -- Ocean Carbon Model
-    tem/ -- TEM, versions 4.3.8 and 4.4b
+    tem/ -- TEM, versions 4.3.8 and 4.4c
 
 util/ -- Utilities
      analysis/ -- Extract data from output files
@@ -69,7 +69,9 @@ choosing historical or predictive models) can be obtained by typing
   Multiple builds can be maintained in this way, for example in directories
 named 'build1', 'build2' (or something more informative). These directories may
 even be outside the one containing this README file; this would require giving a
-relative path when invoking configure (e.g. '../igsm/configure' or similar).
+relative path when invoking configure (e.g. '../igsm/configure' or similar). To
+see what options were passed to configure, see the file config.log in the build
+directory.
 
   configure will abort if invoked in this (the top level) directory. This is to
 keep built files separate from the IGSM source.

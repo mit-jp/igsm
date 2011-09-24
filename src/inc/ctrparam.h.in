@@ -1,6 +1,7 @@
 /* src/inc/ctrparam.h.in.  Generated from configure.ac by autoheader.  */
 
-/* TODO: document this symbol */
+/* Include GHG emissions from aviation. Requires accri_data and accri_scaling
+   defined in eppaemis.dat */
 #undef ACCRI
 
 /* Coupling CLM */
@@ -8,6 +9,9 @@
 
 /* Coupling chemistry */
 #undef CPL_CHEM
+
+/* Coupling CLM 3.5 */
+#undef CPL_CLM35
 
 /* Coupling parameterized urban airshed model (meta) */
 #undef CPL_META
@@ -21,7 +25,7 @@
 /* Coupling chemistry */
 #undef CPL_TEM
 
-/* TODO: document this symbol */
+/* Save data for offline simulations with CLM/TEM */
 #undef DATA4TEM
 
 /* Define to dummy `main' function (if any) required to link to the Fortran
@@ -35,13 +39,14 @@
    the Fortran libraries. */
 #undef FC_MAIN
 
-/* TODO: document this symbol */
+/* Run model with fixed GHG forcing. TEM and OCM will see changing CO2, while
+   radiation code uses GHGs in the start year (yeargt in name.dat) */
 #undef FIXED_FOR
 
-/* TODO: document this symbol */
+/* Fix CO2 for TEM and OCM */
 #undef FIXED_PCO2
 
-/* TODO: document this symbol */
+/* TODO: remove this symbol (1 reference in atm/r95mit.F) */
 #undef GHS_ALB
 
 /* Define to 1 if you have the <fcntl.h> header file. */
@@ -52,10 +57,6 @@
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
-
-/* Define to 1 if your system has a GNU libc compatible `malloc' function, and
-   to 0 otherwise. */
-#undef HAVE_MALLOC
 
 /* Define to 1 if you have the <malloc.h> header file. */
 #undef HAVE_MALLOC_H
@@ -74,10 +75,6 @@
 
 /* Define to 1 if you have the `pow' function. */
 #undef HAVE_POW
-
-/* Define to 1 if your system has a GNU libc compatible `realloc' function,
-   and to 0 otherwise. */
-#undef HAVE_REALLOC
 
 /* Define to 1 if stdbool.h conforms to C99. */
 #undef HAVE_STDBOOL_H
@@ -115,13 +112,14 @@
 /* Define to 1 if the system has the type `_Bool'. */
 #undef HAVE__BOOL
 
-/* TODO: document this symbol */
+/* (with DATA4TEM) write data hourly */
 #undef HR_DATA
 
 /* Including "3 gases" */
 #undef INC_3GASES
 
-/* TODO: document this symbol */
+/* Use a simple carbon model with carbon emissions from the file specified by
+   co2_data in name.dat */
 #undef IPCC_EMI
 
 /* Two-dimensional ocean */
@@ -140,7 +138,8 @@
 /* Number of vertical layers in diffusive ocean model (either 11 or 12) */
 #undef N_LEVOCEAN
 
-/* TODO: document this symbol */
+/* Number of longitudinal grid points; unused, but must be must be 72 for
+   N_LAT=46 (per atm/check_settings.F) */
 #undef N_LON0
 
 /* Use forced ozone scenario (ifo3forced) */
@@ -152,10 +151,12 @@
 /* Three-dimensional ocean */
 #undef OCEAN_3D
 
-/* TODO: document this symbol */
+/* Use an old way of handling greenhouse effects of different gases in
+   atm/radia0.F (for backwards compatibility) */
 #undef OLD_LAPGAS
 
-/* TODO: document this symbol */
+/* Use radiative forcing adjusted for Earth's orbital parameters. If
+   undefined, the default from a (which?) NASA GISS model is used */
 #undef ORBITAL_FOR
 
 /* Name of package */
@@ -200,7 +201,7 @@
 /* Version number of package */
 #undef VERSION
 
-/* TODO: document this symbol */
+/* Include aerosol forcing due to volcanic activitiy */
 #undef VOL_AER
 
 /* Define to `__inline__' or `__inline' if that's what the C compiler
@@ -208,12 +209,6 @@
 #ifndef __cplusplus
 #undef inline
 #endif
-
-/* Define to rpl_malloc if the replacement function should be used. */
-#undef malloc
-
-/* Define to rpl_realloc if the replacement function should be used. */
-#undef realloc
 
 /* Add custom IGSM preprocessor #defines below this comment. Some known (but
    undocumented) symbols are: ACCRI, DATA4TEM, FIXED_FOR, FIXED_PCO2, GHS_ALB,

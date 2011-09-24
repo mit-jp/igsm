@@ -1,6 +1,15 @@
 SUBDIRS = atm inc $(MODULE_DIRS)
 
-DIST_SUBDIRS = atm chem clm/2.1 clm/3.5 inc ocm ocn_ml meta tem/4.3.8 tem/4.4b
+DIST_SUBDIRS = atm \
+	chem \
+	clm/2.1 \
+	clm/3.5 \
+	inc \
+	ocm \
+	ocn_ml \
+	meta \
+	tem/4.3.8 \
+	tem/4.4c
 
 if IGSM_BIN
 

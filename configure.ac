@@ -3,9 +3,6 @@
 ### Initialization
 AC_PREREQ([2.66])
 AC_INIT(igsm, [1.0], [globalchange@mit.edu])
-# save a copy of the command-line arguments
-# TODO: dump these someplace
-ac_args="$@"
 AM_INIT_AUTOMAKE
 # check that $srcdir points to the actual location of the source code
 AC_CONFIG_SRCDIR([src/atm/atmosphere.F])
@@ -80,19 +77,19 @@ AC_ARG_WITH([clm],
   [CLM_VERSION=2.1])
 
 # Package option for TEM version
-AC_ARG_WITH([tem],
-  [AS_HELP_STRING([--with-tem],
-    [select version of the Terrestrial Ecosystem Model: ARG=4.3.8 (default) or \
-    4.4b; requires --with-clm])],
-  [TEM_VERSION=$withval],
+AC_ARG_ENABLE([tem],
+  [AS_HELP_STRING([--enable-tem],
+    [enable the Terrestrial Ecosystem Model (default for \
+     --with-setup=historical and fullchem)])],
+  [tem=$enableval],
   [if test $model = climate -o $CLM_VERSION = no; then
-     TEM_VERSION=no
+     tem=no
    else
-     TEM_VERSION=4.3.8
+     tem=yes
    fi])
 # check that the user gave sensible arguments
-if test $CLM_VERSION = no -a $TEM_VERSION != no; then
-  AC_MSG_ERROR([cannot give both --with-tem and --without-clm])
+if test $CLM_VERSION = no -a $tem = yes; then
+  AC_MSG_ERROR([cannot give both --enable-tem and --without-clm])
 fi
 
 
@@ -162,7 +159,7 @@ else
   # if using the 3D ocean, the first library is libatm.a
   MODULE_LDADD="atm/libatm.a"
 fi
-# 2. Appropriate version of the Common Land Model (as required)
+# 2. Appropriate version of the Common Land Model
 if test $CLM_VERSION != no; then
   CLM_DIR="clm/$CLM_VERSION"
   MODULE_DIRS+=" $CLM_DIR"
@@ -175,8 +172,15 @@ if test $CLM_VERSION != no; then
   # has its own build system
   AC_CONFIG_LINKS([src/$CLM_DIR:$srcdir/src/$CLM_DIR])
 fi
-# 3. Appropriate version of the Terrestrial Ecosystem Model (as required)
-if test $TEM_VERSION != no; then
+# 3. Appropriate version of the Terrestrial Ecosystem Model
+if test $tem = yes; then
+  # CLM and TEM versions only work in specific combinations
+  if test $CLM_VERSION = 2.1; then
+    TEM_VERSION=4.3.8
+  else
+    # CLM_VERSION=3.5
+    TEM_VERSION=4.4c
+  fi
   MODULE_DIRS+=" tem/$TEM_VERSION"
   MODULE_LDADD+=" tem/$TEM_VERSION/libtem.a"
 fi
@@ -190,9 +194,8 @@ if test $meta = yes; then
   MODULE_DIRS+=" meta"
   MODULE_LDADD+=" meta/libmeta.a"
 fi
-
 # 6. NetCDF libraries. The path LIB_NETCDF should be defined in the build
-# environment.
+#    environment.
 # TODO: check if all three of these are necessary
 MODULE_LDADD+=" -L${LIB_NETCDF} -lnetcdff -lnetcdf -lnetcdf_c++"
 
@@ -221,7 +224,11 @@ AC_DEFINE(NYR_CHEM, 1, [Number of year of chemistry model integration (124 for
 # Defines when using CLM and TEM
 if test $CLM_VERSION != no; then
   AC_DEFINE(CLM, 1, [Coupling CLM])
-  if test $TEM_VERSION != no; then
+  if test $CLM_VERSION = 3.5; then
+    # TODO: ensure this matches new code from sokolov ca. 2011-09-24
+    AC_DEFINE(CPL_CLM35, 1, [Coupling CLM 3.5])
+  fi
+  if test $tem = yes; then
     AC_DEFINE(CPL_TEM, 1, [Coupling chemistry])
     AC_DEFINE(CPL_NEM, 1, [Coupling natural emission model])
   fi
@@ -230,12 +237,12 @@ fi
 # Defines depending on 2D vs. 3D ocean
 if test $ocean = 2D; then
   AC_DEFINE(ML_2D, 1, [Two-dimensional ocean])
-  # the ocm module is only for carbon in a 2D ocean
-  if test $ocncarbon = yes; then
-    AC_DEFINE(CPL_OCEANCO2, 1, [Coupling ocean CO2 model])
-  fi
 else
   AC_DEFINE(OCEAN_3D, 1, [Three-dimensional ocean])
+fi
+# the ocm module is for carbon in 2D or 3D oceans
+if test $ocncarbon = yes; then
+  AC_DEFINE(CPL_OCEANCO2, 1, [Coupling ocean CO2 model])
 fi
 
 # Defines that depend on whether chemistry is included
@@ -302,7 +309,7 @@ AC_CONFIG_FILES([Makefile
 	src/ocm/Makefile
 	src/ocn_ml/Makefile
 	src/tem/4.3.8/Makefile
-	src/tem/4.4b/Makefile
+	src/tem/4.4c/Makefile
 	util/Makefile
 	util/analysis/Makefile
 	util/eppa/Makefile])
