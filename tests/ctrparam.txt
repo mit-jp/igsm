@@ -1,9 +1,9 @@
 --with-setup=climate
 --with-setup=climate --enable-ocncarbon --enable-tem --enable-mitgcm
---with-setup=climate --without-clm --enable-tem
+--with-setup=climate --without-clm --disable-tem
 --with-setup=climate --with-clm=2.1
 --with-setup=historical
---with-setup=historical --without-tem --disable-ocncarbon
+--with-setup=historical --disable-tem --disable-ocncarbon
 --with-setup=fullchem
 --with-setup=fullchem --enable-mitgcm
 --with-setup=fullchem --disable-meta
