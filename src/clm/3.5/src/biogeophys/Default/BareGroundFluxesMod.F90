@@ -132,11 +132,6 @@ contains
     real(r8), pointer :: fpsn(:)          ! photosynthesis (umol CO2 /m**2 /s)
     real(r8), pointer :: rootr(:,:)       ! effective fraction of roots in each soil layer
     real(r8), pointer :: rresis(:,:)      ! root resistance by layer (0-1)  (nlevsoi)	
-
-#if (defined COUP_TEM)
-    real(r8), pointer :: qflx_evap_pet1(:)   ! potential evaporation (mm H2O/s) (+ = to atm)
-#endif
-
 !
 !EOP
 !
@@ -238,10 +233,6 @@ contains
     psnsun => clm3%g%l%c%p%pcf%psnsun
     psnsha => clm3%g%l%c%p%pcf%psnsha
     fpsn => clm3%g%l%c%p%pcf%fpsn
-
-#if (defined COUP_TEM)
-    qflx_evap_pet1  => clm3%g%l%c%p%pwf%qflx_evap_pet1
-#endif
 
     ! Filter pfts where frac_veg_nosno is zero
 

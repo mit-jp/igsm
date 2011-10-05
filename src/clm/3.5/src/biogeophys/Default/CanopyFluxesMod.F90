@@ -210,11 +210,6 @@ contains
    real(r8), pointer :: fpsn(:)            ! photosynthesis (umol CO2 /m**2 /s)
    real(r8), pointer :: rootr(:,:)         ! effective fraction of roots in each soil layer
    real(r8), pointer :: rresis(:,:)        ! root resistance by layer (0-1)  (nlevsoi)	
-
-#if (defined COUP_TEM)
-   real(r8), pointer :: qflx_evap_pet1(:)   ! potential evaporation (mm H2O/s) (+ = to atm)
-#endif
-
 !
 !EOP
 !
@@ -431,10 +426,6 @@ contains
    cgrndl         => clm3%g%l%c%p%pef%cgrndl
    cgrnd          => clm3%g%l%c%p%pef%cgrnd
    fpsn           => clm3%g%l%c%p%pcf%fpsn
-
-#if (defined COUP_TEM)
-   qflx_evap_pet1  => clm3%g%l%c%p%pwf%qflx_evap_pet1
-#endif
       
    ! Assign local pointers to derived type members (ecophysiological)
 
@@ -689,13 +680,6 @@ contains
          end if
          efpot = forc_rho(g)*wtl*(qsatl(p)-qaf(p))
 
-#if (defined COUP_TEM)
-!CAS
-!CAS  Simple Dalton-type expression for PET estimate, using raw and rb in series
-!CAS
-         qflx_evap_pet1(p) = forc_rho(g)*(qsatl(p)-forc_q(g))/(raw(p,1)+rb(p)+raw(p,2))
-#endif
-
          if (efpot > 0._r8) then
             if (btran(p) > btran0) then
                qflx_tran_veg(p) = efpot*rppdry
@@ -713,7 +697,8 @@ contains
             qflx_tran_veg(p) = 0._r8
          end if
 
-         ! Update conductances for changes in rppg ! Latent heat conductances for ground and leaf.
+         ! Update conductances for changes in rpp
+         ! Latent heat conductances for ground and leaf.
          ! Air has same conductance for both sensible and latent heat.
          ! Moved the original subroutine in-line...
 
@@ -776,7 +761,6 @@ contains
 
          efpot = forc_rho(g)*wtl*(wtgaq*(qsatl(p)+qsatldT(p)*dt_veg(p)) &
             -wtgq0*qg(c)-wtaq0(p)*forc_q(g))
-
          qflx_evap_veg(p) = rpp*efpot
          
          ! Calculation of evaporative potentials (efpot) and
@@ -932,12 +916,6 @@ contains
       !write(6,*) p,ivt(p),btran(p),psnsun(p),psnsha(p),alphapsnsun(p),alphapsnsha(p)
 #endif     
       
-#if (defined COUP_TEM)
-!CAS
-!CAS  PET limit set
-!CAS
-   qflx_evap_pet1(p) = max(qflx_evap_pet1(p),qflx_evap_veg(p)+qflx_tran_veg(p)+qflx_evap_soi(p))
-#endif
    end do
 
    ! Filter out pfts which have small energy balance errors; report others
@@ -956,7 +934,6 @@ contains
       p = filterp(f)
       write(6,*) 'energy balance in canopy ',p,', err=',err(p)
    end do
-
 
    end subroutine CanopyFluxes
 

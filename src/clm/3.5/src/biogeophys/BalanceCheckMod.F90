@@ -379,7 +379,7 @@ contains
 
     found = .false.
     do c = lbc, ubc
-       if (abs(errsoi_col(c)) > 1.0e-7_r8 ) then
+       if (abs(errsoi_col(c)) > 1.0e-3_r8 ) then
           found = .true.
           index = c
        end if
