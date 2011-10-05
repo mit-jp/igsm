@@ -44,7 +44,6 @@ module surfrdMod
   public :: surfrd_get_latlon  ! Read surface dataset into domain
   public :: surfrd_get_frac  ! Read land fraction into domain
   public :: surfrd_get_topo  ! Read topography into domain
-
 !
 ! !REVISION HISTORY:
 ! Created by Mariana Vertenstein
@@ -94,7 +93,9 @@ contains
 !    o real % abundance PFTs (as a percent of vegetated area)
 !
 ! !USES:
-    use clm_varctl  , only : allocate_all_vegpfts
+! changes by Erwan start here
+    use clm_varctl  , only : allocate_all_vegpfts, dynamic_pft
+! changes by Erwan end here
     use pftvarcon   , only : noveg
     use fileutils   , only : getfil
     use domainMod , only : domain_type
@@ -1157,9 +1158,9 @@ contains
        count(1) = domain%ni
        start(2) = 1
        count(2) = domain%nj
-       start(3) = n+1	 ! dataset is 1:numpft+1, not 0:numpft
+       start(3) = n+1    ! dataset is 1:numpft+1, not 0:numpft
        count(3) = 1
-       if (single_column) then
+       if (single_column) then          
           call scam_setlatlonidx(ncid,scmlat,scmlon,closelat,closelon,closelatidx,closelonidx)
           start(1)=closelonidx
           start(2)=closelatidx
@@ -1295,10 +1296,10 @@ contains
 
        if (maxpatch_pft < numpft+1) then
           do m=1,maxpatch_pft
-             pctpft_lunit(nl,m) = float(nint(10000000.*pctpft_lunit(nl,m)))/10000000.
+             pctpft_lunit(nl,m) = float(nint(1.0e+7*pctpft_lunit(nl,m)))*1.0e-7
           end do
           do m=1,maxpatch_cft
-             pctcft_lunit(nl,m) = float(nint(10000000.*pctcft_lunit(nl,m)))/10000000.
+             pctcft_lunit(nl,m) = float(nint(1.0e+7*pctcft_lunit(nl,m)))*1.0e-7
           end do
        end if
                    
@@ -1438,6 +1439,10 @@ contains
 !
 ! !USES:
     use domainMod   , only : domain_type
+! changes by Erwan start here
+    use clm_varctl  , only : dynamic_pft, rampYear_dynpft
+    use clm_time_manager, only : get_curr_date, get_step_size, get_perp_date, is_perpetual
+! changes by Erwan end here
 !
 ! !ARGUMENTS:
     implicit none
@@ -1461,6 +1466,25 @@ contains
     integer  :: begg,endg                      ! beg/end gcell index
     integer  :: dimid,varid                    ! netCDF id's
     integer  :: start(3),count(3)              ! netcdf start/count arrays
+! changes by Erwan start here
+    integer  :: start4(4),count4(4)            ! netcdf start/count arrays for dynamic pft 
+                                               ! (time is also a dimension)
+                                               ! added by Erwan Monier
+                                               ! (07/12/2011)
+    integer  :: year                            ! year (0, ...) for nstep+1
+    integer  :: mon                             ! month (1, ..., 12) for nstep+1
+    integer  :: day                             ! day of month (1, ..., 31) for nstep+1
+    integer  :: sec                             ! seconds into current date for nstep+1
+    integer , pointer   :: yearspft(:)
+    integer :: nt1
+    integer :: nt2
+    real(r8),pointer :: arrayl1(:)              ! local array
+    real(r8),pointer :: arrayl2(:)              ! local array
+    real(r8) :: deltay,fact              ! time interpolation factors
+    logical  :: found            ! true => current year found in pft input dataset
+    integer  :: ntimes           ! number of input time samples
+    real(r8) :: sumpct                          ! temporary
+! changes by Erwan end here
     integer  :: ier                            ! error status	
     real(r8) :: sumpct                         ! sum of %pft over maxpatch_pft
     real(r8),allocatable :: pctpft(:,:)        ! percent of vegetated gridcell area for PFTs
@@ -1485,26 +1509,146 @@ contains
     endif
 
     allocate(arrayl(begg:endg))
-    do n = 0,numpft
-       start(1) = 1
-       count(1) = domain%ni
-       start(2) = 1
-       count(2) = domain%nj
-       start(3) = n+1         ! dataset is 1:numpft+1, not 0:numpft
-       count(3) = 1
-       if (single_column) then
-          call scam_setlatlonidx(ncid,scmlat,scmlon,closelat,closelon,closelatidx,closelonidx)
-          start(1)=closelonidx
-          start(2)=closelatidx
+! changes by Erwan start here
+
+! Checks if dynamic_pft is set to true. If true, the model needs to read one
+! more 
+! dimension to surface data file (year). Year 1 of file is read and the percent
+! pft will be updated with correct year once the time manager is initialized.
+! added by Erwan Monier (07/13/2011)
+    if (dynamic_pft) then
+
+       allocate(arrayl1(begg:endg))
+       allocate(arrayl2(begg:endg))
+
+       if (masterproc) then
+          call check_ret(nf_inq_dimid(ncid, 'year', varid), subname)
+          call check_ret(nf_inq_dimlen(ncid, varid, ntimes), subname)
+       end if
+
+       call clmmpi_bcast(ntimes,1,CLMMPI_INTEGER,0,clmmpicom,ier)
+
+       allocate (yearspft(ntimes), stat=ier)
+
+       if (ier /= 0) then
+          write(6,*)'pctpft_dyn_init allocation error for yearspft'; call endrun()
+       end if
+
+       if (masterproc) then
+          call check_ret(nf_inq_varid(ncid, 'year', varid), subname)
+          call check_ret(nf_get_var_int(ncid, varid, yearspft), subname)
        endif
-       call ncd_iolocal(ncid, 'PCT_PFT', 'read', arrayl, begg, endg, gsMap_lnd_gdc2glo, &
+
+       call clmmpi_bcast(yearspft,ntimes,CLMMPI_INTEGER,0,clmmpicom,ier)
+
+       if (rampYear_dynpft /= 0) then
+          year = rampYear_dynpft
+       else
+          call get_curr_date(year, mon, day, sec)
+       endif
+
+       if (year < yearspft(1)) then
+          nt1 = 1
+          nt2 = 1
+          found = .true.
+       else if (year >= yearspft(ntimes)) then
+          nt1 = ntimes
+          nt2 = ntimes
+          found = .true.
+       else
+          found = .false.
+          do n = 1,ntimes-1
+             if (year == yearspft(n)) then
+                nt1 = n
+                nt2 = n
+                found = .true.
+             end if
+          end do
+! If the year is not found in the pft data file, then find years that bracket
+! the current
+          if (.not. found) then
+             nt2 = 1
+             do while(yearspft(nt2) < year)
+                nt2 = nt2 + 1
+             end do
+             nt1 = nt2 - 1
+          end if
+       end if
+
+       do n = 0,numpft
+          start4(1) = 1
+          count4(1) = domain%ni
+          start4(2) = 1
+          count4(2) = domain%nj
+          start4(3) = n+1         ! dataset is 1:numpft+1, not 0:numpft
+          count4(3) = 1
+          start4(4) = nt1
+          count4(4) = 1
+          if (single_column) then
+             call scam_setlatlonidx(ncid,scmlat,scmlon,closelat,closelon,closelatidx,closelonidx)
+             start(1)=closelonidx
+             start(2)=closelatidx
+          endif
+          call ncd_iolocal(ncid, 'PCT_PFT', 'read', arrayl1, begg, endg, gsMap_lnd_gdc2glo, &
+                        perm_lnd_gdc2glo, start4, count4)
+          start4(4) = nt2
+          call ncd_iolocal(ncid, 'PCT_PFT', 'read', arrayl2, begg, endg, gsMap_lnd_gdc2glo, &
+                        perm_lnd_gdc2glo, start4, count4)
+          if (nt1 == nt2) then
+             pctpft(begg:endg,n) = arrayl1(begg:endg)
+          else
+! We interpolate the pft between years of missing pft data
+             deltay = yearspft(nt2) - yearspft(nt1)
+             fact = (yearspft(nt2) - year)/deltay
+             pctpft(begg:endg,n) = arrayl1(begg:endg) + fact*(arrayl1(begg:endg)-arrayl2(begg:endg))
+          end if
+
+       end do
+
+       deallocate(arrayl1)
+       deallocate(arrayl2)
+
+    else
+       do n = 0,numpft
+          start(1) = 1
+          count(1) = domain%ni
+          start(2) = 1
+          count(2) = domain%nj
+          start(3) = n+1         ! dataset is 1:numpft+1, not 0:numpft
+          count(3) = 1
+          if (single_column) then
+             call scam_setlatlonidx(ncid,scmlat,scmlon,closelat,closelon,closelatidx,closelonidx)
+             start(1)=closelonidx
+             start(2)=closelatidx
+          endif
+          call ncd_iolocal(ncid, 'PCT_PFT', 'read', arrayl, begg, endg, gsMap_lnd_gdc2glo, &
                         perm_lnd_gdc2glo, start, count)
-       pctpft(begg:endg,n) = arrayl(begg:endg)
-    enddo
+          pctpft(begg:endg,n) = arrayl(begg:endg)
+       enddo
+    end if
+! changes by Erwan end here
     deallocate(arrayl)
 
     do nl = begg,endg
        if (domain%pftm(nl) >= 0) then
+
+! changes by Erwan start here
+! Scale the pctpft to ensure that the sum of the pctpft is equal to 100-pctspec
+! (should be the case in the data file read, but make sure anyway)
+
+       if (pctspec(nl) < 100._r8) then
+          sumpct = 0._r8
+          do m = 0,numpft
+             sumpct = sumpct + pctpft(nl,m)
+          end do
+          if (abs(sumpct+pctspec(nl)-100._r8) > 1.0e-6) then
+             do m = 0,numpft
+                pctpft(nl,m) = pctpft(nl,m) * (100._r8-pctspec(nl))/sumpct
+             end do
+          end if
+       end if
+
+! changes by Erwan end here
 
           ! Error check: make sure PFTs sum to 100% cover for vegetated landunit 
           ! (convert pctpft from percent with respect to gridcel to percent with 
@@ -1515,6 +1659,7 @@ contains
              do m = 0,numpft
                 sumpct = sumpct + pctpft(nl,m) * 100._r8/(100._r8-pctspec(nl))
              end do
+             write(6,*) sumpct, sumpct-100._r8, nl
              if (abs(sumpct - 100._r8) > 0.1e-4_r8) then
                 write(6,*)'surfrdMod error: sum(pct) over numpft+1 is not = 100.'
                 write(6,*) sumpct, sumpct-100._r8, nl

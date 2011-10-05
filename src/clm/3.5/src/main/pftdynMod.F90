@@ -20,7 +20,7 @@ module pftdynMod
   use abortutils  , only : endrun
 !
 ! !DESCRIPTION:
-! Determine pft weights at current time using dynamic landuse datasets.
+! Determine pft weights at current year using dynamic landuse datasets.
 ! ASSUMES that only have one dynamic landuse dataset.
 !
 ! !PUBLIC TYPES:
@@ -34,6 +34,13 @@ module pftdynMod
 !
 ! !REVISION HISTORY:
 ! Created by Gordon Bonan, Sam Levis and Mariana Vertenstein
+! Updated by Erwan Monier (07/15/2011)
+! The daily interpolation is changed to an annual interpolation (for missing
+! years in the data file) since PFTs do not change on a daily basis, but most
+! likely during winter after harvest. If simulation year is before the data
+! year range, then use first year of data file, if simulation year is past
+! the data year range, then use last year of data file.
+! And if rampYear_dynpft > 0, then set pft to ramped year.
 !
 !EOP
 !
@@ -49,7 +56,7 @@ module pftdynMod
 !---------------------------------------------------------------------------
 
 contains
-  
+
 !-----------------------------------------------------------------------
 !BOP
 !
@@ -64,10 +71,11 @@ contains
 !
 ! !USES:
     use clm_time_manager, only : get_curr_date
-    use clm_varctl  , only : fpftdyn
+    use clm_varctl  , only : fpftdyn, rampYear_dynpft
     use clm_varpar  , only : lsmlon, lsmlat, numpft
     use fileutils   , only : getfil
     use spmdGathScatMod, only : gather_data_to_master
+    use clm_varcon  , only : istsoil
 !
 ! !ARGUMENTS:
     implicit none
@@ -76,7 +84,7 @@ contains
 !EOP
 !
 ! !LOCAL VARIABLES:
-    integer  :: i,j,m,n,g                       ! indices
+    integer  :: i,j,m,n,g,p,l                   ! indices
     integer  :: ntimes                          ! number of input time samples
     real(r8) :: sumpct                          ! sum for error check
     integer  :: varid                           ! netcdf ids
@@ -95,6 +103,8 @@ contains
     real(r8), pointer :: pctwet(:)          ! percent of gcell is wetland
     real(r8), pointer :: pcturb(:)          ! percent of gcell is urbanized
     type(gridcell_type), pointer :: gptr        ! pointer to gridcell derived subtype
+    type(landunit_type), pointer :: lptr         ! pointer to landunit derived subtype
+    type(pft_type)     , pointer :: pptr         ! pointer to pft derived subtype
     character(len=256) :: locfn                 ! local file name
     character(len= 32) :: subname='pftdyn_init' ! subroutine name
  !-----------------------------------------------------------------------
@@ -107,9 +117,12 @@ contains
     ! Set pointers into derived type
 
     gptr => clm3%g
+    lptr => clm3%g%l
+    pptr => clm3%g%l%c%p
 
     ! pctspec must be saved between time samples
-    ! position to first time sample - assume that first time sample must match starting date
+    ! position to first time sample - assume that first time sample must match
+    ! starting date
     ! check consistency -  special landunits, grid, frac and mask
     ! only do this once
 
@@ -127,6 +140,18 @@ contains
        call endrun()
     end if
 
+! Initialize pptr%wtcol_old as pptr%wtcol. If reading from the initial condition or restart file
+! this will save the pptr%wtcol from these files into pptr%wtcol_old and
+! pptr%wtcol will be updated to the current weight from the surface data file in
+! the pftdyn_interp subroutine
+
+    do p = begp,endp
+       l = pptr%landunit(p)
+       if (lptr%itype(l) == istsoil) then
+          wtcol_old(p)   = pptr%wtcol(p)
+       end if
+    end do
+
     if (masterproc) then
 
        ! Obtain file
@@ -136,8 +161,10 @@ contains
        call check_ret(nf_open(locfn, 0, ncid), subname)
 
        ! Obtain pft years from dynamic landuse file
+! Modified the name of variable read (time exists for other variables in that
+! surface data file, so we use year) Erwan Monier (07/14/2011)
 
-       call check_ret(nf_inq_dimid(ncid, 'time', varid), subname)
+       call check_ret(nf_inq_dimid(ncid, 'year', varid), subname)
        call check_ret(nf_inq_dimlen(ncid, varid, ntimes), subname)
 
        ! Consistency check
@@ -154,26 +181,11 @@ contains
     end if
 
     if (masterproc) then
-       call check_ret(nf_inq_varid(ncid, 'YEAR', varid), subname)
+       call check_ret(nf_inq_varid(ncid, 'year', varid), subname)
        call check_ret(nf_get_var_int(ncid, varid, yearspft), subname)
     endif
 
     call clmmpi_bcast(yearspft,ntimes,CLMMPI_INTEGER,0,clmmpicom,ier)
-
-    call ncd_iolocal(ncid, 'PCT_WETLAND', 'read', pctwet, begg, endg, gsMap_lnd_gdc2glo, perm_lnd_gdc2glo)
-    call ncd_iolocal(ncid, 'PCT_LAKE'   , 'read', pctlak, begg, endg, gsMap_lnd_gdc2glo, perm_lnd_gdc2glo)
-    call ncd_iolocal(ncid, 'PCT_GLACIER', 'read', pctgla, begg, endg, gsMap_lnd_gdc2glo, perm_lnd_gdc2glo)
-    call ncd_iolocal(ncid, 'PCT_URBAN'  , 'read', pcturb, begg, endg, gsMap_lnd_gdc2glo, perm_lnd_gdc2glo)
-
-    ! Consistency check
-    do g = begg,endg
-       if (pctlak(g)+pctwet(g)+pcturb(g)+pctgla(g) /= pctspec(g)) then 
-          write(6,*)'mismatch between input pctspec = ',&
-                     pctlak(g)+pctwet(g)+pcturb(g)+pctgla(g),&
-                    ' and that obtained from surface dataset ', pctspec(g),' at g= ',g
-           call endrun()
-       end if
-    end do
 
     ! Determine if current date spans the years
     ! If current year is less than first dynamic PFT timeseries year,
@@ -183,50 +195,50 @@ contains
     ! If current year is equal to or greater than the last dynamic pft
     ! timeseries year, then use the last year for both nt1 and nt2, 
     ! forcing constant weights for the remainder of the simulation.
-    ! This mechanism permits the introduction of a dynamic pft period in the middle
-    ! of a simulation, with constant weights before and after the dynamic period.
+    ! This mechanism permits the introduction of a dynamic pft period in the
+    ! middle
+    ! of a simulation, with constant weights before and after the dynamic
+    ! period.
 
-    call get_curr_date(year, mon, day, sec)
+    if (rampYear_dynpft /= 0) then
+       year = rampYear_dynpft
+    else
+       call get_curr_date(year, mon, day, sec)
+    endif
 
     if (year < yearspft(1)) then
        nt1 = 1
        nt2 = 1
+       found = .true.
     else if (year >= yearspft(ntimes)) then
        nt1 = ntimes
        nt2 = ntimes
+       found = .true.
     else
        found = .false.
        do n = 1,ntimes-1 
           if (year == yearspft(n)) then
              nt1 = n
-             nt2 = nt1 + 1
+             nt2 = n
              found = .true.
           end if   
        end do
+! If the year is not found in the pft data file, then find years that bracket
+! the current
        if (.not. found) then
-          write(6,*)'pftdyn_init error: model year not found in pftdyn timeseries'
-          write(6,*)'model year = ',year
-          call endrun()
+          nt2 = 1
+          do while(yearspft(nt2) < year) 
+             nt2 = nt2 + 1
+          end do
+          nt1 = nt2 - 1
        end if
     end if
 
-    ! Get pctpft time samples bracketing the current time
-
-    call pftdyn_getdata(nt1, wtpft1, begg,endg,0,numpft)
-    call pftdyn_getdata(nt2, wtpft2, begg,endg,0,numpft)
-    do m = 0,numpft
-!dir$ concurrent
-!cdir nodep
-       do g = begg,endg
-          wtpft1(g,m) = wtpft1(g,m)/100._r8
-          wtpft2(g,m) = wtpft2(g,m)/100._r8
-       end do
-    end do
-       
     deallocate(pctgla,pctlak,pctwet,pcturb)
 
   end subroutine pftdyn_init
 
+  
 !-----------------------------------------------------------------------
 !BOP
 !
@@ -242,6 +254,7 @@ contains
     use clm_time_manager, only : get_curr_date, get_curr_calday
     use clm_varcon  , only : istsoil
     use clm_varpar  , only : numpft, lsmlon, lsmlat
+    use clm_varctl  , only : rampYear_dynpft
 !
 ! !ARGUMENTS:
     implicit none
@@ -249,23 +262,33 @@ contains
 !EOP
 !
 ! !LOCAL VARIABLES:
-    integer  :: i,j,m,p,l,g      ! indices
+    logical  :: update_pft       ! true => the pft needs to be updated to correct year
+    logical  :: found            ! true => current year found in pft input dataset
+    logical  :: first            ! true => first time step of initial, restart or branch run
+    integer  :: i,j,m,p,l,g,n,c    ! indices
+    integer  :: ntimes           ! number of input time samples
     integer  :: year             ! year (0, ...) for nstep+1
     integer  :: mon              ! month (1, ..., 12) for nstep+1
     integer  :: day              ! day of month (1, ..., 31) for nstep+1
     integer  :: sec              ! seconds into current date for nstep+1
     real(r8) :: cday             ! current calendar day (1.0 = 0Z on Jan 1)
     integer  :: ier              ! error status
-    real(r8) :: wt1              ! time interpolation weights
+    real(r8) :: deltay,fact              ! time interpolation factors
     integer  :: begg,endg                       ! beg/end indices for land gridcells
     integer  :: begl,endl                       ! beg/end indices for land landunits
     integer  :: begc,endc                       ! beg/end indices for land columns
     integer  :: begp,endp                       ! beg/end indices for land pfts
+    real(r8), pointer :: wtpfttot1(:)           ! summation of pft weights for renormalization
+    real(r8), pointer :: wtpfttot2(:)           ! summation of pft weights for renormalization
     type(gridcell_type), pointer :: gptr         ! pointer to gridcell derived subtype
     type(landunit_type), pointer :: lptr         ! pointer to landunit derived subtype
     type(pft_type)     , pointer :: pptr         ! pointer to pft derived subtype
     character(len=32) :: subname='pftdyn_interp' ! subroutine name
 !-----------------------------------------------------------------------
+
+    data first /.true./
+
+    call get_proc_bounds(begg,endg,begl,endl,begc,endc,begp,endp)
 
     ! Set pointers into derived type
 
@@ -273,87 +296,128 @@ contains
     lptr => clm3%g%l
     pptr => clm3%g%l%c%p
 
-    call get_proc_bounds(begg,endg,begl,endl,begc,endc,begp,endp)
-
-    ! Interpolat pctpft to current time step - output in pctpft_intp
+    ! Interpolat pctpft to current year - output in pctpft_intp
     ! Map interpolated pctpft to subgrid weights
     ! assumes that maxpatch_pft = numpft + 1, that each landunit has only 1 column, 
     ! SCAM and DGVM have not been defined, and that create_croplandunit = .false.
 
-    ! If necessary, obtain new time sample
+    ! Get current date or use rampYear_dynpft
+    update_pft = .false.
 
-    ! Get current date
+    if (rampYear_dynpft /= 0) then
+       year = rampYear_dynpft
+       ! No need to update the pft since it is ramped at year rampYear_dynpft 
+       ! and the weigths have already been set in surfrdMod
+    else
+       call get_curr_date(year, mon, day, sec)
 
-    call get_curr_date(year, mon, day, sec)
+    ! Update the year to read when the current year of the simulation is greater
+    ! than the year at which the pft is read from the input data file
 
-    ! Obtain new time sample if necessary.
-    ! The first condition is the regular crossing of a year boundary
-    ! when within the dynpft timeseries range. The second condition is
-    ! the case of the first entry into the dynpft timeseries range from
-    ! an earlier period of constant weights.
+       if (nt1 == nt2 .and. year > yearspft(nt1)) then
+          update_pft = .true.
+       end if
 
-    if (year > yearspft(nt1) .or. (nt1 == 1 .and. nt2 == 1 .and. year == yearspft(1))) then
+       if (nt1 /= nt2 .and. year == yearspft(nt2)) then
+          update_pft = .true.
+       end if
 
+    end if
+
+! Update the pft if new year or if first time step of the run (whether initial,
+! restart or branch run) in order to rectify the weights read from the initial
+! or restart file.
+    if (update_pft .or. first) then
        if (year >= yearspft(size(yearspft))) then
           nt1 = size(yearspft)
           nt2 = size(yearspft)
+          found = .true.
        else
-          nt1 = nt2
-          nt2 = nt1 + 1
-       end if
-       
-       if (nt2 > size(yearspft)) then
-          write(6,*)subname,' error - current year is past input data boundary'
-       end if
-       
-       do m = 0,numpft
-!dir$ concurrent
-!cdir nodep
-          do g = begg,endg
-             wtpft1(g,m) = wtpft2(g,m)
+          found = .false.
+          do n = 1,size(yearspft)-1
+             if (year == yearspft(n)) then
+                nt1 = n
+                nt2 = n
+                found = .true.
+             end if   
           end do
-       end do
+! If the year is not found in the pft data file, then find years that bracket
+! the current year of the simulation
+          if (.not. found) then
+             nt2 = 1
+             do while(yearspft(nt2) < year) 
+                nt2 = nt2 + 1
+             end do
+             nt1 = nt2 - 1
+          end if
+       end if
+    ! Now that the times have been updated, update the pctpft (if the current year
+    ! is found in the pft data file, then the wtpft1 and wtpft2 will be equal)
 
+       call pftdyn_getdata(nt1, wtpft1, begg,endg,0,numpft)
        call pftdyn_getdata(nt2, wtpft2, begg,endg,0,numpft)
 
        do m = 0,numpft
-!dir$ concurrent
-!cdir nodep
           do g = begg,endg
+             wtpft1(g,m) = wtpft1(g,m)/100._r8
              wtpft2(g,m) = wtpft2(g,m)/100._r8
           end do
        end do
-    
-    end if  ! end of need new data if-block 
 
-    ! Interpolate pft weight to current time
-
-    cday = get_curr_calday() 
-
-    wt1 = ((days_per_year + 1._r8) - cday)/days_per_year
+       allocate(wtpfttot1(begc:endc),wtpfttot2(begc:endc))
+       wtpfttot1(:) = 0._r8
+       wtpfttot2(:) = 0._r8
 
 !dir$ concurrent
 !cdir nodep
-    do p = begp,endp
-       g = pptr%gridcell(p)
-       l = pptr%landunit(p)
-       if (lptr%itype(l) == istsoil) then
-          m = pptr%itype(p)
-          wtcol_old(p)      = pptr%wtcol(p)
-!         --- recoded for roundoff performance, tcraig 3/07 from k.lindsay
-!         pptr%wtgcell(p)   = wtpft1(g,m)*wt1 + wtpft2(g,m)*wt2
-          pptr%wtgcell(p)   = wtpft2(g,m) + wt1*(wtpft1(g,m)-wtpft2(g,m))
-          pptr%wtlunit(p)   = pptr%wtgcell(p) / lptr%wtgcell(l)
-          pptr%wtcol(p)     = pptr%wtgcell(p) / lptr%wtgcell(l)
-       end if
-    end do
-    
+       do p = begp,endp
+          c = pptr%column(p)
+          g = pptr%gridcell(p)
+          l = pptr%landunit(p)
+          if (lptr%itype(l) == istsoil) then
+             m = pptr%itype(p)
+             wtpfttot1(c) = wtpfttot1(c)+pptr%wtgcell(p)
+             if (nt1 == nt2) then
+! Then the current year exists in the pft input data file
+! No need to interpolate
+                pptr%wtgcell(p)   = wtpft1(g,m)
+             else
+! We interpolate the pft between years of missing pft data
+                deltay = yearspft(nt2) - yearspft(nt1)
+                fact = (yearspft(nt2) - year)/deltay
+                pptr%wtgcell(p)   = wtpft2(g,m) + fact*(wtpft1(g,m)-wtpft2(g,m))
+             end if
+             pptr%wtlunit(p)   = pptr%wtgcell(p) / lptr%wtgcell(l)
+             pptr%wtcol(p)     = pptr%wtgcell(p) / lptr%wtgcell(l)
+             wtpfttot2(c) = wtpfttot2(c)+pptr%wtgcell(p)
+          end if
+       end do
+
+       deallocate(wtpfttot1,wtpfttot2)
+
+! Now that we have updated the pfts, we need to call the column-level
+! water mass-balance correction subroutine
+       call pftdyn_wbal()
+
+! After the water mass-balance correction, we update pptr%wtcol_old
+       do p = begp,endp
+          l = pptr%landunit(p)
+          if (lptr%itype(l) == istsoil) then
+             wtcol_old(p)   = pptr%wtcol(p)
+          end if
+       end do
+
+
+! End of the update
+    first = .false.
+    end if
+
   end subroutine pftdyn_interp
 
 !-----------------------------------------------------------------------
 !BOP
 !
-! !ROUTINE: pftdyn_get_data
+! !ROUTINE: pftdyn_getdata
 !
 ! !INTERFACE:
   subroutine pftdyn_getdata(ntime, pctpft, lb1,ub1,lb2,ub2)
@@ -364,6 +428,7 @@ contains
 !
 ! !USES:
     use clm_varpar  , only : numpft, lsmlon, lsmlat
+    use pftvarcon   , only : crop
 !
 ! !ARGUMENTS:
     implicit none
@@ -375,10 +440,13 @@ contains
 !EOP
 !
 ! !LOCAL VARIABLES:
-    integer  :: i,j,m,n
+! changes by Erwan start here
+    integer  :: i,j,m,n,nl
+! changes by Erwan end here
     integer  :: begg,endg         
-    integer  :: err, ierr
-    real(r8) :: sumpct,sumerr                     ! temporary
+! changes by Erwan start here
+    real(r8) :: sumpct                     ! temporary
+! changes by Erwan end here
     integer  :: start(4), count(4)                ! input sizes
     real(r8),pointer :: arrayl(:)                 ! temporary array
     character(len=32) :: subname='pftdyn_getdata' ! subroutine name
@@ -401,28 +469,24 @@ contains
     enddo
     deallocate(arrayl)
 
-    err = 0
-    do n = begg,endg
-       if (pctspec(n) < 100._r8) then
+! Changes by Erwan start here
+! Scale the pctpft to ensure that the sum of the pctpft is equal to 100-pctspec
+! (should be the case in the data file read, but make sure anyway)
+
+    do nl = begg,endg
+       if (pctspec(nl) < 100._r8) then
           sumpct = 0._r8
-          do m = 0, numpft
-             sumpct = sumpct + pctpft(n,m) * 100._r8/(100._r8-pctspec(n))
+          do m = 0,numpft
+             sumpct = sumpct + pctpft(nl,m)
           end do
-          if (abs(sumpct - 100._r8) > 0.1_r8) then
-             err = 1; ierr = n; sumerr = sumpct
-          end if
-          if (sumpct < -0.000001_r8) then
-             err = 2; ierr = n; sumerr = sumpct
+          if (abs(sumpct+pctspec(nl)-100._r8) > 1.0e-6) then
+             do m = 0,numpft
+                pctpft(nl,m) = pctpft(nl,m) * (100._r8-pctspec(nl))/sumpct
+             end do
           end if
        end if
     end do
-    if (err == 1) then
-       write(6,*) subname,' error: sum(pct) over numpft+1 is not = 100.',sumerr,ierr,pctspec(ierr),pctpft(ierr,:)
-       call endrun()
-    else if (err == 2) then
-       write(6,*)subname,' error: sum(pct) over numpft+1 is < 0.',sumerr,ierr,pctspec(ierr),pctpft(ierr,:)
-       call endrun()
-    end if
+! Changes by Erwan end here
     
   end subroutine pftdyn_getdata
 
@@ -543,6 +607,7 @@ contains
 
 !dir$ concurrent
 !cdir nodep
+
     do p = begp,endp
        l = pptr%landunit(p)
        loss_h2ocan(p) = 0._r8
@@ -551,7 +616,7 @@ contains
 
           ! calculate the change in weight for the timestep
           dwt = pptr%wtcol(p)-wtcol_old(p)
-  
+
           if (dwt > 0._r8) then
           
              ! if the pft gained weight, then the 

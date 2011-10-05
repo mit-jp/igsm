@@ -107,6 +107,12 @@ module controlMod
 !    o rtm_nsteps  = if > 1, average rtm over rtm_nsteps time steps
 !    o nsegspc     = number of segments per clump for decomposition
 !
+! === Dynamic pft added by Erwan Monier (07/12/2011) ===
+!
+!    o dynamic_pft     = true if you want pft varying annually
+!    o rampYear_dynpft = dynamic pft fixed at this year (can be used if 
+!                        dynamic_pft is set to true)
+!
 ! When coupled to CAM: base calendar info, nstep, nestep, nsrest, and time
 ! step are input to the land model from CAM. The values in the clm_inparm namelist
 ! are not used. 
@@ -223,6 +229,7 @@ contains
     use fileutils        , only : getavu, relavu
     use shr_string_mod   , only : shr_string_getParentDir
 
+
     implicit none
 !
 ! !ARGUMENTS:
@@ -281,6 +288,14 @@ contains
          fpcp2pft, &
 #endif
          fpftdyn, fndepdat, fndepdyn, nrevsn, offline_atmdir 
+
+! CAS (9/2011) to allow for changing orbital parameters
+    namelist / clm_inparm/ &
+         orbitfix,orbityr
+
+! Erwan Monier (07/12/2011) for AR5/IGSM land cover changes
+    namelist /clm_inparm/  &
+         dynamic_pft, rampYear_dynpft
 
     ! clm history, restart, archive options
 
@@ -385,6 +400,15 @@ contains
     scmlon=-999.
     nsegspc = 20
 
+! Erwan Monier (07/12/2011)
+
+    dynamic_pft = .false.
+    rampYear_dynpft = 0
+
+! CAS (9/2011) to allow for changing orbital parameters
+    orbitfix = .true.
+    orbityr = 1950
+
 #if (defined RTM)
     ! If rtm_nsteps is not set in the namelist then
     ! will be given default value below
@@ -439,6 +463,25 @@ contains
        ! ----------------------------------------------------------------------
        ! Consistency checks on input namelist.
        ! ----------------------------------------------------------------------
+
+! changes by Erwan start here
+       ! Consistency for dynamic_pft added by Erwan Monier (07/12/2011)
+
+       if (dynamic_pft) then
+          if (fpftdyn == ' ') then
+             call endrun('Dynamic pft is set to TRUE, but no dynamic pft file is defined (fpftdyn) in the namelist')
+          end if
+          if (.not.allocate_all_vegpfts) then
+              call endrun('Dynamic pft is set to TRUE, but allocate_all_vegpfts is False. You need to recompile clm with maxpft   = 17')
+          end if
+          fsurdat = fpftdyn
+       else
+          if (fpftdyn /= ' ') then
+             call endrun('Dynamic pft is set to FALSE, but a dynamic pft file is defined (fpftdyn) in the namelist')
+          end if
+       end if
+! changes by Erwan end here
+ 
 
        ! Consistency settings for co2 type
 
@@ -719,6 +762,10 @@ contains
     call clmmpi_bcast(create_crop_landunit, 1, CLMMPI_LOGICAL, 0, clmmpicom, ier)
     call clmmpi_bcast(allocate_all_vegpfts, 1, CLMMPI_LOGICAL, 0, clmmpicom, ier)
 
+    ! New variables added by Erwan Monier (07/12/2011)
+    call clmmpi_bcast (dynamic_pft  , 1, CLMMPI_LOGICAL, 0, clmmpicom, ier)
+    call clmmpi_bcast (rampYear_dynpft, 1, CLMMPI_INTEGER  , 0, clmmpicom, ier)
+
     ! BGC
 
     call clmmpi_bcast (co2_type, len(co2_type), CLMMPI_CHARACTER, 0, clmmpicom, ier)
@@ -812,11 +859,21 @@ contains
     write(6,*) '   case title            = ',trim(ctitle)
     write(6,*) 'input data files:'
     write(6,*) '   PFT physiology = ',trim(fpftcon)
-    if (fsurdat == ' ') then
-       write(6,*) '   fsurdat, surface dataset not set'
+! changes by Erwan start here
+    if (dynamic_pft) then
+       write(6,*)'   dynamic pft is set to TRUE'
+       write(6,*)'   dynamic pft data   = ',trim(fpftdyn)
+       if (rampYear_dynpft /= 0) then
+          write(6,*)'   ramped at year   = ',rampYear_dynpft
+       end if
     else
-       write(6,*) '   surface data   = ',trim(fsurdat)
+       if (fsurdat == ' ') then
+          write(6,*) '   fsurdat, surface dataset not set'
+       else
+          write(6,*) '   surface data   = ',trim(fsurdat)
+       end if
     end if
+! changes by Erwan end here
     if (flndtopo == ' ') then
        write(6,*) '   flndtopo not set'
     else

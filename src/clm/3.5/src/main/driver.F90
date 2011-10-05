@@ -11,7 +11,7 @@ module driver
 ! !DESCRIPTION:
 ! This module provides the main CLM driver calling sequence.  Most
 ! computations occurs over ``clumps'' of gridcells (and associated subgrid
-! scale entities) assigned to each CLMMPI process. Computation is further
+! scale entities) assigned to each MPI process. Computation is further
 ! parallelized by looping over clumps on each process using shared memory
 ! OpenMP or Cray Streaming Directives.
 !
@@ -93,16 +93,19 @@ module driver
 !CAS  5/2008
 !CAS  Added to incorporate PFT distr. of PCP into zonal-CLM framework
 !CAS  5/2008
+! includes changes by Erwan for AR5
 #if (defined PCP2PFT)
   use pcp2pftMod
-  use clm_varctl, only : wrtdia, fpftdyn, fndepdyn, fpcp2pft
+  use clm_varctl, only : wrtdia, fpftdyn, fndepdyn, fpcp2pft, dynamic_pft
 #else
-  use clm_varctl          , only : wrtdia, fpftdyn, fndepdyn
+  use clm_varctl          , only : wrtdia, fpftdyn, fndepdyn, dynamic_pft
 #endif
   use spmdMod             , only : masterproc
   use decompMod           , only : get_proc_clumps, get_clump_bounds
   use filterMod           , only : filter, setFilters
-  use pftdynMod           , only : pftdyn_interp, pftdyn_wbal_init, pftdyn_wbal 
+! changes by Erwan start here
+  use pftdynMod           , only : pftdyn_interp, pftdyn_wbal_init
+! changes by Erwan end here
   use clm_varcon          , only : zlnd
   use clm_time_manager        , only : get_step_size, get_curr_calday, &
                                    get_curr_date, get_ref_date, get_nstep, is_perpetual
@@ -134,6 +137,9 @@ module driver
   use ndepFileMod         , only : ndepdyn_interp
 #else
   use STATICEcosysDynMod  , only : EcosystemDyn, interpMonthlyVeg
+! changes by Erwan start here
+  use DYNPFTEcosysDynMod  , only : DynEcosystemDyn, interpDynMonthlyVeg
+! changes by Erwan end here
 #endif
 #if (defined DUST)
   use DUSTMod             , only : DustDryDep, DustEmission
@@ -233,7 +239,16 @@ subroutine driver1 (doalb, caldayp1, declinp1)
   ! interpolated values.
   ! ============================================================================
 
-  if (doalb) call interpMonthlyVeg()
+! changes by Erwan start here
+   if (doalb) then
+       if (dynamic_pft) then
+          call interpDynMonthlyVeg()
+       else
+          call interpMonthlyVeg()
+       end if
+   end if
+! changes by Erwan end here
+
 #endif
 
   ! ============================================================================
@@ -294,9 +309,10 @@ subroutine driver1 (doalb, caldayp1, declinp1)
   ! Update weights and reset filters if dynamic land use
   ! This needs to be done outside the clumps loop, but after BeginWaterBalance()
   ! ============================================================================
-  if (doalb .and. fpftdyn /= ' ') then
+! Changes by Erwan start here
+  if (doalb .and. dynamic_pft) then
      call pftdyn_interp()
-     call pftdyn_wbal()
+! Changes by Erwan end here
      call setFilters()
   end if
 #endif
@@ -511,9 +527,18 @@ subroutine driver1 (doalb, caldayp1, declinp1)
 #else
      ! Prescribed biogeography,
      ! prescribed canopy structure, some prognostic carbon fluxes
-     call EcosystemDyn(begp, endp, &
-                       filter(nc)%num_nolakep, filter(nc)%nolakep, &
-                       doalb)
+! Changes by Erwan start here
+      if (dynamic_pft) then
+         call DynEcosystemDyn(begp, endp, &
+                        filter(nc)%num_nolakep, filter(nc)%nolakep, &
+                        doalb)
+      else
+         call EcosystemDyn(begp, endp, &
+                        filter(nc)%num_nolakep, filter(nc)%nolakep, &
+                        doalb)
+      end if
+! Changes by Erwan end here
+
 #endif
      call t_stopf('ecosysdyn')
 

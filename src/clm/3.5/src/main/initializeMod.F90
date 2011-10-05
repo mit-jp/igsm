@@ -319,9 +319,12 @@ contains
     ! Read surface dataset and set up vegetation type [vegxy] and 
     ! weight [wtxy] arrays for [maxpatch] subgrid patches.
     
-    call surfrd (fsurdat, ldomain)
+!    Erwan Monier:  Moved to initialize2 for AR5 simulations (requires time
+!    manger to be initialized 
+!    call surfrd (fsurdat, ldomain)
+!
+!    call decomp_glcp_init(alatlon%ns,alatlon%ni,alatlon%nj,llatlon%ns,llatlon%ni,llatlon%nj)
 
-    call decomp_glcp_init(alatlon%ns,alatlon%ni,alatlon%nj,llatlon%ns,llatlon%ni,llatlon%nj)
 #if (defined STOCHASTIC)
     call surfrd_get_stoch(agdomain, fstochdat)
 #endif
@@ -355,11 +358,13 @@ contains
     use clm_atmlnd      , only : init_atm2lnd_type, init_lnd2atm_type, &
                                  clm_a2l, clm_l2a, atm_a2l, atm_l2a
     use initGridCellsMod, only : initGridCells
+! changes by Erwan start here
 #if (defined PCP2PFT)
-    use clm_varctl      , only : finidat, fpftdyn, fndepdyn, fpcp2pft
+    use clm_varctl      , only : fsurdat, finidat, fpftdyn, fndepdyn, dynamic_pft, fpcp2pft
 #else
-    use clm_varctl      , only : finidat, fpftdyn, fndepdyn
+    use clm_varctl      , only : fsurdat, finidat, fpftdyn, fndepdyn, dynamic_pft
 #endif
+! changes by Erwan end here
 
     use clmtypeInitMod  , only : initClmtype
     use domainMod       , only : gatm
@@ -367,11 +372,17 @@ contains
     use decompMod       , only : adecomp,ldecomp
     use areaMod         , only : map1dl_a2l, map1dl_l2a
     use areaMod         , only : map_setmapsFM
+! changes by Erwan start here
+    use domainMod       , only : alatlon,llatlon
     use decompMod       , only : get_proc_clumps, get_clump_bounds, &
                                  get_proc_bounds, get_proc_bounds_atm, &
-                                 decomp_lnd_init
+                                 decomp_lnd_init, decomp_glcp_init
+    use surfrdMod       , only : surfrd
+! changes by Erwan end here
     use filterMod       , only : allocFilters, setFilters
-    use pftdynMod       , only : pftdyn_init, pftdyn_interp
+! changes by Erwan start here
+    use pftdynMod       , only : pftdyn_init, pftdyn_interp, pftdyn_wbal, pftdyn_wbal_init
+! changes by Erwan end here
     use histFldsMod     , only : initHistFlds
     use histFileMod     , only : htapes_build
     use restFileMod     , only : restFile_getfile, &
@@ -385,6 +396,9 @@ contains
     use DGVMEcosystemDynMod, only : DGVMEcosystemDynini
 #else
     use STATICEcosysDynMod , only : EcosystemDynini
+! changes by Erwan start here
+    use DYNPFTEcosysDynMod , only : DynEcosystemDynini
+! changes by Erwan end here
 #endif
 #if (defined DUST) 
     use DustMod         , only : Dustini
@@ -444,6 +458,56 @@ contains
     integer           :: perpetual_ymd      ! Perpetual date (YYYYMMDD)
 !----------------------------------------------------------------------
 
+! Changes by Erwan start here
+
+    ! ------------------------------------------------------------------------
+    ! Obtain restart file if appropriate
+    ! ------------------------------------------------------------------------
+
+    if (do_restread()) then
+       call restFile_getfile( file=fnamer, path=pnamer )
+    end if
+
+    ! ------------------------------------------------------------------------
+    ! Initialize time manager
+    ! ------------------------------------------------------------------------
+
+    if (nsrest == 0) then
+       if (present(SyncClock)) then
+          call eshr_timemgr_clockGet(                                          &
+               SyncClock, start_ymd=start_ymd,                                 &
+               start_tod=start_tod, ref_ymd=ref_ymd,                           &
+               ref_tod=ref_tod, stop_ymd=stop_ymd, stop_tod=stop_tod,          &
+               perpetual_run=perpetual_run, perpetual_ymd=perpetual_ymd,       &
+               calendar=calendar )
+          call timemgr_init(                                                   &
+               calendar_in=calendar, start_ymd_in=start_ymd,                   &
+               start_tod_in=start_tod, ref_ymd_in=ref_ymd,                     &
+               ref_tod_in=ref_tod, stop_ymd_in=stop_ymd, stop_tod_in=stop_tod, &
+               perpetual_run_in=perpetual_run, perpetual_ymd_in=perpetual_ymd )
+       else
+          call timemgr_init()
+       end if
+    else
+       call restFile_open( flag='read', file=fnamer, ncid=ncid )
+       call timemgr_restart_io( ncid=ncid, flag='read' )
+       call restFile_close( ncid=ncid )
+       if (present(SyncClock)) then
+          call eshr_timemgr_clockGet( SyncClock, stop_ymd=stop_ymd, stop_tod=stop_tod )
+          call timemgr_restart( stop_ymd, stop_tod )
+       else
+          call timemgr_restart()
+       end if
+    end if
+
+    ! Read surface dataset and set up vegetation type [vegxy] and 
+    ! weight [wtxy] arrays for [maxpatch] subgrid patches.
+
+    call surfrd (fsurdat, ldomain)
+    call decomp_glcp_init(alatlon%ns,alatlon%ni,alatlon%nj,llatlon%ns,llatlon%ni,llatlon%nj)
+
+! Changes by Erwan end here
+
     ! Set the a2l and l2a maps
 
     call map_setmapsFM(adomain,ldomain,gatm,map1dl_a2l,map1dl_l2a)
@@ -479,7 +543,13 @@ contains
 #elif defined (CN)
     ! currently no call required
 #else
-    call EcosystemDynini()
+! Changes by Erwan start here
+    if (dynamic_pft) then
+       call DynEcosystemDynini()
+    else
+       call EcosystemDynini()
+    end if
+! Changes by Erwan end here
 #endif
 
     ! Initialize dust emissions model 
@@ -492,46 +562,49 @@ contains
     ! DGVMEcosystemDynini() and before initCASA())
 
     call iniTimeConst()
-    
-    ! ------------------------------------------------------------------------
-    ! Obtain restart file if appropriate
-    ! ------------------------------------------------------------------------
 
-    if (do_restread()) then
-       call restFile_getfile( file=fnamer, path=pnamer )
-    end if
-
-    ! ------------------------------------------------------------------------
-    ! Initialize time manager
-    ! ------------------------------------------------------------------------
-
-    if (nsrest == 0) then  
-       if (present(SyncClock)) then	
-          call eshr_timemgr_clockGet(                                          &
-               SyncClock, start_ymd=start_ymd,                                 &
-               start_tod=start_tod, ref_ymd=ref_ymd,                           &
-               ref_tod=ref_tod, stop_ymd=stop_ymd, stop_tod=stop_tod,          &
-               perpetual_run=perpetual_run, perpetual_ymd=perpetual_ymd,       &
-               calendar=calendar )
-          call timemgr_init(                                                   &
-               calendar_in=calendar, start_ymd_in=start_ymd,                   &
-               start_tod_in=start_tod, ref_ymd_in=ref_ymd,                     &
-               ref_tod_in=ref_tod, stop_ymd_in=stop_ymd, stop_tod_in=stop_tod, &
-               perpetual_run_in=perpetual_run, perpetual_ymd_in=perpetual_ymd )
-       else
-          call timemgr_init()
-       end if
-    else
-       call restFile_open( flag='read', file=fnamer, ncid=ncid )
-       call timemgr_restart_io( ncid=ncid, flag='read' )
-       call restFile_close( ncid=ncid )
-       if (present(SyncClock)) then	
-          call eshr_timemgr_clockGet( SyncClock, stop_ymd=stop_ymd, stop_tod=stop_tod )
-          call timemgr_restart( stop_ymd, stop_tod )
-       else
-          call timemgr_restart()
-       end if
-    end if
+!    Erwan Monier: Restart and time manager call commented out for AR5 configuration
+!                  Moved earlier in subroutine
+!    
+!    ! ------------------------------------------------------------------------
+!    ! Obtain restart file if appropriate
+!    ! ------------------------------------------------------------------------
+!
+!    if (do_restread()) then
+!       call restFile_getfile( file=fnamer, path=pnamer )
+!    end if
+!
+!    ! ------------------------------------------------------------------------
+!    ! Initialize time manager
+!    ! ------------------------------------------------------------------------
+!
+!    if (nsrest == 0) then  
+!       if (present(SyncClock)) then	
+!          call eshr_timemgr_clockGet(                                          &
+!               SyncClock, start_ymd=start_ymd,                                 &
+!               start_tod=start_tod, ref_ymd=ref_ymd,                           &
+!               ref_tod=ref_tod, stop_ymd=stop_ymd, stop_tod=stop_tod,          &
+!               perpetual_run=perpetual_run, perpetual_ymd=perpetual_ymd,       &
+!               calendar=calendar )
+!          call timemgr_init(                                                   &
+!               calendar_in=calendar, start_ymd_in=start_ymd,                   &
+!               start_tod_in=start_tod, ref_ymd_in=ref_ymd,                     &
+!               ref_tod_in=ref_tod, stop_ymd_in=stop_ymd, stop_tod_in=stop_tod, &
+!               perpetual_run_in=perpetual_run, perpetual_ymd_in=perpetual_ymd )
+!       else
+!          call timemgr_init()
+!       end if
+!    else
+!       call restFile_open( flag='read', file=fnamer, ncid=ncid )
+!       call timemgr_restart_io( ncid=ncid, flag='read' )
+!       call restFile_close( ncid=ncid )
+!       if (present(SyncClock)) then	
+!          call eshr_timemgr_clockGet( SyncClock, stop_ymd=stop_ymd, stop_tod=stop_tod )
+!          call timemgr_restart( stop_ymd, stop_tod )
+!       else
+!          call timemgr_restart()
+!       end if
+!    end if
 
     ! Initialize river routing model, after time manager because ts needed
 
@@ -589,17 +662,19 @@ contains
        call restFile_read_binary( fnamer_bin )
     end if
 
+! changes by Erwan start here
     ! ------------------------------------------------------------------------
-    ! Initialization of dynamic pft weights
+    ! Initialize dynamic pft weights and water balance correction and
+    ! correct water balance if needed (if pft weigth with respect to column
+    ! changes between initial condition file and dynamic surface data file
     ! ------------------------------------------------------------------------
 
-    ! Determine correct pft weights (interpolate pftdyn dataset if initial run)
-    ! Otherwise these are read in for a restart run
-    
-    if (fpftdyn /= ' ') then
+    if (dynamic_pft) then
        call pftdyn_init()
-       if (nsrest == 0) call pftdyn_interp()
+       call pftdyn_wbal_init()
+       call pftdyn_interp()
     end if
+! changes by Erwan end here
 
     ! ------------------------------------------------------------------------
     ! Initialize dynamic nitrogen deposition
@@ -701,7 +776,6 @@ contains
     endif
 
 #if (defined PCP2PFT)
-    write (6,*) 'GOT HERE'
     call get_curr_date(yr, mon, day, ncsec)
     call ReadMonthlyPcp2PFT (fpcp2pft, mon)
 #endif

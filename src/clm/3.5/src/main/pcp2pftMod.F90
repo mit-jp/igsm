@@ -94,7 +94,7 @@ contains
 ! LOCAL VARIABLES
   character(len=256) :: locfn                           !local file name
   integer :: i,j,k,m,n,pi,pt                            !indices
-  integer :: jn,js,ci,clst                              !indices
+  integer :: jn,js,ci                                   !indices
   integer :: ncid,dimid,varid                           !input netCDF id's
   integer :: beg4d(4),len4d(4)                          !netCDF variable edges
   integer :: beg3d(3),len3d(3)                          !netCDF variable edges
@@ -105,8 +105,7 @@ contains
   integer :: npft_i                                     !number of input data pft types
   integer :: ier                                        !error code 
   integer :: iwtyp                                      !water type (soil,lake,wetland,glacier)
-  real :: pcp2pftxy(lsmlon,lsmlat,numpft)               !read from input files
-  real :: srrgtn,srrgts                                 !Surrogate values of pcp2pft ratio 
+  real :: pcp2pftxy(lsmlon,lsmlat,maxpatch_pft)         !read from input files
   real :: denom                                         !denominator term
   real(r8):: sumpcp2pft(lsmlon,lsmlat)                  !read from input files
   integer :: pft(lsmlon,lsmlat,maxpatch_pft)            !array for pctpft
@@ -151,39 +150,9 @@ contains
 
     if (masterproc) then
 
-       write (6,*) 'Attempting to read surface boundary data .....'
-
-       call getfil (fsurdat, locfn, 0)
-       call check_ret(nf_open(locfn, 0, ncid), subname)
-
-!       call check_ret(nf_inq_dimid (ncid, 'lsmlon', dimid), subname)
-!       call check_ret(nf_inq_dimlen(ncid, dimid, nlon_i), subname)
-
-!       call check_ret(nf_inq_dimid (ncid, 'lsmlat', dimid), subname)
-!       call check_ret(nf_inq_dimlen(ncid, dimid, nlat_i), subname)
-
-!       call check_ret(nf_inq_dimid (ncid, 'nlevsoi', dimid), subname)
-!       call check_ret(nf_inq_dimlen(ncid, dimid, nlev_i), subname)
-
-       call check_ret(nf_inq_dimid (ncid, 'lsmpft', dimid), subname)
-       call check_ret(nf_inq_dimlen(ncid, dimid, npft_i), subname)
-
-!       call check_ret(nf_inq_varid(ncid, 'PFT', varid), subname)
-!       call check_ret(nf_get_vara_int(ncid, varid, beg3d, len3d, pctpft), subname)
-
        beg3d(1) = 1         ; len3d(1) = lsmlon
        beg3d(2) = 1         ; len3d(2) = lsmlat
        beg3d(3) = 1         ; len3d(3) = maxpatch_pft
-
-       !write (6,*) 'ReadPCP2PFT: maxpatch = ', maxpatch_pft, ' NPFT_I: ',npft_i
- 
-       call check_ret(nf_inq_varid(ncid, 'PCT_PFT', varid), subname)
-       call check_ret(nf_get_vara_real(ncid, varid, beg3d, len3d, pctpft), subname)
- 
-       !write (6,*) 'Successfully read surface boundary data'
-       !write (6,*) pctpft
-
-       call check_ret(nf_close(ncid), subname)
 
        write (6,*) 'Configuring PCP distribution across PFTs'
 
@@ -232,10 +201,11 @@ contains
        beg3d(2) = 1         ; len3d(2) = nlat_i
        beg3d(3) = monthp    ; len3d(3) = 1
 
-       !write (6,*) 'ReadPCP2PFT: maxpatch = ', maxpatch_pft, ' NPFT_I: ',npft_i
-
-!       call check_ret(nf_inq_varid(ncid, 'PCP2LND', varid), subname)
-!       call check_ret(nf_get_vara_real(ncid, varid, beg3d, len3d, pcp2land), subname)
+       !if ( maxpatch_pft /= 17 ) then
+       !  write (6,*) 'ReadPCP2PFT: maxpatch = ', maxpatch_pft, ' NPFT_I: ',npft_i,' numpft = ', numpft
+       !  write (6,*) 'ReadPCP2PFT: maxpatch_pft must be equal to 17 in this IGSM configuration'
+       !  call endrun
+       !endif
 
        call check_ret(nf_inq_varid(ncid, 'PCP2PFT', varid), subname)
        call check_ret(nf_get_vara_real(ncid, varid, beg4d, len4d, pcp2pftxy ), subname)
@@ -248,105 +218,60 @@ contains
 
        sumpcp2pft = 0.
        sumpctpft = 0.
+       pptr%pps%pcp2pft = 0.0
        !write (6,*) 'ReadMonthlyPcp2Pft - Beginning and ending pft indices: ',begp,endp
-          do pi = begp,endp
-             i = ldecomp%gdc2i(pptr%gridcell(pi))
-             j = ldecomp%gdc2j(pptr%gridcell(pi))
-             m = pptr%itype(pi)
-             iland = clm3%g%l%c%p%landunit(pi)
-             iwtyp = clm3%g%l%itype(iland)
-             pt = m + 1
-             !write (6,*) 'For PFT INDICE: ',pi,' PFT TYPE = ', m
-             !write (6,*) 'I = ',i,'  J = ',j,'  ITYP = ',iwtyp, '  ISTSOIL = ',istsoil
+        do pi = begp,endp
+          i = ldecomp%gdc2i(pptr%gridcell(pi))
+          j = ldecomp%gdc2j(pptr%gridcell(pi))
+          m = pptr%itype(pi)
+          iland = clm3%g%l%c%p%landunit(pi)
+          ci = clm3%g%l%c%p%column(pi)
+          n = clm3%g%l%c%npfts(ci)
+          iwtyp = clm3%g%l%itype(iland)
+          pt = m + 1
 !CAS
 !CAS	Loop through pft array to find consistent mapping between pcp2pft and pctpft
 !CAS
-             if (m <= numpft .and. iwtyp == istsoil ) then ! vegetated patch
-               if ( pcp2pftxy(i,j,pt) == 0 .and. pt <= 15 ) then
-                 pcp2pftxy(i,j,pt) = wtcol(pi)
-                 !write(6,*)'ReadMonthlyPcp2Pft: Non-zero ratio not found ', &
-                     !'at i = ',i,' and j = ',j, 'for PFT = ',pt,'  ...  ',&
-                     !'PCP2PFT Values for latitude:',&
-                     !pcp2pftxy(i,j,:),&
-                     !'Configuring pcp2pft ratio to 1:'
-                     !pcp2pftxy(i,j,pt) = pctpft(i,j,pt)/100.
-               endif
-               !write (6,*) 'pcp2pftxy is now set to: ', pcp2pftxy(i,j,pt)
-               !write(6,*)'ReadMonthlyPcp2Pft: pcp2pft = ',pcp2pftxy(i,j,pt), &
-               !      'at i = ',i,' and j = ',j, 'for PFT = ',m,'  ...  ',&
-               !      '% area coverage',pctpft(i,j,k),' PCTPFT value of PFT: ',pft(i,j,k)
-               !write(6,*)'ReadMonthlyPcp2Pft: WATER TYPE = ',iwtyp
-!CAS
-!CAS	AR5 LAND USE
-!CAS	Addiing provision for crop and pasture types (pft16 and pft17)
-!CAS
-               if (pt >= 16) then
-	         sumpcp2pft(i,j) = sumpcp2pft(i,j) + wtcol(pi)
-       	       else
-                 sumpcp2pft(i,j) = sumpcp2pft(i,j) + pcp2pftxy(i,j,pt)
-	       endif
-             else                        ! non-vegetated patch
-                pptr%pps%pcp2pft(pi) = 1.
-             end if
-          end do
-          !write (6,*) 'ReadMonthlyPcp2Pft:  SUMPCTPFT'
-          !write (6,*) sumpctpft
-          !write (6,*) 'ReadMonthlyPcp2Pft:  SUMPCP2PFT'
-          !write (6,*) sumpcp2pft
-          srrgtn = 0.
-          clst = clm3%g%l%c%p%column(begp)
-          do pi = begp,endp
-            i = ldecomp%gdc2i(pptr%gridcell(pi))
-            j = ldecomp%gdc2j(pptr%gridcell(pi))
-            m = pptr%itype(pi)
-            iland = clm3%g%l%c%p%landunit(pi)
-            ci = clm3%g%l%c%p%column(pi)
-            if ( ci /= clst ) then
-              !if (srrgtn < 0.99 .or. srrgtn > 1.01 ) then
-                !print *,'PCP2PFT: Aggregate weighting for latitude band not equal to 1.'
-                !print *,'PCP2PFT: Aggregate weighting = ',srrgtn
-                !print *,'PCP2PFT: at columnn = ',clst
-              !endif
-              srrgtn = 0.
-            endif
-            clst = ci
-            n = clm3%g%l%c%npfts(ci)
-            iwtyp = clm3%g%l%itype(iland)
-            pt = m + 1
-!CAS
-!CAS	Loop through pft array to find consistent mapping between pcp2pft and pctpft
-!CAS
-            if ( m <= numpft .and. iwtyp == istsoil ) then ! vegetated patch
-              !if (pctpft(i,j,pt) /= 0 .and. pt <= 15) then
-              if (pt <= 15) then
-                 !denom = (sumpcp2pft(i,j)*pctpft(i,j,pt))/sumpctpft(i,j)
-		 denom = (sumpcp2pft(i,j)*wtcol(pi))
-                 pptr%pps%pcp2pft(pi) = pcp2pftxy(i,j,pt)/denom
-                 !write(6,*)'ReadMonthlyPcp2Pft: at i = ',i,' j = ',j,' pt =',pt
-                 !write(6,*)'for PFT = ',m,' and check ',pft(i,j,k)
-                 !write(6,*)'SUMPCP2PFT @ column',pi,' = ',sumpcp2pft(i,j)
-                 !write(6,*)'PCP2PFT @ column',pi,' = ',pcp2pftxy(i,j,pt)
-                 !write(6,*)'PCTPFT @ column',pi,' = ',pctpft(i,j,k)
-                 !write(6,*)'PCP2PFT @ column',pi,' = ', pptr%pps%pcp2pft(pi)
-              elseif (pt >= 16) then
-                 !write (6,*) 'Pasture and/or Crop @ latitude ',j,' for PFT',pt,' Setting pcp2pft=1'
-		 denom = (sumpcp2pft(i,j)*wtcol(pi))
-                 pptr%pps%pcp2pft(pi) = wtcol(pi)/denom
-	      else
-                 write(6,*)'ReadMonthlyPcp2Pft: PCTPFT = 0 ', &
-                    'at i = ',i,' and j = ',j, 'for PFT = ',pt,'.',&
-                    'Should be non-zero: Stopping CLM'
-                    call endrun
-              endif
-              srrgtn = srrgtn + (pptr%pps%pcp2pft(pi)*wtcol(pi))
+          if ( iwtyp == istsoil ) then ! vegetated patch
+            if (pt <= 15) then
+              pptr%pps%pcp2pft(pi) = pcp2pftxy(i,j,pt)
+              sumpcp2pft(i,j) = sumpcp2pft(i,j) + (pptr%pps%pcp2pft(pi)*wtcol(pi))
             else
+!CAS
+!CAS		Sum up area weight of pasture/crop for grid/latitude
+!CAS
+              sumpctpft(i,j) = sumpctpft(i,j) + wtcol(pi)
+            endif
+          else
 !CAS              write(6,*)'ReadMonthlyPcp2Pft: Non-vegetated land patch:',&
 !CAS                       'at i = ',i,' and j = ',j, 'for PFT = ',pt,'.',&
 !CAS                       'Setting PCP2PFT distr. ratio to 1'
-              pptr%pps%pcp2pft(pi) = 1.
-            endif
-          end do
-
+            pptr%pps%pcp2pft(pi) = 1.
+          endif
+        end do
+        do pi = begp,endp
+          i = ldecomp%gdc2i(pptr%gridcell(pi))
+          j = ldecomp%gdc2j(pptr%gridcell(pi))
+          m = pptr%itype(pi)
+          ci = clm3%g%l%c%p%column(pi)
+          iwtyp = clm3%g%l%itype(iland)
+          pt = m + 1
+!CAS
+!CAS	Adjust crop/pasture pcp2pft to satisfy water balance:
+!CAS       This is achieved by divying residual precipitation by relative area
+!CAS       coverage.
+!CAS
+          if (pt >= 16) then
+               if (sumpctpft(i,j) > 0.0) pptr%pps%pcp2pft(pi) = (1-sumpcp2pft(i,j))/sumpctpft(i,j)
+               if (pptr%pps%pcp2pft(pi) < 0.0) then
+                 write (6,*) 'Pasture and/or Crop @ latitude ',j,' for PFT',pt
+                 write (6,*) 'RESIDUAL PCP = ',1-sumpcp2pft(i,j)
+                 write (6,*) 'PCP2PFT = ',pptr%pps%pcp2pft(pi)
+                 write (6,*) 'Pasture and/or Crop @ latitude ',j,' for PFT',pt,' is less than 0'
+                 call endrun
+               endif
+          endif
+        end do
        call check_ret(nf_close(ncid), subname)
 
        write (6,*) 'Successfully read monthly precipitation distr. data for'
@@ -354,7 +279,6 @@ contains
        write (6,*)
 
     endif ! end of if-masterproc if block
-
 
 #if ( defined SPMD )
     ! pass surface data to all processors

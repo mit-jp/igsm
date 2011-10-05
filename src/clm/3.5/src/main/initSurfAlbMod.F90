@@ -57,6 +57,9 @@ contains
     use filterMod           , only : filter
     use clm_varpar          , only : nlevsoi, nlevsno, nlevlak
     use clm_varcon          , only : zlnd, istsoil 
+! changes by Erwan start here
+    use clm_varctl          , only : dynamic_pft
+! changes by Erwan end here
     use clm_time_manager        , only : get_step_size
     use FracWetMod          , only : FracWet
     use SurfaceAlbedoMod    , only : SurfaceAlbedo
@@ -68,6 +71,9 @@ contains
     use CNSetValueMod       , only : CNZeroFluxes
 #else
     use STATICEcosysDynMod  , only : EcosystemDyn, interpMonthlyVeg
+! changes by Erwan start here
+    use DYNPFTEcosysDynMod  , only : DynEcosystemDyn, interpDynMonthlyVeg
+! changes by Erwan end here
 #endif
   use abortutils            , only : endrun
 !
@@ -128,7 +134,7 @@ contains
     integer :: begc, endc   ! per-clump beginning and ending column indices
     integer :: begl, endl   ! per-clump beginning and ending landunit indices
     integer :: begg, endg   ! per-clump gridcell ending gridcell indices
-    integer :: ier          ! CLMMPI return code
+    integer :: ier          ! MPI return code
     real(r8):: lat          ! latitude (radians) for daylength calculation
     real(r8):: temp         ! temporary variable for daylength
 !-----------------------------------------------------------------------
@@ -183,7 +189,14 @@ contains
     ! the default mode uses prescribed vegetation structure
     ! Read monthly vegetation data for interpolation to daily values
 
-    call interpMonthlyVeg()
+! changes by Erwan start here
+    if (dynamic_pft) then
+        call interpDynMonthlyVeg()
+    else
+        call interpMonthlyVeg()
+    end if
+! changes by Erwan end here
+
 #endif
 
     ! Determine clump bounds for this processor
@@ -273,9 +286,15 @@ contains
             filter(nc)%num_soilp, filter(nc)%soilp, doalb=.true.)
 #else
        ! this is the default call if neither DGVM nor CN are set
-
-       call EcosystemDyn(begp, endp, filter(nc)%num_nolakep, filter(nc)%nolakep, &
+! changes by Erwan start here
+       if (dynamic_pft) then
+          call DynEcosystemDyn(begp, endp, filter(nc)%num_nolakep, filter(nc)%nolakep, &
             doalb=.true.)
+       else
+          call EcosystemDyn(begp, endp, filter(nc)%num_nolakep, filter(nc)%nolakep, &
+            doalb=.true.)
+       end if
+! changes by Erwan end here
 #endif        
 
 !dir$ concurrent

@@ -441,6 +441,16 @@ contains
          avgflag='A', long_name='canopy transpiration', &
          ptr_pft=clm3%g%l%c%p%pwf%qflx_tran_veg, set_lake=0._r8)
 
+#if (defined COUP_TEM)
+    call add_fld1d (fname='QPET1', units='mm/s',  &
+         avgflag='A', long_name='potential transpiration', &
+         ptr_pft=clm3%g%l%c%p%pwf%qflx_evap_pet1)
+
+    call add_fld1d (fname='QPET2', units='mm/s',  &
+         avgflag='A', long_name='potential evaporation', &
+         ptr_pft=clm3%g%l%c%p%pwf%qflx_evap_pet2)
+#endif
+
 #if (defined RTM)
     ! RTM River Routing
 

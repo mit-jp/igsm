@@ -925,6 +925,28 @@ contains
 #if (defined PCP2PFT)
     allocate(pps%pcp2pft(beg:end))
 #endif
+#if (defined COUP_TEM)
+    allocate(pps%epot30r(30,beg:end))   
+    allocate(pps%evap30r(30,beg:end))   
+    allocate(pps%drai30r(30,beg:end))   
+    allocate(pps%surf30r(30,beg:end))   
+    allocate(pps%swe30r(30,beg:end))   
+    allocate(pps%s1m30r(30,beg:end))   
+    allocate(pps%s2m30r(30,beg:end))   
+    allocate(pps%epot30(beg:end))   
+    allocate(pps%evap30(beg:end))   
+    allocate(pps%drai30(beg:end))   
+    allocate(pps%surf30(beg:end))   
+    allocate(pps%swe30(beg:end))   
+    allocate(pps%s1m30(beg:end))   
+    allocate(pps%s2m30(beg:end))   
+    allocate(pps%dyt_soi(beg:end,1:nlevsoi))   
+    allocate(pps%dyh_soi(beg:end,1:nlevsoi))   
+    allocate(pps%hrh_soi(beg:end,1:nlevsoi))   
+    allocate(pps%dypcp(beg:end))
+    allocate(pps%dystrm(beg:end))
+    allocate(pps%dystrm_inst(beg:end))
+#endif
 
     pps%frac_veg_nosno(beg:end) = bigint
     pps%frac_veg_nosno_alb(beg:end) = 0
@@ -1028,7 +1050,29 @@ contains
     pps%clayfrac(beg:end) = nan
 #endif
 #if (defined PCP2PFT)
-   pps%pcp2pft(beg:end) = nan
+    pps%pcp2pft(beg:end) = nan
+#endif
+#if (defined COUP_TEM)
+    pps%epot30r(1:30,beg:end) = 0._r8
+    pps%evap30r(1:30,beg:end) = 0._r8
+    pps%drai30r(1:30,beg:end) = 0._r8
+    pps%surf30r(1:30,beg:end) = 0._r8
+    pps%swe30r(1:30,beg:end) = 0._r8
+    pps%s1m30r(1:30,beg:end) = 0._r8
+    pps%s2m30r(1:30,beg:end) = 0._r8
+    pps%evap30(beg:end) = nan
+    pps%epot30(beg:end) = nan
+    pps%drai30(beg:end) = nan
+    pps%surf30(beg:end) = nan
+    pps%swe30(beg:end) = nan
+    pps%s1m30(beg:end) = nan
+    pps%s2m30(beg:end) = nan
+    pps%dyt_soi(beg:end,1:nlevsoi) = nan
+    pps%dyh_soi(beg:end,1:nlevsoi) = nan
+    pps%hrh_soi(beg:end,1:nlevsoi) = nan
+    pps%dypcp(beg:end) = nan
+    pps%dystrm(beg:end) = nan
+    pps%dystrm_inst(beg:end) = nan
 #endif
 
   end subroutine init_pft_pstate_type
@@ -1661,6 +1705,14 @@ contains
     allocate(pwf%qflx_dew_grnd(beg:end))
     allocate(pwf%qflx_sub_snow(beg:end))
     allocate(pwf%qflx_dew_snow(beg:end))
+
+#if (defined COUP_TEM)
+    allocate(pwf%qflx_evap_pet1(beg:end))
+    allocate(pwf%qflx_evap_pet2(beg:end))
+
+    pwf%qflx_evap_pet1(beg:end) = 0._r8
+    pwf%qflx_evap_pet2(beg:end) = 0._r8
+#endif
 
     pwf%qflx_prec_intr(beg:end) = nan
     pwf%qflx_prec_grnd(beg:end) = nan
@@ -2631,6 +2683,10 @@ contains
     allocate(cwf%qflx_qrgwl(beg:end))
     allocate(cwf%qmelt(beg:end))
     allocate(cwf%h2ocan_loss(beg:end))
+#if (defined COUP_TEM)
+    allocate(cwf%evap30c(beg:end))
+    allocate(cwf%swe30c(beg:end))
+#endif
 
     cwf%qflx_infl(beg:end) = nan
     cwf%qflx_surf(beg:end) = nan
@@ -2640,6 +2696,10 @@ contains
     cwf%qflx_qrgwl(beg:end) = nan
     cwf%qmelt(beg:end) = nan
     cwf%h2ocan_loss(beg:end) = nan
+#if (defined COUP_TEM)
+    cwf%evap30c(beg:end) = nan
+    cwf%swe30c(beg:end) = nan
+#endif
 
   end subroutine init_column_wflux_type
 

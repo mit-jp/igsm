@@ -217,6 +217,28 @@ type, public :: pft_pstate_type
 #if (defined PCP2PFT)
    real(r8), pointer :: pcp2pft(:)   ! Preciptiation distribution factor
 #endif
+#if (defined COUP_TEM)
+   real(r8), pointer :: epot30r(:,:)      ! Array for 30-day running mean Potential Evap. (mm/s)
+   real(r8), pointer :: evap30r(:,:)      ! Array for 30-day running mean Evapotranspiration (mm/s)
+   real(r8), pointer :: drai30r(:,:)      ! Array for 30-day running mean Drainage (mm/s)
+   real(r8), pointer :: surf30r(:,:)      ! Array for 30-day running mean Surface Runoff (mm/s)
+   real(r8), pointer :: swe30r(:,:)       ! Array for 30-day running mean Snow Water-Equivalent Depth (mm/s)
+   real(r8), pointer :: s1m30r(:,:)       ! Array for 30-day running mean 1 Meter Soil Moisture (mm)
+   real(r8), pointer :: s2m30r(:,:)       ! Array for 30-day running mean 2 Meter Soil Moisture (mm)
+   real(r8), pointer :: epot30(:)         ! Daily value for 30-day array of Potential Evap. (mm/s)
+   real(r8), pointer :: evap30(:)         ! Daily value for 30-day array of Evapotranspiration (mm/s)
+   real(r8), pointer :: drai30(:)         ! Daily value for 30-day array of Drainage (mm/s)
+   real(r8), pointer :: surf30(:)         ! Daily value for 30-day array of Surface Runoff (mm/s)
+   real(r8), pointer :: swe30(:)          ! Daily value for 30-day array of Snow Water-Equivalent Depth (mm/s)
+   real(r8), pointer :: s1m30(:)          ! Daily value for 30-day array of 1 Meter Soil Moisture (mm)
+   real(r8), pointer :: s2m30(:)          ! Daily value for 30-day array of 2 Meter Soil Moisture (mm)
+   real(r8), pointer :: dyh_soi(:,:)      ! Daily mean soil-water profile 
+   real(r8), pointer :: dyt_soi(:,:)      ! Daily mean soil-temperature profile (K)
+   real(r8), pointer :: hrh_soi(:,:)      ! Hourly soil-water profile
+   real(r8), pointer :: dypcp(:)          ! Daily precipitation amount (mm/s)
+   real(r8), pointer :: dystrm(:)         ! Daily storm duration (s)
+   real(r8), pointer :: dystrm_inst(:)    ! Daily storm duration (s) placeholder
+#endif
 end type pft_pstate_type
 
 !----------------------------------------------------
@@ -360,7 +382,7 @@ type, public :: pft_epv_type
    real(r8), pointer :: prev_frootc_to_litter(:)!previous timestep froot C litterfall flux (gC/m2/s)
    real(r8), pointer :: tempsum_npp(:)          !temporary annual sum of NPP (gC/m2/yr)
    real(r8), pointer :: annsum_npp(:)           !annual sum of NPP (gC/m2/yr)
-	real(r8), pointer :: rc13_canair(:)          !C13O2/C12O2 in canopy air
+   real(r8), pointer :: rc13_canair(:)          !C13O2/C12O2 in canopy air
    real(r8), pointer :: rc13_psnsun(:)          !C13O2/C12O2 in sunlit canopy psn flux
    real(r8), pointer :: rc13_psnsha(:)          !C13O2/C12O2 in shaded canopy psn flux
 end type pft_epv_type                        
@@ -457,7 +479,6 @@ end type pft_nstate_type
 type, public :: pft_vstate_type
    real(r8), pointer :: dummy_entry(:)
 end type pft_vstate_type
-
 !----------------------------------------------------
 ! pft DGVM state variables structure
 !----------------------------------------------------
@@ -582,6 +603,10 @@ type, public :: pft_wflux_type
    real(r8), pointer :: qflx_dew_grnd(:)  !ground surface dew formation (mm H2O /s) [+]
    real(r8), pointer :: qflx_sub_snow(:)  !sublimation rate from snow pack (mm H2O /s) [+]
    real(r8), pointer :: qflx_dew_snow(:)  !surface dew added to snow pack (mm H2O /s) [+]
+#if (defined COUP_TEM)
+   real(r8), pointer :: qflx_evap_pet1(:)  !potential evaporation (mm H2O/s) (+ = to atm)
+   real(r8), pointer :: qflx_evap_pet2(:)  !potential evaporation (mm H2O/s) (+ = to atm)
+#endif
 end type pft_wflux_type
 
 !----------------------------------------------------
@@ -1067,6 +1092,10 @@ type, public :: column_wflux_type
    real(r8), pointer :: qflx_qrgwl(:) 	!qflx_surf at glaciers, wetlands, lakes
    real(r8), pointer :: qmelt(:) 	!snow melt [mm/s]
    real(r8), pointer :: h2ocan_loss(:) ! mass balance correction term for dynamic weights
+#if (defined COUP_TEM)
+   real(r8), pointer :: evap30c(:) 	!30-day mean evapotranspiration [mm/s]
+   real(r8), pointer :: swe30c(:) 	!30-day mean snow water equivalent [mm]
+#endif
 end type column_wflux_type
 
 !----------------------------------------------------

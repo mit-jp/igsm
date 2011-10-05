@@ -220,7 +220,7 @@ contains
  
 #if (defined FORC_IGSM | defined COUP_MIT2D)
     locfn = trim(offline_atmdir)
-    atmmin = dtime/60.0
+    atmmin = float(dtime)/60.0
     if (open_data) then
 	itim=0
     endif
@@ -379,11 +379,11 @@ contains
                + atm_a2l%forc_solai(g,1) + atm_a2l%forc_solai(g,2)
 
 #if (defined STOCHASTIC)
-          if (prc_poiss(i,j)+prl_poiss(i,j)==0) then
-            atm_a2l%forc_strm_dur(g) = spval
-          else
-            atm_a2l%forc_strm_dur(g) = storm_dur(i,j)*dtime
-          endif      
+!          if (prc_poiss(i,j)+prl_poiss(i,j)==0) then
+!            atm_a2l%forc_strm_dur(g) = spval
+!          else
+            atm_a2l%forc_strm_dur(g) = float(storm_dur(i,j))*dtime
+!          endif      
           atm_a2l%forc_strm_dry(g) = t_dry(i,j)
           atm_a2l%forc_strms(g) = storms(i,j)
 #endif
