@@ -1,5 +1,5 @@
 CLMROOT := $(abspath .)
-CLMFLAGS := -maxpft 16 \
+CLMFLAGS := -maxpft 17 \
 	-mit2d on \
 	-nospmd \
 	-nosmp \
