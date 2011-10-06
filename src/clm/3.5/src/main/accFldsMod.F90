@@ -1126,11 +1126,13 @@ include 'TEM.inc'
     real(r8), pointer :: agdd5(:)            ! accumulated growing degree days above -5
     real(r8), pointer :: agddtw(:)           ! accumulated growing degree days above twmax
     real(r8), pointer :: agdd(:)             ! accumulated growing degree days above 5
+#if (defined COUP_TEM)
     real(r8), pointer :: evap30(:)           ! 30-day average evapotranspiration (mm/day)
     real(r8), pointer :: evap30c(:)          ! 30-day average evapotranspiration (mm/day)
     real(r8), pointer :: surf30(:)           ! 30-day average evapotranspiration (mm/day)
     real(r8), pointer :: drai30(:)           ! 30-day average evapotranspiration (mm/day)
     real(r8), pointer :: swe30(:)            ! 30-day average evapotranspiration (mm/day)
+#endif
 !
 ! !LOCAL VARIABLES:
 !
@@ -1162,11 +1164,13 @@ include 'TEM.inc'
     agdd5            => clm3%g%l%c%p%pdgvs%agdd5
     agddtw           => clm3%g%l%c%p%pdgvs%agddtw
     agdd             => clm3%g%l%c%p%pdgvs%agdd
+#if (defined COUP_TEM)
     evap30           => clm3%g%l%c%p%pps%evap30
     evap30c          => clm3%g%l%c%cwf%evap30c
     drai30           => clm3%g%l%c%p%pps%drai30
     surf30           => clm3%g%l%c%p%pps%surf30
     swe30            => clm3%g%l%c%p%pps%swe30
+#endif
 
     ! Determine necessary indices
 
