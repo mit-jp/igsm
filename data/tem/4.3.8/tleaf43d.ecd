@@ -1,0 +1,124 @@
+<?xml version = "1.0"?>
+
+<leafECD version = "4.2.3">
+  <community type = "1"
+    description = "Ice"
+    developedBy = "A. David McGuire"
+    updated = "19931211">
+    <minleaf>0.00</minleaf>  
+    <aleaf>0.79640</aleaf>
+    <bleaf>0.46635</bleaf>
+    <cleaf>-0.02873</cleaf>
+  </community>
+
+  <community type = "2"
+    description = "Alpine Tundra/Polar Desert"
+    developedBy = "A. David McGuire"
+    updated = "19930123">
+    <minleaf>0.00</minleaf>  
+    <aleaf>0.79640</aleaf>
+    <bleaf>0.46635</bleaf>
+    <cleaf>-0.02873</cleaf>
+  </community>
+
+  <community type = "3"
+    description = "Wet Tundra"
+    developedBy = "A. David McGuire"
+    updated = "19930123">
+    <minleaf>0.00</minleaf>  
+    <aleaf>0.79640</aleaf>
+    <bleaf>0.46635</bleaf>
+    <cleaf>-0.02873</cleaf>
+  </community>
+
+  <community type = "4"
+    description = "Boreal Forest"
+    developedBy = "A. David McGuire"
+    updated = "19930123">
+    <minleaf>0.50</minleaf>  
+    <aleaf>0.42893</aleaf>
+    <bleaf>0.33295</bleaf>
+    <cleaf>0.32228</cleaf>
+  </community>
+
+  <community type = "5"
+    description = "Temperate Coniferous Forest"
+    developedBy = "A. David McGuire"
+    updated = "19931211">
+    <minleaf>0.50</minleaf>  
+    <aleaf>0.41624</aleaf>
+    <bleaf>0.35159</bleaf>
+    <cleaf>0.28739</cleaf>
+  </community>
+
+  <community type = "6"
+    description = "Temperate Deciduous Forest"
+    developedBy = "A. David McGuire"
+    updated = "19930123">
+    <minleaf>0.02</minleaf>  
+    <aleaf>0.83298</aleaf>
+    <bleaf>0.35204</bleaf>
+    <cleaf>-0.07540</cleaf>
+  </community>
+
+  <community type = "7"
+    description = "Grassland"
+    developedBy = "A. David McGuire"
+    updated = "19931211">
+    <minleaf>0.10</minleaf>  
+    <aleaf>0.44366</aleaf>
+    <bleaf>0.65196</bleaf>
+    <cleaf>0.00976</cleaf>
+  </community>
+
+  <community type = "8"
+    description = "Xeric Shrubland"
+    developedBy = "A. David McGuire"
+    updated = "19930123">
+    <minleaf>0.25</minleaf>  
+    <aleaf>0.46402</aleaf>
+    <bleaf>0.67084</bleaf>
+    <cleaf>-0.00677</cleaf>
+  </community>
+
+  <community type = "9"
+    description = "Tropical Forest"
+    developedBy = "A. David McGuire"
+    updated = "19930123">
+    <minleaf>0.25</minleaf>  
+    <aleaf>0.44226</aleaf>
+    <bleaf>0.54255</bleaf>
+    <cleaf>0.07127</cleaf>
+  </community>
+
+  <community type = "10"
+    description = "Xeric Woodland"
+    developedBy = "A. David McGuire"
+    updated = "19930123">
+    <minleaf>0.25</minleaf>  
+    <aleaf>0.44226</aleaf>
+    <bleaf>0.54255</bleaf>
+    <cleaf>0.07127</cleaf>
+  </community>
+
+  <community type = "11"
+    description = "Temperate Broadleaved Evergreen Forest"
+    developedBy = "A. David McGuire"
+    updated = "19931211">
+    <minleaf>0.50</minleaf>  
+    <aleaf>0.41624</aleaf>
+    <bleaf>0.35159</bleaf>
+    <cleaf>0.28739</cleaf>
+  </community>
+
+  <community type = "12"
+    description = "Mediterranean Shrubland"
+    developedBy = "A. David McGuire"
+    updated = "19930123">
+    <minleaf>0.25</minleaf>  
+    <aleaf>0.26692</aleaf>
+    <bleaf>0.95921</bleaf>
+    <cleaf>-0.07731</cleaf>
+  </community>
+</leafECD>
+

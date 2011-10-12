@@ -6,15 +6,15 @@
     TRRUN     = TRUE,
     CTRUN     = .TRUE.,
     cdiff     = 1.03,
-    povocean  =  'povocean.501.09',
-    aveocean  =  'aveocean.501.09.out',
-    nwravo    =  'nwravo.501.09.out',
+    povocean  =  'povocean',
+    aveocean  =  'aveocean.out',
+    nwravo    =  'nwravo.out',
     qffile    = 'QFLX_2D',
     flto3     = 'TGO3_2D',
-    dirdat2   = '/home/jscott/ATM2D_DATA/INIT/46lat/',
+    dirdat2   = '../../data/init/46lat/',
     zmmaxfl   = 'Z1OMAX46_2D.dat',
     zmavefl   = 'Z1OAVE46_2D.dat',
-    kvnewfl    = '/home/jscott/ATM2D_DATA/INIT/46lat/KVNEWZON.dat',
+    kvnewfl    = '../../data/init/46lat/KVNEWZON.dat',
  &END
 
 

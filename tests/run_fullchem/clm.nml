@@ -1,16 +1,15 @@
 
  &clmexp
- caseid         = '501.09'
+ caseid         = 'fullchem'
  ctitle         = 'Climate chemistry run from 1991 to 2100 '
- offline_atmdir = '/home/jscott/ATM2D_DATA/CLMDATA/atmdat.nc'
- finidat        = 'clm.restart.501.09.1991.nc'
- rpntpath       = 'pntr.501.09.out'
- fsurdat        = '/home/jscott/ATM2D_DATA/CLMDATA/igsmveg-data.001x046.lakes.nc'
- fstochdat      = '/home/jscott/ATM2D_DATA/CLMDATA/stochastic-data.001x046.default.nc'
- fstochdat      = '/home/jscott/ATM2D_DATA/CLMDATA/stochastic-data.001x046.median400.nc'
- fpcp2pft       = '/home/jscott/ATM2D_DATA/CLMDATA//pcp2pft-data.001x046.nc',
- fpftcon        = '/home/jscott/ATM2D_DATA/CLMDATA//pft-physiology'
- frivinp_rtm    = '/home/jscott/ATM2D_DATA/CLMDATA//rdirc.05'
+ offline_atmdir = '../../data/clm/2.1/atmdat.nc'
+ finidat        = 'clm.restart.nc'
+ rpntpath       = 'pntr.out'
+ fsurdat        = '../../data/clm/2.1/igsmveg-data.001x046.lakes.nc'
+ fstochdat      = '../../data/clm/2.1/stochastic-data.001x046.median400.nc'
+ fpcp2pft       = '../../data/clm/2.1/pcp2pft-data.001x046.nc',
+ fpftcon        = '../../data/clm/2.1/pft-physiology'
+ frivinp_rtm    = '../../data/clm/2.1/rdirc.05'
  nsrest         =  0
  nelapse        =  -730000
  dtime          =  3600

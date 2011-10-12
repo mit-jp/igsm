@@ -1,6 +1,6 @@
  &EPPA
-    emiss_data= '/home/jscott/ATM2D_DATA/EMIMED/edaily.refOct08.dat'
-    SO2ERATIO= '/home/jscott/ATM2D_DATA/EMIMED/edailyso2.refOct08'
+    emiss_data= '../../data/emimed/edaily.refOct08.dat'
+    SO2ERATIO= '../../data/emimed/edailyso2.refOct08'
     LYEAREM=2100
  &END
 

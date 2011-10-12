@@ -9,6 +9,6 @@ module load netcdf
 
 cd $PBS_O_WORKDIR
 
-../../igsm22 < tem.go > stdout.txt
+../src/igsm22 < tem.go > stdout.txt
 
 exit 0
