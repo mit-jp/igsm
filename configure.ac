@@ -164,13 +164,18 @@ if test $CLM_VERSION != no; then
   CLM_DIR="clm/$CLM_VERSION"
   MODULE_DIRS+=" $CLM_DIR"
   MODULE_LDADD+=" -L$CLM_DIR -lclm"
-  # CLM 2.1 requires the ESMF library to be linked explicitly
   if test $CLM_VERSION = 2.1; then
+    # CLM 2.1 requires the ESMF library to be linked explicitly
     MODULE_LDADD+=" -lesmf"
+  else
+    CLM35_TEM="off"
   fi
   # the CLM directory must be symlinked from within the build tree, because CLM
   # has its own build system
-  AC_CONFIG_LINKS([src/$CLM_DIR:$srcdir/src/$CLM_DIR])
+  #AC_CONFIG_LINKS([src/$CLM_DIR:$srcdir/src/$CLM_DIR])
+  AC_CONFIG_COMMANDS([clm],
+    [mkdir -p src/$clmdir && cp -r $srcdir/src/$clmdir/* src/$clmdir],
+    [clmdir=$CLM_DIR])
 fi
 # 3. Appropriate version of the Terrestrial Ecosystem Model
 if test $tem = yes; then
@@ -180,9 +185,15 @@ if test $tem = yes; then
   else
     # CLM_VERSION=3.5
     TEM_VERSION=4.4c
+    CLM35_TEM="on"
   fi
   MODULE_DIRS+=" tem/$TEM_VERSION"
   MODULE_LDADD+=" tem/$TEM_VERSION/libtem.a"
+fi
+# substitute in the CLM 3.5 makefile if necessary
+if test $CLM_VERSION = 3.5; then
+  AC_SUBST(CLM35_TEM)
+  AC_CONFIG_FILES([src/clm/3.5/Makefile])
 fi
 # 4. Atmospheric chemistry model
 if test $model = fullchem; then

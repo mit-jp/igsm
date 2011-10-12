@@ -1,12 +1,12 @@
-CLMROOT := $(abspath .)
-CLMFLAGS := -maxpft 17 \
+CLMROOT = $(abs_builddir)
+CLMFLAGS = -maxpft 17 \
 	-mit2d on \
 	-nospmd \
 	-nosmp \
 	-pcp2pft on \
 	-rtm off \
 	-stoch on \
-	-tem off \
+	-tem $(CLM35_TEM) \
 	-usr_src $(CLMROOT)/bld/usr.src
 
 libclm.a:
