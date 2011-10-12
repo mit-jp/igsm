@@ -6,12 +6,12 @@ CLMFLAGS = -maxpft 17 \
 	-pcp2pft on \
 	-rtm off \
 	-stoch on \
-	-tem $(CLM35_TEM) \
-	-usr_src $(CLMROOT)/bld/usr.src
+	-tem $(CLM35_TEM)
 
 libclm.a:
 	mkdir -p exe
-	cd exe && ../bld/configure $(CLMFLAGS) && make nolink
+	cd exe && ../bld/configure $(CLMFLAGS) -usr_src \
+	  $(shell find -L bld/usr.src -type d -printf '../%p,') && make nolink
 	rm exe/program_igsm.o
 	ar r libclm.a exe/*.o
 
