@@ -70,7 +70,7 @@ c     ===========================
 
         read (668),AlkT         !mol eq/m3
         print *,'AlkT',iyear
-        print '12F7.2',(AlkT(j),j=1,nlat)
+        print '(12F7.2)',(AlkT(j),j=1,nlat)
 
         read (669),S
 
