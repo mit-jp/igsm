@@ -101,6 +101,8 @@ contains
 !CAS        of CLM coupled to the MIT Integrated Global System Model (IGSM)
 !CAS
     real(r8), pointer :: pcp2pft(:)      !PCP Distribution factor across PFTs
+    real(r8)          :: rain_buf          ! Temporary rain
+    real(r8)          :: snow_buf          ! Temporary snow
 #endif
 #if (defined OFFLINE)
     real(r8), pointer :: flfall(:)         ! fraction of liquid water within falling precipitation
@@ -224,8 +226,6 @@ contains
 	!CAS        of CLM coupled to the MIT Integrated Global System Model (IGSM)
 	!CAS
 	pcp2pft => clm3%g%l%c%p%pps%pcp2pft
-	!write (6,*) 'Hydrology1: PCP2PFT @ column: ',pi,': ',pcp2pft
-	!write (6,*) 'at i = ',pps%ixy,' j = ',pps%jxy,' and PFT = ',pps%itype
 #endif
 
     ! Compute time step
@@ -248,8 +248,8 @@ contains
        if (itype(l)==istsoil .or. itype(l)==istwet) then
 #if (defined PCP2PFT)
           if (itype(l)==istsoil) then
-            !write (6,*) 'HYDROLOGY1: PFT_I', p,&
-            !            'PCP2PFT: ',pcp2pft(p)
+            rain_buf = forc_rain(g)
+            snow_buf = forc_snow(g)
 	    forc_rain(g) = forc_rain(g)*pcp2pft(p)
 	    forc_snow(g) = forc_snow(g)*pcp2pft(p)
           endif
@@ -359,9 +359,8 @@ contains
 	!CAS        of CLM coupled to the MIT Integrated Global System Model (IGSM)
 	!CAS
           if (itype(l)==istsoil) then
-		forc_rain(g) = forc_rain(g)/pcp2pft(p)
-		forc_snow(g) = forc_snow(g)/pcp2pft(p)
-		!prcp = forc_rain + forc_snow  ! total precipitation
+		forc_rain(g) = rain_buf
+		forc_snow(g) = snow_buf
           end if
 #endif
     end do ! (end pft loop)

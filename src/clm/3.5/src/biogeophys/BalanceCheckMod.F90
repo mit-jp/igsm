@@ -276,7 +276,7 @@ contains
 
     found = .false.
     do c = lbc, ubc
-       if (abs(errh2o(c)) > 1e-5_r8) then
+       if (abs(errh2o(c)) > 1e-7_r8) then
           found = .true.
           index = c
        end if
@@ -284,22 +284,9 @@ contains
     if ( found ) then
        write(6,*)'WARNING:  water balance error ',&
             ' nstep = ',nstep,' index= ',index,' errh2o= ',errh2o(index)
-       if (abs(errh2o(index)) > 1e-5_r8) then
-!CAS
-!CAS    Removing endrun for debugging
-!CAS
-!          write(6,*)'clm model is stopping'
-!          call endrun()
-         g = cgridcell(index)
-         write(6,*)'Water Balance Terms: '
-         write(6,*)'ENDWB : ',endwb(index)
-         write(6,*)'BEGWB : ',begwb(index)
-         write(6,*)'RAIN  : ',forc_rain(g)
-         write(6,*)'SNOW  : ',forc_snow(g)
-         write(6,*)'EVAP  : ',qflx_evap_tot(index)
-         write(6,*)'SURFRO: ',qflx_surf(index)
-         write(6,*)'QRGWL : ',qflx_qrgwl(index)
-         write(6,*)'DRAINR: ',qflx_drain(index)
+       if (abs(errh2o(index)) > .10_r8) then
+          write(6,*)'clm model is stopping'
+          call endrun()
        end if
     end if
 
@@ -379,7 +366,7 @@ contains
 
     found = .false.
     do c = lbc, ubc
-       if (abs(errsoi_col(c)) > 1.0e-3_r8 ) then
+       if (abs(errsoi_col(c)) > 1.0e-7_r8 ) then
           found = .true.
           index = c
        end if

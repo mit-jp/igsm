@@ -473,7 +473,6 @@ contains
     real(r8), pointer :: t_grnd(:)       ! ground temperature (Kelvin)
     real(r8), pointer :: frac_sno(:)     ! fraction of ground covered by snow (0 to 1)
     real(r8), pointer :: h2osoi_vol(:,:) ! volumetric soil water [m3/m3]
-    real(r8), pointer :: watsat(:,:)     ! volumetric soil water at saturation (porosity)
 !
 ! local pointers to original implicit out arguments
 !
@@ -503,7 +502,6 @@ contains
     h2osoi_vol => clm3%g%l%c%cws%h2osoi_vol
     albgrd     => clm3%g%l%c%cps%albgrd
     albgri     => clm3%g%l%c%cps%albgri
-    watsat     => clm3%g%l%c%cps%watsat
 
     ! Assign local pointers to derived subtypes components (landunit-level)
 
@@ -519,17 +517,10 @@ contains
              l = clandunit(c)
 
              if (ltype(l) == istsoil)  then              ! soil
-#if (defined COUP_MIT2D)
                 inc    = max(0.11_r8-0.40_r8*h2osoi_vol(c,1), 0._r8)
                 soilcol = isoicol(c)
-                !albsod = ((albsat(soilcol,ib)+inc)+albdry(soilcol,ib))/2.
-                albsod = (h2osoi_vol(c,1)*albsat(soilcol,ib))+((1-h2osoi_vol(c,1))*albdry(soilcol,ib))
-                albsod = albsod/watsat(c,1)
-#else
-                inc    = max(0.11_r8-0.40_r8*h2osoi_vol(c,1), 0._r8)
-                albsod = min(albsat(soilcol,ib)+inc, albdry(soilcol,ib))
-#endif
-                soilcol = isoicol(c)
+                !albsod = min(albsat(soilcol,ib)+inc, albdry(soilcol,ib))
+                albsod = ((albsat(soilcol,ib)+inc)+albdry(soilcol,ib))/2.
                 albsoi = albsod
              else if (ltype(l) == istice)  then          ! land ice
                 albsod = albice(ib)
@@ -678,7 +669,7 @@ contains
        ! 0.001, not on values cosz = 0, since these zero have already been filtered
        ! out in filter_vegsol
        cosz = max(0.001_r8, coszen(p))
-
+       
        chil(p) = min( max(xl(ivt(p)), -0.4_r8), 0.6_r8 )
        if (abs(chil(p)) <= 0.01_r8) chil(p) = 0.01_r8
        phi1 = 0.5_r8 - 0.633_r8*chil(p) - 0.330_r8*chil(p)*chil(p)

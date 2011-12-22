@@ -162,6 +162,10 @@ PROGRAM program_igsm
 !     call initialize (eccen, obliqr, lambm0, mvelpp)
 !     call t_startf('total')
       call clm4mit2d
+      write (6,*) 'OrbitFix ',orbfix
+      write (6,*) 'OrbitYear ',orbyr
+      write (6,*) 'Dyn_pft ',dyn_pft
+      write (6,*) 'RampYr ',rampyr_dynpft
 1000  rewind 20
       do while (moredata)
         read(20,end=1000) psmit,pcplmit,pcpcmit,tprmit,tslmit,qsmit,wsmit,usmit,vsmit,dswmit,dlwmit,pco2mit,swnirmit,swparmit

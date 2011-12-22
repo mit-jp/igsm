@@ -93,19 +93,19 @@ module driver
 !CAS  5/2008
 !CAS  Added to incorporate PFT distr. of PCP into zonal-CLM framework
 !CAS  5/2008
-! includes changes by Erwan for AR5
 #if (defined PCP2PFT)
   use pcp2pftMod
-  use clm_varctl, only : wrtdia, fpftdyn, fndepdyn, fpcp2pft, dynamic_pft
+  use clm_varctl, only : wrtdia, fpftdyn, fndepdyn, fpcp2pft
 #else
-  use clm_varctl          , only : wrtdia, fpftdyn, fndepdyn, dynamic_pft
+  use clm_varctl          , only : wrtdia, fpftdyn, fndepdyn
 #endif
   use spmdMod             , only : masterproc
   use decompMod           , only : get_proc_clumps, get_clump_bounds
   use filterMod           , only : filter, setFilters
-! changes by Erwan start here
+! Changes by Erwan start here for AR5/IGSM dynamic pft
+  use clm_varctl          , only : dynamic_pft
   use pftdynMod           , only : pftdyn_interp, pftdyn_wbal_init
-! changes by Erwan end here
+! Changes by Erwan end here
   use clm_varcon          , only : zlnd
   use clm_time_manager        , only : get_step_size, get_curr_calday, &
                                    get_curr_date, get_ref_date, get_nstep, is_perpetual
@@ -137,9 +137,9 @@ module driver
   use ndepFileMod         , only : ndepdyn_interp
 #else
   use STATICEcosysDynMod  , only : EcosystemDyn, interpMonthlyVeg
-! changes by Erwan start here
+! Changes by Erwan start here for AR5/IGSM dynamic pft
   use DYNPFTEcosysDynMod  , only : DynEcosystemDyn, interpDynMonthlyVeg
-! changes by Erwan end here
+! Changes by Erwan end here
 #endif
 #if (defined DUST)
   use DUSTMod             , only : DustDryDep, DustEmission
@@ -239,7 +239,7 @@ subroutine driver1 (doalb, caldayp1, declinp1)
   ! interpolated values.
   ! ============================================================================
 
-! changes by Erwan start here
+! Changes by Erwan start here for AR5/IGSM dynamic pft
    if (doalb) then
        if (dynamic_pft) then
           call interpDynMonthlyVeg()
@@ -247,7 +247,7 @@ subroutine driver1 (doalb, caldayp1, declinp1)
           call interpMonthlyVeg()
        end if
    end if
-! changes by Erwan end here
+! Changes by Erwan end here
 
 #endif
 
@@ -309,13 +309,33 @@ subroutine driver1 (doalb, caldayp1, declinp1)
   ! Update weights and reset filters if dynamic land use
   ! This needs to be done outside the clumps loop, but after BeginWaterBalance()
   ! ============================================================================
-! Changes by Erwan start here
+! Changes by Erwan start here for AR5/IGSM dynamic pft
   if (doalb .and. dynamic_pft) then
      call pftdyn_interp()
 ! Changes by Erwan end here
      call setFilters()
   end if
 #endif
+
+!CAS
+!CAS   Check to see if read for new PCP2PFT data needed
+!CAS
+#if (defined PCP2PFT)
+
+  ! ----------------------------------------------------------------------  
+  ! Determine weights for monthly PFT distribution of Precpitation.
+  ! This also determines whether it is time to read new monthly data
+  ! (variable name 'pcp2pft').
+  ! ----------------------------------------------------------------------
+  dtime = get_step_size()
+  call get_curr_date(yr, mon1, day, sec, offset=-int(dtime))
+  call get_curr_date(yr, mon2, day, sec)
+  if (mon2 /= mon1) call readMonthlyPcp2Pft(fpcp2pft,mon2)
+
+#endif
+!CAS
+!CAS   End PCP2PFT call
+!CAS
 
 #if (defined CN)
   ! ============================================================================
@@ -527,7 +547,7 @@ subroutine driver1 (doalb, caldayp1, declinp1)
 #else
      ! Prescribed biogeography,
      ! prescribed canopy structure, some prognostic carbon fluxes
-! Changes by Erwan start here
+! Changes by Erwan start here for AR5/IGSM dynamic pft
       if (dynamic_pft) then
          call DynEcosystemDyn(begp, endp, &
                         filter(nc)%num_nolakep, filter(nc)%nolakep, &
@@ -580,22 +600,6 @@ subroutine driver1 (doalb, caldayp1, declinp1)
 !$OMP END PARALLEL DO
 #if !defined (USE_OMP)
 !!CSD$ END PARALLEL DO
-#endif
-!CAS
-!CAS   Check to see if read for new PCP2PFT data needed
-!CAS
-#if (defined PCP2PFT)
-
-  ! ----------------------------------------------------------------------
-  ! Determine weights for monthly PFT distribution of Precpitation.
-  ! This also determines whether it is time to read new monthly data
-  ! (variable name 'pcp2pft').
-  ! ----------------------------------------------------------------------
-  dtime = get_step_size() 
-  call get_curr_date(yr, mon1, day, sec, offset=int(dtime))
-  call get_curr_date(yr, mon2, day, sec)
-  if (mon2 /= mon1) call readMonthlyPcp2Pft(fpcp2pft,mon1)
-
 #endif
 
 end subroutine driver1

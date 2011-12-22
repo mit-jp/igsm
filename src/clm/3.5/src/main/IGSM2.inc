@@ -21,3 +21,6 @@
     double precision ::  swparmit (igsmlon,igsmlat)
     real :: tglbtrnd
     common/mit2din/psmit,pcplmit,pcpcmit,tprmit,tslmit,qsmit,wsmit,usmit,vsmit,dswmit,dlwmit,pco2mit,swnirmit,swparmit,tglbtrnd
+    logical          ::  orbfix,dyn_pft
+    integer          ::  orbyr,rampyr_dynpft
+    common/clmvarctl/orbfix,orbyr,dyn_pft,rampyr_dynpft

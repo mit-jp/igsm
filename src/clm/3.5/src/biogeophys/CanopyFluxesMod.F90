@@ -776,7 +776,6 @@ contains
 
          efpot = forc_rho(g)*wtl*(wtgaq*(qsatl(p)+qsatldT(p)*dt_veg(p)) &
             -wtgq0*qg(c)-wtaq0(p)*forc_q(g))
-
          qflx_evap_veg(p) = rpp*efpot
          
          ! Calculation of evaporative potentials (efpot) and
@@ -956,7 +955,6 @@ contains
       p = filterp(f)
       write(6,*) 'energy balance in canopy ',p,', err=',err(p)
    end do
-
 
    end subroutine CanopyFluxes
 

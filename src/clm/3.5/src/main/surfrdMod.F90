@@ -1575,6 +1575,13 @@ contains
           end if
        end if
 
+       if (nt1 == nt2) then
+          fact = 0._r8
+       else
+          deltay = yearspft(nt2) - yearspft(nt1)
+          fact = (year - yearspft(nt1))/deltay
+       end if
+
        do n = 0,numpft
           start4(1) = 1
           count4(1) = domain%ni
@@ -1598,9 +1605,7 @@ contains
              pctpft(begg:endg,n) = arrayl1(begg:endg)
           else
 ! We interpolate the pft between years of missing pft data
-             deltay = yearspft(nt2) - yearspft(nt1)
-             fact = (yearspft(nt2) - year)/deltay
-             pctpft(begg:endg,n) = arrayl1(begg:endg) + fact*(arrayl1(begg:endg)-arrayl2(begg:endg))
+             pctpft(begg:endg,n) = arrayl1(begg:endg) + fact*(arrayl2(begg:endg)-arrayl1(begg:endg))
           end if
 
        end do
@@ -1660,7 +1665,7 @@ contains
                 sumpct = sumpct + pctpft(nl,m) * 100._r8/(100._r8-pctspec(nl))
              end do
              write(6,*) sumpct, sumpct-100._r8, nl
-             if (abs(sumpct - 100._r8) > 0.1e-4_r8) then
+             if (abs(sumpct - 100._r8) > 0.01_r8) then
                 write(6,*)'surfrdMod error: sum(pct) over numpft+1 is not = 100.'
                 write(6,*) sumpct, sumpct-100._r8, nl
                 call endrun()

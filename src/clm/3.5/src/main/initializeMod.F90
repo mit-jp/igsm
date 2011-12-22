@@ -360,7 +360,7 @@ contains
     use initGridCellsMod, only : initGridCells
 ! changes by Erwan start here
 #if (defined PCP2PFT)
-    use clm_varctl      , only : fsurdat, finidat, fpftdyn, fndepdyn, dynamic_pft, fpcp2pft
+    use clm_varctl      , only : fsurdat, finidat, fpftdyn, fndepdyn, dynamic_pft, fpcp2pft, initpcp2pft
 #else
     use clm_varctl      , only : fsurdat, finidat, fpftdyn, fndepdyn, dynamic_pft
 #endif
@@ -776,7 +776,20 @@ contains
     endif
 
 #if (defined PCP2PFT)
+!CAS
+!CAS  Initialization of pcp2pft: This is currently configured for 
+!CAS    AR5 implementation. The initialization is only performed 
+!CAS    if the run starts in year 849 (potential igsmveg only).
+!CAS
+!CAS    This initialization essentially assures normalization of the
+!CAS    pcp2pft coefficients given the potential vegetation landscape
+!CAS    (no crops/pastures).
+!CAS
     call get_curr_date(yr, mon, day, ncsec)
+    if (yr == 849 .and. initpcp2pft) then
+      write (6,*) 'Start year ',yr,': Attempting to set up PCP2PFT data'
+      call pcp2pftinit(fpcp2pft)
+    endif
     call ReadMonthlyPcp2PFT (fpcp2pft, mon)
 #endif
 

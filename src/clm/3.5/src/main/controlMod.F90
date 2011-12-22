@@ -107,7 +107,7 @@ module controlMod
 !    o rtm_nsteps  = if > 1, average rtm over rtm_nsteps time steps
 !    o nsegspc     = number of segments per clump for decomposition
 !
-! === Dynamic pft added by Erwan Monier (07/12/2011) ===
+! === dynamic pft variables (added by Erwan Monier) ===
 !
 !    o dynamic_pft     = true if you want pft varying annually
 !    o rampYear_dynpft = dynamic pft fixed at this year (can be used if 
@@ -236,6 +236,7 @@ contains
     type(shr_InputInfo_initType), intent(in), optional :: CCSMInit   ! Input CCSM info
 
     include 'netcdf.inc'
+    include 'IGSM2.inc'
 !
 ! !REVISION HISTORY:
 ! Created by Mariana Vertenstein
@@ -285,7 +286,7 @@ contains
          fstochdat, &
 #endif
 #if (defined PCP2PFT)
-         fpcp2pft, &
+         fpcp2pft,initpcp2pft &
 #endif
          fpftdyn, fndepdat, fndepdyn, nrevsn, offline_atmdir 
 
@@ -293,9 +294,10 @@ contains
     namelist / clm_inparm/ &
          orbitfix,orbityr
 
-! Erwan Monier (07/12/2011) for AR5/IGSM land cover changes
+! Changes by Erwan start here
     namelist /clm_inparm/  &
          dynamic_pft, rampYear_dynpft
+! Changes by Erwan end here
 
     ! clm history, restart, archive options
 
@@ -400,10 +402,10 @@ contains
     scmlon=-999.
     nsegspc = 20
 
-! Erwan Monier (07/12/2011)
-
+! Changes by Erwan start here
     dynamic_pft = .false.
     rampYear_dynpft = 0
+! changes by Erwan end here
 
 ! CAS (9/2011) to allow for changing orbital parameters
     orbitfix = .true.
@@ -464,8 +466,8 @@ contains
        ! Consistency checks on input namelist.
        ! ----------------------------------------------------------------------
 
-! changes by Erwan start here
-       ! Consistency for dynamic_pft added by Erwan Monier (07/12/2011)
+! Changes by Erwan start here
+       ! Consistency for dynamic_pft (added by Erwan Monier)
 
        if (dynamic_pft) then
           if (fpftdyn == ' ') then
@@ -480,8 +482,13 @@ contains
              call endrun('Dynamic pft is set to FALSE, but a dynamic pft file is defined (fpftdyn) in the namelist')
           end if
        end if
-! changes by Erwan end here
+! Changes by Erwan end here
  
+! CAS: Passing orbit and dynpft variables 
+       orbfix = orbitfix
+       dyn_pft = dynamic_pft
+       orbyr = orbityr
+       rampyr_dynpft = rampYear_dynpft
 
        ! Consistency settings for co2 type
 
@@ -762,9 +769,13 @@ contains
     call clmmpi_bcast(create_crop_landunit, 1, CLMMPI_LOGICAL, 0, clmmpicom, ier)
     call clmmpi_bcast(allocate_all_vegpfts, 1, CLMMPI_LOGICAL, 0, clmmpicom, ier)
 
-    ! New variables added by Erwan Monier (07/12/2011)
+! Changes by Erwan start here
+    ! dynamic pft
+
     call clmmpi_bcast (dynamic_pft  , 1, CLMMPI_LOGICAL, 0, clmmpicom, ier)
     call clmmpi_bcast (rampYear_dynpft, 1, CLMMPI_INTEGER  , 0, clmmpicom, ier)
+
+! Changes by Erwan end here
 
     ! BGC
 
@@ -859,7 +870,7 @@ contains
     write(6,*) '   case title            = ',trim(ctitle)
     write(6,*) 'input data files:'
     write(6,*) '   PFT physiology = ',trim(fpftcon)
-! changes by Erwan start here
+! Changes by Erwan start here
     if (dynamic_pft) then
        write(6,*)'   dynamic pft is set to TRUE'
        write(6,*)'   dynamic pft data   = ',trim(fpftdyn)
@@ -873,7 +884,7 @@ contains
           write(6,*) '   surface data   = ',trim(fsurdat)
        end if
     end if
-! changes by Erwan end here
+! Changes by Erwan end here
     if (flndtopo == ' ') then
        write(6,*) '   flndtopo not set'
     else

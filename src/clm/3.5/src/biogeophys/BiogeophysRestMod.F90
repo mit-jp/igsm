@@ -47,7 +47,7 @@ contains
     use decompMod     , only : get_proc_bounds
     use clm_varpar    , only : nlevsoi, nlevsno
     use clm_varcon    , only : denice, denh2o
-! Changes by Erwan start here
+! Changes by Erwan start here for AR5/IGSM dynamic pft
     use clm_varctl    , only : allocate_all_vegpfts, nsrest, dynamic_pft
     use clm_varcon  , only : istsoil
 ! Changes by Erwan end here
@@ -78,7 +78,7 @@ contains
     integer :: begg, endg   ! per-proc gridcell ending gridcell indices
     logical :: readvar      ! determine if variable is on initial file
     character(len=128) :: varname         ! temporary
-! Changes by Erwan start here
+! Changes by Erwan start here for AR5/IGSM dynamic pft
     real(r8), pointer :: wtpfttot1(:)           ! summation of pft weights for renormalization
     real(r8), pointer :: wtpfttot2(:)           ! summation of pft weights for renormalization
 ! Changes by Erwan end here
@@ -88,7 +88,7 @@ contains
     type(pft_type)     , pointer :: pptr  ! pointer to pft derived subtype
 !-----------------------------------------------------------------------
 
-! Changes by Erwan start here
+! Changes by Erwan start here for AR5/IGSM dynamic pft
     call get_proc_bounds(begg, endg, begl, endl, begc, endc, begp, endp)
 ! Changes by Erwan end here
 
@@ -99,10 +99,10 @@ contains
     cptr => clm3%g%l%c
     pptr => clm3%g%l%c%p
 
-! Changes by Erwan start here
+! Changes by Erwan start here for AR5/IGSM dynamic pft
     if (dynamic_pft) then
        if(flag == 'read') then
-! Read pfts1d_wtcol into pptr%wtcol 
+       ! Read pfts1d_wtcol into pptr%wtcol 
           call ncd_iolocal(varname='pfts1d_wtcol', data=pptr%wtcol, &
               dim1name='pft', &
               ncid=ncid, flag=flag, readvar=readvar)
@@ -810,10 +810,6 @@ contains
     ! ------------------------------------------------------------
     ! Determine volumetric soil water (for read only)
     ! ------------------------------------------------------------
-
-! Changes by Erwan start here
-!    call get_proc_bounds(begg, endg, begl, endl, begc, endc, begp, endp)
-! Changes by Erwan end here
 
     if (flag == 'read' ) then
        do j = 1,nlevsoi

@@ -924,6 +924,7 @@ contains
 #endif
 #if (defined PCP2PFT)
     allocate(pps%pcp2pft(beg:end))
+    allocate(pps%pcp2pftmth(beg:end,1:12))
 #endif
 #if (defined COUP_TEM)
     allocate(pps%epot30r(30,beg:end))   
@@ -1050,7 +1051,8 @@ contains
     pps%clayfrac(beg:end) = nan
 #endif
 #if (defined PCP2PFT)
-    pps%pcp2pft(beg:end) = nan
+    pps%pcp2pft(beg:end) = 1.0
+    pps%pcp2pftmth(beg:end,1:12) = 1.0
 #endif
 #if (defined COUP_TEM)
     pps%epot30r(1:30,beg:end) = 0._r8

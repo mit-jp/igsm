@@ -124,6 +124,9 @@ contains
     real(r8), pointer :: hbot(:)     ! canopy bottom (m)
     real(r8), pointer :: elai(:)     ! one-sided leaf area index with burying by snow
     real(r8), pointer :: esai(:)     ! one-sided stem area index with burying by snow
+! changes by Erwan start here
+    real(r8), pointer :: fsun(:)     ! sunlit fraction of canopy
+! changes by Erwan end here
 !
 !EOP
 !
@@ -171,6 +174,9 @@ contains
     elai               => clm3%g%l%c%p%pps%elai
     esai               => clm3%g%l%c%p%pps%esai
     fdry               => clm3%g%l%c%p%pps%fdry
+! changes by Erwan start here
+    fsun               => clm3%g%l%c%p%pps%fsun
+! changes by Erwan end here
 
     ! ========================================================================
     ! Determine surface albedo - initialized by calls to ecosystem dynamics and
@@ -228,6 +234,9 @@ contains
              frac_veg_nosno_alb(p) = 0._r8
              frac_veg_nosno(p) = 0._r8
           end if
+! changes by Erwan start here
+             fsun(p) = -999._r8
+! changes by Erwan end here
        end do
 
        ! Determine variables needed for SurfaceAlbedo for non-lake points

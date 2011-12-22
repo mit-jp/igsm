@@ -215,7 +215,8 @@ type, public :: pft_pstate_type
    real(r8), pointer :: clayfrac(:)  ! clay fraction
 #endif
 #if (defined PCP2PFT)
-   real(r8), pointer :: pcp2pft(:)   ! Preciptiation distribution factor
+   real(r8), pointer :: pcp2pft(:)        ! Preciptiation distribution factor
+   real(r8), pointer :: pcp2pftmth(:,:)   ! Preciptiation distribution factor
 #endif
 #if (defined COUP_TEM)
    real(r8), pointer :: epot30r(:,:)      ! Array for 30-day running mean Potential Evap. (mm/s)

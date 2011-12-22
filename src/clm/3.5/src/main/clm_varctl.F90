@@ -25,13 +25,11 @@ module clm_varctl
   integer :: nsrest                             ! 0: initial run. 1: restart: 3: branch
   logical, public :: brnch_retain_casename = .false. ! true => allow case name to remain the same for branch run
                                                      ! by default this is not allowed
-! Erwan Monier for AR5/IGSM land-use change
-  logical,public :: dynamic_pft = .false.    ! by default, the percent pft is fixed
-                                              ! true => percent pft is dynamic
-                                              ! and varies annually
-                                              ! added by Erwan Monier
-                                              ! (07/12/2011)  
-  integer        :: rampYear_dynpft          ! if non-zero, the percent pft is ramped at this year
+! Changes by Erwan start here
+  logical,public :: dynamic_pft = .false.    ! by default, fixed pft
+                                             ! true => dynamic pft 
+  integer        :: rampYear_dynpft          ! if non-zero, pft is ramped at this year
+! Changes by Erwan end here
 
 ! CAS (9/2011) to allow for changing orbital parameters
   logical,public :: orbitfix = .true.
@@ -55,6 +53,7 @@ module clm_varctl
 #endif
 #if (defined PCP2PFT)
   character(len=256) :: fpcp2pft                !file name for precipitation PFT distribution
+  logical,public :: initpcp2pft = .false.
 #endif
   character(len=256) :: finidat                 ! initial conditions file name
   character(len=256) :: fsurdat                 ! surface data file name

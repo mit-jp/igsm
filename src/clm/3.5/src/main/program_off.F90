@@ -53,7 +53,6 @@ PROGRAM program_off
 ! !USES:
   use shr_kind_mod    , only : r8 => shr_kind_r8, SHR_KIND_CL
   use shr_orb_mod          
-  use clm_varctl      , only : orbitfix,orbityr
   use clm_varorb      , only : eccen, mvelpp, lambm0, obliqr, obliq, &
                                iyear_AD, nmvelp
   use clm_comp        , only : clm_init0, clm_init1, clm_init2, clm_run1, clm_run2
@@ -67,16 +66,21 @@ PROGRAM program_off
   use spmdMod  
   use ESMF_Mod
   use perf_mod
+#if (defined COUP_MIT2D)
+  use clm_varctl      , only : orbitfix,orbityr
+#endif
 !
 ! !ARGUMENTS:
-  implicit none
+
 #if (defined COUP_MIT2D)
+  implicit none
   logical,save :: first !First step logical
   data first/.true./
   integer :: yr, mon, day, mcsec
   integer :: pyr, pmon, pday, pmcsec
   include 'IGSM2.inc'
 #endif
+
 #if (defined COUP_TEM)
   include 'TEM.inc'
 #endif
@@ -130,12 +134,17 @@ PROGRAM program_off
   call t_initf(nlfilename, LogPrint=masterproc, CLMMpicom=clmmpicom, &
                MasterTask=masterproc)
 
+
+#if (defined COUP_MIT2D)
+
   ! -----------------------------------------------------------------
   ! Initialize land model
   ! -----------------------------------------------------------------
 
   call clm_init0()
   call clm_init1()
+
+  call get_curr_date (pyr, mon, day, mcsec)
 
 !CAS: THE ORBITAL PARAMETER CALL IS NOW BEFORE CLM_INIT2() FOR IGSM
 !CAS:   the default CLM code has the call just before ALL clm_init's
@@ -147,7 +156,6 @@ PROGRAM program_off
   ! obliq, eccen and nmvelp are determined based on value of iyear_AD
 
 if (.not.orbitfix) then
-  call get_curr_date (pyr, mon, day, mcsec)
   iyear_AD = pyr
 else
   iyear_AD = orbityr
@@ -165,10 +173,39 @@ endif
   call shr_orb_params (iyear_AD, eccen, obliq, nmvelp, obliqr, &
                        lambm0, mvelpp, log_print)
 
-!CAS: THE ORBITAL PARAMETER CALL IS NOW AFTER THE CLM_INIT* FOR IGSM
-!CAS:   the default CLM code has the call just before
+!CAS: END ORBITAL PARAMETER CALL 
 
   call clm_init2()
+
+#else
+
+  ! -----------------------------------------------------------------
+  ! Initialize Orbital parameters
+  ! -----------------------------------------------------------------
+
+  ! obliq, eccen and nmvelp are determined based on value of iyear_AD
+
+  if (masterproc) then
+     log_print = .true.
+  else
+     log_print = .false.
+  end if
+  iyear_AD = 1950
+  obliq    = SHR_ORB_UNDEF_REAL
+  eccen    = SHR_ORB_UNDEF_REAL
+  nmvelp   = SHR_ORB_UNDEF_REAL
+  call shr_orb_params (iyear_AD, eccen, obliq, nmvelp, obliqr, &
+                       lambm0, mvelpp, log_print)
+
+  ! -----------------------------------------------------------------
+  ! Initialize land model
+  ! -----------------------------------------------------------------
+
+  call clm_init0()
+  call clm_init1()
+  call clm_init2()
+
+#endif
 
   ! -----------------------------------------------------------------
   ! Initialize "external" atmospheric forcing
@@ -222,6 +259,24 @@ endif
 #else
 
   do
+
+  if (.not.orbitfix) then
+    call get_curr_date (yr, mon, day, mcsec)
+    call get_prev_date (pyr, pmon, pday, pmcsec)
+    if ( pyr /= yr ) then
+      if (masterproc) then
+         log_print = .true.
+      else
+         log_print = .false.
+      end if
+      iyear_AD = yr
+      obliq    = SHR_ORB_UNDEF_REAL
+      eccen    = SHR_ORB_UNDEF_REAL
+      nmvelp   = SHR_ORB_UNDEF_REAL
+      call shr_orb_params (iyear_AD, eccen, obliq, nmvelp, obliqr, &
+                         lambm0, mvelpp, log_print)
+   endif
+  endif
 
 #endif
 

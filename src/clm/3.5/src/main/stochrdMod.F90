@@ -166,8 +166,5 @@ contains
 
     end if   ! end of if-masterproc block
 
-!CAS: comment CLMMPI stuff out for now
-    !call clmmpi_bcast (domain%topo , size(domain%topo) , CLMMPI_REAL8  , 0, clmmpicom, ier)
-
   end subroutine surfrd_get_stoch
 end module stochrdMod

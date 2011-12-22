@@ -251,7 +251,7 @@ contains
 ! Time interpolate dynamic landuse data to get pft weights for model time
 !
 ! !USES:
-    use clm_time_manager, only : get_curr_date, get_curr_calday
+    use clm_time_manager, only : get_curr_date, get_curr_calday, get_prev_date
     use clm_varcon  , only : istsoil
     use clm_varpar  , only : numpft, lsmlon, lsmlat
     use clm_varctl  , only : rampYear_dynpft
@@ -267,10 +267,10 @@ contains
     logical  :: first            ! true => first time step of initial, restart or branch run
     integer  :: i,j,m,p,l,g,n,c    ! indices
     integer  :: ntimes           ! number of input time samples
-    integer  :: year             ! year (0, ...) for nstep+1
-    integer  :: mon              ! month (1, ..., 12) for nstep+1
-    integer  :: day              ! day of month (1, ..., 31) for nstep+1
-    integer  :: sec              ! seconds into current date for nstep+1
+    integer  :: year,year_prev   ! year (0, ...) for nstep and nstep-1
+    integer  :: mon,mon_prev     ! month (1, ..., 12) for nstep and nstep-1
+    integer  :: day,day_prev              ! day of month (1, ..., 31) for nstep and nstep-1
+    integer  :: sec,sec_prev              ! seconds into current date for nstep and nstep-1
     real(r8) :: cday             ! current calendar day (1.0 = 0Z on Jan 1)
     integer  :: ier              ! error status
     real(r8) :: deltay,fact              ! time interpolation factors
@@ -309,18 +309,20 @@ contains
        ! No need to update the pft since it is ramped at year rampYear_dynpft 
        ! and the weigths have already been set in surfrdMod
     else
+
        call get_curr_date(year, mon, day, sec)
+       call get_prev_date (year_prev, mon_prev, day_prev, sec_prev)
 
-    ! Update the year to read when the current year of the simulation is greater
-    ! than the year at which the pft is read from the input data file
+    ! Update the pft at the beginning of a new year
 
-       if (nt1 == nt2 .and. year > yearspft(nt1)) then
-          update_pft = .true.
-       end if
-
-       if (nt1 /= nt2 .and. year == yearspft(nt2)) then
-          update_pft = .true.
-       end if
+!       if (nt1 == nt2 .and. year > yearspft(nt1)) then
+!          update_pft = .true.
+!       end if
+!
+!       if (nt1 /= nt2 .and. year == yearspft(nt2)) then
+!          update_pft = .true.
+!       end if
+        if (year.ne.year_prev) update_pft = .true.
 
     end if
 
@@ -368,6 +370,13 @@ contains
        wtpfttot1(:) = 0._r8
        wtpfttot2(:) = 0._r8
 
+       if (nt1 == nt2) then
+          fact = 0._r8
+       else
+          deltay = yearspft(nt2) - yearspft(nt1)
+          fact = (year - yearspft(nt1))/deltay
+       end if
+
 !dir$ concurrent
 !cdir nodep
        do p = begp,endp
@@ -383,13 +392,27 @@ contains
                 pptr%wtgcell(p)   = wtpft1(g,m)
              else
 ! We interpolate the pft between years of missing pft data
-                deltay = yearspft(nt2) - yearspft(nt1)
-                fact = (yearspft(nt2) - year)/deltay
-                pptr%wtgcell(p)   = wtpft2(g,m) + fact*(wtpft1(g,m)-wtpft2(g,m))
+                pptr%wtgcell(p)   = wtpft1(g,m) + fact*(wtpft2(g,m)-wtpft1(g,m))
              end if
              pptr%wtlunit(p)   = pptr%wtgcell(p) / lptr%wtgcell(l)
              pptr%wtcol(p)     = pptr%wtgcell(p) / lptr%wtgcell(l)
              wtpfttot2(c) = wtpfttot2(c)+pptr%wtgcell(p)
+          end if
+       end do
+
+!   Renormalize pft weights so that sum of pft weights relative to grid cell 
+!   remain constant even as land cover changes.  Doing this eliminates 
+!   soil balance error warnings.
+       do p = begp,endp
+          c = pptr%column(p)
+          g = pptr%gridcell(p)
+          l = pptr%landunit(p)
+          if (lptr%itype(l) == istsoil) then
+             if (wtpfttot2(c) .ne. 0) then
+                pptr%wtgcell(p)   = (wtpfttot1(c)/wtpfttot2(c))*pptr%wtgcell(p)
+                pptr%wtlunit(p)   = pptr%wtgcell(p) / lptr%wtgcell(l)
+                pptr%wtcol(p)     = pptr%wtgcell(p) / lptr%wtgcell(l)
+             end if
           end if
        end do
 

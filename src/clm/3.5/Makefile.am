@@ -6,6 +6,7 @@ CLMFLAGS = -maxpft 17 \
 	-pcp2pft on \
 	-rtm off \
 	-stoch on \
+        -fopt -O2 \
 	-tem $(CLM35_TEM)
 
 libclm.a:

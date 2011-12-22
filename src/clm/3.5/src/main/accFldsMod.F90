@@ -530,6 +530,10 @@ include 'TEM.inc'
     call extract_accum_field ('EPOT30', epot30, nstep)
 
     do p = begp,endp
+       iveg = ptype(p)+1
+       !if (iveg == 16 .or. iveg == 17 ) then
+          !write (6,*) 'P index ',p,' PFT ',iveg,' ',qflx_evap_tot(p)
+       !endif
        rbufslp(p) = qflx_evap_tot(p)
     end do
     call update_accum_field  ('EVAP30', rbufslp, nstep)
@@ -792,7 +796,7 @@ include 'TEM.inc'
       l = clandunit(c)
       g = cgridcell(c)
       if (g > 7 ) g = g + 2
-!        !write (6,*) 'WETLAND CASE @ grid:',g,'column',c
+!        write (6,*) 'WETLAND CASE @ grid:',g,'column',c
       do iveg = 18,26
 !
 !   To account for CLM wetland evaporation difficiency (uses low soil evaporation)
@@ -921,43 +925,46 @@ include 'TEM.inc'
 !
 !    call get_prev_date (yearp, monthp, dayp, secsp)
 !    if ( month /= monthp ) then
-!       write (6,*) 'Monthly Evapotranspiration Output to TEM:'
+!       write (6,*) 'ACCFLDS: Monthly Evapotranspiration Output to TEM:'
 !       do j = 1,46
 !         write(6,*) (mitaet(i,j),i=1,35)
+!         write(6,*) (mitaet(16,j))
 !       enddo
-!       write (6,*) 'Monthly Drainage to TEM:'
+!       write (6,*) 'ACCFLDS: Monthly Drainage to TEM:'
 !       do j = 1,46
 !         write(6,*) (mitdrn(i,j),i=1,35)
 !       enddo
-!       write (6,*) 'Monthly Potential Evapotranspiration Output to TEM:'
+!       write (6,*) 'ACCFLDS: Monthly Potential Evapotranspiration Output to TEM:'
 !       do j = 1,46
 !         write(6,*) (mitpet(i,j),i=1,35)
+!         write(6,*) (mitpet(16,j))
 !       enddo
-!       write (6,*) 'Monthly SWE Output to TEM:'
+!       write (6,*) 'ACCFLDS: Monthly SWE Output to TEM:'
 !       do j = 1,46
 !         write(6,*) (mitswe(i,j),i=1,35)
 !       enddo
-!       write (6,*) 'Monthly 1m Soil Moisture Output to TEM:'
+!       write (6,*) 'ACCFLDS: Monthly 1m Soil Moisture Output to TEM:'
 !       do j = 1,46
 !         write(6,*) (mitsh2o1m(i,j),i=1,35)
+!         write(6,*) (mitsh2o1m(16,j))
 !       enddo
-!       write (6,*) 'Monthly 2m Soil Moisture Output to TEM:'
+!       write (6,*) 'ACCFLDS: Monthly 2m Soil Moisture Output to TEM:'
 !       do j = 1,46
 !         write(6,*) (mitsh2o2m(i,j),i=1,35)
 !       enddo
-!       write (6,*) 'Daily Top Soil Layer Temperature:'
+!       write (6,*) 'ACCFLDS: Daily Top Soil Layer Temperature:'
 !       do j = 1,46
 !         write(6,*) (mitdaytsoil(day,i,j,1),i=1,35)
 !       enddo
-!       write (6,*) 'Daily Top Soil Layer Moisture:'
+!       write (6,*) 'ACCFLDS: Daily Top Soil Layer Moisture:'
 !       do j = 1,46
 !         write(6,*) (mitdaysh2o(day,i,j,1),i=1,35)
 !       enddo
-!       write (6,*) 'Hourly Top Soil Layer Moisture:'
+!       write (6,*) 'ACCFLDS: Hourly Top Soil Layer Moisture:'
 !       do j = 1,46
 !         write(6,*) ((mithrsh2o(hr,i,1,j,k),i=1,5),k=1,4)
 !       enddo
-!       write (6,*) 'Storm Duration (Hours):'
+!       write (6,*) 'ACCFLDS: Storm Duration (Hours):'
 !       do j = 1,46
 !         write(6,*) mitstrmdur(day,j)
 !       enddo
@@ -1128,7 +1135,6 @@ include 'TEM.inc'
     real(r8), pointer :: agdd(:)             ! accumulated growing degree days above 5
 #if (defined COUP_TEM)
     real(r8), pointer :: evap30(:)           ! 30-day average evapotranspiration (mm/day)
-    real(r8), pointer :: evap30c(:)          ! 30-day average evapotranspiration (mm/day)
     real(r8), pointer :: surf30(:)           ! 30-day average evapotranspiration (mm/day)
     real(r8), pointer :: drai30(:)           ! 30-day average evapotranspiration (mm/day)
     real(r8), pointer :: swe30(:)            ! 30-day average evapotranspiration (mm/day)
@@ -1147,7 +1153,6 @@ include 'TEM.inc'
     integer :: begl, endl   ! per-proc beginning and ending landunit indices
     integer :: begg, endg   ! per-proc gridcell ending gridcell indices
     real(r8), pointer :: rbufslp(:)  ! temporary
-    real(r8), pointer :: rbufslc(:)  ! temporary
 !-----------------------------------------------------------------------
 
     ! Assign local pointers to derived subtypes components (pft-level)
@@ -1166,7 +1171,6 @@ include 'TEM.inc'
     agdd             => clm3%g%l%c%p%pdgvs%agdd
 #if (defined COUP_TEM)
     evap30           => clm3%g%l%c%p%pps%evap30
-    evap30c          => clm3%g%l%c%cwf%evap30c
     drai30           => clm3%g%l%c%p%pps%drai30
     surf30           => clm3%g%l%c%p%pps%surf30
     swe30            => clm3%g%l%c%p%pps%swe30
@@ -1198,7 +1202,6 @@ include 'TEM.inc'
     ! Allocate needed dynamic memory for single level pft field
 
     allocate(rbufslp(begp:endp), stat=ier)
-    allocate(rbufslc(begc:endc), stat=ier)
     if (ier/=0) then
        write(6,*)'update_accum_hist allocation error for rbufslp'
        call endrun
@@ -1212,11 +1215,6 @@ include 'TEM.inc'
     do p = begp,endp
        evap30(p) = rbufslp(p)
     end do
-
-!    call extract_accum_field ('EVAP30C', rbufslc, nstep)
-!    do c = begc,endc
-!       evap30c(c) = rbufslc(c)
-!    end do
 
     call extract_accum_field ('SURF30', rbufslp, nstep)
 !dir$ concurrent
@@ -1238,6 +1236,7 @@ include 'TEM.inc'
     do p = begp,endp
        swe30(p) = rbufslp(p)
     end do
+    deallocate(rbufslp)
 #endif
 
 #if (defined DGVM)
