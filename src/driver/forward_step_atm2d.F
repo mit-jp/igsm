@@ -279,11 +279,19 @@ c   12.e-15 from moles to Gt carbon
 #ifdef IPCC_EMI
         PRINT *,'Month=',monid
         nepmn=nepmn/1000.
+!         nepmn is converted from Tg/mn to Gt/mn of C
         ocumn=ocumn*12.e-15
-C        tnow= jyear + (jday-.5)/365.
-C        CALL emissipcc(tnow,nepmn,ocumn,CO2,xco2ann,nemis)
+!         ocumn is converted from mole(C) to Gt (C)
+!        tnow= jyear + (jday-.5)/365.
+!        CALL emissipcc(tnow,nepmn,ocumn,CO2,xco2ann)
          print *,nepmn,ocumn,xco2ann
-        CALL emissipcc_mn(nepmn,ocumn,xco2ann)
+!         ch4mn is in kg/mn of CH4
+!         nepmn is in Gt/mn of C
+         tcumn=nepmn-ch4mn*12./16.*1.e-12
+         print *,'tcumn,ocumn,xco2ann'
+         print *,tcumn,ocumn,xco2ann
+        CALL emissipcc_mn(tcumn,ocumn,xco2ann)
+!       CALL emissipcc_mn(nepmn,ocumn,xco2ann)
 #endif
       ENDIF  !end block done at month-end
 
@@ -309,7 +317,7 @@ C        CALL emissipcc(tnow,nepmn,ocumn,CO2,xco2ann,nemis)
         IF (iyr.eq.endYear) THEN
 C         NEM emissions and NEP for start of climate-chemistry run
           adupt=aduptt
-C          CALL wr_rstrt_nem
+           CALL wr_rstrt_nem
         ENDIF
 
 #endif
@@ -344,7 +352,8 @@ C If necessary, next line can be moved outside OCEAN_3D for IGSM2.2 cleanups
 #  endif
         OPEN(333,ACCESS='APPEND',FILE=caruptfile,STATUS='old')
 C        WRITE(333,'(2f9.5)')nepan,ocuptp
-        WRITE(333,*)iyr,nepan,ocuptp
+        WRITE(333,'(i7,3e15.5)')iyr,nepan,nepan-1.e-12*ch4ann*12./16.
+     &                  ,ocuptp
         CLOSE(333)
 
 #  if (defined CPL_OCEANCO2) && (defined ML_2D)
