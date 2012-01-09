@@ -1,3 +1,5 @@
+c source 2007 sokolov users  76203 Apr 25 15:29 atmosphere.F
+
 #include "ctrparam.h"
 
 !	==========================================================
@@ -47,14 +49,16 @@ C**** Like D2G04 but run on work station.                                  0.5
 #include "chem_com"
 
 #if ( defined CPL_CHEM )
-
+!
 #include "chem_tmp"
 	integer hrcnt, cnt3hr(8)	! for ozone impact
 	real  sfc3hro3(nlat,8)
 creal*4  sfc3hro3(nlat,8)
-
+!
 #endif
-
+#if ( defined TRACERS)
+#include "tracer_com.h"
+#endif
       COMMON/INTA/COE1(01,01,01),COE2(01,01,01)                            1.1  
 c     DIMENSION ACO(36,01),BSI(36,01),CCO(36,01),DSI(36,01)                1.2  
       COMMON/SPEC1/                                                        1.3  
@@ -79,6 +83,7 @@ C     COMMON/KEYS/KEYNR(42,50)                                             8.
       CHARACTER*8 LABSSW,LABEL1,OFFSSW/'XXXXXXXX'/                         8.4  
       LOGICAL EVENT,wr25,HPRNT,TRANSR,LHORDIF                              9.   
      & ,CONTRR,OBSFOR,FIRST,NOCLM
+     & ,EMISATEND
       common/conprn/HPRNT,JPR,LPR
       common/wrcom/wr25,TRANSR,CONTRR,OBSFOR
       COMMON/CWMG/WMGEA(JM0),NWMGEA(JM0),RIGA(JM0),DTAV(JM0),DQAV(JM0),
@@ -133,6 +138,7 @@ C  For TEM
 
 #if ( defined OCEAN_3D || defined ML_2D )
 #include "AGRID.h"
+Cjrs elimated COM file/moved elsewhere#include "HRD4OCN.COM"
         dimension oimeltt(jm0),dhdtav(jm0),devdtav(jm0)
 #endif
 
@@ -178,7 +184,9 @@ C           10  NET RAD AT P0           DG (AJ(10))
 C           11  NET RAD AT P1           DG (AJ(11))
 C           12  NET RAD AT Z0           DG (AJ(12))
 C **** CLEAR SKY
+C**** STATEMENT FUNCTION CONVERTING HOURS TO INTERNAL TIME UNITS          9.5
       INTFX(XTAU)=INT(XTAU*XINT+.5)                                       10.   
+C**** STATEMENT FUNCTION EVENT IS TRUE IF TAU IS A MULTIPLE OF XTAU 
       EVENT(XTAU)=MOD(ITAU,INTFX(XTAU)).LT.IDTHR                          11. 
 
 !
@@ -193,6 +201,7 @@ C **** CLEAR SKY
 !	Chien 080400
 !
 
+!#include "assign.inc"
 c
       if(FIRST) then
 c
@@ -205,28 +214,6 @@ c     CALL HARMO(36,1,24,ACO,BSI,CCO,DSI,1)                               14.5
 C     CALL ENQJOB                                                         16.   
       CALL INPUT                                                          17.   
       
-#if ( defined CPL_CHEM )
-!
-! --- Chemistry model
-! --- Set year and month index:
-!
-      myyear  = 1       !year from starting point
-      iyearchem  = 1       !year from starting point
-      mymonth = 1       !month
-
-      ihaha = 1
-      ievenodd = 0      ! even hour 0
-                        ! odd  hour 1
-
-      call chembudget (p)
-!
-! --- Set cfcnsf = 0.0
-!
-      do k=1,nlev
-        cfcnsf(k) = 0.0
-      enddo
-!
-#endif
  
 C
       KDISK0=500+KDISK
@@ -248,9 +235,9 @@ c     ncallgary=0
         focean(j)=(1-FDATA(1,J,2))
         DEPTHML(j)=ZOAV(j)
       end do    !       j
-!        print *,' RCO2'
+!       print *,' RCO2'
 !       print 5001,((Rco2(j,k),j=1,jm),k=1,LMO)
-!        print 5001,((Rco2(j,k)*1.e2,j=1,jm),k=1,LMO)
+!       print 5001,((Rco2(j,k)*1.e2,j=1,jm),k=1,LMO)
         dzog(1)=10./SQRT(1.7010587)
         dzg(2)=10.
         do l=2,lmo-1
@@ -269,15 +256,40 @@ C New coefficients for horizontal diffusion 11/16/00
         end do
 #endif
 
+#if ( defined TRACERS)
+       call tracinit(ISTRT1)
+#endif
+
 
 #if ( defined CPL_CHEM )
 !
 ! --- Initialization of chemistry model:
 !
+! --- Chemistry model
+! --- Set year and month index:
+!
+      myyear  = 1       !year from starting point
+      iyearchem  = 1       !year from starting point
+      mymonth = 1       !month
+
+      ihaha = 1
+      ievenodd = 0      ! even hour 0
+                        ! odd  hour 1
+
 c     call cheminit(ISTRT1,T,q)
 c     11/30/2000 ISTRTCHEM for restart of chemistry model
-      call cheminit(ISTRTCHEM,T,q)
-c     print *,'H2SO4 after cheminit ',h2so4(1,33,1)
+      print *,' JYEAR befor cheninit ',JYEAR
+      call cheminit(ISTRTCHEM,JYEAR,T,q)
+!
+
+      call chembudget (p)
+!
+! --- Set cfcnsf = 0.0
+!
+      do k=1,nlev
+        cfcnsf(k) = 0.0
+      enddo
+!
 
 
 	!
@@ -288,7 +300,17 @@ c    &		 status='unknown')
      	hrcnt         = 1
      	cnt3hr(:)     = 0
 	sfc3hro3(:,:) = 0.0
-
+!
+#if ( defined OLD_CHEM )
+        EMISATEND=.true.
+#else
+        EMISATEND=.false.
+#endif
+        if(EMISATEND) then
+         print *,'CHEMEMISSION is called at the end of the day'
+        else
+         print *,'CHEMEMISSION is called at the beggining of the day'
+        endif
 #endif
 
        print *,' IRAND=',IRAND
@@ -447,6 +469,7 @@ C       CLOSE(876)
        rewind 876
       endif
 
+cjrs next line per Andrei instruction 10/12/07
       adupt= 0.0
 
        aduptd=adupt/(365.*JM)
@@ -478,7 +501,7 @@ C       CLOSE(876)
       endif
 #endif
 !#endif
-
+CJRS removed below from ocean_3d
 #ifdef ML_2D
          do j=1,jm
            do i=1,io
@@ -571,6 +594,7 @@ cjrs change var name to arunoff
            solarnet_ice(j)=0.
            solarinc_ocean(j)=0.
            solarnet_ocean(j)=0.
+Cjrs not used anymore (?)           surfpr(j)=0.
            naveo(j)=0.
            navei(j)=0.
            navrad(j)=0.
@@ -722,6 +746,54 @@ C For Emission
 #endif
 
   290 CONTINUE                                                            83.   
+!
+       if(EVENT(24).and..not.EMISATEND) then
+#if ( defined CPL_CHEM )
+!
+! === Calculate air mass
+!
+      i=1
+      call chemairmass(p)
+
+!
+! === Calculate emission in the begining of the  day:
+!
+
+#if ( defined ACCRI )
+       do j=1,jm
+         ps4accri(1,j) = p(1,j)
+       enddo
+#endif
+      timeinday=1./(365.)          !daily emission
+      call chememission(timeinday)
+#endif
+       endif
+
+#if ( defined TRACERS)
+      itracemissfr=24
+      itracemissfr=1
+      if (itracemissfr.eq.1) then
+        print *,"HOURLY TRACER EMISSION"
+        cftremiss=1./24.
+      elseif  (itracemissfr.eq.24) then
+        print *,"DAILY TRACER EMISSION"
+        cftremiss=1.
+      else
+        print *,"WRONG FREQUENCYFOR  TRACER EMISSION"
+        stop
+      endif
+      if(EVENT(24)) then
+       call read_tracemission(cftremiss)
+      endif
+      if(EVENT(itracemissfr)) then
+       do j=1,jm
+         ps4accri(1,j) = p(1,j)
+       enddo
+       call tracemission
+      endif
+#endif
+
+!
 C****                                                                     84.   
 C**** INTEGRATE DYNAMIC TERMS                                             85.   
       if(HPRNT)then
@@ -838,12 +910,6 @@ C
          MODD5S=MOD(NSTEP,NDA5S)                                         137.   
          IF(MODD5S.EQ.0) IDACC(8)=IDACC(8)+1                             138.   
 C                                                                        139.   
-C**** CONDENSTATION, SUPER SATURATION AND MOIST CONVECTION               140.   
-      if(HPRNT)then
-      print *,' main before conds',' TAU=',TAU
-#include "PRNT.COM"
-      endif
-
 
 #if ( defined CPL_CHEM )
 !
@@ -878,6 +944,7 @@ C**** CONDENSTATION, SUPER SATURATION AND MOIST CONVECTION               140.
 	call chemadv0 (dt)
 
 !
+
 ! === Calculate total n-s transport amount
 ! === 	of cfc11 - temperary:
 !
@@ -906,7 +973,11 @@ C**** CONDENSTATION, SUPER SATURATION AND MOIST CONVECTION               140.
 ! === 102596
 ! === close tau type of ocean uptake of co2:
 
+#if ( defined OLD_CHEM )
 	call chemmass66(1.0, 1.0,zco2,zco2mass)
+#else
+ 	call chemmass2(1.0,zco2,zco2mass)
+#endif
 
 !call chemmass6(150.0,1.0,xn2o,xn2omass)
         call chemmass6(120.0,1.0,xn2o,xn2omass)
@@ -985,25 +1056,28 @@ c     print *,'H2SO4 after chemairmass ',h2so4(1,33,1)
 #endif
 
 #endif
+#if ( defined TRACERS)
+      call tracairmass (p4chem0)
+      call tracmass0
+      !
+! === Calculating advection and eddy diffusion:
 
-c     print *,'H2SO4 before CONDSE ',h2so4(1,33,1)
-      CALL CONDSE(mndriver)                                              141.   
-c     print *,'H2SO4 after CONDSE ',h2so4(1,33,1)
-
-#if ( defined CPL_CHEM )
+      call tracadv0 (dt)
 !
-! === Calculate emission once per hour:
-!
-!      timeinhr=1./(365.*24.)      !hourly  emission
-!      call chememission(timeinhr)
-!
-!
-! === Print hourly
-!
-!      call chemprt
-!
-! ==============================================
+! === Mass adjustment and loss
+      call tracairmass (p4chem1)
+      call tracmassadj
+      call tracmassloss
+      call tracdrydep0 
 #endif
+
+C**** CONDENSTATION, SUPER SATURATION AND MOIST CONVECTION               140.   
+      if(HPRNT)then
+      print *,' main before conds',' TAU=',TAU
+#include "PRNT.COM"
+      endif
+
+      CALL CONDSE(mndriver)                                              141.   
 
       if(HPRNT)then
       print *,' main after conds',' TAU=',TAU
@@ -1121,6 +1195,7 @@ c       print *,'before clm4mit2d ncallclm=',ncallclm
 #include "PRNT.COM"
       endif
        call clm4mit2d
+!      print *,'AFTER CLM'
       if(HPRNT)then
       print *,' main after clm4mit2d',' TAU=',TAU
 #include "PRNT.COM"
@@ -1141,8 +1216,12 @@ c     endif
 !    & asdirclm,aldirclm,asdifclm,aldifclm
 
       CALL SURF_CLM
+!      print *,'AFTER SURF_CLM'
+!       print *,'T=',T(1,4,1)
       CALL SURF_OCEAN
+!      print *,'AFTER SURF_OCEAN'
       CALL GR_CLM
+!      print *,'AFTER GR_CLM'
       if(HPRNT)then
          print *,' main after surfc',' TAU=',TAU
 #include "PRNT.COM"
@@ -1168,9 +1247,7 @@ c
       print *,' main after groun',' TAU=',TAU
 #include "PRNT.COM"
       endif
-c     print *,'H2SO4 before DRYCNV ',h2so4(1,33,1)
       CALL DRYCNV                                                        160.   
-c     print *,'H2SO4 after DRYCNV ',h2so4(1,33,1)
       if(HPRNT)then
       print *,' main after drycn',' TAU=',TAU
 #include "PRNT.COM"
@@ -1244,7 +1321,9 @@ C
 ! === Accumulative calculation prepared for
 ! ===  carrying out monthly average:
 !
+!     if(EMISATEND) then
       call chemmonth1
+!     endif
 !
 #endif
 
@@ -1265,6 +1344,13 @@ cJRS fix to DFLOAT 8/2/07
       TOFDAY=(ITAU-(IDAY-1)*I24)/XINT                                    194.   
       IF(.NOT.EVENT(24.)) GO TO 550                                      195.   
 C                                                                        196.   
+#if ( defined TRACERS)
+       call tracmonth1
+!  For daily output into trac_glogal
+       call tracmonth2
+       monthtrac = monthtrac +1
+#endif
+
       do J=1,JM0
         TSURFW(J)=TSURFD(J)
         TLANDW(J)=TLANDD(J)
@@ -1318,12 +1404,14 @@ c      enddo
 c      print *,' CO2 before emission ',zxy/jm
 
       timeinday=1./(365.)          !daily emission
-#if ( defined ACCRI )
+#if ( defined ACCRI || defined TRACERS)
        do j=1,jm
-      ps4accri(1,j) = p(1,j)
+         ps4accri(1,j) = p(1,j)
        enddo
 #endif
-      call chememission(timeinday)
+      if(EMISATEND) then
+       call chememission(timeinday)
+      endif
 
 c      zxy=0.
 c      do j=1,jm
@@ -1333,7 +1421,6 @@ c      enddo
 c      print *,' CO2 after emission ',zxy/jm
 !
 #endif
-
 C                                                                        202.   
          CALL DIAG9A (8)                                                 203.   
 #if ( !defined OCEAN_3D && !defined ML_2D )
@@ -1459,7 +1546,7 @@ c  Annual oceanic CO2 uptake
           ocumn=ocumn+fluxco2(j)
           fluxco2mn(j)=fluxco2mn(j)+fluxco2(j)
        enddo
-!       print *,' OCUPT=',OCUPT*12.e-15
+!      print *,' OCUPT=',OCUPT*12.e-15
 
 #if ( defined CPL_CHEM )
 !
@@ -1560,16 +1647,24 @@ c
 C
 c
 !
+!     if(.not.EMISATEND) then
+!      call chemmonth1
+!      endif
 #endif
 
 c     End of month
       if(JDATE.eq.1)then
 
+!#if ( defined TRACERS)
+!    for monthly output in trace_global
+!      call tracmonth2
+!      monthtrac = monthtrac +1
+!#endif
 #if ( defined CPL_CHEM )
 !
 ! === Calculating monthly averaged mixing ratios:
 !
-      call chemmonth2
+      call chemmonth2 (p)
 c     print *,'Atmosphere after chemmonth2'
 
 ! === Calculate and print monthly n-s transport
@@ -1592,7 +1687,7 @@ cwrite(124)sfc3hro3
 !
 !      call chemprt     !closed 032697
 
-      call chembudget (p)
+!     call chembudget (p)
       print *,' Atmosphre after chembudget mymonth=',mymonth
 ! === 09/26/94
 ! ===   Reset year and month index:

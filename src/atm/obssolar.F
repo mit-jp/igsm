@@ -17,8 +17,8 @@
 !
 !	==========================================================
 
-      subroutine obssolar(S0const,YEAR1)
-      parameter (nyd=2000,nyd1=nyd+1)
+      subroutine obssolar(S0const,S0constav,YEAR1)
+      parameter (nyd=4000,nyd1=nyd+1)
 C
 C
 C     For simulations with observed solar constant using equivalent
@@ -27,7 +27,7 @@ C     DATA are annual means, but they are
 C       used as a data for the middle of the coresponding year
 C
 C
-      dimension  solar(nyd),solar1(nyd1),yearS0(nyd)
+      dimension  solar(nyd),solarav(nyd),yearS0(nyd)
       common /solardata/S0C_data
       character * 120 S0C_data
       logical first
@@ -38,7 +38,7 @@ C
      *     status='OLD',form='formatted')
           do 50 i=1,nyd
 c        read (561,501,end=500),ighgyr(i),tmp,xco2(i)
-            read (561,*,end=500),yearS0(i),solar(i)
+            read (561,*,end=500),yearS0(i),solar(i),solarav(i)
 c           print *,yearS0(i),solar(i)
    50    continue
   500    continue
@@ -60,6 +60,7 @@ c     print *,' i=',i,' dl=',dl
 c     print *,yearS0(i),yearS0(i+1)
 c     print *,solar(i),solar(i+1)
       S0const=solar(i)*(1.-dl)+solar(i+1)*dl
+      S0constav=solarav(i)*(1.-dl)+solarav(i+1)*dl
 c          print *,' year=',year,' S0x=',S0const
       return
       end

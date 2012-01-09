@@ -274,13 +274,19 @@ C
      &   '   FGOLDU(1)=',FGOLDU(1)
         FGOLDU1=FGOLDU(1)
          if(KSTREND.eq.0)then
-         call obssolar(S0X,YEARS0+0.5)
+         call obssolar(S0X,S0XAV,YEARS0+0.5)
          S0X=S0X/1367.
-          print *,'Sconstant for year ',YEARS0,S0X*1367.
+          print '(A30,2F9.2)','Solar constant for year ',
+     &   YEARS0+0.5,S0X*1367.
          endif
       else
          if(KSTREND.eq.0)then
-           print *,' Run with fixed solar constan ',S0X*1367.
+!          print *,' Run with fixed solar constan ',S0X*1367.
+         call obssolar(S0X,S0XAV,YEARS0+0.5)
+!        S0X=S0X/1367.
+         S0X=S0XAV/1367.
+          print '(A30,2F9.2)','Average Sconstant for year ',
+     &   YEARS0+0.5,S0X*1367.
          endif
       endif
 #if ( defined VOL_AER )
@@ -381,7 +387,7 @@ C**** RADIATION AVERAGING IN I AND J       4       2       2            5110.
 c          print *,'From  radia S0X0=',S0X0,' S0X=',S0X
 c          print *,'S0X=',S0X,' TNOW=',TNOW
         ELSE
-           call obssolar(S0X,TNOW)
+           call obssolar(S0X,S0XAV,TNOW)
            if(JDAY.eq.1.and.MODRD.EQ.0) then
            print *,'From radia TNOW,S0X',TNOW,S0X
            print *,JDAY,JDLAST

@@ -32,7 +32,8 @@ c       print *,title1
         enddo
   500   continue
         nydata=ny-1
-        print *,'Volcanic aerosol data for year ',vyear(nydata)
+        print *,'Volcanic aerosol data for years ',
+     &    vyear(1),vyear(nydata)
         do n=1,nydata
         anmean(n)=0.0
         do nm=1,12

@@ -40,10 +40,15 @@ cjrs elimated this com file #include "HRD4OCN.COM"
 #include "CLM.h"
 #endif
 c
-#if ( defined CPL_CHEM )
-!
+#if ( defined CPL_CHEM || defined TRACERS)
 #include "chem_para"
 #include "chem_com"
+#endif
+#if ( defined TRACERS)
+#include "tracer_com.h"
+#endif
+#if ( defined CPL_CHEM )
+!
 
       dimension xcfc11   (n3d)
       dimension xcfc12   (n3d)
@@ -67,6 +72,8 @@ c
 
       dimension xbc      (n3d)
       dimension xoc      (n3d)
+#endif
+#if ( defined CPL_CHEM || defined TRACERS)
 
       dimension prec_cnv (nlev)
       dimension prec_str (nlev)
@@ -149,7 +156,8 @@ c    * ,48*0./
       QSA1(TM,PR)=.622*EXP(AXQSAT-BXQSAT/TM)/PR                         3021.5
       ERFCPI(XX)=.5-XX*(.548-XX*XX*(.139-.0171*XX*XX))                  3022.
 
-#if ( defined CPL_CHEM )
+!#if ( defined CPL_CHEM )
+#if ( defined CPL_CHEM || defined TRACERS)
 !
 ! --- Formula for calculating the Henry's Law Constant
 !
@@ -224,11 +232,14 @@ c     HPRNT=.FALSE.
       DTCNDS=NCNDS*DT                                                   3034.
       RH0OLD=.80                                                        3034.1
 c     RH0OLD=.65
-      RH0=0.9
-      RH45=0.8	
       RH0=0.925	! 2359
+!     RH0=0.9 !   630.11
       RH45=0.875	! 2359
-!     RH45=0.9	! 470.10
+!     RH45=0.9	! 470.10 ! 620.11 ! 630.11
+#if ( defined CLM35 )
+      RH45=0.925 ! 640.11 1003.11
+!     RH45=0.9	! 470.10 ! 620.11 ! 630.11
+#endif
 !     RH45=0.85	! 480.10
 !     RH45=0.80	! 490.10
       print *,' RH0=',RH0,' RH45=',RH45
@@ -626,6 +637,11 @@ c 062295
       xoc     (l) = ocarbon(i,j,l)
 !
 #endif
+#if ( defined TRACERS)
+         do ntr=1,ntracers
+           tracxc(l,ntr)=tracers(i,j,l,ntr)
+       enddo
+#endif
 
  170  CONTINUE
       if(HPRNT)then
@@ -656,12 +672,15 @@ c     EDLE=2.                                                           3158.2
       QL(LM1)=QL(LM1)+ELE/DSIG(LM1)                                     3158.29
       QL(L)=QL(L)-ELE/DSIG(L)                                           3158.3
 
-#if ( defined CPL_CHEM )
+#if ( defined CPL_CHEM || defined TRACERS)
 !
         xxx = -2.0*temp
         xxm1= xxx/dsig(LM1)
         xxL = xxx/dsig(L)
+#endif
 
+#if ( defined CPL_CHEM )
+!
         ele = (xcfc11(lm1)-xcfc11(l))
         xcfc11(lm1)=xcfc11(lm1)+ele*xxm1
         xcfc11(l)  =xcfc11(l)  -ele*xxL
@@ -750,6 +769,14 @@ c        xh2o2(l)  =xh2o2(l)  -ele*xxL
 
 !
 #endif
+#if ( defined TRACERS)
+         do ntr=1,ntracers
+         ele =  tracxc(lm1,ntr) -  tracxc(l,ntr)
+         tracxc(lm1,ntr) = tracxc(lm1,ntr)+ele*xxm1
+         tracxc(l,ntr)=tracxc(l,ntr)-ele*xxL
+       enddo
+#endif
+
 
   190 CONTINUE
 c     DO 181 L=1,LM   
@@ -852,6 +879,11 @@ C**** INITIALIZE CONVECTION PARAMETERS                                  3186.
 ! 062295
 !      sumh2o2 =0.0
 !
+#endif
+#if ( defined TRACERS)
+         do ntr=1,ntracers
+           tracsum(ntr)=0.0
+       enddo
 #endif
 
 C**** DIFFERENCES IN STATIC ENERGY AND PRELIMINARY CLOUD TEMPERATURES   3213.
@@ -962,6 +994,13 @@ c      h2o2cld =xh2o2(lb)
 
 !
 #endif
+#if ( defined TRACERS)
+         do ntr=1,ntracers
+           tracold(ntr)=tracxc(l,ntr)
+           traccld(ntr)=tracxc(lb,ntr)
+       enddo
+#endif
+
 
       DIFFSE=DSE(L)                                                     3237.
       FMX=0.                                                            3238.
@@ -1028,6 +1067,11 @@ c      sumh2o2 =sumh2o2+fmx*h2o2cld
 c
 !
 #endif
+#if ( defined TRACERS)
+         do ntr=1,ntracers
+           tracsum(ntr)=tracsum(ntr)+fmx*traccld(ntr)
+       enddo
+#endif
 
 C**** FIND CONDENSATION AND CLOUD TEMPERATURE                           3259.
       QCLOUD=SHL(LB)+QWT*DSTEN/CLH                                      3260.
@@ -1035,7 +1079,8 @@ C**** FIND CONDENSATION AND CLOUD TEMPERATURE                           3259.
       TCL=TLOLD+DTCL                                                    3262.
       IF (QCLOUD.LE.QSA1(TCL,PL(L))) GO TO 266                          3263.
 
-#if ( defined CPL_CHEM )
+!#if ( defined CPL_CHEM )
+#if ( defined CPL_CHEM || defined TRACERS)
 !
       dqtotal = 0.0
 !
@@ -1047,7 +1092,8 @@ C**** FIND CONDENSATION AND CLOUD TEMPERATURE                           3259.
       DQCOND=(QCLOUD-QSATCL)/(1.+GAMA)                                  3267.
       TCL=TCL+CLH*DQCOND                                                3268.
 
-#if ( defined CPL_CHEM )
+!#if ( defined CPL_CHEM )
+#if ( defined CPL_CHEM || defined TRACERS)
 !
 ! --- 062195
 !
@@ -1058,11 +1104,12 @@ C**** FIND CONDENSATION AND CLOUD TEMPERATURE                           3259.
       QCOND =QCOND +DQCOND                                              3269.
   265 QCLOUD=QCLOUD-DQCOND                                              3270.
 
-#if ( defined CPL_CHEM )
+#if ( defined CPL_CHEM || defined TRACERS)
 
 	! === convective precipitation
 	prec_cnv(l) = dqtotal
 
+#if ( defined CPL_CHEM )
 !
 ! --- 062195:
 !  Calculate scavenging of gases by convection
@@ -1072,15 +1119,41 @@ C**** FIND CONDENSATION AND CLOUD TEMPERATURE                           3259.
 !     by using a large Henry's Law constant:
 !
 ! 020196:
+!
+! === Updated Henry's Law constants
+!       Chien Wang 102011
+!       assume pH = 5.6 for natural rainwater
+!       all are actually effective Henry's Law coefficients
+!       i.e., 2nd and 3rd coefficients are included
+!
+
+      ehenryx = ehenry (1.0e8,0.0,tl(l))
+
 
       h2so4cld= h2so4cld
+#if ( defined OLD_CHEM )
      &        /(1.0 + raq2gas(1.e10, tl(l), dqtotal) )
+#else
+     &        /(1.0 + raq2gas(ehenryx, tl(l), dqtotal) )
+#endif
+      ! 2.1e5*(1 + 15.4*exp(8700/298)/[H+])     ! updated
+      ehenryx = ehenry(1.54e1,8700.0,tl(l))
+      ehenryx = 2.1e5*(1.0 + ehenryx*10.0**(5.6))
+      ehenryx = ehenry (ehenryx,8700.0,tl(l))
 
       hno3cld = hno3cld
+#if ( defined OLD_CHEM )
      &        /(1.0 + raq2gas(1.e10, tl(l), dqtotal) )
+#else
+     &        /(1.0 + raq2gas(ehenryx, tl(l), dqtotal) )
+#endif
 
 
+#if ( defined OLD_CHEM )
       ehenryx = ehenry (6.3e3,6412.34,tl(l))
+#else
+      ehenryx = ehenry (3.2e3,6800.00,tl(l))    ! effcoe updated
+#endif
       ch2ocld = ch2ocld
      &        /(1.0 + raq2gas(ehenryx, tl(l), dqtotal) )
 
@@ -1092,7 +1165,11 @@ C**** FIND CONDENSATION AND CLOUD TEMPERATURE                           3259.
 ! === Note: This calculation is not counted!
 ! Calculate H2O2 also:
 
+#if ( defined OLD_CHEM )
       ehenryx = ehenry (7.45,6620.00,tl(l))
+#else
+      ehenryx = ehenry (7.45e4,6620.00,tl(l))   ! corrected
+#endif
       xh2o2(l)= xh2o2(l)
      &        /(1.0 + raq2gas(ehenryx, tl(l), dqtotal) )
 
@@ -1107,11 +1184,16 @@ C**** FIND CONDENSATION AND CLOUD TEMPERATURE                           3259.
 
 ! Calculate HO2, 062895:
 
+#if ( defined OLD_CHEM )
       ehenryx = ehenry (1.0e4,6640.00,tl(l))    !2nd reaction = 4.0
+#else
+      ehenryx = ehenry (2.3e3,6640.00,tl(l))    !2nd reaction = 4.0
+#endif
       ho2(i,j,l)= ho2(i,j,l)
      &          /(1.0 + raq2gas(ehenryx, tl(l), dqtotal) )
 
 !
+#endif
 #endif
 
       DTCL=DTCL+CLH*QCOND                                               3271.
@@ -1147,11 +1229,12 @@ C**** MIX T,Q,U,TC IN LAYER L                                           3299.
       DSH=RM*(FMX*(QCLOUD-SHDN)+SUMFMX*(SHUP+QREEV    -SHDN))           3301.
       SHL(L)=SHDN+DSH                                                   3302.
 
-#if ( defined CPL_CHEM )
+#if ( defined CPL_CHEM || defined TRACERS)
 !
         xrm1   = rm*fmx
         xrm2   = rm*sumfmx
-
+#endif
+#if ( defined CPL_CHEM )
       xcfc11(l)=
      &           xrm1*(cfc11cld-cfc11old)
      &          +xrm2*(cfc11up -cfc11old)
@@ -1260,6 +1343,13 @@ c     &         +h2o2old
 
 !
 #endif
+#if ( defined TRACERS)
+         do ntr=1,ntracers
+           tracxc(l,ntr)=xrm1*(traccld(ntr)-tracold(ntr))
+     &         +xrm2*(tracup(ntr)-tracold(ntr))
+     &         +tracold(ntr)
+       enddo
+#endif
 
       THDN=TH(L)                                                        3303.
       DTL=RM*(FMX*DTCL+SUMFMX*(TFALL-TLOLD-CLH*QREEV))                  3304.
@@ -1337,6 +1427,12 @@ c     IF (CLDMC(I,J,L).LT.0.005) CLDMC(I,J,L)=0.005
 !      h2o2up =h2o2old
 !
 #endif
+#if ( defined TRACERS)
+         do ntr=1,ntracers
+           tracup(ntr)=tracold(ntr)
+       enddo
+#endif
+
 
   303 IF (L.GT.LB+1) GO TO 245                                          3337.
       IF (L.EQ.LB) GO TO 355                                            3338.
@@ -1348,9 +1444,11 @@ c     IF (CLDMC(I,J,L).LT.0.005) CLDMC(I,J,L)=0.005
       TLOLD = (TL(LB)-SUMTT)/(1.-SUMFMX)                                3344.
       SHLOLD=(SHL(LB)-SUMQT)/(1.-SUMFMX)                                3345.
 
-#if ( defined CPL_CHEM )
+#if ( defined CPL_CHEM || defined TRACERS )
 !
       xhaha   = 1./(1.-sumfmx)
+#endif
+#if ( defined CPL_CHEM )
       cfc11old=(xcfc11(lb)-sumcfc11)*xhaha
       cfc12old=(xcfc12(lb)-sumcfc12)*xhaha
       xn2oold =(xxn2o(lb)-sumxn2o)  *xhaha
@@ -1385,6 +1483,11 @@ c 062295
 c      h2o2old =(xh2o2(lb)-sumh2o2)  *xhaha
 c
 !
+#endif
+#if ( defined TRACERS)
+         do ntr=1,ntracers
+           tracold(ntr)=(tracxc(l,ntr)-tracsum(ntr))*xhaha
+       enddo
 #endif
 
       GO TO 270                                                         3346.
@@ -1489,7 +1592,8 @@ C     RHNEW=1.                                                          3458.
       CLH=ELHX/SHA                                                      3459.
       GAMFAC=CLH*BXCONS*ELHX                                            3460.
 
-#if ( defined CPL_CHEM )
+!#if ( defined CPL_CHEM )
+#if ( defined CPL_CHEM || defined TRACERS)
 !
 	dqtotal = 0.0
 !
@@ -1499,7 +1603,8 @@ C     RHNEW=1.                                                          3458.
       GAMA=GAMFAC*QSATL/(TNEW*TNEW)                                     3462.
       DQ1=(QNEW-QSATL*RHNEW(j))/(1.+GAMA*RHNEW(j))                      3463.
 
-#if ( defined CPL_CHEM )
+!#if ( defined CPL_CHEM )
+#if ( defined CPL_CHEM || defined TRACERS)
 !
 	dqtotal = dqtotal + dq1
 !
@@ -1511,11 +1616,12 @@ C     RHNEW=1.                                                          3458.
       QSATL=QSAT(TNEW,PL(L))                                            3467.
   301 CONTINUE
 
-#if ( defined CPL_CHEM )
+#if ( defined CPL_CHEM || defined TRACERS)
 
 	! === stratform precipitation:
 	prec_str(l) = dqtotal
 
+#if ( defined CPL_CHEM )
 !
 ! --- 062195:
 !  Calculate scavenging of gases by large-scale
@@ -1525,15 +1631,41 @@ C     RHNEW=1.                                                          3458.
 ! let n(v) & s(VI) disolved almost completely
 !     by using a large Henry's Law constant:
 !
+!
+! === Updated Henry's Law constants
+!       Chien Wang 102011
+!       assume pH = 5.6 for natural rainwater
+!       all are actually effective Henry's Law coefficients
+!       i.e., 2nd and 3rd coefficients are included
+!
+
+      ehenryx = ehenry (1.0e8,0.0,tl(l))
+!
 ! 020196:
 
       xh2so4(l)= xh2so4(l)
-     &         /(1.0 + raq2gas(1.e10, tl(l), dqtotal) )
+#if ( defined OLD_CHEM )
+     &        /(1.0 + raq2gas(1.e10, tl(l), dqtotal) )
+#else
+     &        /(1.0 + raq2gas(ehenryx, tl(l), dqtotal) )
+#endif
+      ! 2.1e5*(1 + 15.4*exp(8700/298)/[H+])     ! updated
+      ehenryx = ehenry(1.54e1,8700.0,tl(l))
+      ehenryx = 2.1e5*(1.0 + ehenryx*10.0**(5.6))
+      ehenryx = ehenry (ehenryx,8700.0,tl(l))
 
       xhno3(l) = xhno3(l)
-     &         /(1.0 + raq2gas(1.e10, tl(l), dqtotal) )
+#if ( defined OLD_CHEM )
+     &        /(1.0 + raq2gas(1.e10, tl(l), dqtotal) )
+#else
+     &        /(1.0 + raq2gas(ehenryx, tl(l), dqtotal) )
+#endif
 
-      ehenryx  = ehenry (6.3e3,6412.34,tl(l))
+#if ( defined OLD_CHEM )
+      ehenryx = ehenry (6.3e3,6412.34,tl(l))
+#else
+      ehenryx = ehenry (3.2e3,6800.00,tl(l))    ! effcoe updated
+#endif
       xch2o(l) = xch2o(l)
      &         /(1.0 + raq2gas(ehenryx, tl(l), dqtotal) )
 
@@ -1543,7 +1675,11 @@ C     RHNEW=1.                                                          3458.
 
 ! Calculate H2O2 also:
 
-      ehenryx  = ehenry (7.45,6620.00,tl(l))
+#if ( defined OLD_CHEM )
+      ehenryx = ehenry (7.45,6620.00,tl(l))
+#else
+      ehenryx = ehenry (7.45e4,6620.00,tl(l))   ! corrected
+#endif
       xh2o2(l) = xh2o2(l)
      &         /(1.0 + raq2gas(ehenryx, tl(l), dqtotal) )
 
@@ -1555,11 +1691,16 @@ C     RHNEW=1.                                                          3458.
 
 ! Calculate HO2, 062895:
 
+#if ( defined OLD_CHEM )
       ehenryx = ehenry (1.0e4,6640.00,tl(l))    !2nd reaction = 4.0
+#else
+      ehenryx = ehenry (2.3e3,6640.00,tl(l))    !2nd reaction = 4.0
+#endif
       ho2(i,j,l)= ho2(i,j,l)
      &          /(1.0 + raq2gas(ehenryx, tl(l), dqtotal) )
 
 !
+#endif
 #endif
 
       DSIGUP=DSIG(L)                                                    3468.
@@ -1632,14 +1773,20 @@ C**** TOTAL HEATING AND MOISTURE ADJUSTMENT                             3494.
       h2o2 (i,j,l)= xh2o2 (l)
 !
 #endif
+#if ( defined TRACERS)
+         do ntr=1,ntracers
+           tracers(i,j,l,ntr) = tracxc(l,ntr)
+       enddo
+#endif
+
 
   530 Q(I,J,L)=QL(L)                                                    3497.
 
 !070804
-#if ( defined CPL_CHEM )
+#if ( defined CPL_CHEM || defined TRACERS)
 !
 	beta = 3600.0*0.15		! dt*correction
-	!beta = 1.0
+!beta = 1.0
 	t_cnv = max(0.0, prec_cnv(nlev))
 	t_str = max(0.0, prec_str(nlev))
 	do k=nlev-1,1,-1
@@ -1656,6 +1803,7 @@ C**** TOTAL HEATING AND MOISTURE ADJUSTMENT                             3494.
 	     t_str = prec_str(k)
 	   end if
 	   
+#if ( defined CPL_CHEM )
 	   ! === Wet scavenging by convective precipiation:
 	   bcarbon(i,j,k) = bcarbon(i,j,k)
      &			  *(1.0 - 4.4913e-2*t_cnv*beta)
@@ -1671,6 +1819,25 @@ C**** TOTAL HEATING AND MOISTURE ADJUSTMENT                             3494.
 	   ocarbon(i,j,k) = ocarbon(i,j,k)
      &			  *(1.0 - 5.3946e-2*t_str*beta)
 	   if ( ocarbon(i,j,k) .lt. 0.0 ) ocarbon(i,j,k) = 0.0
+#endif
+
+#if ( defined TRACERS)
+! betatr = 1.0
+      	 betatr = 3600.0*0.15		! dt*correction
+         do ntr=1,ntracers
+          if (trtype(ntr).eq.4) then
+	   ! === Wet scavenging by convective precipiation:
+	   tracers(i,j,k,ntr) = tracers(i,j,k,ntr)
+     &			  *(1.0 - 4.4913e-2*t_cnv*betatr)
+	   if ( tracers(i,j,k,ntr) .lt. 0.0 ) tracers(i,j,k,ntr) = 0.0
+	   ! === Wet scavenging by large scale precipitation:
+	   tracers(i,j,k,ntr) = tracers(i,j,k,ntr)
+     &			  *(1.0 - 5.3946e-2*t_str*betatr)
+	   if ( tracers(i,j,k,ntr) .lt. 0.0 ) tracers(i,j,k,ntr) = 0.0
+         endif
+       enddo
+#endif
+
 	end do
 
 !070804

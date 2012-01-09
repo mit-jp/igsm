@@ -278,7 +278,7 @@ c          print *,'From  radia S0X0=',S0X0,' S0X=',S0X
 c          print *,'S0X=',S0X,' TNOW=',TNOW
         ELSE
            print *,'From radia TNOW= S0X=',TNOW,S0X
-           call obssolar(S0X,TNOW)
+           call obssolar(S0X,S0XAV,TNOW)
            S0X=S0X/1367.
         ENDIF
       ENDIF

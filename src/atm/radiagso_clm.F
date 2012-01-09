@@ -216,7 +216,7 @@ C     S0X=1.                                                            5089.1
         print *,'Run with changes in solar constant'
         print *,' JYEAR=',JYEAR
         TNOW=JYEAR
-        call obssolar(S0X,TNOW)
+        call obssolar(S0X,S0XAVER,TNOW)
         S0X=S0X/1367.
         S0AV=0.0
         S0XAV=0.0
@@ -312,7 +312,7 @@ c          print *,'S0X=',S0X,' TNOW=',TNOW
 c          print *,'Before obssolar JYEAR=',JYEAR
 c          print *,' JDAY=',JDAY,' JMONTH=',JMONTH
 c          print *,' JDATE=',JDATE,' TNOW=',TNOW
-           call obssolar(S0X,TNOW)
+           call obssolar(S0X,S0XAVER,TNOW)
            S0X=S0X/1367.
 c          print *,'S0X=',S0X,' TNOW=',TNOW
         ENDIF
@@ -359,7 +359,7 @@ c          print *,'S0X=',S0X,' TNOW=',TNOW
 c          print *,'Before obssolar JYEAR=',JYEAR
 c          print *,' JDAY=',JDAY,' JMONTH=',JMONTH
 c          print *,' JDATE=',JDATE,' TNOW=',TNOW
-           call obssolar(S0X,TNOW)
+           call obssolar(S0X,S0XAVER,TNOW)
            S0X=S0X/1367.
 c          print *,'S0X=',S0X,' TNOW=',TNOW
         ENDIF

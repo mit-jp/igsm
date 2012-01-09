@@ -27,7 +27,7 @@ C**** THIS SUBROUTINE SETS THE PARAMETERS IN THE C ARRAY, READS IN THE  1503.
 C**** INITIAL CONDITIONS, AND CALCULATES THE DISTANCE PROJECTION ARRAYS 1504.   
 C****                                                                   1505.   
 
-#if ( defined CPL_CHEM )
+#if ( defined CPL_CHEM || defined TRACERS )
 !
 #include "chem_para"
 #include "chem_com"
@@ -82,7 +82,7 @@ c     CHARACTER*8 RECORD,ANDEND,NLREC*80                                1510.
      &	  ,ochemfile,deepco2in
 cjrs DRIVER.h caruptfile  & ,oco2file,co2rfile,caruptfile,flrco2av
      &	  ,oco2file,co2rfile,flrco2av
-     &    ,ghg_monthly,ghg_monthly2,co2_data,o3_data
+     &    ,ghg_monthly,ghg_monthly2,ghg_monthly3,co2_data,o3_data
      &    ,bgrghg_data
       character * 120 sulf1986,sulf2050,sulfamp,SO2_EM,
      &  S0C_data,
@@ -131,7 +131,7 @@ c==== 012201
      *  file1,file2,plotfl,nwrfl,qffile,clfile,wrcldf,clmsen,cfdif0,
      *  t3file,tsfile,zmfile,ochemfile,deepco2in,
      &  fl_init_alkt,fl_init_salt,fl_dic_eq,
-     *  ghg_monthly,ghg_monthly2,co2_data,o3_data,
+     *  ghg_monthly,ghg_monthly2,ghg_monthly3,co2_data,o3_data,
      &    bgrghg_data,
      *  sulf1986,sulf2050,sulfamp,SO2_EM,
      &  S0C_data,cfvolaer,
@@ -144,6 +144,9 @@ c==== 012201
      &  ,STRARFOR,GSOEQ,CO2FOR,CO2F,FORSULF,FORBC,S0FOR,FORVOL,FORGHG
      &  ,VEGCH,vegfile,TRVEG
      &  ,fclmlice,fbaresoil,fwmax,fprratio,o3datadir,CLIMO3
+#if ( defined CLM35 )
+     &  ,wetfrac_data
+#endif
      &  ,OCNGEOM,ocngmfile,ocndata4atm
      &  ,bc_data
      &  ,PRTREND
@@ -328,6 +331,7 @@ cjrs      dtatm=1
 cjrs      dtocn=1
       ghg_monthly =  'undefined'
       ghg_monthly2 =  'undefined'
+      ghg_monthly3 =  'undefined'
       co2_data =  'undefined'
       bgrghg_data =  'undefined'
       bc_data =  'undefined'
@@ -611,6 +615,7 @@ C     file chem.nml moved to chemdata
      &        status='old')
 #endif
 #if ( N_LAT == 46 ) && ( N_LEV == 11 )
+      if(ISTRTCHEM.eq.0)then
       id1=index(chem_init," ")
       print *,'INITIAL DATA FOR CHEMISTRY'
       print *,chem_init
@@ -628,10 +633,11 @@ c     open(160,file=chemdata(1:id2-1)//'init-data2_46x11',
 
 !     New init file hfc, pfc, and sf6 for Dec 1990
       id1=index(chem_init4pfc," ")
-      print *,chem_init2
+      print *,chem_init4pfc
       open(161,file=chemdata(1:id2-1)//chem_init4pfc(1:id1-1),
      &        form='unformatted',
      &        status='old')
+      endif
 
       open(162,file=chemdata(1:id2-1)//'topo3_46x11',
      &        form='unformatted',
@@ -650,9 +656,15 @@ c    &        status='old')
 !    &        status='old')
 !      moved to input.F
 
+#if ( defined OLD_CHEM )
       open(165,file=chemdata(1:id2-1)//'rktable.dat',
      &        form='unformatted',
      &        status='old')
+#else
+      open(165,file=chemdata(1:id2-1)//'rktable06-64.dat',
+     &        form='unformatted',
+     &        status='old')
+#endif
 
 ! 3. Open a data file to save rawdata:
 
@@ -699,6 +711,12 @@ c     &        status='new')
       open(179,file=cfname,
      &         form='unformatted',
      &         status='new')
+
+      cfname = chemout(1:len_trim(chemout))
+     &          //'/'//'monthly3'
+      open(189,file=cfname,
+     &         form='unformatted',
+     &         status='new')
 ! ===
 
       cfname = chemout(1:len_trim(chemout))//'/'//'photodiag'
@@ -722,6 +740,8 @@ c 5. Open a data file to save diagnostic output:
 
 C  open statment moved from cheminit.F file number change to 279
         cfname = chemrstfl(1:len_trim(chemrstfl))
+        print *,'INITIAL DATA FOR CHEMISTRY'
+        print *,cfname
           open(279,file=cfname,
      &             form='unformatted',
      &             status='unknown')
@@ -1075,8 +1095,8 @@ c       print *,' WITH DEEP MIXED LAYER'
          print *,(Rco2in(j,1),j=1,jm)
          do k=1,lmo
          do j=1,jm0
-!         if(k.eq.1)Hg(j)=Hgin(j)
-          if(k.eq.1)Hg(j)=1.0e-8
+          if(k.eq.1)Hg(j)=Hgin(j)
+!         if(k.eq.1)Hg(j)=1.0e-8
           Rco2(j,k)=Rco2in(j,k)
          end do
          end do
@@ -1435,7 +1455,7 @@ C**** CALCULATE DSIG AND DSIGO                                          1808.
       DO 760 L=1,LMM1                                                   1811.   
   760 DSIGO(L)=SIG(L)-SIG(L+1)                                          1812.   
 
-#if ( defined CPL_CHEM )
+#if ( defined CPL_CHEM || defined TRACERS )
 !
 ! --- Calculate air mass, First step
 ! ---   (need to time surface pressure p(i,j) :
@@ -1773,8 +1793,31 @@ C     CALL IJSET (IM,JM,FDATA(1,1,2))                                   1866.
       print *,fl_orbital
       CALL read_orbital
       if (ORBTRANS)then
+#if ( defined CLM35 )
+       if (orbfix) then
+         print *,'Difference in orbital setting '
+         print *,'between CLM and IGSM '
+         print *,'ORBTRANS=',ORBTRANS,' orbfix=',orbfix
+         stop
+       endif
+#endif
       print *,'Run with changing orbital parameters '
       else
+#if ( defined CLM35 )
+       if (.not.orbfix) then
+         print *,'Difference in orbital setting '
+         print *,'between CLM and IGSM '
+         print *,'ORBTRANS=',ORBTRANS,' orbfix=',orbfix
+         stop
+       else
+         if(abs(YEARORB-orbyr).gt.0.1) then
+           print *,'Different YEARORB and orbyr'
+           print *,'YEARORB=',YEARORB
+           print *,'orbyr=',orbyr
+           stop
+         endif
+       endif
+#endif
        do i=1,nyorbit
         if (abs(yorbit(i)-YEARORB).lt.0.5) then
           OBLIQ=obliqh(i)
@@ -1785,6 +1828,7 @@ C     CALL IJSET (IM,JM,FDATA(1,1,2))                                   1866.
       print *,'Run with fixed orbital parameters '
       print *,'YEARORB=',YEARORB,'OBLIQ=',OBLIQ
       print *,'ECCN=',ECCN,'OMEGT=',OMEGT
+      print *,'orbyr for CLM=',orbyr
       endif
 #else
             print *,'Run with default orbital parameters '
