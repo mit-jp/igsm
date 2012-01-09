@@ -61,7 +61,9 @@ libatm_a_SOURCES = atmosphere.F \
 	trends_igsm.F \
 	trvdata.F \
 	util.F \
+	vegfracadjustment.F \
 	vfunct.F \
+	wr_rstrt_nem.F \
 	vweigav.F \
 	zclimate2tem.F
 
