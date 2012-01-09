@@ -86,6 +86,11 @@ C#endif
      &		h2so4    (nlon,nlat,nlev),h2so4m    (nlon,nlat,nlev),
      &		sviod    (nlon,nlat,nlev),sviodm    (nlon,nlat,nlev)
 
+      common /chem3/
+     &          xxnom    (nlon,nlat,nlev),xxno2m   (nlon,nlat,nlev),
+     &          hno3m   (nlon,nlat,nlev),ohm     (nlon,nlat,nlev),
+     &          h2o2m   (nlon,nlat,nlev),ho2m    (nlon,nlat,nlev),
+     &          xn2o5m   (nlon,nlat,nlev)
 c----------------------------------------------------------
 c 083195:
 c  global averaged profiles for trace gases:
@@ -129,7 +134,7 @@ c
 c     meddy1:    index for eddy calculation
 c     monthstep: number of cumulative steps in a month
 
-#if ( defined CPL_CHEM )
+!#if ( defined CPL_CHEM )
       common /chem_tmp1/p00(nlon,nlat),
      &                  p11(nlon,nlat),
      &                  p4chem0(nlon,nlat),
@@ -159,7 +164,7 @@ c 051598 monthly mean o3 at top, k=1,2 - nlev1,nlev:
 #if ( N_LEV == 11 )
       common /chem_tmp5/o3top (nlat,4,12)
 #endif
-#endif
+!#endif
 
 c----------------------------------------------------------
 c  edailyx:	daily emission amount of species x as functions
@@ -212,12 +217,16 @@ c
      &                 SO2accri(nlon,nlat,nlev_accri,12),
      &                 H2Oaccri(nlon,nlat,nlev_accri,12)
        real  NOaccri,NO2accri
+!     common /accriemi/p_accri(0:nlev_accri),scale_accri(nchemyr),
+!     common /accrip/ps4accri(nlon,nlat)
+#endif
+
+#endif
+
+#if ( defined ACCRI || defined TRACERS )
       common /accriemi/p_accri(0:nlev_accri),scale_accri(nchemyr),
       common /accrip/ps4accri(nlon,nlat)
 #endif
-
-#endif
-
 c----------------------------------------------------------
 c  Brief descriptions of variables:
 c
@@ -255,7 +264,12 @@ c       2 for rk(15)
 c       3 for rk(20)
 
         common /rktable/rktable1(34,300),
+#if ( defined OLD_CHEM )
      &                  rktable2(3,300)
+#else
+     &                  rktable2(6,300)
+!   updated 11.17.2011
+#endif
 
 c --- 042596
 c  rktable3 includes photorates parameter for rk(1),rk(8),

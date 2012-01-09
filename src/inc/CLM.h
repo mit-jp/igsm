@@ -60,3 +60,7 @@ C $Name:  $
       LOGICAL  PRTREND
  
 !     common/prratio/prlnd2total(lsmlat,12)
+      logical          ::  orbfix,dyn_pft
+      integer          ::  orbyr,rampyr_dynpft
+      common/clmvarctl/orbfix,orbyr,dyn_pft,rampyr_dynpft
+
