@@ -24,11 +24,13 @@ C     === Local variables ===
       print *,' Before eppaemission'
       CALL eppaemission (0)
 #endif
-      CALL atmosphere(0,0)   ! initialize the atmospheric model
+!     CALL atmosphere(0,0)   ! initialize the atmospheric model
 
 #ifdef CLM
       CALL clm4mit2d           ! initialize CLM
 #endif
+
+      CALL atmosphere(0,0)   ! initialize the atmospheric model
 
 #ifdef ML_2D
 C    2D mixed layer model  initialization
@@ -51,6 +53,7 @@ C      PRINT *, '  TEM iInitialization'
 C      CALL rd_rstrt_nem
 #  endif
 c      call tem_init(inyear,lyear)
+      CALL climate2tem(0,0)
       CALL temclm_init
       CALL lcluc_init
       CALL updatelcluc(0)
