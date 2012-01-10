@@ -1,4 +1,4 @@
-C $Header: /home/igsm-repository/INC/AGRID.h,v 1.1 2010/08/31 19:15:27 jscott Exp $
+C $Header: /u/gcmpack/MITgcm/pkg/atm2d/AGRID.h,v 1.6 2009/09/02 16:26:22 jscott Exp $
 C $Name:  $
 
       COMMON/ATM_GRID/atm_yC,atm_yG

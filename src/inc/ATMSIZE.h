@@ -1,4 +1,4 @@
-C $Header: /home/igsm-repository/INC/ATMSIZE.h,v 1.1 2010/09/02 18:50:41 jscott Exp $
+C $Header: /u/gcmpack/MITgcm/pkg/atm2d/ATMSIZE.h,v 1.2 2007/10/08 23:48:27 jmc Exp $
 C $Name:  $
 
 C**** ATM 2D size definitions. Also declared in BD2G04.COM
