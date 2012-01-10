@@ -1,5 +1,3 @@
-C $Header: /home/igsm-repository/INC/CLM.h,v 1.1 2010/08/31 19:15:27 jscott Exp $
-C $Name:  $
 
       INTEGER lsmlon, lsmlat, nlevsoi
       PARAMETER(lsmlon=1,lsmlat=N_LAT,nlevsoi=10)
@@ -21,9 +19,9 @@ C $Name:  $
       REAL*8 swinr4clm (lsmlon,lsmlat)
       REAL*8 swvis4clm (lsmlon,lsmlat)
       REAL*8 dt2mland
-!
-! MIT 2D COMMON BLOCK
-!
+
+C MIT 2D COMMON BLOCK
+
       COMMON/clm4mit/ lhfclm, shfclm, tauxclm, tauyclm,
      &    asdirclm, aldirclm, asdifclm, aldifclm, sroclm,
      &    ssrclm, glrclm, vetclm, sevclm, cevclm, lwuclm,
@@ -59,8 +57,9 @@ C $Name:  $
       COMMON/clmprtr/ PRTREND
       LOGICAL  PRTREND
  
-!     common/prratio/prlnd2total(lsmlat,12)
-      logical          ::  orbfix,dyn_pft
-      integer          ::  orbyr,rampyr_dynpft
-      common/clmvarctl/orbfix,orbyr,dyn_pft,rampyr_dynpft
+      COMMON/clmvarctl/ orbfix,orbyr,dyn_pft,rampyr_dynpft
+      LOGICAL orbfix
+      INTEGER orbyr
+      LOGICAL dyn_pft
+      INTEGER rampyr_dynpft
 
