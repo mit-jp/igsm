@@ -1638,18 +1638,25 @@ contains
        if (domain%pftm(nl) >= 0) then
 
 ! changes by Erwan start here
-! Scale the pctpft to ensure that the sum of the pctpft is equal to 100-pctspec
+! Scale the pctpft (except baresoil and crop/pasture) to ensure that the sum of
+! the pctpft is equal to 100-pctspec
 ! (should be the case in the data file read, but make sure anyway)
 
        if (pctspec(nl) < 100._r8) then
           sumpct = 0._r8
-          do m = 0,numpft
+          do m = 1,14
              sumpct = sumpct + pctpft(nl,m)
           end do
-          if (abs(sumpct+pctspec(nl)-100._r8) > 1.0e-6) then
-             do m = 0,numpft
-                pctpft(nl,m) = pctpft(nl,m) * (100._r8-pctspec(nl))/sumpct
-             end do
+          if (sumpct.eq.0.) then
+             pctpft(nl,0) = 100.-pctspec(nl)
+             pctpft(nl,15) = 0.
+             pctpft(nl,16) = 0.
+          else
+             if (abs(sumpct + pctpft(nl,0) + pctpft(nl,15) + pctpft(nl,16) + pctspec(nl) - 100._r8) > 1.0e-6) then
+                do m = 1,14
+                   pctpft(nl,m) = pctpft(nl,m) * (100._r8 - pctpft(nl,0) - pctpft(nl,15) - pctpft(nl,16) - pctspec(nl)) / sumpct
+                end do
+             end if
           end if
        end if
 
