@@ -31,7 +31,11 @@ Modifications:
            clmveg = 15 in setMITCLM()
 20110714 - DWK changed relationship between igsmveg = 33 and 
            clmveg = 15 to clmveg = 16 in setMITCLM()
-                       
+20111019 - DWK added PET to updateMITCLMregion()
+20111020 - DWK deleted mapping of igsmveg to clmveg in 
+           setMITCLM() as CLM now provides data for all IGSMVEG
+           types
+                        
 ****************************************************************
 ************************************************************* */
 
@@ -79,6 +83,8 @@ Modifications:
 #include<vector>
   
   using std::vector;
+
+#include<cmath>
 
 #include<cctype>
 
@@ -1115,6 +1121,8 @@ void RegMITTEM::initializeMITTEMregion( const int& pdm )
   
   time_t timer;
  
+  int kdm;
+
   int dyr = 0;
 
 //  const double gCH4togC = 12.0 / 16.0;
@@ -1156,12 +1164,8 @@ void RegMITTEM::initializeMITTEMregion( const int& pdm )
     telmnt[igrd].maxcohorts = MAXCHRTS;
     telmnt[igrd].natcohorts = 1;
 
-//    cout << "igrd = " << igrd;
-//    cout << " elmentArea = " << landcover4tem_.elmentArea[igrd];
-//    cout << " landFrac = " << landcover4tem_.landFrac[igrd] << endl;
-
-    telmnt[igrd].carea = (long) (landcover4tem_.elmentArea[igrd] 
-                         * landcover4tem_.landFrac[igrd]);
+    telmnt[igrd].carea = (long) round( landcover4tem_.elmentArea[igrd] 
+                         * landcover4tem_.landFrac[igrd] );
 
     telmnt[igrd].contnent = "GLOBE";
 
@@ -1186,13 +1190,14 @@ void RegMITTEM::initializeMITTEMregion( const int& pdm )
 
       initElmntBatch();
     }
-      
+   
     for( ichrt = 0; ichrt < telmnt[igrd].maxcohorts; ++ichrt )
     {
       // Determine land cover characteristics of cohort
 
       getGriddedLULCparameters ( igrd, ichrt, dyr );
 
+      telmnt[igrd].cohort[ichrt].cmnt = telmnt[0].lcluc.getCommunityType( telmnt[igrd].cohort[ichrt].currentveg );
 
       // Determine soil properties based on soil texture
           
@@ -1201,7 +1206,8 @@ void RegMITTEM::initializeMITTEMregion( const int& pdm )
                                    telmnt[igrd].tem.soil.getPCTCLAY() );
 
       setMITCLMgrid( dyr, pdm, igrd, ichrt );
-        
+
+       
       if( 0 == ichrt )
       {
         telmnt[igrd].climate[telmnt[igrd].mitclm.I_NIRR][pdm] = telmnt[igrd].tem.atms.getNIRR();
@@ -1210,11 +1216,13 @@ void RegMITTEM::initializeMITTEMregion( const int& pdm )
 
         telmnt[igrd].climate[telmnt[igrd].mitclm.I_TAIR][pdm] = telmnt[igrd].tem.atms.getTAIR();
 
+        telmnt[igrd].climate[telmnt[igrd].mitclm.I_PREC][pdm] = telmnt[igrd].tem.atms.getPREC();
+
         telmnt[igrd].climate[telmnt[igrd].mitclm.I_CO2][pdm] = telmnt[igrd].tem.atms.getCO2();
 
         telmnt[igrd].climate[telmnt[igrd].mitclm.I_AOT40][pdm] = telmnt[igrd].tem.atms.getAOT40();         
       }
-        
+      
       telmnt[igrd].initPET[ichrt][pdm] = telmnt[igrd].tem.atms.getPET();
 
       telmnt[igrd].initAET[ichrt][pdm] = telmnt[igrd].tem.soil.getINEET();
@@ -1230,18 +1238,19 @@ void RegMITTEM::initializeMITTEMregion( const int& pdm )
   }
 
   if( (CYCLE-1) == pdm )
-  {
-    
-    telmnt[0].tem.totyr = -99;
+  {    
+    if( istateflag > 0 )
+    {
+      telmnt[0].tem.totyr = -99;
 
-    cout << endl;
-    flog1 << endl << endl;
+      cout << endl;
+      flog1 << endl << endl;
 
-    elmnt.show( flog1, 
-                MISSING, 
-                MISSING,
-                telmnt[0].tem.totyr, 
-                telmnt[0].tem.inittol );
+      elmnt.show( flog1, 
+                  MISSING, 
+                  MISSING,
+                  telmnt[0].tem.totyr, 
+                  telmnt[0].tem.inittol );
 
 
 // *************************************************************
@@ -1252,61 +1261,61 @@ void RegMITTEM::initializeMITTEMregion( const int& pdm )
 //*********************************************************** */
 
 
-    if ( 1 == yrostateflag )
-    {
-      telmnt[0].ofstateA.open( telmnt[0].temstateAfname.c_str(), 
-                               ios::out );
-    }
+      if ( 1 == yrostateflag )
+      {
+        telmnt[0].ofstateA.open( telmnt[0].temstateAfname.c_str(), 
+                                 ios::out );
+      }
 
 
-    // Reset aggregated CFLUX (by MIT-IGSM latitudinal band) 
-    //   to zero
+      // Reset aggregated CFLUX (by MIT-IGSM latitudinal band) 
+      //   to zero
 
-    telmnt[0].mitclm.resetCFLUX( pdm );
+      telmnt[0].mitclm.resetCFLUX( pdm );
 
-    // Reset aggregated CH4FLUX (by MIT-IGSM latitudinal band) 
-    //   to zero
+      // Reset aggregated CH4FLUX (by MIT-IGSM latitudinal band) 
+      //   to zero
 
-    telmnt[0].mitclm.resetCH4FLUX( pdm );
+      telmnt[0].mitclm.resetCH4FLUX( pdm );
 
-    // Reset aggregated N2OFLUX (by MIT-IGSM latitudinal band) 
-    //   to zero
+      // Reset aggregated N2OFLUX (by MIT-IGSM latitudinal band) 
+      //   to zero
 
-    telmnt[0].mitclm.resetN2OFLUX( pdm );
+      telmnt[0].mitclm.resetN2OFLUX( pdm );
 
 
-    igrd = 0;  // reinitialize grid cell count for current year
+      igrd = 0;  // reinitialize grid cell count for current year
 
-    while ( igrd < mxnumgrid && 0 == fatalerr ) // Grid cell loop
-    {
-      telmnt[igrd].tem.totyr = -99;
+      while ( igrd < mxnumgrid && 0 == fatalerr ) // Grid cell loop
+      {
+        telmnt[igrd].tem.totyr = -99;
     
-      telmnt[igrd].tem.setLAT( telmnt[igrd].row );
+        telmnt[igrd].tem.setLAT( telmnt[igrd].row );
    
 /* *************************************************************
 		BEGIN VEGETATION MOSAIC LOOP
 ************************************************************* */
 
-      for( ichrt = 0; ichrt < telmnt[igrd].maxcohorts; ++ichrt )
-      {
-        // Reset monthly fluxes estimated by TEM to zero
+        for( ichrt = 0; ichrt < telmnt[igrd].maxcohorts; ++ichrt )
+        {
+          // Reset monthly fluxes estimated by TEM to zero
 
-        telmnt[igrd].tem.resetMonthlyELMNTFluxes();
+          telmnt[igrd].tem.resetMonthlyELMNTFluxes();
 
-        telmnt[igrd].tem.ag.setFORMPROD10C( ZERO );
-        telmnt[igrd].tem.ag.setFORMPROD10N( ZERO );
+          telmnt[igrd].tem.ag.setFORMPROD10C( ZERO );
+          telmnt[igrd].tem.ag.setFORMPROD10N( ZERO );
 
-        telmnt[igrd].tem.ag.setFORMPROD100C( ZERO );
-        telmnt[igrd].tem.ag.setFORMPROD100N( ZERO );
+          telmnt[igrd].tem.ag.setFORMPROD100C( ZERO );
+          telmnt[igrd].tem.ag.setFORMPROD100N( ZERO );
   
 
-
-        if( istateflag > 0 )
-        {
           // Read in initial TEM state determined in a previous 
           //  TEM simulation to telmnt[igrd].cohort
 
           telmnt[igrd].readCohortState( ifstate, ichrt );
+
+          
+          landcover4tem_.initialCohortArea[igrd][ichrt] = telmnt[igrd].cohort[ichrt].chrtarea;
 
           if( telmnt[igrd].cohort[ichrt].eetmx < telmnt[igrd].tem.soil.getEET() )
           {
@@ -1327,14 +1336,14 @@ void RegMITTEM::initializeMITTEMregion( const int& pdm )
 
 
           // Determine soil properties based on soil texture
-          
+        
           telmnt[igrd].tem.soil.xtext( telmnt[igrd].tem.veg.cmnt, 
                                        telmnt[igrd].tem.soil.getPCTSILT(), 
                                        telmnt[igrd].tem.soil.getPCTCLAY() );
 
 
           if( (CROPVEG == ichrt || BIOFUELS == ichrt || PASTURE == ichrt) )
-          { 
+          {   
             telmnt[igrd].tem.microbe.resetEcds( telmnt[igrd].tem.veg.cmnt, 
                                                 telmnt[igrd].tem.soil.getPSIPLUSC() );   
 
@@ -1352,7 +1361,6 @@ void RegMITTEM::initializeMITTEMregion( const int& pdm )
               telmnt[igrd].cohort[ichrt].fprevozone = 1.0;
             }
           }
-
 
 
           // Pass telmnt[igrd].cohort information to TEM
@@ -1428,7 +1436,7 @@ void RegMITTEM::initializeMITTEMregion( const int& pdm )
                                            + (telmnt[igrd].tem.microbe.nem.dayTemp[2][dday] * (4.5/20.0))
                                            + (telmnt[igrd].tem.microbe.nem.dayTemp[3][dday] * (7.5/20.0))
                                            + (telmnt[igrd].tem.microbe.nem.dayTemp[4][dday] * (3.5/20.0))) );
-
+ 
                 for( dlyr = 0; dlyr < (CLMNLAYERS-1); ++dlyr )
                 {
 //                  soilLayerTSOIL[dlyr] = telmnt[igrd].tem.microbe.nem.dayTemp[dlyr][dday];
@@ -1450,7 +1458,7 @@ void RegMITTEM::initializeMITTEMregion( const int& pdm )
                                                                                                                        telmnt[igrd].tem.soil.layerThick,
                                                                                                                        (CLMNLAYERS-1),
                                                                                                                        (dlyr+1) ),
-                                                                  dlyr );
+                                                                                                                       dlyr );
                 }
 
         
@@ -1475,7 +1483,7 @@ void RegMITTEM::initializeMITTEMregion( const int& pdm )
 
                 // Aggregate daily CH4 fluxes from MDM into monthly 
                 //   fluxes
-        
+         
                 telmnt[igrd].tem.soil.setCH4FLUX( (-1.0
                                                    * 0.001 
                                                    * (telmnt[igrd].tem.soil.getCH4FLUX() 
@@ -1583,15 +1591,31 @@ void RegMITTEM::initializeMITTEMregion( const int& pdm )
             }
           }  
         }
-        else
-        {      	    
-          //if( ichrt > 0 )
-          //{
-            //cohort[ichrt].NEMtopdens = cohort[0].NEMtopdens;
-            //cohort[ichrt].NEMtopksat = cohort[0].NEMtopksat;
-            //cohort[ichrt].NEMtoppor = cohort[0].NEMtoppor;	
-          //}
-          
+
+        elmnt.show( flog1, 
+                    telmnt[igrd].col, 
+                    telmnt[igrd].row,
+                    telmnt[igrd].tem.totyr, 
+                    telmnt[igrd].tem.tol );
+
+        ++igrd;
+      }
+    }
+    else
+    {      	    
+      for( igrd = 0; igrd < mxnumgrid; ++igrd )
+      {
+        for( ichrt = 0; ichrt < telmnt[igrd].maxcohorts; ++ichrt )
+        {
+          // Pass lulcdat information to telmnt[0].cohort
+    
+          telmnt[igrd].cohort[ichrt].chrtarea = (long) (telmnt[igrd].carea
+                                                * landcover4tem_.fracLandArea[igrd][ichrt]);  
+
+          telmnt[igrd].cohort[ichrt].prevchrtarea = telmnt[igrd].cohort[ichrt].chrtarea;
+  
+          telmnt[igrd].cohort[ichrt].cmnt = telmnt[0].lcluc.getCommunityType( telmnt[igrd].cohort[ichrt].currentveg );
+
           telmnt[igrd].setTEMequilState( flog1,
                                          equil,
                                          totsptime,
@@ -1613,9 +1637,7 @@ void RegMITTEM::initializeMITTEMregion( const int& pdm )
       
           // Write out telmnt[0].cohort to output file for
           //   potential use in a future TEM simulation
-
-          //cout << " NONSOLC before writeCohortState = " << telmnt[igrd].cohort[ichrt].NEMnsolc << endl;
-      
+     
           if( 1 == ostateflag )
           {
             telmnt[igrd].writeCohortState( ofstate, ichrt );
@@ -1638,26 +1660,23 @@ void RegMITTEM::initializeMITTEMregion( const int& pdm )
                                        ichrt,
                                        telmnt[0].ntempred );
           }
-        } // End of istateflag else
-      } // End of cohort loop
+        } // End of cohort loop
  
 
-      elmnt.show( flog1, 
-                  telmnt[igrd].col, 
-                  telmnt[igrd].row,
-                  telmnt[igrd].tem.totyr, 
-                  telmnt[igrd].tem.tol );
-
-      ++igrd;
-    } // End of grid cell loop
-
-
-    if ( 1 == yrostateflag ) { telmnt[0].ofstateA.close(); }
-
-    timer = time( NULL );
-    flog1 << "Finished year " << telmnt[0].tem.totyr;
-    flog1 << " at " << ctime( &timer );
+        elmnt.show( flog1, 
+                    telmnt[igrd].col, 
+                    telmnt[igrd].row,
+                    telmnt[igrd].tem.totyr, 
+                    telmnt[igrd].tem.tol );
+      } // End of grid cell loop
+    }
   }
+
+  if ( 1 == yrostateflag ) { telmnt[0].ofstateA.close(); }
+
+  timer = time( NULL );
+  flog1 << "Finished year " << telmnt[0].tem.totyr;
+  flog1 << " at " << ctime( &timer );
   
 };
 
@@ -1834,10 +1853,8 @@ void RegMITTEM::setMITCLMgrid( const int& outyr,
   int dday;
   int dhr;
   int dlyr;
-  
-  int igsmveg;
 
-  int clmveg;
+  int igsmveg;
     
   if ( 0 == ichrt )
   {
@@ -1884,7 +1901,6 @@ void RegMITTEM::setMITCLMgrid( const int& outyr,
 
     telmnt[igrd].yrprec += telmnt[igrd].tem.atms.getPREC();
 
-
     if ( 1 == telmnt[0].mitclm.n2oflag )
     {
       for ( dday = 0; dday < telmnt[0].mitclm.mdays[pdm]; ++dday )
@@ -1915,37 +1931,10 @@ void RegMITTEM::setMITCLMgrid( const int& outyr,
 
   igsmveg = telmnt[igrd].cohort[ichrt].currentveg;
 
-  // Map vegetation types used by CLM to IGSMVEG2
-
-  switch ( igsmveg )
-  {
-    case 16: clmveg = 15; break;
-    case 17: clmveg = 17; break;
-    case 18: clmveg = 17; break;
-    case 19: clmveg = 17; break;
-    case 20: clmveg = 17; break;
-    case 21: clmveg = 17; break;
-    case 22: clmveg = 17; break;
-    case 23: clmveg = 17; break;
-    case 24: clmveg = 17; break;
-    case 25: clmveg = 17; break;
-    case 26: clmveg =  4; break;
-    case 27: clmveg = 14; break;
-    case 28: clmveg =  7; break;
-    case 29: clmveg = 13; break;
-    case 30: clmveg = 18; break;
-    case 31: clmveg = 18; break;
-    case 32: clmveg = 15; break;
-    case 33: clmveg = 16; break;
-    case 34: clmveg = 18; break;
-    default: clmveg = igsmveg;
-  }
-
-    
   // Determine hydrology inputs for each cohort within a 
   //   latitudinal band 
 
-  telmnt[igrd].tem.atms.setPET( (climate4tem_.pet[igrd][clmveg]
+  telmnt[igrd].tem.atms.setPET( (climate4tem_.pet[igrd][igsmveg]
                                 * telmnt[igrd].mitclm.ndays[pdm]) );
 
   if ( telmnt[igrd].tem.atms.getPET() < ZERO )
@@ -1954,7 +1943,7 @@ void RegMITTEM::setMITCLMgrid( const int& outyr,
   }    
 
 
-  telmnt[igrd].tem.soil.setINEET( (climate4tem_.aet[igrd][clmveg]
+  telmnt[igrd].tem.soil.setINEET( (climate4tem_.aet[igrd][igsmveg]
                                   * telmnt[igrd].mitclm.ndays[pdm]) );
            
   if ( telmnt[igrd].tem.soil.getINEET() < ZERO )
@@ -1967,19 +1956,19 @@ void RegMITTEM::setMITCLMgrid( const int& outyr,
 
   if ( telmnt[igrd].tem.soil.getROOTZ() <= 1.0 )
   {
-    telmnt[igrd].tem.soil.setMOIST( (climate4tem_.sh2o1m[igrd][clmveg]
+    telmnt[igrd].tem.soil.setMOIST( (climate4tem_.sh2o1m[igrd][igsmveg]
                                     * telmnt[igrd].tem.soil.getROOTZ()) ); 
   }
   else if ( telmnt[igrd].tem.soil.getROOTZ() <= 2.0 )
   {
-    telmnt[igrd].tem.soil.setMOIST( (climate4tem_.sh2o1m[igrd][clmveg]
+    telmnt[igrd].tem.soil.setMOIST( (climate4tem_.sh2o1m[igrd][igsmveg]
                                     * (2.0 - telmnt[igrd].tem.soil.getROOTZ()))
-                                    + (climate4tem_.sh2o2m[igrd][clmveg]
+                                    + (climate4tem_.sh2o2m[igrd][igsmveg]
                                     * (telmnt[igrd].tem.soil.getROOTZ() - 1.0)) ); 
   }
   else 
   {        
-    telmnt[igrd].tem.soil.setMOIST( (climate4tem_.sh2o2m[igrd][clmveg]
+    telmnt[igrd].tem.soil.setMOIST( (climate4tem_.sh2o2m[igrd][igsmveg]
                                     * (telmnt[igrd].tem.soil.getROOTZ() / 2.0)) );
   }
 
@@ -2013,22 +2002,22 @@ void RegMITTEM::setMITCLMgrid( const int& outyr,
     {
       for ( dlyr = 0; dlyr < (CLMNLAYERS-1); ++dlyr )
       {
-        telmnt[igrd].tem.microbe.nem.dayTemp[dlyr][dday] = climate4tem_.daytsoil[dlyr][igrd][clmveg][dday];
+        telmnt[igrd].tem.microbe.nem.dayTemp[dlyr][dday] = climate4tem_.daytsoil[dlyr][igrd][igsmveg][dday];
 
         telmnt[igrd].tem.microbe.nem.dayTemp[dlyr][dday] += KELVIN0; 
        
-        telmnt[igrd].tem.microbe.nem.dayMoist[dlyr][dday] = climate4tem_.daysh2o[dlyr][igrd][clmveg][dday];
+        telmnt[igrd].tem.microbe.nem.dayMoist[dlyr][dday] = climate4tem_.daysh2o[dlyr][igrd][igsmveg][dday];
       }
     }
   }
 
    
-  telmnt[igrd].tem.soil.setSNOWPACK( climate4tem_.swe[igrd][clmveg] );
+  telmnt[igrd].tem.soil.setSNOWPACK( climate4tem_.swe[igrd][igsmveg] );
 
-  telmnt[igrd].tem.soil.setSURFRUN( (climate4tem_.sfr[igrd][clmveg]
+  telmnt[igrd].tem.soil.setSURFRUN( (climate4tem_.sfr[igrd][igsmveg]
                                     * telmnt[igrd].mitclm.ndays[pdm]) );
 
-  telmnt[igrd].tem.soil.setDRAINAGE( (climate4tem_.drn[igrd][clmveg]
+  telmnt[igrd].tem.soil.setDRAINAGE( (climate4tem_.drn[igrd][igsmveg]
                                      * telmnt[igrd].mitclm.ndays[pdm]) );
 
 
@@ -2041,7 +2030,7 @@ void RegMITTEM::setMITCLMgrid( const int& outyr,
       {
         for ( dhr = 0; dhr < MAXDAYHRS; ++dhr )
         {
-          telmnt[igrd].tem.microbe.nem.hourMoist[dlyr][dday][dhr] = climate4tem_.hrsh2o[dlyr][igrd][clmveg][dday][dhr];
+          telmnt[igrd].tem.microbe.nem.hourMoist[dlyr][dday][dhr] = climate4tem_.hrsh2o[dlyr][igrd][igsmveg][dday][dhr];
         }
       }                                       
     }
@@ -2119,8 +2108,8 @@ void RegMITTEM::setMITLULCgrid( const int& pdyr,
   {       
     // Pass lulcdat information to telmnt[0].cohort
     
-    telmnt[pigrd].cohort[ichrt].chrtarea = (long) (telmnt[pigrd].carea
-                                               *landcover4tem_.fracLandArea[pigrd][ichrt]);  
+    telmnt[pigrd].cohort[ichrt].chrtarea = (long) round( telmnt[pigrd].carea
+                                               * landcover4tem_.fracLandArea[pigrd][ichrt] );  
   }
 
 };
@@ -2711,142 +2700,6 @@ void RegMITTEM::starttem( void )
 
 
 /* *************************************************************
-************************************************************** */
-
-#ifdef STANDALONE_TEM
-void RegMITTEM::updateLCLUCregion( const int& pdyr,
-                                   FILE* fnumchrts,
-                                   FILE* flandarea,
-                                   FILE* flulc )
-{
-  int gisend;
-  int ichrt;
-  long igrd;
-
-  LandAreadata44 landareadat;
-  LulcCohortdata44 lulcdat[MAXCHRTS];  
-  MaxCohortdata43 mxcohrtdat;
-
-  fatalerr = 0;
-  igrd = 0;
-
-  if( 0 == pdyr )
-  {
-    while ( igrd < MAXNGRD && 0 == fatalerr )
-    {    
-
-      // Get the total number of cohorts in the grid cell
-
-      gisend = mxcohrtdat.getdel( fnumchrts );
-
-      if( -1 == gisend )
-      {
-        cout << "Ran out of Number of Cohorts data";
-        cout << endl << endl;
-        flog1 << "Ran out of Number of Cohorts data";
-        flog1 << endl << endl;
-
-        exit( -1 );
-      }
-
-      telmnt[igrd].col = mxcohrtdat.col;
-      telmnt[igrd].row = mxcohrtdat.row;
-
-
-      // Get land area information for the grid cell
-
-      gisend = landareadat.getdel( flandarea );
-
-      if( -1 == gisend ) 
-      { 
-        cout << "Ran out of Land area data";
-        cout << endl << endl;
-        flog1 << "Ran out of Land area data";
-        flog1 << endl << endl;
-        
-        exit( -1 );
-      } 
-
-      // Check data for spatial coregistration errors
-
-      fatalerr = telmnt[0].coregerr( flog1, 
-                                     "MXCOHRTS", 
-                                     telmnt[igrd].col,  
-                                     telmnt[igrd].row, 
-                                     "LANDAREA", 
-                                     landareadat.col, 
-                                     landareadat.row );
-
-      if( fatalerr != 0 ) { exit( -1 ); }
-
-
-      landcover4tem_.elmentArea[igrd] = landareadat.elemntArea;
-      landcover4tem_.landFrac[igrd] = landareadat.landFrac;
-    }
-  }
-   
-  igrd = 0;
-
-  while ( igrd < MAXNGRD && 0 == fatalerr )
-  {
-    // Get fraction of land area of each total number of cohorts in the grid cell
-
-    if( (0 == telmnt[0].lcluc.tlulcflag && 0 == pdyr)
-        || 1 == telmnt[0].lcluc.tlulcflag  )
-    {
-      if( pdyr > 0 )
-      {         	              
-        // Update prevchrtarea with area of cohort from 
-        //  the previous year
-         
-        for( ichrt = 0; ichrt < telmnt[igrd].maxcohorts; ++ichrt )
-        {
-          telmnt[igrd].cohort[ichrt].prevchrtarea = telmnt[igrd].cohort[ichrt].chrtarea;
-        }
-      }
-
-      // Get current land use/land cover cohort data for the grid cell 
-
-      for( ichrt = 0; ichrt < mxcohrtdat.total; ++ichrt )
-      {
-        gisend = lulcdat[ichrt].getdel( flulc );
-
-        if( -1 == gisend ) 
-        { 
-          flog1 << "Ran out of Land cover/land use data";
-          flog1 << endl << endl;
-            
-          exit( -1 );
-        }
-
-        // Check data for spatial coregistration errors
-
-        fatalerr = telmnt[0].coregerr( flog1, 
-                                       "LANDAREA", 
-                                       telmnt[igrd].col,  
-                                       telmnt[igrd].row, 
-                                       "LULC", 
-                                       lulcdat[ichrt].col, 
-                                       lulcdat[ichrt].row );
-
-        if( fatalerr != 0 ) { exit( -1 ); }
-
-        landcover4tem_.fracLandArea[igrd][ichrt] = lulcdat[ichrt].fracLandArea;  
-
-      }      
-    }  
-  
-    ++igrd;
-  }
-
-};
-#endif
-
-/* *************************************************************
-************************************************************* */
-
-
-/* *************************************************************
 ************************************************************* */
 
 #ifdef STANDALONE_TEM
@@ -2882,6 +2735,7 @@ void RegMITTEM::updateMITCLMregion( const int& pdyr,
                                     ifstream& ifhrSML5,
                                     ifstream& ifhrSML6,
                                     ifstream& ifprec,
+                                    ifstream& ifpet,
                                     ifstream& ifeet,
                                     ifstream& ifsh2o1,
                                     ifstream& ifsh2o2,
@@ -2928,6 +2782,8 @@ void RegMITTEM::updateMITCLMregion( const int& pdyr,
   MITdata44 tnirr2D;
 
   O3data44 to32D;
+
+  MITCLMdata44 tpet2D;
 
   MITdata44 tprec2D;
 
@@ -3428,6 +3284,19 @@ void RegMITTEM::updateMITCLMregion( const int& pdyr,
   if( fatalerr != 0 ) { exit( -1 ); }
 
 
+  // Monthly potential evapotranspiration *************************
+  
+  telmnt[0].mitclm.setLatBandClm( ifpet, 
+                                  tpet2D );
+
+  fatalerr = coregTime( "NIRR", 
+                        telmnt[0].year, 
+                        "PET", 
+                        tpet2D.year );
+
+  if( fatalerr != 0 ) { exit( -1 ); }
+
+
   // Monthly actual evapotranspiration *************************
   
   telmnt[0].mitclm.setLatBandClm( ifeet, 
@@ -3511,14 +3380,17 @@ void RegMITTEM::updateMITCLMregion( const int& pdyr,
   telmnt[0].mitclm.setLatBandClm( ifco2, 
                                   tco22D );
 
-  if( pdyr > totsptime )
+  if( 0 == equil )
   {
-    fatalerr = coregTime( "NIRR", 
-                          telmnt[0].year, 
-                          "CO2", 
-                          tco22D.year );
+    if( pdyr > totsptime )
+    {
+      fatalerr = coregTime( "NIRR", 
+                            telmnt[0].year, 
+                            "CO2", 
+                            tco22D.year );
 
-    if( fatalerr != 0 ) { exit( -1 ); }
+      if( fatalerr != 0 ) { exit( -1 ); }
+    }
   }
 
   // 3-hour atmospheric ozone concentration *******
@@ -3556,6 +3428,7 @@ void RegMITTEM::updateMITCLMregion( const int& pdyr,
   {
     for( dveg = 0; dveg < CLMMXNVEG; ++dveg )
     {
+      climate4tem_.pet[dgrd][dveg] = tpet2D.latband[dgrd][dveg];
       climate4tem_.aet[dgrd][dveg] = teet2D.latband[dgrd][dveg];
       climate4tem_.sh2o1m[dgrd][dveg] = tsh2o1m2D.latband[dgrd][dveg];
       climate4tem_.sh2o2m[dgrd][dveg] = tsh2o2m2D.latband[dgrd][dveg];
@@ -3575,6 +3448,145 @@ void RegMITTEM::updateMITCLMregion( const int& pdyr,
     {
       climate4tem_.o3[dgrd][dt] = to32D.latbandhr[dgrd][dt]; 
     }
+  }
+
+};
+#endif
+
+/* *************************************************************
+************************************************************* */
+
+
+/* *************************************************************
+************************************************************** */
+
+#ifdef STANDALONE_TEM
+void RegMITTEM::updateLCLUCregion( const int& pdyr,
+                                   FILE* fnumchrts,
+                                   FILE* flandarea,
+                                   FILE* flulc )
+{
+  int gisend;
+  int ichrt;
+  long igrd;
+
+  LandAreadata44 landareadat;
+  LulcCohortdata44 lulcdat[MAXCHRTS];  
+  MaxCohortdata43 mxcohrtdat;
+
+  fatalerr = 0;
+  igrd = 0;
+
+  if( 0 == pdyr )
+  {
+    while ( igrd < MAXNGRD && 0 == fatalerr )
+    {    
+
+      // Get the total number of cohorts in the grid cell
+
+      gisend = mxcohrtdat.getdel( fnumchrts );
+
+      if( -1 == gisend )
+      {
+        cout << "Ran out of Number of Cohorts data";
+        cout << endl << endl;
+        flog1 << "Ran out of Number of Cohorts data";
+        flog1 << endl << endl;
+
+        exit( -1 );
+      }
+
+      telmnt[igrd].col = mxcohrtdat.col;
+      telmnt[igrd].row = mxcohrtdat.row;
+
+
+      // Get land area information for the grid cell
+
+      gisend = landareadat.getdel( flandarea );
+
+      if( -1 == gisend ) 
+      { 
+        cout << "Ran out of Land area data";
+        cout << endl << endl;
+
+        flog1 << "Ran out of Land area data";
+        flog1 << endl << endl;
+        
+        exit( -1 );
+      } 
+
+      // Check data for spatial coregistration errors
+
+      fatalerr = telmnt[0].coregerr( flog1, 
+                                     "MXCOHRTS", 
+                                     telmnt[igrd].col,  
+                                     telmnt[igrd].row, 
+                                     "LANDAREA", 
+                                     landareadat.col, 
+                                     landareadat.row );
+
+      if( fatalerr != 0 ) { exit( -1 ); }
+
+
+      landcover4tem_.elmentArea[igrd] = landareadat.elemntArea;
+      landcover4tem_.landFrac[igrd] = landareadat.landFrac;
+
+      ++igrd;
+
+    }
+  }
+ 
+  igrd = 0;
+
+  while ( igrd < MAXNGRD && 0 == fatalerr )
+  {
+    // Get fraction of land area of each total number of cohorts in the grid cell
+
+    if( (0 == telmnt[0].lcluc.tlulcflag && 0 == pdyr)
+        || 1 == telmnt[0].lcluc.tlulcflag  )
+    {
+      if( pdyr > 0 )
+      {         	              
+        // Update prevchrtarea with area of cohort from 
+        //  the previous year
+         
+        for( ichrt = 0; ichrt < telmnt[igrd].maxcohorts; ++ichrt )
+        {
+          telmnt[igrd].cohort[ichrt].prevchrtarea = telmnt[igrd].cohort[ichrt].chrtarea;
+        }
+      }
+
+      // Get current land use/land cover cohort data for the grid cell 
+
+      for( ichrt = 0; ichrt < mxcohrtdat.total; ++ichrt )
+      {
+        gisend = lulcdat[ichrt].getdel( flulc );
+
+        if( -1 == gisend ) 
+        { 
+          flog1 << "Ran out of Land cover/land use data";
+          flog1 << endl << endl;
+            
+          exit( -1 );
+        }
+
+        // Check data for spatial coregistration errors
+
+        fatalerr = telmnt[0].coregerr( flog1, 
+                                       "LANDAREA", 
+                                       telmnt[igrd].col,  
+                                       telmnt[igrd].row, 
+                                       "LULC", 
+                                       lulcdat[ichrt].col, 
+                                       lulcdat[ichrt].row );
+
+        if( fatalerr != 0 ) { exit( -1 ); }
+
+        landcover4tem_.fracLandArea[igrd][ichrt] = lulcdat[ichrt].fracLandArea;
+      }      
+    }  
+  
+    ++igrd;
   }
 
 };
@@ -3704,8 +3716,6 @@ void RegMITTEM::updateMITTEMregion( const int& pdyr,
 
     for( ichrt = 0; ichrt < telmnt[igrd].maxcohorts; ++ichrt )
     {
-      
-
       telmnt[igrd].tem.veg.cmnt = telmnt[igrd].cohort[ichrt].cmnt;
 
 
@@ -3792,7 +3802,7 @@ void RegMITTEM::updateMITTEMregion( const int& pdyr,
         telmnt[igrd].mitclm.aggregFlux2D( telmnt[igrd].tem.totyr,
                                           telmnt[igrd].row,
                                           (double) telmnt[igrd].cohort[ichrt].chrtarea,
-                                          telmnt[igrd].tem.ag.getCFLUX(),
+                                          telmnt[igrd].tem.getNCE(),
                                           telmnt[0].mitclm.tcflx2D );
       }
 

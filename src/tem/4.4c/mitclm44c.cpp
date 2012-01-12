@@ -175,202 +175,350 @@ void MITclm44::initDaySoilMoist( ofstream& rflog1 )
   if( 1 == ch4flag 
       || 1 == n2oflag )
   {
-    cout << "Please enter the first part of the file name ";
-    cout << "containing the daily soil moisture data";
-    cout << "for soil layer 1";
-    cout << endl;
-    cout << "               (e.g., DAYSM) " << endl;
+    if( 1 == tprecflag )
+    {
+      cout << "Please enter the first part of the file name ";
+      cout << "containing the daily soil moisture data";
+      cout << "for soil layer 1";
+      cout << endl;
+      cout << "               (e.g., DAYSM) " << endl;
     
-    cin >> idaySMfnameL1;
+      cin >> idaySMfnameL1;
 
-    cout << "Please enter the file extension (include the '.'): ";
+      cout << "Please enter the file extension (include the '.'): ";
     
-    cin >> idaySMendL1;
+      cin >> idaySMendL1;
 
-    rflog1 << "Please enter the first part of the file name ";
-    rflog1 << "containing the daily soil moisture data";
-    rflog1 << "for soil layer 1";
-    rflog1 << endl;
-    rflog1 << "               (e.g., DAYSM) " << endl;
-    rflog1 << idaySMfnameL1 << endl << endl;
-    rflog1 << "Please enter the file extension (include the '.'): ";
-    rflog1 << idaySMendL1 << endl << endl;
+      rflog1 << "Please enter the first part of the file name ";
+      rflog1 << "containing the daily soil moisture data";
+      rflog1 << "for soil layer 1";
+      rflog1 << endl;
+      rflog1 << "               (e.g., DAYSM) " << endl;
+      rflog1 << idaySMfnameL1 << endl << endl;
+      rflog1 << "Please enter the file extension (include the '.'): ";
+      rflog1 << idaySMendL1 << endl << endl;
 
 
-    cout << "Please enter the first part of the file name ";
-    cout << "containing the daily soil moisture data";
-    cout << "for soil layer 2";
-    cout << endl;
-    cout << "               (e.g., DAYSM) " << endl;
+      cout << "Please enter the first part of the file name ";
+      cout << "containing the daily soil moisture data";
+      cout << "for soil layer 2";
+      cout << endl;
+      cout << "               (e.g., DAYSM) " << endl;
     
-    cin >> idaySMfnameL2;
+      cin >> idaySMfnameL2;
 
-    cout << "Please enter the file extension (include the '.'): ";
+      cout << "Please enter the file extension (include the '.'): ";
     
-    cin >> idaySMendL2;
+      cin >> idaySMendL2;
 
-    rflog1 << "Please enter the first part of the file name ";
-    rflog1 << "containing the daily soil moisture data";
-    rflog1 << "for soil layer 2";
-    rflog1 << endl;
-    rflog1 << "               (e.g., DAYSM) " << endl;
-    rflog1 << idaySMfnameL2 << endl << endl;
-    rflog1 << "Please enter the file extension (include the '.'): ";
-    rflog1 << idaySMendL2 << endl << endl;
+      rflog1 << "Please enter the first part of the file name ";
+      rflog1 << "containing the daily soil moisture data";
+      rflog1 << "for soil layer 2";
+      rflog1 << endl;
+      rflog1 << "               (e.g., DAYSM) " << endl;
+      rflog1 << idaySMfnameL2 << endl << endl;
+      rflog1 << "Please enter the file extension (include the '.'): ";
+      rflog1 << idaySMendL2 << endl << endl;
 
 
-    cout << "Please enter the first part of the file name ";
-    cout << "containing the daily soil moisture data";
-    cout << "for soil layer 3";
-    cout << endl;
-    cout << "               (e.g., DAYSM) " << endl;
+      cout << "Please enter the first part of the file name ";
+      cout << "containing the daily soil moisture data";
+      cout << "for soil layer 3";
+      cout << endl;
+      cout << "               (e.g., DAYSM) " << endl;
     
-    cin >> idaySMfnameL3;
+      cin >> idaySMfnameL3;
 
-    cout << "Please enter the file extension (include the '.'): ";
+      cout << "Please enter the file extension (include the '.'): ";
     
-    cin >> idaySMendL3;
+      cin >> idaySMendL3;
 
-    rflog1 << "Please enter the first part of the file name ";
-    rflog1 << "containing the daily soil moisture data";
-    rflog1 << "for soil layer 3";
-    rflog1 << endl;
-    rflog1 << "               (e.g., DAYSM) " << endl;
-    rflog1 << idaySMfnameL3 << endl << endl;
-    rflog1 << "Please enter the file extension (include the '.'): ";
-    rflog1 << idaySMendL3 << endl << endl;
+      rflog1 << "Please enter the first part of the file name ";
+      rflog1 << "containing the daily soil moisture data";
+      rflog1 << "for soil layer 3";
+      rflog1 << endl;
+      rflog1 << "               (e.g., DAYSM) " << endl;
+      rflog1 << idaySMfnameL3 << endl << endl;
+      rflog1 << "Please enter the file extension (include the '.'): ";
+      rflog1 << idaySMendL3 << endl << endl;
 
 
-    cout << "Please enter the first part of the file name ";
-    cout << "containing the daily soil moisture data";
-    cout << "for soil layer 4";
-    cout << endl;
-    cout << "               (e.g., DAYSM) " << endl;
+      cout << "Please enter the first part of the file name ";
+      cout << "containing the daily soil moisture data";
+      cout << "for soil layer 4";
+      cout << endl;
+      cout << "               (e.g., DAYSM) " << endl;
     
-    cin >> idaySMfnameL4;
+      cin >> idaySMfnameL4;
 
-    cout << "Please enter the file extension (include the '.'): ";
+      cout << "Please enter the file extension (include the '.'): ";
     
-    cin >> idaySMendL4;
+      cin >> idaySMendL4;
 
-    rflog1 << "Please enter the first part of the file name ";
-    rflog1 << "containing the daily soil moisture data";
-    rflog1 << "for soil layer 4";
-    rflog1 << endl;
-    rflog1 << "               (e.g., DAYSM) " << endl;
-    rflog1 << idaySMfnameL4 << endl << endl;
-    rflog1 << "Please enter the file extension (include the '.'): ";
-    rflog1 << idaySMendL4 << endl << endl;
+      rflog1 << "Please enter the first part of the file name ";
+      rflog1 << "containing the daily soil moisture data";
+      rflog1 << "for soil layer 4";
+      rflog1 << endl;
+      rflog1 << "               (e.g., DAYSM) " << endl;
+      rflog1 << idaySMfnameL4 << endl << endl;
+      rflog1 << "Please enter the file extension (include the '.'): ";
+      rflog1 << idaySMendL4 << endl << endl;
 
 
-    cout << "Please enter the first part of the file name ";
-    cout << "containing the daily soil moisture data";
-    cout << "for soil layer 5";
-    cout << endl;
-    cout << "               (e.g., DAYSM) " << endl;
+      cout << "Please enter the first part of the file name ";
+      cout << "containing the daily soil moisture data";
+      cout << "for soil layer 5";
+      cout << endl;
+      cout << "               (e.g., DAYSM) " << endl;
     
-    cin >> idaySMfnameL5;
+      cin >> idaySMfnameL5;
 
-    cout << "Please enter the file extension (include the '.'): ";
+      cout << "Please enter the file extension (include the '.'): ";
     
-    cin >> idaySMendL5;
+      cin >> idaySMendL5;
 
-    rflog1 << "Please enter the first part of the file name ";
-    rflog1 << "containing the daily soil moisture data";
-    rflog1 << "for soil layer 5";
-    rflog1 << endl;
-    rflog1 << "               (e.g., DAYSM) " << endl;
-    rflog1 << idaySMfnameL5 << endl << endl;
-    rflog1 << "Please enter the file extension (include the '.'): ";
-    rflog1 << idaySMendL5 << endl << endl;
+      rflog1 << "Please enter the first part of the file name ";
+      rflog1 << "containing the daily soil moisture data";
+      rflog1 << "for soil layer 5";
+      rflog1 << endl;
+      rflog1 << "               (e.g., DAYSM) " << endl;
+      rflog1 << idaySMfnameL5 << endl << endl;
+      rflog1 << "Please enter the file extension (include the '.'): ";
+      rflog1 << idaySMendL5 << endl << endl;
 
 
-    cout << "Please enter the first part of the file name ";
-    cout << "containing the daily soil moisture data";
-    cout << "for soil layer 6";
-    cout << endl;
-    cout << "               (e.g., DAYSM) " << endl;
+      cout << "Please enter the first part of the file name ";
+      cout << "containing the daily soil moisture data";
+      cout << "for soil layer 6";
+      cout << endl;
+      cout << "               (e.g., DAYSM) " << endl;
     
-    cin >> idaySMfnameL6;
+      cin >> idaySMfnameL6;
 
-    cout << "Please enter the file extension (include the '.'): ";
+      cout << "Please enter the file extension (include the '.'): ";
     
-    cin >> idaySMendL6;
+      cin >> idaySMendL6;
 
-    rflog1 << "Please enter the first part of the file name ";
-    rflog1 << "containing the daily soil moisture data";
-    rflog1 << "for soil layer 6";
-    rflog1 << endl;
-    rflog1 << "               (e.g., DAYSM) " << endl;
-    rflog1 << idaySMfnameL6 << endl << endl;
-    rflog1 << "Please enter the file extension (include the '.'): ";
-    rflog1 << idaySMendL6 << endl << endl;
+      rflog1 << "Please enter the first part of the file name ";
+      rflog1 << "containing the daily soil moisture data";
+      rflog1 << "for soil layer 6";
+      rflog1 << endl;
+      rflog1 << "               (e.g., DAYSM) " << endl;
+      rflog1 << idaySMfnameL6 << endl << endl;
+      rflog1 << "Please enter the file extension (include the '.'): ";
+      rflog1 << idaySMendL6 << endl << endl;
 
 
-    cout << "Please enter the first part of the file name ";
-    cout << "containing the daily soil moisture data";
-    cout << "for soil layer 7";
-    cout << endl;
-    cout << "               (e.g., DAYSM) " << endl;
+      cout << "Please enter the first part of the file name ";
+      cout << "containing the daily soil moisture data";
+      cout << "for soil layer 7";
+      cout << endl;
+      cout << "               (e.g., DAYSM) " << endl;
     
-    cin >> idaySMfnameL7;
+      cin >> idaySMfnameL7;
 
-    cout << "Please enter the file extension (include the '.'): ";
+      cout << "Please enter the file extension (include the '.'): ";
     
-    cin >> idaySMendL7;
+      cin >> idaySMendL7;
 
-    rflog1 << "Please enter the first part of the file name ";
-    rflog1 << "containing the daily soil moisture data";
-    rflog1 << "for soil layer 7";
-    rflog1 << endl;
-    rflog1 << "               (e.g., DAYSM) " << endl;
-    rflog1 << idaySMfnameL7 << endl << endl;
-    rflog1 << "Please enter the file extension (include the '.'): ";
-    rflog1 << idaySMendL7 << endl << endl;
+      rflog1 << "Please enter the first part of the file name ";
+      rflog1 << "containing the daily soil moisture data";
+      rflog1 << "for soil layer 7";
+      rflog1 << endl;
+      rflog1 << "               (e.g., DAYSM) " << endl;
+      rflog1 << idaySMfnameL7 << endl << endl;
+      rflog1 << "Please enter the file extension (include the '.'): ";
+      rflog1 << idaySMendL7 << endl << endl;
 
 
-    cout << "Please enter the first part of the file name ";
-    cout << "containing the daily soil moisture data";
-    cout << "for soil layer 8";
-    cout << endl;
-    cout << "               (e.g., DAYSM) " << endl;
+      cout << "Please enter the first part of the file name ";
+      cout << "containing the daily soil moisture data";
+      cout << "for soil layer 8";
+      cout << endl;
+      cout << "               (e.g., DAYSM) " << endl;
     
-    cin >> idaySMfnameL8;
+      cin >> idaySMfnameL8;
 
-    cout << "Please enter the file extension (include the '.'): ";
+      cout << "Please enter the file extension (include the '.'): ";
     
-    cin >> idaySMendL8;
+      cin >> idaySMendL8;
 
-    rflog1 << "Please enter the first part of the file name ";
-    rflog1 << "containing the daily soil moisture data";
-    rflog1 << "for soil layer 8";
-    rflog1 << endl;
-    rflog1 << "               (e.g., DAYSM) " << endl;
-    rflog1 << idaySMfnameL8 << endl << endl;
-    rflog1 << "Please enter the file extension (include the '.'): ";
-    rflog1 << idaySMendL8 << endl << endl;
+      rflog1 << "Please enter the first part of the file name ";
+      rflog1 << "containing the daily soil moisture data";
+      rflog1 << "for soil layer 8";
+      rflog1 << endl;
+      rflog1 << "               (e.g., DAYSM) " << endl;
+      rflog1 << idaySMfnameL8 << endl << endl;
+      rflog1 << "Please enter the file extension (include the '.'): ";
+      rflog1 << idaySMendL8 << endl << endl;
 
 
-    cout << "Please enter the first part of the file name ";
-    cout << "containing the daily soil moisture data";
-    cout << "for soil layer 9";
-    cout << endl;
-    cout << "               (e.g., DAYSM) " << endl;
+      cout << "Please enter the first part of the file name ";
+      cout << "containing the daily soil moisture data";
+      cout << "for soil layer 9";
+      cout << endl;
+      cout << "               (e.g., DAYSM) " << endl;
     
-    cin >> idaySMfnameL9;
+      cin >> idaySMfnameL9;
 
-    cout << "Please enter the file extension (include the '.'): ";
+      cout << "Please enter the file extension (include the '.'): ";
     
-    cin >> idaySMendL9;
+      cin >> idaySMendL9;
 
-    rflog1 << "Please enter the first part of the file name ";
-    rflog1 << "containing the daily soil moisture data";
-    rflog1 << "for soil layer 9";
-    rflog1 << endl;
-    rflog1 << "               (e.g., DAYSM) " << endl;
-    rflog1 << idaySMfnameL9 << endl << endl;
-    rflog1 << "Please enter the file extension (include the '.'): ";
-    rflog1 << idaySMendL9 << endl << endl;
+      rflog1 << "Please enter the first part of the file name ";
+      rflog1 << "containing the daily soil moisture data";
+      rflog1 << "for soil layer 9";
+      rflog1 << endl;
+      rflog1 << "               (e.g., DAYSM) " << endl;
+      rflog1 << idaySMfnameL9 << endl << endl;
+      rflog1 << "Please enter the file extension (include the '.'): ";
+      rflog1 << idaySMendL9 << endl << endl;
+    }
+    else
+    {
+      cout << "Please enter the file name ";
+      cout << "containing the daily soil moisture data";
+      cout << "for soil layer 1";
+      cout << endl;
+      cout << "               (e.g., DAYSM) " << endl;
+    
+      cin >> idaySMfnameL1;
+
+      rflog1 << "Please enter the file name ";
+      rflog1 << "containing the daily soil moisture data";
+      rflog1 << "for soil layer 1";
+      rflog1 << endl;
+      rflog1 << "               (e.g., DAYSM) " << endl;
+      rflog1 << idaySMfnameL1 << endl << endl;
+
+
+      cout << "Please enter the file name ";
+      cout << "containing the daily soil moisture data";
+      cout << "for soil layer 2";
+      cout << endl;
+      cout << "               (e.g., DAYSM) " << endl;
+    
+      cin >> idaySMfnameL2;
+
+      rflog1 << "Please enter the file name ";
+      rflog1 << "containing the daily soil moisture data";
+      rflog1 << "for soil layer 2";
+      rflog1 << endl;
+      rflog1 << "               (e.g., DAYSM) " << endl;
+      rflog1 << idaySMfnameL2 << endl << endl;
+
+
+      cout << "Please enter the file name ";
+      cout << "containing the daily soil moisture data";
+      cout << "for soil layer 3";
+      cout << endl;
+      cout << "               (e.g., DAYSM) " << endl;
+    
+      cin >> idaySMfnameL3;
+
+      rflog1 << "Please enter the file name ";
+      rflog1 << "containing the daily soil moisture data";
+      rflog1 << "for soil layer 3";
+      rflog1 << endl;
+      rflog1 << "               (e.g., DAYSM) " << endl;
+      rflog1 << idaySMfnameL3 << endl << endl;
+
+
+      cout << "Please enter the file name ";
+      cout << "containing the daily soil moisture data";
+      cout << "for soil layer 4";
+      cout << endl;
+      cout << "               (e.g., DAYSM) " << endl;
+    
+      cin >> idaySMfnameL4;
+
+      rflog1 << "Please enter the file name ";
+      rflog1 << "containing the daily soil moisture data";
+      rflog1 << "for soil layer 4";
+      rflog1 << endl;
+      rflog1 << "               (e.g., DAYSM) " << endl;
+      rflog1 << idaySMfnameL4 << endl << endl;
+
+
+      cout << "Please enter the file name ";
+      cout << "containing the daily soil moisture data";
+      cout << "for soil layer 5";
+      cout << endl;
+      cout << "               (e.g., DAYSM) " << endl;
+    
+      cin >> idaySMfnameL5;
+
+      rflog1 << "Please enter the file name ";
+      rflog1 << "containing the daily soil moisture data";
+      rflog1 << "for soil layer 5";
+      rflog1 << endl;
+      rflog1 << "               (e.g., DAYSM) " << endl;
+      rflog1 << idaySMfnameL5 << endl << endl;
+
+
+      cout << "Please enter the file name ";
+      cout << "containing the daily soil moisture data";
+      cout << "for soil layer 6";
+      cout << endl;
+      cout << "               (e.g., DAYSM) " << endl;
+    
+      cin >> idaySMfnameL6;
+
+      rflog1 << "Please enter the file name ";
+      rflog1 << "containing the daily soil moisture data";
+      rflog1 << "for soil layer 6";
+      rflog1 << endl;
+      rflog1 << "               (e.g., DAYSM) " << endl;
+      rflog1 << idaySMfnameL6 << endl << endl;
+
+
+      cout << "Please enter the file name ";
+      cout << "containing the daily soil moisture data";
+      cout << "for soil layer 7";
+      cout << endl;
+      cout << "               (e.g., DAYSM) " << endl;
+    
+      cin >> idaySMfnameL7;
+
+      rflog1 << "Please enter the file name ";
+      rflog1 << "containing the daily soil moisture data";
+      rflog1 << "for soil layer 7";
+      rflog1 << endl;
+      rflog1 << "               (e.g., DAYSM) " << endl;
+      rflog1 << idaySMfnameL7 << endl << endl;
+
+
+      cout << "Please enter the file name ";
+      cout << "containing the daily soil moisture data";
+      cout << "for soil layer 8";
+      cout << endl;
+      cout << "               (e.g., DAYSM) " << endl;
+    
+      cin >> idaySMfnameL8;
+
+      rflog1 << "Please enter the file name ";
+      rflog1 << "containing the daily soil moisture data";
+      rflog1 << "for soil layer 8";
+      rflog1 << endl;
+      rflog1 << "               (e.g., DAYSM) " << endl;
+      rflog1 << idaySMfnameL8 << endl << endl;
+
+
+      cout << "Please enter the file name ";
+      cout << "containing the daily soil moisture data";
+      cout << "for soil layer 9";
+      cout << endl;
+      cout << "               (e.g., DAYSM) " << endl;
+    
+      cin >> idaySMfnameL9;
+
+      rflog1 << "Please enter the file name ";
+      rflog1 << "containing the daily soil moisture data";
+      rflog1 << "for soil layer 9";
+      rflog1 << endl;
+      rflog1 << "               (e.g., DAYSM) " << endl;
+      rflog1 << idaySMfnameL9 << endl << endl;
+    }
   }
 
 };
@@ -389,25 +537,44 @@ void MITclm44::initDayTair( ofstream& rflog1 )
 
   if( 1 == n2oflag )
   {
-    cout << "Please enter the first part of the file name ";
-    cout << "containing the daily air temperature data";
-    cout << endl;
-    cout << "               (e.g., DAYTAIR) " << endl;
+    if( 1 == ttairflag )
+    {
+      cout << "Please enter the first part of the file name ";
+      cout << "containing the daily air temperature data";
+      cout << endl;
+      cout << "               (e.g., DAYTAIR) " << endl;
     
-    cin >> idayTairfname;
+      cin >> idayTairfname;
 
-    cout << "Please enter the file extension (include the '.'): ";
+      cout << "Please enter the file extension (include the '.'): ";
     
-    cin >> idayTairend;
+      cin >> idayTairend;
 
-    rflog1 << "Please enter the first part of the file name ";
-    rflog1 << "containing the daily air temperature data";
-    rflog1 << endl;
-    rflog1 << "               (e.g., DAYTAIR) " << endl;
-    rflog1 << idayTairfname << endl << endl;
-    rflog1 << "Please enter the file extension (include the '.'): ";
-    rflog1 << idayTairend << endl << endl;
+      rflog1 << "Please enter the first part of the file name ";
+      rflog1 << "containing the daily air temperature data";
+      rflog1 << endl;
+      rflog1 << "               (e.g., DAYTAIR) " << endl;
+      rflog1 << idayTairfname << endl << endl;
+      rflog1 << "Please enter the file extension (include the '.'): ";
+      rflog1 << idayTairend << endl << endl;
+    }
+    else
+    {
+      cout << "Please enter the file name ";
+      cout << "containing the daily air temperature data";
+      cout << endl;
+      cout << "               (e.g., DAYTAIR) " << endl;
+    
+      cin >> idayTairfname;
+
+      rflog1 << "Please enter the file name ";
+      rflog1 << "containing the daily air temperature data";
+      rflog1 << endl;
+      rflog1 << "               (e.g., DAYTAIR) " << endl;
+      rflog1 << idayTairfname << endl << endl;
+    }
   }
+
 
 };
 #endif
@@ -426,202 +593,351 @@ void MITclm44::initDayTsoil( ofstream& rflog1 )
   if( 1 == ch4flag 
       || 1 == n2oflag )
   {
-    cout << "Please enter the first part of the file name ";
-    cout << "containing the daily soil temperature data ";
-    cout << "for soil layer 1";
-    cout << endl;
-    cout << "               (e.g., DAYTSOIL) " << endl;
+    if( 1 == ttairflag )
+    {
+      cout << "Please enter the first part of the file name ";
+      cout << "containing the daily soil temperature data ";
+      cout << "for soil layer 1";
+      cout << endl;
+      cout << "               (e.g., DAYTSOIL) " << endl;
     
-    cin >> idayTsoilfnameL1;
+      cin >> idayTsoilfnameL1;
 
-    cout << "Please enter the file extension (include the '.'): ";
+      cout << "Please enter the file extension (include the '.'): ";
     
-    cin >> idayTsoilendL1;
+      cin >> idayTsoilendL1;
 
-    rflog1 << "Please enter the first part of the file name ";
-    rflog1 << "containing the daily soil temperature data";
-    rflog1 << "for soil layer 1";
-    rflog1 << endl;
-    rflog1 << "               (e.g., DAYTSOIL) " << endl;
-    rflog1 << idayTsoilfnameL1 << endl << endl;
-    rflog1 << "Please enter the file extension (include the '.'): ";
-    rflog1 << idayTsoilendL1 << endl << endl;
+      rflog1 << "Please enter the first part of the file name ";
+      rflog1 << "containing the daily soil temperature data";
+      rflog1 << "for soil layer 1";
+      rflog1 << endl;
+      rflog1 << "               (e.g., DAYTSOIL) " << endl;
+      rflog1 << idayTsoilfnameL1 << endl << endl;
+      rflog1 << "Please enter the file extension (include the '.'): ";
+      rflog1 << idayTsoilendL1 << endl << endl;
 
 
-    cout << "Please enter the first part of the file name ";
-    cout << "containing the daily soil temperature data";
-    cout << "for soil layer 2";
-    cout << endl;
-    cout << "               (e.g., DAYTSOIL) " << endl;
+      cout << "Please enter the first part of the file name ";
+      cout << "containing the daily soil temperature data";
+      cout << "for soil layer 2";
+      cout << endl;
+      cout << "               (e.g., DAYTSOIL) " << endl;
     
-    cin >> idayTsoilfnameL2;
+      cin >> idayTsoilfnameL2;
 
-    cout << "Please enter the file extension (include the '.'): ";
+      cout << "Please enter the file extension (include the '.'): ";
     
-    cin >> idayTsoilendL2;
+      cin >> idayTsoilendL2;
 
-    rflog1 << "Please enter the first part of the file name ";
-    rflog1 << "containing the daily soil temperature data";
-    rflog1 << "for soil layer 2";
-    rflog1 << endl;
-    rflog1 << "               (e.g., DAYTSOIL) " << endl;
-    rflog1 << idayTsoilfnameL2 << endl << endl;
-    rflog1 << "Please enter the file extension (include the '.'): ";
-    rflog1 << idayTsoilendL2 << endl << endl;
+      rflog1 << "Please enter the first part of the file name ";
+      rflog1 << "containing the daily soil temperature data";
+      rflog1 << "for soil layer 2";
+      rflog1 << endl;
+      rflog1 << "               (e.g., DAYTSOIL) " << endl;
+      rflog1 << idayTsoilfnameL2 << endl << endl;
+      rflog1 << "Please enter the file extension (include the '.'): ";
+      rflog1 << idayTsoilendL2 << endl << endl;
 
 
-    cout << "Please enter the first part of the file name ";
-    cout << "containing the daily soil temperature data";
-    cout << "for soil layer 3";
-    cout << endl;
-    cout << "               (e.g., DAYTSOIL) " << endl;
+      cout << "Please enter the first part of the file name ";
+      cout << "containing the daily soil temperature data";
+      cout << "for soil layer 3";
+      cout << endl;
+      cout << "               (e.g., DAYTSOIL) " << endl;
     
-    cin >> idayTsoilfnameL3;
+      cin >> idayTsoilfnameL3;
 
-    cout << "Please enter the file extension (include the '.'): ";
+      cout << "Please enter the file extension (include the '.'): ";
     
-    cin >> idayTsoilendL3;
+      cin >> idayTsoilendL3;
 
-    rflog1 << "Please enter the first part of the file name ";
-    rflog1 << "containing the daily soil temperature data";
-    rflog1 << "for soil layer 3";
-    rflog1 << endl;
-    rflog1 << "               (e.g., DAYTSOIL) " << endl;
-    rflog1 << idayTsoilfnameL3 << endl << endl;
-    rflog1 << "Please enter the file extension (include the '.'): ";
-    rflog1 << idayTsoilendL3 << endl << endl;
+      rflog1 << "Please enter the first part of the file name ";
+      rflog1 << "containing the daily soil temperature data";
+      rflog1 << "for soil layer 3";
+      rflog1 << endl;
+      rflog1 << "               (e.g., DAYTSOIL) " << endl;
+      rflog1 << idayTsoilfnameL3 << endl << endl;
+      rflog1 << "Please enter the file extension (include the '.'): ";
+      rflog1 << idayTsoilendL3 << endl << endl;
 
 
-    cout << "Please enter the first part of the file name ";
-    cout << "containing the daily soil temperature data";
-    cout << "for soil layer 4";
-    cout << endl;
-    cout << "               (e.g., DAYTSOIL) " << endl;
+      cout << "Please enter the first part of the file name ";
+      cout << "containing the daily soil temperature data";
+      cout << "for soil layer 4";
+      cout << endl;
+      cout << "               (e.g., DAYTSOIL) " << endl;
     
-    cin >> idayTsoilfnameL4;
+      cin >> idayTsoilfnameL4;
 
-    cout << "Please enter the file extension (include the '.'): ";
+      cout << "Please enter the file extension (include the '.'): ";
     
-    cin >> idayTsoilendL4;
+      cin >> idayTsoilendL4;
 
-    rflog1 << "Please enter the first part of the file name ";
-    rflog1 << "containing the daily soil temperature data";
-    rflog1 << "for soil layer 4";
-    rflog1 << endl;
-    rflog1 << "               (e.g., DAYTSOIL) " << endl;
-    rflog1 << idayTsoilfnameL4 << endl << endl;
-    rflog1 << "Please enter the file extension (include the '.'): ";
-    rflog1 << idayTsoilendL4 << endl << endl;
+      rflog1 << "Please enter the first part of the file name ";
+      rflog1 << "containing the daily soil temperature data";
+      rflog1 << "for soil layer 4";
+      rflog1 << endl;
+      rflog1 << "               (e.g., DAYTSOIL) " << endl;
+      rflog1 << idayTsoilfnameL4 << endl << endl;
+      rflog1 << "Please enter the file extension (include the '.'): ";
+      rflog1 << idayTsoilendL4 << endl << endl;
 
 
-    cout << "Please enter the first part of the file name ";
-    cout << "containing the daily soil temperature data";
-    cout << "for soil layer 5";
-    cout << endl;
-    cout << "               (e.g., DAYTSOIL) " << endl;
+      cout << "Please enter the first part of the file name ";
+      cout << "containing the daily soil temperature data";
+      cout << "for soil layer 5";
+      cout << endl;
+      cout << "               (e.g., DAYTSOIL) " << endl;
     
-    cin >> idayTsoilfnameL5;
+      cin >> idayTsoilfnameL5;
 
-    cout << "Please enter the file extension (include the '.'): ";
+      cout << "Please enter the file extension (include the '.'): ";
     
-    cin >> idayTsoilendL5;
+      cin >> idayTsoilendL5;
 
-    rflog1 << "Please enter the first part of the file name ";
-    rflog1 << "containing the daily soil temperature data";
-    rflog1 << "for soil layer 5";
-    rflog1 << endl;
-    rflog1 << "               (e.g., DAYTSOIL) " << endl;
-    rflog1 << idayTsoilfnameL5 << endl << endl;
-    rflog1 << "Please enter the file extension (include the '.'): ";
-    rflog1 << idayTsoilendL5 << endl << endl;
+      rflog1 << "Please enter the first part of the file name ";
+      rflog1 << "containing the daily soil temperature data";
+      rflog1 << "for soil layer 5";
+      rflog1 << endl;
+      rflog1 << "               (e.g., DAYTSOIL) " << endl;
+      rflog1 << idayTsoilfnameL5 << endl << endl;
+      rflog1 << "Please enter the file extension (include the '.'): ";
+      rflog1 << idayTsoilendL5 << endl << endl;
 
 
-    cout << "Please enter the first part of the file name ";
-    cout << "containing the daily soil temperature data";
-    cout << "for soil layer 6";
-    cout << endl;
-    cout << "               (e.g., DAYTSOIL) " << endl;
+      cout << "Please enter the first part of the file name ";
+      cout << "containing the daily soil temperature data";
+      cout << "for soil layer 6";
+      cout << endl;
+      cout << "               (e.g., DAYTSOIL) " << endl;
     
-    cin >> idayTsoilfnameL6;
+      cin >> idayTsoilfnameL6;
 
-    cout << "Please enter the file extension (include the '.'): ";
+      cout << "Please enter the file extension (include the '.'): ";
     
-    cin >> idayTsoilendL6;
+      cin >> idayTsoilendL6;
 
-    rflog1 << "Please enter the first part of the file name ";
-    rflog1 << "containing the daily soil temperature data";
-    rflog1 << "for soil layer 6";
-    rflog1 << endl;
-    rflog1 << "               (e.g., DAYTSOIL) " << endl;
-    rflog1 << idayTsoilfnameL6 << endl << endl;
-    rflog1 << "Please enter the file extension (include the '.'): ";
-    rflog1 << idayTsoilendL6 << endl << endl;
+      rflog1 << "Please enter the first part of the file name ";
+      rflog1 << "containing the daily soil temperature data";
+      rflog1 << "for soil layer 6";
+      rflog1 << endl;
+      rflog1 << "               (e.g., DAYTSOIL) " << endl;
+      rflog1 << idayTsoilfnameL6 << endl << endl;
+      rflog1 << "Please enter the file extension (include the '.'): ";
+      rflog1 << idayTsoilendL6 << endl << endl;
 
 
-    cout << "Please enter the first part of the file name ";
-    cout << "containing the daily soil temperature data";
-    cout << "for soil layer 7";
-    cout << endl;
-    cout << "               (e.g., DAYTSOIL) " << endl;
+      cout << "Please enter the first part of the file name ";
+      cout << "containing the daily soil temperature data";
+      cout << "for soil layer 7";
+      cout << endl;
+      cout << "               (e.g., DAYTSOIL) " << endl;
     
-    cin >> idayTsoilfnameL7;
+      cin >> idayTsoilfnameL7;
 
-    cout << "Please enter the file extension (include the '.'): ";
+      cout << "Please enter the file extension (include the '.'): ";
     
-    cin >> idayTsoilendL7;
+      cin >> idayTsoilendL7;
 
-    rflog1 << "Please enter the first part of the file name ";
-    rflog1 << "containing the daily soil temperature data";
-    rflog1 << "for soil layer 7";
-    rflog1 << endl;
-    rflog1 << "               (e.g., DAYTSOIL) " << endl;
-    rflog1 << idayTsoilfnameL7 << endl << endl;
-    rflog1 << "Please enter the file extension (include the '.'): ";
-    rflog1 << idayTsoilendL7 << endl << endl;
+      rflog1 << "Please enter the first part of the file name ";
+      rflog1 << "containing the daily soil temperature data";
+      rflog1 << "for soil layer 7";
+      rflog1 << endl;
+      rflog1 << "               (e.g., DAYTSOIL) " << endl;
+      rflog1 << idayTsoilfnameL7 << endl << endl;
+      rflog1 << "Please enter the file extension (include the '.'): ";
+      rflog1 << idayTsoilendL7 << endl << endl;
 
 
-    cout << "Please enter the first part of the file name ";
-    cout << "containing the daily soil temperature data";
-    cout << "for soil layer 8";
-    cout << endl;
-    cout << "               (e.g., DAYTSOIL) " << endl;
+      cout << "Please enter the first part of the file name ";
+      cout << "containing the daily soil temperature data";
+      cout << "for soil layer 8";
+      cout << endl;
+      cout << "               (e.g., DAYTSOIL) " << endl;
     
-    cin >> idayTsoilfnameL8;
+      cin >> idayTsoilfnameL8;
 
-    cout << "Please enter the file extension (include the '.'): ";
+      cout << "Please enter the file extension (include the '.'): ";
     
-    cin >> idayTsoilendL8;
+      cin >> idayTsoilendL8;
 
-    rflog1 << "Please enter the first part of the file name ";
-    rflog1 << "containing the daily soil temperature data";
-    rflog1 << "for soil layer 8";
-    rflog1 << endl;
-    rflog1 << "               (e.g., DAYTSOIL) " << endl;
-    rflog1 << idayTsoilfnameL8 << endl << endl;
-    rflog1 << "Please enter the file extension (include the '.'): ";
-    rflog1 << idayTsoilendL8 << endl << endl;
+      rflog1 << "Please enter the first part of the file name ";
+      rflog1 << "containing the daily soil temperature data";
+      rflog1 << "for soil layer 8";
+      rflog1 << endl;
+      rflog1 << "               (e.g., DAYTSOIL) " << endl;
+      rflog1 << idayTsoilfnameL8 << endl << endl;
+      rflog1 << "Please enter the file extension (include the '.'): ";
+      rflog1 << idayTsoilendL8 << endl << endl;
 
 
-    cout << "Please enter the first part of the file name ";
-    cout << "containing the daily soil temperature data";
-    cout << "for soil layer 9";
-    cout << endl;
-    cout << "               (e.g., DAYTSOIL) " << endl;
+      cout << "Please enter the first part of the file name ";
+      cout << "containing the daily soil temperature data";
+      cout << "for soil layer 9";
+      cout << endl;
+      cout << "               (e.g., DAYTSOIL) " << endl;
     
-    cin >> idayTsoilfnameL9;
+      cin >> idayTsoilfnameL9;
 
-    cout << "Please enter the file extension (include the '.'): ";
+      cout << "Please enter the file extension (include the '.'): ";
     
-    cin >> idayTsoilendL9;
+      cin >> idayTsoilendL9;
 
-    rflog1 << "Please enter the first part of the file name ";
-    rflog1 << "containing the daily soil temperature data";
-    rflog1 << "for soil layer 9";
-    rflog1 << endl;
-    rflog1 << "               (e.g., DAYTSOIL) " << endl;
-    rflog1 << idayTsoilfnameL9 << endl << endl;
-    rflog1 << "Please enter the file extension (include the '.'): ";
-    rflog1 << idayTsoilendL9 << endl << endl;
+      rflog1 << "Please enter the first part of the file name ";
+      rflog1 << "containing the daily soil temperature data";
+      rflog1 << "for soil layer 9";
+      rflog1 << endl;
+      rflog1 << "               (e.g., DAYTSOIL) " << endl;
+      rflog1 << idayTsoilfnameL9 << endl << endl;
+      rflog1 << "Please enter the file extension (include the '.'): ";
+     rflog1 << idayTsoilendL9 << endl << endl;
+    }
+    else
+    {
+      cout << "Please enter the file name ";
+      cout << "containing the daily soil temperature data ";
+      cout << "for soil layer 1";
+      cout << endl;
+      cout << "               (e.g., DAYTSOIL) " << endl;
+    
+      cin >> idayTsoilfnameL1;
+
+      rflog1 << "Please enter the file name ";
+      rflog1 << "containing the daily soil temperature data";
+      rflog1 << "for soil layer 1";
+      rflog1 << endl;
+      rflog1 << "               (e.g., DAYTSOIL) " << endl;
+      rflog1 << idayTsoilfnameL1 << endl << endl;
+
+
+      cout << "Please enter the file name ";
+      cout << "containing the daily soil temperature data";
+      cout << "for soil layer 2";
+      cout << endl;
+      cout << "               (e.g., DAYTSOIL) " << endl;
+    
+      cin >> idayTsoilfnameL2;
+
+      rflog1 << "Please enter the file name ";
+      rflog1 << "containing the daily soil temperature data";
+      rflog1 << "for soil layer 2";
+      rflog1 << endl;
+      rflog1 << "               (e.g., DAYTSOIL) " << endl;
+      rflog1 << idayTsoilfnameL2 << endl << endl;
+
+
+      cout << "Please enter the file name ";
+      cout << "containing the daily soil temperature data";
+      cout << "for soil layer 3";
+      cout << endl;
+      cout << "               (e.g., DAYTSOIL) " << endl;
+    
+      cin >> idayTsoilfnameL3;
+
+      rflog1 << "Please enter the file name ";
+      rflog1 << "containing the daily soil temperature data";
+      rflog1 << "for soil layer 3";
+      rflog1 << endl;
+      rflog1 << "               (e.g., DAYTSOIL) " << endl;
+      rflog1 << idayTsoilfnameL3 << endl << endl;
+
+
+      cout << "Please enter the file name ";
+      cout << "containing the daily soil temperature data";
+      cout << "for soil layer 4";
+      cout << endl;
+      cout << "               (e.g., DAYTSOIL) " << endl;
+    
+      cin >> idayTsoilfnameL4;
+
+      rflog1 << "Please enter the file name ";
+      rflog1 << "containing the daily soil temperature data";
+      rflog1 << "for soil layer 4";
+      rflog1 << endl;
+      rflog1 << "               (e.g., DAYTSOIL) " << endl;
+      rflog1 << idayTsoilfnameL4 << endl << endl;
+
+
+      cout << "Please enter the file name ";
+      cout << "containing the daily soil temperature data";
+      cout << "for soil layer 5";
+      cout << endl;
+      cout << "               (e.g., DAYTSOIL) " << endl;
+    
+      cin >> idayTsoilfnameL5;
+
+      rflog1 << "Please enter the file name ";
+      rflog1 << "containing the daily soil temperature data";
+      rflog1 << "for soil layer 5";
+      rflog1 << endl;
+      rflog1 << "               (e.g., DAYTSOIL) " << endl;
+      rflog1 << idayTsoilfnameL5 << endl << endl;
+
+
+      cout << "Please enter the file name ";
+      cout << "containing the daily soil temperature data";
+      cout << "for soil layer 6";
+      cout << endl;
+      cout << "               (e.g., DAYTSOIL) " << endl;
+    
+      cin >> idayTsoilfnameL6;
+
+      rflog1 << "Please enter the file name ";
+      rflog1 << "containing the daily soil temperature data";
+      rflog1 << "for soil layer 6";
+      rflog1 << endl;
+      rflog1 << "               (e.g., DAYTSOIL) " << endl;
+      rflog1 << idayTsoilfnameL6 << endl << endl;
+
+
+      cout << "Please enter the file name ";
+      cout << "containing the daily soil temperature data";
+      cout << "for soil layer 7";
+      cout << endl;
+      cout << "               (e.g., DAYTSOIL) " << endl;
+    
+      cin >> idayTsoilfnameL7;
+
+      rflog1 << "Please enter the file name ";
+      rflog1 << "containing the daily soil temperature data";
+      rflog1 << "for soil layer 7";
+      rflog1 << endl;
+      rflog1 << "               (e.g., DAYTSOIL) " << endl;
+      rflog1 << idayTsoilfnameL7 << endl << endl;
+
+
+      cout << "Please enter the file name ";
+      cout << "containing the daily soil temperature data";
+      cout << "for soil layer 8";
+      cout << endl;
+      cout << "               (e.g., DAYTSOIL) " << endl;
+    
+      cin >> idayTsoilfnameL8;
+
+
+      rflog1 << "Please enter the file name ";
+      rflog1 << "containing the daily soil temperature data";
+      rflog1 << "for soil layer 8";
+      rflog1 << endl;
+      rflog1 << "               (e.g., DAYTSOIL) " << endl;
+      rflog1 << idayTsoilfnameL8 << endl << endl;
+
+
+      cout << "Please enter the file name ";
+      cout << "containing the daily soil temperature data";
+      cout << "for soil layer 9";
+      cout << endl;
+      cout << "               (e.g., DAYTSOIL) " << endl;
+    
+      cin >> idayTsoilfnameL9;
+
+      rflog1 << "Please enter the file name ";
+      rflog1 << "containing the daily soil temperature data";
+      rflog1 << "for soil layer 9";
+      rflog1 << endl;
+      rflog1 << "               (e.g., DAYTSOIL) " << endl;
+      rflog1 << idayTsoilfnameL9 << endl << endl;
+    }
   }
 
 };
@@ -742,131 +1058,226 @@ void MITclm44::initHourSoilMoist( ofstream& rflog1 )
 
   if( 1 == n2oflag )
   {
-    cout << "Please enter the first part of the file name ";
-    cout << "containing the hourly soil moisture data";
-    cout << "for soil layer 1";
-    cout << endl;
-    cout << "               (e.g., HRSM) " << endl;
+    if( 1 == tprecflag )
+    {
+      cout << "Please enter the first part of the file name ";
+      cout << "containing the hourly soil moisture data";
+      cout << "for soil layer 1";
+      cout << endl;
+      cout << "               (e.g., HRSM) " << endl;
     
-    cin >> ihrSMfnameL1;
+      cin >> ihrSMfnameL1;
 
-    cout << "Please enter the file extension (include the '.'): ";
+      cout << "Please enter the file extension (include the '.'): ";
     
-    cin >> ihrSMendL1;
+      cin >> ihrSMendL1;
 
-    rflog1 << "Please enter the first part of the file name ";
-    rflog1 << "containing the hourly soil moisture data";
-    rflog1 << "for soil layer 1";
-    rflog1 << endl;
-    rflog1 << "               (e.g., HRSM) " << endl;
-    rflog1 << ihrSMfnameL1 << endl << endl;
-    rflog1 << "Please enter the file extension (include the '.'): ";
-    rflog1 << ihrSMendL1 << endl << endl;
+      rflog1 << "Please enter the first part of the file name ";
+      rflog1 << "containing the hourly soil moisture data";
+      rflog1 << "for soil layer 1";
+      rflog1 << endl;
+      rflog1 << "               (e.g., HRSM) " << endl;
+      rflog1 << ihrSMfnameL1 << endl << endl;
+      rflog1 << "Please enter the file extension (include the '.'): ";
+      rflog1 << ihrSMendL1 << endl << endl;
 
-    cout << "Please enter the first part of the file name ";
-    cout << "containing the hourly soil moisture data";
-    cout << "for soil layer 2";
-    cout << endl;
-    cout << "               (e.g., HRSM) " << endl;
+      cout << "Please enter the first part of the file name ";
+      cout << "containing the hourly soil moisture data";
+      cout << "for soil layer 2";
+      cout << endl;
+      cout << "               (e.g., HRSM) " << endl;
     
-    cin >> ihrSMfnameL2;
+      cin >> ihrSMfnameL2;
 
-    cout << "Please enter the file extension (include the '.'): ";
+      cout << "Please enter the file extension (include the '.'): ";
     
-    cin >> ihrSMendL2;
+      cin >> ihrSMendL2;
 
-    rflog1 << "Please enter the first part of the file name ";
-    rflog1 << "containing the hourly soil moisture data";
-    rflog1 << "for soil layer 2";
-    rflog1 << endl;
-    rflog1 << "               (e.g., HRSM) " << endl;
-    rflog1 << ihrSMfnameL2 << endl << endl;
-    rflog1 << "Please enter the file extension (include the '.'): ";
-    rflog1 << ihrSMendL2 << endl << endl;
+      rflog1 << "Please enter the first part of the file name ";
+      rflog1 << "containing the hourly soil moisture data";
+      rflog1 << "for soil layer 2";
+      rflog1 << endl;
+      rflog1 << "               (e.g., HRSM) " << endl;
+      rflog1 << ihrSMfnameL2 << endl << endl;
+      rflog1 << "Please enter the file extension (include the '.'): ";
+      rflog1 << ihrSMendL2 << endl << endl;
 
-    cout << "Please enter the first part of the file name ";
-    cout << "containing the hourly soil moisture data";
-    cout << "for soil layer 3";
-    cout << endl;
-    cout << "               (e.g., HRSM) " << endl;
+      cout << "Please enter the first part of the file name ";
+      cout << "containing the hourly soil moisture data";
+      cout << "for soil layer 3";
+      cout << endl;
+      cout << "               (e.g., HRSM) " << endl;
     
-    cin >> ihrSMfnameL3;
+      cin >> ihrSMfnameL3;
 
-    cout << "Please enter the file extension (include the '.'): ";
+      cout << "Please enter the file extension (include the '.'): ";
     
-    cin >> ihrSMendL3;
+      cin >> ihrSMendL3;
 
-    rflog1 << "Please enter the first part of the file name ";
-    rflog1 << "containing the hourly soil moisture data";
-    rflog1 << "for soil layer 3";
-    rflog1 << endl;
-    rflog1 << "               (e.g., HRSM) " << endl;
-    rflog1 << ihrSMfnameL3 << endl << endl;
-    rflog1 << "Please enter the file extension (include the '.'): ";
-    rflog1 << ihrSMendL3 << endl << endl;
+      rflog1 << "Please enter the first part of the file name ";
+      rflog1 << "containing the hourly soil moisture data";
+      rflog1 << "for soil layer 3";
+      rflog1 << endl;
+      rflog1 << "               (e.g., HRSM) " << endl;
+      rflog1 << ihrSMfnameL3 << endl << endl;
+      rflog1 << "Please enter the file extension (include the '.'): ";
+      rflog1 << ihrSMendL3 << endl << endl;
 
-    cout << "Please enter the first part of the file name ";
-    cout << "containing the hourly soil moisture data";
-    cout << "for soil layer 4";
-    cout << endl;
-    cout << "               (e.g., HRSM) " << endl;
+      cout << "Please enter the first part of the file name ";
+      cout << "containing the hourly soil moisture data";
+      cout << "for soil layer 4";
+      cout << endl;
+      cout << "               (e.g., HRSM) " << endl;
     
-    cin >> ihrSMfnameL4;
+      cin >> ihrSMfnameL4;
 
-    cout << "Please enter the file extension (include the '.'): ";
+      cout << "Please enter the file extension (include the '.'): ";
     
-    cin >> ihrSMendL4;
+      cin >> ihrSMendL4;
 
-    rflog1 << "Please enter the first part of the file name ";
-    rflog1 << "containing the hourly soil moisture data";
-    rflog1 << "for soil layer 4";
-    rflog1 << endl;
-    rflog1 << "               (e.g., HRSM) " << endl;
-    rflog1 << ihrSMfnameL4 << endl << endl;
-    rflog1 << "Please enter the file extension (include the '.'): ";
-    rflog1 << ihrSMendL4 << endl << endl;
+      rflog1 << "Please enter the first part of the file name ";
+      rflog1 << "containing the hourly soil moisture data";
+      rflog1 << "for soil layer 4";
+      rflog1 << endl;
+      rflog1 << "               (e.g., HRSM) " << endl;
+      rflog1 << ihrSMfnameL4 << endl << endl;
+      rflog1 << "Please enter the file extension (include the '.'): ";
+      rflog1 << ihrSMendL4 << endl << endl;
 
-    cout << "Please enter the first part of the file name ";
-    cout << "containing the hourly soil moisture data";
-    cout << "for soil layer 5";
-    cout << endl;
-    cout << "               (e.g., HRSM) " << endl;
+      cout << "Please enter the first part of the file name ";
+      cout << "containing the hourly soil moisture data";
+      cout << "for soil layer 5";
+      cout << endl;
+      cout << "               (e.g., HRSM) " << endl;
     
-    cin >> ihrSMfnameL5;
+      cin >> ihrSMfnameL5;
 
-    cout << "Please enter the file extension (include the '.'): ";
+      cout << "Please enter the file extension (include the '.'): ";
     
-    cin >> ihrSMendL5;
+      cin >> ihrSMendL5;
 
-    rflog1 << "Please enter the first part of the file name ";
-    rflog1 << "containing the hourly soil moisture data";
-    rflog1 << "for soil layer 5";
-    rflog1 << endl;
-    rflog1 << "               (e.g., HRSM) " << endl;
-    rflog1 << ihrSMfnameL5 << endl << endl;
-    rflog1 << "Please enter the file extension (include the '.'): ";
-    rflog1 << ihrSMendL5 << endl << endl;
+      rflog1 << "Please enter the first part of the file name ";
+      rflog1 << "containing the hourly soil moisture data";
+      rflog1 << "for soil layer 5";
+      rflog1 << endl;
+      rflog1 << "               (e.g., HRSM) " << endl;
+      rflog1 << ihrSMfnameL5 << endl << endl;
+      rflog1 << "Please enter the file extension (include the '.'): ";
+      rflog1 << ihrSMendL5 << endl << endl;
 
-    cout << "Please enter the first part of the file name ";
-    cout << "containing the hourly soil moisture data";
-    cout << "for soil layer 6";
-    cout << endl;
-    cout << "               (e.g., HRSM) " << endl;
+      cout << "Please enter the first part of the file name ";
+      cout << "containing the hourly soil moisture data";
+      cout << "for soil layer 6";
+      cout << endl;
+      cout << "               (e.g., HRSM) " << endl;
     
-    cin >> ihrSMfnameL6;
+      cin >> ihrSMfnameL6;
 
-    cout << "Please enter the file extension (include the '.'): ";
+      cout << "Please enter the file extension (include the '.'): ";
     
-    cin >> ihrSMendL6;
+      cin >> ihrSMendL6;
 
-    rflog1 << "Please enter the first part of the file name ";
-    rflog1 << "containing the hourly soil moisture data";
-    rflog1 << "for soil layer 6";
-    rflog1 << endl;
-    rflog1 << "               (e.g., HRSM) " << endl;
-    rflog1 << ihrSMfnameL6 << endl << endl;
-    rflog1 << "Please enter the file extension (include the '.'): ";
-    rflog1 << ihrSMendL6 << endl << endl;
+      rflog1 << "Please enter the first part of the file name ";
+      rflog1 << "containing the hourly soil moisture data";
+      rflog1 << "for soil layer 6";
+      rflog1 << endl;
+      rflog1 << "               (e.g., HRSM) " << endl;
+      rflog1 << ihrSMfnameL6 << endl << endl;
+      rflog1 << "Please enter the file extension (include the '.'): ";
+      rflog1 << ihrSMendL6 << endl << endl;
+    }
+    else
+    {
+      cout << "Please enter the file name ";
+      cout << "containing the hourly soil moisture data";
+      cout << "for soil layer 1";
+      cout << endl;
+      cout << "               (e.g., HRSM) " << endl;
+    
+      cin >> ihrSMfnameL1;
+
+      rflog1 << "Please enter the file name ";
+      rflog1 << "containing the hourly soil moisture data";
+      rflog1 << "for soil layer 1";
+      rflog1 << endl;
+      rflog1 << "               (e.g., HRSM) " << endl;
+      rflog1 << ihrSMfnameL1 << endl << endl;
+
+      cout << "Please enter the file name ";
+      cout << "containing the hourly soil moisture data";
+      cout << "for soil layer 2";
+      cout << endl;
+      cout << "               (e.g., HRSM) " << endl;
+    
+      cin >> ihrSMfnameL2;
+
+      rflog1 << "Please enter the file name ";
+      rflog1 << "containing the hourly soil moisture data";
+      rflog1 << "for soil layer 2";
+      rflog1 << endl;
+      rflog1 << "               (e.g., HRSM) " << endl;
+      rflog1 << ihrSMfnameL2 << endl << endl;
+ 
+      cout << "Please enter the file name ";
+      cout << "containing the hourly soil moisture data";
+      cout << "for soil layer 3";
+      cout << endl;
+      cout << "               (e.g., HRSM) " << endl;
+    
+      cin >> ihrSMfnameL3;
+
+      rflog1 << "Please enter the file name ";
+      rflog1 << "containing the hourly soil moisture data";
+      rflog1 << "for soil layer 3";
+      rflog1 << endl;
+      rflog1 << "               (e.g., HRSM) " << endl;
+      rflog1 << ihrSMfnameL3 << endl << endl;
+
+      cout << "Please enter the file name ";
+      cout << "containing the hourly soil moisture data";
+      cout << "for soil layer 4";
+      cout << endl;
+      cout << "               (e.g., HRSM) " << endl;
+    
+      cin >> ihrSMfnameL4;
+
+      rflog1 << "Please enter the file name ";
+      rflog1 << "containing the hourly soil moisture data";
+      rflog1 << "for soil layer 4";
+      rflog1 << endl;
+      rflog1 << "               (e.g., HRSM) " << endl;
+      rflog1 << ihrSMfnameL4 << endl << endl;
+
+      cout << "Please enter the file name ";
+      cout << "containing the hourly soil moisture data";
+      cout << "for soil layer 5";
+      cout << endl;
+      cout << "               (e.g., HRSM) " << endl;
+    
+      cin >> ihrSMfnameL5;
+
+      rflog1 << "Please enter the file name ";
+      rflog1 << "containing the hourly soil moisture data";
+      rflog1 << "for soil layer 5";
+      rflog1 << endl;
+      rflog1 << "               (e.g., HRSM) " << endl;
+      rflog1 << ihrSMfnameL5 << endl << endl;
+
+      cout << "Please enter the file name ";
+      cout << "containing the hourly soil moisture data";
+      cout << "for soil layer 6";
+      cout << endl;
+      cout << "               (e.g., HRSM) " << endl;
+    
+      cin >> ihrSMfnameL6;
+
+      rflog1 << "Please enter the file name ";
+      rflog1 << "containing the hourly soil moisture data";
+      rflog1 << "for soil layer 6";
+      rflog1 << endl;
+      rflog1 << "               (e.g., HRSM) " << endl;
+      rflog1 << ihrSMfnameL6 << endl << endl;
+    }
   }
 
 };
@@ -1115,24 +1526,42 @@ void MITclm44::initRainDuration( ofstream& rflog1 )
 
   if( 1 == n2oflag )
   {
-    cout << "Please enter the first part of the file name ";
-    cout << "containing the daily rain duration data";
-    cout << endl;
-    cout << "               (e.g., RAINEVNTS) " << endl;
+    if( 1 == tprecflag )
+    {
+      cout << "Please enter the first part of the file name ";
+      cout << "containing the daily rain duration data";
+      cout << endl;
+      cout << "               (e.g., RAINEVNTS) " << endl;
     
-    cin >> irainDurfname;
+      cin >> irainDurfname;
 
-    cout << "Please enter the file extension (include the '.'): ";
+      cout << "Please enter the file extension (include the '.'): ";
     
-    cin >> irainDurend;
+      cin >> irainDurend;
 
-    rflog1 << "Please enter the first part of the file name ";
-    rflog1 << "containing the daily rain duration data";
-    rflog1 << endl;
-    rflog1 << "               (e.g., RAINEVNTS) " << endl;
-    rflog1 << irainDurfname << endl << endl;
-    rflog1 << "Please enter the file extension (include the '.'): ";
-    rflog1 << irainDurend << endl << endl;
+      rflog1 << "Please enter the first part of the file name ";
+      rflog1 << "containing the daily rain duration data";
+      rflog1 << endl;
+      rflog1 << "               (e.g., RAINEVNTS) " << endl;
+      rflog1 << irainDurfname << endl << endl;
+      rflog1 << "Please enter the file extension (include the '.'): ";
+      rflog1 << irainDurend << endl << endl;
+    }
+    else
+    {
+      cout << "Please enter the file name ";
+      cout << "containing the daily rain duration data";
+      cout << endl;
+      cout << "               (e.g., RAINEVNTS) " << endl;
+    
+      cin >> irainDurfname;
+
+      rflog1 << "Please enter the file name ";
+      rflog1 << "containing the daily rain duration data";
+      rflog1 << endl;
+      rflog1 << "               (e.g., RAINEVNTS) " << endl;
+      rflog1 << irainDurfname << endl << endl;
+    }
   }
 
 };
@@ -1151,24 +1580,43 @@ void MITclm44::initRainIntensity( ofstream& rflog1 )
 
   if( 1 == n2oflag )
   {
-    cout << "Please enter the first part of the file name ";
-    cout << "containing the daily rain intensity data";
-    cout << endl;
-    cout << "               (e.g., RAININT) " << endl;
+    if( 1 == tprecflag )
+    {
+      cout << "Please enter the first part of the file name ";
+      cout << "containing the daily rain intensity data";
+      cout << endl;
+      cout << "               (e.g., RAININT) " << endl;
     
-    cin >> irainIntfname;
+      cin >> irainIntfname;
 
-    cout << "Please enter the file extension (include the '.'): ";
+      cout << "Please enter the file extension (include the '.'): ";
     
-    cin >> irainIntend;
+      cin >> irainIntend;
 
-    rflog1 << "Please enter the first part of the file name ";
-    rflog1 << "containing the daily rain intensity data";
-    rflog1 << endl;
-    rflog1 << "               (e.g., RAININT) " << endl;
-    rflog1 << irainIntfname << endl << endl;
-    rflog1 << "Please enter the file extension (include the '.'): ";
-    rflog1 << irainIntend << endl << endl;
+      rflog1 << "Please enter the first part of the file name ";
+      rflog1 << "containing the daily rain intensity data";
+      rflog1 << endl;
+      rflog1 << "               (e.g., RAININT) " << endl;
+      rflog1 << irainIntfname << endl << endl;
+      rflog1 << "Please enter the file extension (include the '.'): ";
+      rflog1 << irainIntend << endl << endl;
+    }
+    else
+    {
+      cout << "Please enter the file name ";
+      cout << "containing the daily rain intensity data";
+      cout << endl;
+      cout << "               (e.g., RAININT) " << endl;
+    
+      cin >> irainIntfname;
+
+      rflog1 << "Please enter the file name ";
+      rflog1 << "containing the daily rain intensity data";
+      rflog1 << endl;
+      rflog1 << "               (e.g., RAININT) " << endl;
+      rflog1 << irainIntfname << endl << endl;
+    }
+
   }
 
 };

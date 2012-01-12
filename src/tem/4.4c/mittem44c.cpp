@@ -148,7 +148,6 @@ double  MITTEM44::b63 =  -1.381676413;
 double  MITTEM44::b64 =   0.45297271;
 double  MITTEM44::b65 =  -0.275;
 
-
 /* **************************************************************
 ************************************************************** */
 
@@ -988,7 +987,18 @@ void MITTEM44::cropDynamics( double pstate[] )
                           ag.getTILLFACTOR( veg.cmnt ),
                           soil.getKH2O() );
 
- 
+  if( 1 == dbug )
+  {
+    cout << "    NETNMIN = " << microbe.getNETNMIN();
+    cout << " rootz = " << soil.getROOTZ();
+    cout << " y[SOLC] = " << pstate[I_SOLC];
+    cout << " y[SOLN] = " << pstate[I_SOLN];
+    cout << " smoist = " << soil.getMOIST();
+    cout << " VSM = " << soil.getVSM();
+    cout << " y[AVLN] = " << pstate[I_AVLN];
+    cout << " kh2o = " << soil.getKH2O();
+    cout << endl;
+  } 
   
   if( ag.getGROWDD() >= GDDSEED )
   {
@@ -1477,7 +1487,7 @@ void MITTEM44::ECDsetODEstate( const int& pdcmnt,
   y[I_UNRMLF] = veg.getUNLEAF12( pdcmnt );
 
   y[I_LEAF] = veg.getINITLEAFMX( pdcmnt );
-    
+
 };
 
 /* *************************************************************
@@ -2894,6 +2904,8 @@ int MITTEM44::monthlyTransient( const int& pdyr,
   }
   else
   {
+    ag.cmnt = veg.cmnt;
+
     soil.updateRootZ( ag.cmnt );
 
     veg.resetEcds( ag.cmnt, soil.getPSIPLUSC() );
@@ -3898,6 +3910,8 @@ int MITTEM44::stepmonth( const int& pdyr,
       }
       else
       {
+        ag.setNATSOIL( y[I_SOLC] );
+
         if( y[I_SOLC] < ag.getNATSOIL() )
         {
           microbe.setKD( (ag.getKD() 
@@ -3913,32 +3927,6 @@ int MITTEM44::stepmonth( const int& pdyr,
 
     resetYrFluxes();
   }
-
-  // Implement disturbance effects
-//
-//  if( disturbflag > 0 && pdm == (disturbmonth-1) )
-//  {
-//    distmnthcnt = 1;
-
-    // Save proportion of vegetation for "seed" for regrowth
-    // after abandonment
-
-//    ag.setNATSEEDC( (y[I_VEGC] * ag.getVRESPAR()) );
-
-//    ag.setNATSEEDSTRN( (y[I_STRN] * ag.getVRESPAR()) );
-
-//    ag.setNATSEEDSTON( (y[I_STON] * ag.getVRESPAR()) );
-
-
-
-    // Establish crops
-
-//    prevy[I_VEGC] = y[I_VEGC] = ZERO;
-
-//    prevy[I_STRN] = y[I_STRN] = ZERO;
-
-//    prevy[I_STON] = y[I_STON] = ZERO;   
-//  }     
 
 
   // set ozone efect from previous month for initial month
@@ -3963,6 +3951,8 @@ int MITTEM44::stepmonth( const int& pdyr,
   }
   else
   {
+    ag.cmnt = veg.cmnt;
+
     veg.setTEMP( ag.cmnt, atms.getTAIR() );
 
     veg.setRESPQ10( ag.cmnt, atms.getTAIR() );
@@ -4138,25 +4128,6 @@ int MITTEM44::stepmonth( const int& pdyr,
   //   (CFLUX plus decay of agricultural and wood products)
   
   nce = ag.getCFLUX() - ag.getTOTPRODDECAYC();
-
-
-  // Determine carbon storage in ecosystem
-  
-  ag.setTOTEC( (y[I_VEGC] 
-               + y[I_SOLC]) );
-
-
-  // Determine total carbon in ecosystems plus
-  //   agricultural and wood products
-                 
-  totalc = ag.getTOTEC() + ag.getTOTPRODC(); 
- 
-  // Update total loss of nitrogen from ecosystem for flux 
-  //   associated with crop residue
-    
-  soil.setNLOST( (soil.getNLOST()
-                  + ag.getCONVRTFLXN()
-                  + ag.getCROPRESIDUEFLXN()) );
 
 
   if( 0 == initFlag )
@@ -4455,7 +4426,40 @@ int MITTEM44::stepmonth( const int& pdyr,
     soil.setCH4CONSUMP( ZERO );
   }
   
-  y[I_SOLC] -= soil.getCH4FLUX();
+  if( soil.getCH4FLUX() > ZERO 
+      && soil.getCH4FLUX() > y[I_SOLC] )
+  {
+    soil.setCH4FLUX( y[I_SOLC] );
+    y[I_SOLC] = ZERO;
+
+    microbe.setNETNMIN( microbe.getNETNMIN() + y[I_SOLN] );
+    y[I_AVLN] += y[I_SOLN];
+    y[I_SOLN] = ZERO;
+
+  }
+  else
+  { 
+    y[I_SOLC] -= soil.getCH4FLUX();
+  }
+
+
+  // Determine carbon storage in ecosystem
+  
+  ag.setTOTEC( (y[I_VEGC] 
+               + y[I_SOLC]) );
+
+
+  // Determine total carbon in ecosystems plus
+  //   agricultural and wood products
+                 
+  totalc = ag.getTOTEC() + ag.getTOTPRODC(); 
+ 
+  // Update total loss of nitrogen from ecosystem for flux 
+  //   associated with crop residue
+    
+  soil.setNLOST( (soil.getNLOST()
+                  + ag.getCONVRTFLXN()
+                  + ag.getCROPRESIDUEFLXN()) );
 
 
   // Update ANNUAL carbon, nitrogen and water pools and fluxes 
@@ -4516,6 +4520,7 @@ int MITTEM44::stepmonth( const int& pdyr,
   //   next month
   
   veg.setPREVUNRMLEAF( y[I_UNRMLF] );
+
   
   // Update ag.prevPROD1, ag.prevPROD10 and ag.prevPROD100
   // for next month
@@ -4529,10 +4534,12 @@ int MITTEM44::stepmonth( const int& pdyr,
   ag.setPREVPROD100C( ag.getPROD100C() );
   ag.setPREVPROD100N( ag.getPROD100N() );
 
+
   // Update ag.prevCropResidue for next month
 
   ag.setPREVCROPRESIDUEC( ag.getCROPRESIDUEC() );
   ag.setPREVCROPRESIDUEN( ag.getCROPRESIDUEN() );
+
 
   //  Update maximum EET, maximum PET, GPP optimum temperature
   //    (veg.topt), and maximum leaf cover (veg.prvleafmx) for

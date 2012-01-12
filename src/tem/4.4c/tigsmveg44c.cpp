@@ -1042,7 +1042,8 @@ double Tveg44::setGV( const double& eet,
   }
   else
   {
-    if( eet / pet <= 0.1 )
+    if( ZERO == pet  ) { tstgv = ZERO; }
+    else if( eet / pet <= 0.1 )
     {
       tstgv = (-10.0 * pow( (eet / pet), 2.0 ))
               + (2.9 * (eet / pet));
@@ -1344,7 +1345,14 @@ void Tveg44::updateDynamics( const int& pdcmnt,
   }
   else
   {
-    eetpet = eet / pet;
+    if( ZERO == pet )
+    {
+      eetpet = ZERO;
+    }
+    else
+    {
+      eetpet = eet / pet;
+    }
 
     fozone = gppxo3( pdcmnt,
                      ingpp,

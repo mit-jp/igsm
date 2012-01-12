@@ -29,6 +29,7 @@ Modifications:
            allowed the LULCCOHRT file to vary over time
 20110705 - DWK changed include from regmittem44b.h to 
            regmittem44c.h
+20111019 - DWK added PET to assignMITCLM2TEM()
                                                                                             
 ****************************************************************
 ************************************************************* */
@@ -223,6 +224,7 @@ int main()
 
       updateLCLUC( dyr, xtem ); 
 
+
       // Run TEM for study region 
     
       for ( dm = 0; dm < CYCLE; ++dm )
@@ -232,8 +234,9 @@ int main()
 
         assignMITCLM2TEM( dyr, dm, xtem );
 
+
         // Run TEM for study region to obtain monthly estimates
-        
+       
         xtem.updateMITTEMregion( dyr, dm );
       
 
@@ -286,7 +289,7 @@ void assignMITCLM2TEM( const int& pdyr,
   string daySMname;
   string hrSMname;
   string precname;
-//  string petname;
+  string petname;
   string eetname;
   string sh2o1name;
   string sh2o2name;
@@ -445,557 +448,991 @@ void assignMITCLM2TEM( const int& pdyr,
     if( 1 == xtem.telmnt[0].mitclm.ch4flag
         || 1 == xtem.telmnt[0].mitclm.n2oflag )
     {
-      // Open MIT daily layer 1 soil temperature file
-      tempfname.str( "" );
-      tempfname << xtem.telmnt[0].mitclm.idayTsoilfnameL1
-                << (xtem.telmnt[0].mitclm.startyr+tstyr)
-                << xtem.telmnt[0].mitclm.idayTsoilendL1;
-      
-      dayTsoilname = tempfname.str();
-
-      ifmitdayTsoilL1.open( dayTsoilname.c_str(), ios::in );
-
-      if( !ifmitdayTsoilL1 )
+      if( 1 == xtem.telmnt[0].mitclm.ttairflag )
       {
-        xtem.flog1 << endl;
-        xtem.flog1 << "Cannot open " << dayTsoilname;
-        xtem.flog1 << " for layer 1 DAYTSOIL data input";
-        xtem.flog1 << endl << endl;
-
-        exit( -1 );
-      }
-
-      // Open MIT daily layer 2 soil temperature file
-      tempfname.str( "" );
-      tempfname << xtem.telmnt[0].mitclm.idayTsoilfnameL2
-                << (xtem.telmnt[0].mitclm.startyr+tstyr)
-                << xtem.telmnt[0].mitclm.idayTsoilendL2;
+        // Open MIT daily layer 1 soil temperature file
+        tempfname.str( "" );
+        tempfname << xtem.telmnt[0].mitclm.idayTsoilfnameL1
+                  << (xtem.telmnt[0].mitclm.startyr+tstyr)
+                  << xtem.telmnt[0].mitclm.idayTsoilendL1;
       
-      dayTsoilname = tempfname.str();
+        dayTsoilname = tempfname.str();
 
-      ifmitdayTsoilL2.open( dayTsoilname.c_str(), ios::in );
+        ifmitdayTsoilL1.open( dayTsoilname.c_str(), ios::in );
 
-      if( !ifmitdayTsoilL2 )
-      {
-        xtem.flog1 << endl;
-        xtem.flog1 << "Cannot open " << dayTsoilname;
-        xtem.flog1 << " for layer 2 DAYTSOIL data input";
-        xtem.flog1 << endl << endl;
+        if( !ifmitdayTsoilL1 )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open " << dayTsoilname;
+          xtem.flog1 << " for layer 1 DAYTSOIL data input";
+          xtem.flog1 << endl << endl;
+
+          exit( -1 );
+        }
+      
+
+        // Open MIT daily layer 2 soil temperature file
+        tempfname.str( "" );
+        tempfname << xtem.telmnt[0].mitclm.idayTsoilfnameL2
+                  << (xtem.telmnt[0].mitclm.startyr+tstyr)
+                  << xtem.telmnt[0].mitclm.idayTsoilendL2;
+      
+        dayTsoilname = tempfname.str();
+
+        ifmitdayTsoilL2.open( dayTsoilname.c_str(), ios::in );
+
+        if( !ifmitdayTsoilL2 )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open " << dayTsoilname;
+          xtem.flog1 << " for layer 2 DAYTSOIL data input";
+          xtem.flog1 << endl << endl;
         
-        exit( -1 );
-      }
+          exit( -1 );
+        }
+ 
 
-      // Open MIT daily layer 3 soil temperature file
-      tempfname.str( "" );
-      tempfname << xtem.telmnt[0].mitclm.idayTsoilfnameL3
-                << (xtem.telmnt[0].mitclm.startyr+tstyr)
+        // Open MIT daily layer 3 soil temperature file
+        tempfname.str( "" );
+        tempfname << xtem.telmnt[0].mitclm.idayTsoilfnameL3
+                  << (xtem.telmnt[0].mitclm.startyr+tstyr)
                 << xtem.telmnt[0].mitclm.idayTsoilendL3;
       
-      dayTsoilname = tempfname.str();
+        dayTsoilname = tempfname.str();
 
-      ifmitdayTsoilL3.open( dayTsoilname.c_str(), ios::in );
+        ifmitdayTsoilL3.open( dayTsoilname.c_str(), ios::in );
 
-      if( !ifmitdayTsoilL3 )
-      {
-        xtem.flog1 << endl;
-        xtem.flog1 << "Cannot open " << dayTsoilname;
-        xtem.flog1 << " for layer 3 DAYTSOIL data input";
-        xtem.flog1 << endl << endl;
+        if( !ifmitdayTsoilL3 )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open " << dayTsoilname;
+          xtem.flog1 << " for layer 3 DAYTSOIL data input";
+          xtem.flog1 << endl << endl;
         
-        exit( -1 );
-      }
+          exit( -1 );
+        }
 
-      // Open MIT daily layer 4 soil temperature file
-      tempfname.str( "" );
-      tempfname << xtem.telmnt[0].mitclm.idayTsoilfnameL4
-                << (xtem.telmnt[0].mitclm.startyr+tstyr)
-                << xtem.telmnt[0].mitclm.idayTsoilendL4;
+
+        // Open MIT daily layer 4 soil temperature file
+        tempfname.str( "" );
+        tempfname << xtem.telmnt[0].mitclm.idayTsoilfnameL4
+                  << (xtem.telmnt[0].mitclm.startyr+tstyr)
+                  << xtem.telmnt[0].mitclm.idayTsoilendL4;
       
-      dayTsoilname = tempfname.str();
+        dayTsoilname = tempfname.str();
 
-      ifmitdayTsoilL4.open( dayTsoilname.c_str(), ios::in );
+        ifmitdayTsoilL4.open( dayTsoilname.c_str(), ios::in );
 
-      if( !ifmitdayTsoilL4 )
-      {
-        xtem.flog1 << endl;
-        xtem.flog1 << "Cannot open " << dayTsoilname;
-        xtem.flog1 << " for layer 4 DAYTSOIL data input";
-        xtem.flog1 << endl << endl;
+        if( !ifmitdayTsoilL4 )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open " << dayTsoilname;
+          xtem.flog1 << " for layer 4 DAYTSOIL data input";
+          xtem.flog1 << endl << endl;
        
-        exit( -1 );
-      }
+          exit( -1 );
+        }
 
-      // Open MIT daily layer 5 soil temperature file
-      tempfname.str( "" );
-      tempfname << xtem.telmnt[0].mitclm.idayTsoilfnameL5
-                << (xtem.telmnt[0].mitclm.startyr+tstyr)
-                << xtem.telmnt[0].mitclm.idayTsoilendL5;
+
+        // Open MIT daily layer 5 soil temperature file
+        tempfname.str( "" );
+        tempfname << xtem.telmnt[0].mitclm.idayTsoilfnameL5
+                  << (xtem.telmnt[0].mitclm.startyr+tstyr)
+                  << xtem.telmnt[0].mitclm.idayTsoilendL5;
     
-      dayTsoilname = tempfname.str();
+        dayTsoilname = tempfname.str();
 
-      ifmitdayTsoilL5.open( dayTsoilname.c_str(), ios::in );
+        ifmitdayTsoilL5.open( dayTsoilname.c_str(), ios::in );
 
-      if( !ifmitdayTsoilL5 )
-      {
-        xtem.flog1 << endl;
-        xtem.flog1 << "Cannot open " << dayTsoilname;
-        xtem.flog1 << " for layer 5 DAYTSOIL data input";
-        xtem.flog1 << endl << endl;
+        if( !ifmitdayTsoilL5 )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open " << dayTsoilname;
+          xtem.flog1 << " for layer 5 DAYTSOIL data input";
+          xtem.flog1 << endl << endl;
         
-        exit( -1 );
-      }
+          exit( -1 );
+        }
 
-      // Open MIT daily layer 6 soil temperature file
-      tempfname.str( "" );
-      tempfname << xtem.telmnt[0].mitclm.idayTsoilfnameL6
-                << (xtem.telmnt[0].mitclm.startyr+tstyr)
-                << xtem.telmnt[0].mitclm.idayTsoilendL6;
+
+        // Open MIT daily layer 6 soil temperature file
+        tempfname.str( "" );
+        tempfname << xtem.telmnt[0].mitclm.idayTsoilfnameL6
+                  << (xtem.telmnt[0].mitclm.startyr+tstyr)
+                  << xtem.telmnt[0].mitclm.idayTsoilendL6;
       
-      dayTsoilname = tempfname.str();
+        dayTsoilname = tempfname.str();
 
-      ifmitdayTsoilL6.open( dayTsoilname.c_str(), ios::in );
+        ifmitdayTsoilL6.open( dayTsoilname.c_str(), ios::in );
 
-      if( !ifmitdayTsoilL6 )
-      {
-        xtem.flog1 << endl;
-        xtem.flog1 << "Cannot open " << dayTsoilname;
-        xtem.flog1 << " for layer 6 DAYTSOIL data input";
-        xtem.flog1 << endl << endl;
+        if( !ifmitdayTsoilL6 )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open " << dayTsoilname;
+          xtem.flog1 << " for layer 6 DAYTSOIL data input";
+          xtem.flog1 << endl << endl;
         
-        exit( -1 );
-      }
+          exit( -1 );
+        }
 
 
-      // Open MIT daily layer 7 soil temperature file
-      tempfname.str( "" );
-      tempfname << xtem.telmnt[0].mitclm.idayTsoilfnameL7
-                << (xtem.telmnt[0].mitclm.startyr+tstyr)
-                << xtem.telmnt[0].mitclm.idayTsoilendL7;
+        // Open MIT daily layer 7 soil temperature file
+        tempfname.str( "" );
+        tempfname << xtem.telmnt[0].mitclm.idayTsoilfnameL7
+                  << (xtem.telmnt[0].mitclm.startyr+tstyr)
+                  << xtem.telmnt[0].mitclm.idayTsoilendL7;
       
-      dayTsoilname = tempfname.str();
+        dayTsoilname = tempfname.str();
 
-      ifmitdayTsoilL7.open( dayTsoilname.c_str(), ios::in );
+        ifmitdayTsoilL7.open( dayTsoilname.c_str(), ios::in );
 
-      if( !ifmitdayTsoilL7 )
-      {
-        xtem.flog1 << endl;
-        xtem.flog1 << "Cannot open " << dayTsoilname;
-        xtem.flog1 << " for layer 7 DAYTSOIL data input";
-        xtem.flog1 << endl << endl;
+        if( !ifmitdayTsoilL7 )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open " << dayTsoilname;
+          xtem.flog1 << " for layer 7 DAYTSOIL data input";
+          xtem.flog1 << endl << endl;
         
-        exit( -1 );
-      }
+          exit( -1 );
+        }
 
 
-      // Open MIT daily layer 8 soil temperature file
-      tempfname.str( "" );
-      tempfname << xtem.telmnt[0].mitclm.idayTsoilfnameL8
-                << (xtem.telmnt[0].mitclm.startyr+tstyr)
-                << xtem.telmnt[0].mitclm.idayTsoilendL8;
+        // Open MIT daily layer 8 soil temperature file
+        tempfname.str( "" );
+        tempfname << xtem.telmnt[0].mitclm.idayTsoilfnameL8
+                  << (xtem.telmnt[0].mitclm.startyr+tstyr)
+                  << xtem.telmnt[0].mitclm.idayTsoilendL8;
       
-      dayTsoilname = tempfname.str();
+        dayTsoilname = tempfname.str();
 
-      ifmitdayTsoilL8.open( dayTsoilname.c_str(), ios::in );
+        ifmitdayTsoilL8.open( dayTsoilname.c_str(), ios::in );
 
-      if( !ifmitdayTsoilL8 )
-      {
-        xtem.flog1 << endl;
-        xtem.flog1 << "Cannot open " << dayTsoilname;
-        xtem.flog1 << " for layer 8 DAYTSOIL data input";
-        xtem.flog1 << endl << endl;
+        if( !ifmitdayTsoilL8 )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open " << dayTsoilname;
+          xtem.flog1 << " for layer 8 DAYTSOIL data input";
+          xtem.flog1 << endl << endl;
         
-        exit( -1 );
-      }
+          exit( -1 );
+        }
 
 
-      // Open MIT daily layer 9 soil temperature file
-
-      tempfname.str( "" );
-      tempfname << xtem.telmnt[0].mitclm.idayTsoilfnameL9
-                << (xtem.telmnt[0].mitclm.startyr+tstyr)
-                << xtem.telmnt[0].mitclm.idayTsoilendL9;
+        // Open MIT daily layer 9 soil temperature file
+        tempfname.str( "" );
+        tempfname << xtem.telmnt[0].mitclm.idayTsoilfnameL9
+                  << (xtem.telmnt[0].mitclm.startyr+tstyr)
+                  << xtem.telmnt[0].mitclm.idayTsoilendL9;
       
-      dayTsoilname = tempfname.str();
+        dayTsoilname = tempfname.str();
 
-      ifmitdayTsoilL9.open( dayTsoilname.c_str(), ios::in );
+        ifmitdayTsoilL9.open( dayTsoilname.c_str(), ios::in );
 
-      if( !ifmitdayTsoilL9 )
-      {
-        xtem.flog1 << endl;
-        xtem.flog1 << "Cannot open " << dayTsoilname;
-        xtem.flog1 << " for layer 9 DAYTSOIL data input";
-        xtem.flog1 << endl << endl;
+        if( !ifmitdayTsoilL9 )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open " << dayTsoilname;
+          xtem.flog1 << " for layer 9 DAYTSOIL data input";
+          xtem.flog1 << endl << endl;
         
-        exit( -1 );
+          exit( -1 );
+        }
+      }
+      else
+      {
+        // Open MIT daily layer 1 soil temperature file
+        ifmitdayTsoilL1.open( xtem.telmnt[0].mitclm.idayTsoilfnameL1.c_str(), 
+                              ios::in );
+
+        if( !ifmitdayTsoilL1 )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open ";
+          xtem.flog1 << xtem.telmnt[0].mitclm.idayTsoilfnameL1;
+          xtem.flog1 << " for layer 1 DAYTSOIL data input";
+          xtem.flog1 << endl << endl;
+
+          exit( -1 );
+        }
+
+
+        // Open MIT daily layer 2 soil temperature file
+        ifmitdayTsoilL2.open( xtem.telmnt[0].mitclm.idayTsoilfnameL2.c_str(), 
+                              ios::in );
+
+        if( !ifmitdayTsoilL2 )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open ";
+          xtem.flog1 << xtem.telmnt[0].mitclm.idayTsoilfnameL2;
+          xtem.flog1 << " for layer 2 DAYTSOIL data input";
+          xtem.flog1 << endl << endl;
+
+          exit( -1 );
+        }
+
+
+        // Open MIT daily layer 3 soil temperature file
+        ifmitdayTsoilL3.open( xtem.telmnt[0].mitclm.idayTsoilfnameL3.c_str(), 
+                              ios::in );
+
+        if( !ifmitdayTsoilL3 )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open ";
+          xtem.flog1 << xtem.telmnt[0].mitclm.idayTsoilfnameL3;
+          xtem.flog1 << " for layer 3 DAYTSOIL data input";
+          xtem.flog1 << endl << endl;
+
+          exit( -1 );
+        }
+
+
+        // Open MIT daily layer 4 soil temperature file
+        ifmitdayTsoilL4.open( xtem.telmnt[0].mitclm.idayTsoilfnameL4.c_str(), 
+                              ios::in );
+
+        if( !ifmitdayTsoilL4 )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open ";
+          xtem.flog1 << xtem.telmnt[0].mitclm.idayTsoilfnameL4;
+          xtem.flog1 << " for layer 4 DAYTSOIL data input";
+          xtem.flog1 << endl << endl;
+
+          exit( -1 );
+        }
+
+
+        // Open MIT daily layer 5 soil temperature file
+        ifmitdayTsoilL5.open( xtem.telmnt[0].mitclm.idayTsoilfnameL5.c_str(), 
+                              ios::in );
+
+        if( !ifmitdayTsoilL5 )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open ";
+          xtem.flog1 << xtem.telmnt[0].mitclm.idayTsoilfnameL5;
+          xtem.flog1 << " for layer 5 DAYTSOIL data input";
+          xtem.flog1 << endl << endl;
+
+          exit( -1 );
+        }
+
+
+        // Open MIT daily layer 6 soil temperature file
+        ifmitdayTsoilL6.open( xtem.telmnt[0].mitclm.idayTsoilfnameL6.c_str(), 
+                              ios::in );
+
+        if( !ifmitdayTsoilL6 )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open ";
+          xtem.flog1 << xtem.telmnt[0].mitclm.idayTsoilfnameL6;
+          xtem.flog1 << " for layer 6 DAYTSOIL data input";
+          xtem.flog1 << endl << endl;
+
+          exit( -1 );
+        }
+
+
+        // Open MIT daily layer 7 soil temperature file
+        ifmitdayTsoilL7.open( xtem.telmnt[0].mitclm.idayTsoilfnameL7.c_str(), 
+                              ios::in );
+
+        if( !ifmitdayTsoilL7 )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open ";
+          xtem.flog1 << xtem.telmnt[0].mitclm.idayTsoilfnameL7;
+          xtem.flog1 << " for layer 7 DAYTSOIL data input";
+          xtem.flog1 << endl << endl;
+
+          exit( -1 );
+        }
+
+
+        // Open MIT daily layer 8 soil temperature file
+        ifmitdayTsoilL8.open( xtem.telmnt[0].mitclm.idayTsoilfnameL8.c_str(), 
+                              ios::in );
+
+        if( !ifmitdayTsoilL8 )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open ";
+          xtem.flog1 << xtem.telmnt[0].mitclm.idayTsoilfnameL8;
+          xtem.flog1 << " for layer 8 DAYTSOIL data input";
+          xtem.flog1 << endl << endl;
+
+          exit( -1 );
+        }
+
+
+        // Open MIT daily layer 9 soil temperature file
+        ifmitdayTsoilL9.open( xtem.telmnt[0].mitclm.idayTsoilfnameL9.c_str(), 
+                              ios::in );
+
+        if( !ifmitdayTsoilL9 )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open ";
+          xtem.flog1 << xtem.telmnt[0].mitclm.idayTsoilfnameL9;
+          xtem.flog1 << " for layer 9 DAYTSOIL data input";
+          xtem.flog1 << endl << endl;
+
+          exit( -1 );
+        }
       }
 
-
-      // Open MIT daily layer 1 soil moisture file
-      tempfname.str( "" );
-      tempfname << xtem.telmnt[0].mitclm.idaySMfnameL1
-                << (xtem.telmnt[0].mitclm.startyr+tstyr)
-                << xtem.telmnt[0].mitclm.idaySMendL1;
+      if( 1 == xtem.telmnt[0].mitclm.tprecflag )
+      {
+        // Open MIT daily layer 1 soil moisture file
+        tempfname.str( "" );
+        tempfname << xtem.telmnt[0].mitclm.idaySMfnameL1
+                  << (xtem.telmnt[0].mitclm.startyr+tstyr)
+                  << xtem.telmnt[0].mitclm.idaySMendL1;
      
-      daySMname = tempfname.str();
+        daySMname = tempfname.str();
 
-      ifmitdaySML1.open( daySMname.c_str(), ios::in );
+        ifmitdaySML1.open( daySMname.c_str(), ios::in );
 
-      if( !ifmitdaySML1 )
-      {
-        xtem.flog1 << endl;
-        xtem.flog1 << "Cannot open " << daySMname;
-        xtem.flog1 << " for daily layer 1 soil moisture data input";
-        xtem.flog1 << endl << endl;
+        if( !ifmitdaySML1 )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open " << daySMname;
+          xtem.flog1 << " for daily layer 1 soil moisture data input";
+          xtem.flog1 << endl << endl;
        
-        exit( -1 );
-      }
+          exit( -1 );
+        }
 
-      // Open MIT daily layer 2 soil moisture file
-      tempfname.str( "" );
-      tempfname << xtem.telmnt[0].mitclm.idaySMfnameL2
-                << (xtem.telmnt[0].mitclm.startyr+tstyr)
-                << xtem.telmnt[0].mitclm.idaySMendL2;
-      
-      daySMname = tempfname.str();
-
-      ifmitdaySML2.open( daySMname.c_str(), ios::in );
-
-      if( !ifmitdaySML2 )
-      {
-        xtem.flog1 << endl;
-        xtem.flog1 << "Cannot open " << daySMname;
-        xtem.flog1 << " for daily layer 2 soil moisture data input";
-        xtem.flog1 << endl << endl;
+        // Open MIT daily layer 2 soil moisture file
+        tempfname.str( "" );
+        tempfname << xtem.telmnt[0].mitclm.idaySMfnameL2
+                  << (xtem.telmnt[0].mitclm.startyr+tstyr)
+                  << xtem.telmnt[0].mitclm.idaySMendL2;
         
-        exit( -1 );
-      }
+        daySMname = tempfname.str();
 
-      // Open MIT daily layer 3 soil moisture file
-      tempfname.str( "" );
-      tempfname << xtem.telmnt[0].mitclm.idaySMfnameL3
-                << (xtem.telmnt[0].mitclm.startyr+tstyr)
-                << xtem.telmnt[0].mitclm.idaySMendL3;
-      
-      daySMname = tempfname.str();
+        ifmitdaySML2.open( daySMname.c_str(), ios::in );
 
-      ifmitdaySML3.open( daySMname.c_str(), ios::in );
-
-      if( !ifmitdaySML3 )
-      {
-        xtem.flog1 << endl;
-        xtem.flog1 << "Cannot open " << daySMname;
-        xtem.flog1 << " for daily layer 3 soil moisture data input";
-        xtem.flog1 << endl << endl;
+        if( !ifmitdaySML2 )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open " << daySMname;
+          xtem.flog1 << " for daily layer 2 soil moisture data input";
+          xtem.flog1 << endl << endl;
         
-        exit( -1 );
-      }
+          exit( -1 );
+        }
 
-      // Open MIT daily layer 4 soil moisture file
-      tempfname.str( "" );
-      tempfname << xtem.telmnt[0].mitclm.idaySMfnameL4
-                << (xtem.telmnt[0].mitclm.startyr+tstyr)
-                << xtem.telmnt[0].mitclm.idaySMendL4;
+        // Open MIT daily layer 3 soil moisture file
+        tempfname.str( "" );
+        tempfname << xtem.telmnt[0].mitclm.idaySMfnameL3
+                  << (xtem.telmnt[0].mitclm.startyr+tstyr)
+                  << xtem.telmnt[0].mitclm.idaySMendL3;
       
-      daySMname = tempfname.str();
+        daySMname = tempfname.str();
 
-      ifmitdaySML4.open( daySMname.c_str(), ios::in );
+        ifmitdaySML3.open( daySMname.c_str(), ios::in );
 
-      if( !ifmitdaySML4 )
-      {
-        xtem.flog1 << endl;
-        xtem.flog1 << "Cannot open " << daySMname;
-        xtem.flog1 << " for daily layer 4 soil moisture data input";
-        xtem.flog1 << endl << endl;
+        if( !ifmitdaySML3 )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open " << daySMname;
+          xtem.flog1 << " for daily layer 3 soil moisture data input";
+          xtem.flog1 << endl << endl;
         
-        exit( -1 );
-      }
+          exit( -1 );
+        }
 
-      // Open MIT daily layer 5 soil moisture file
-      tempfname.str( "" );
-      tempfname << xtem.telmnt[0].mitclm.idaySMfnameL5
-                << (xtem.telmnt[0].mitclm.startyr+tstyr)
-                << xtem.telmnt[0].mitclm.idaySMendL5;
+        // Open MIT daily layer 4 soil moisture file
+        tempfname.str( "" );
+        tempfname << xtem.telmnt[0].mitclm.idaySMfnameL4
+                  << (xtem.telmnt[0].mitclm.startyr+tstyr)
+                  << xtem.telmnt[0].mitclm.idaySMendL4;
       
-      daySMname = tempfname.str();
+        daySMname = tempfname.str();
 
-      ifmitdaySML5.open( daySMname.c_str(), ios::in );
+        ifmitdaySML4.open( daySMname.c_str(), ios::in );
 
-      if( !ifmitdaySML5 )
-      {
-        xtem.flog1 << endl;
-        xtem.flog1 << "Cannot open " << daySMname;
-        xtem.flog1 << " for daily layer 5 soil moisture data input";
-        xtem.flog1 << endl << endl;
-      
-        exit( -1 );
-      }
-
-      // Open MIT daily layer 6 soil moisture file
-      tempfname.str( "" );
-      tempfname << xtem.telmnt[0].mitclm.idaySMfnameL6
-                << (xtem.telmnt[0].mitclm.startyr+tstyr)
-                << xtem.telmnt[0].mitclm.idaySMendL6;
-      
-      daySMname = tempfname.str();
-
-      ifmitdaySML6.open( daySMname.c_str(), ios::in );
-
-      if( !ifmitdaySML6 )
-      {
-        xtem.flog1 << endl;
-        xtem.flog1 << "Cannot open " << daySMname;
-        xtem.flog1 << " for daily layer 6 soil moisture data input";
-        xtem.flog1 << endl << endl;
+        if( !ifmitdaySML4 )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open " << daySMname;
+          xtem.flog1 << " for daily layer 4 soil moisture data input";
+          xtem.flog1 << endl << endl;
         
-        exit( -1 );
-      }
+          exit( -1 );
+        }
 
-
-      // Open MIT daily layer 7 soil moisture file
-      tempfname.str( "" );
-      tempfname << xtem.telmnt[0].mitclm.idaySMfnameL7
-                << (xtem.telmnt[0].mitclm.startyr+tstyr)
-                << xtem.telmnt[0].mitclm.idaySMendL7;
+        // Open MIT daily layer 5 soil moisture file
+        tempfname.str( "" );
+        tempfname << xtem.telmnt[0].mitclm.idaySMfnameL5
+                  << (xtem.telmnt[0].mitclm.startyr+tstyr)
+                  << xtem.telmnt[0].mitclm.idaySMendL5;
       
-      daySMname = tempfname.str();
+        daySMname = tempfname.str();
 
-      ifmitdaySML7.open( daySMname.c_str(), ios::in );
+        ifmitdaySML5.open( daySMname.c_str(), ios::in );
 
-      if( !ifmitdaySML7 )
-      {
-        xtem.flog1 << endl;
-        xtem.flog1 << "Cannot open " << daySMname;
-        xtem.flog1 << " for daily layer 7 soil moisture data input";
-        xtem.flog1 << endl << endl;
-        
-        exit( -1 );
-      }
-
-
-      // Open MIT daily layer 8 soil moisture file
-
-      tempfname.str( "" );
-      tempfname << xtem.telmnt[0].mitclm.idaySMfnameL8
-                << (xtem.telmnt[0].mitclm.startyr+tstyr)
-                << xtem.telmnt[0].mitclm.idaySMendL8;
+        if( !ifmitdaySML5 )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open " << daySMname;
+          xtem.flog1 << " for daily layer 5 soil moisture data input";
+          xtem.flog1 << endl << endl;
       
-      daySMname = tempfname.str();
+          exit( -1 );
+        }
 
-      ifmitdaySML8.open( daySMname.c_str(), ios::in );
-
-      if( !ifmitdaySML8 )
-      {
-        xtem.flog1 << endl;
-        xtem.flog1 << "Cannot open " << daySMname;
-        xtem.flog1 << " for daily layer 8 soil moisture data input";
-        xtem.flog1 << endl << endl;
-        
-        exit( -1 );
-      }
-
-
-      // Open MIT daily layer 9 soil moisture file
-
-      tempfname.str( "" );
-      tempfname << xtem.telmnt[0].mitclm.idaySMfnameL9
-                << (xtem.telmnt[0].mitclm.startyr+tstyr)
-                << xtem.telmnt[0].mitclm.idaySMendL9;
+        // Open MIT daily layer 6 soil moisture file
+        tempfname.str( "" );
+        tempfname << xtem.telmnt[0].mitclm.idaySMfnameL6
+                  << (xtem.telmnt[0].mitclm.startyr+tstyr)
+                  << xtem.telmnt[0].mitclm.idaySMendL6;
       
-      daySMname = tempfname.str();
+        daySMname = tempfname.str();
 
-      ifmitdaySML9.open( daySMname.c_str(), ios::in );
+        ifmitdaySML6.open( daySMname.c_str(), ios::in );
 
-      if( !ifmitdaySML9 )
-      {
-        xtem.flog1 << endl;
-        xtem.flog1 << "Cannot open " << daySMname;
-        xtem.flog1 << " for daily layer 9 soil moisture data input";
-        xtem.flog1 << endl << endl;
+        if( !ifmitdaySML6 )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open " << daySMname;
+          xtem.flog1 << " for daily layer 6 soil moisture data input";
+          xtem.flog1 << endl << endl;
         
-        exit( -1 );
+          exit( -1 );
+        }
+
+
+        // Open MIT daily layer 7 soil moisture file
+        tempfname.str( "" );
+        tempfname << xtem.telmnt[0].mitclm.idaySMfnameL7
+                  << (xtem.telmnt[0].mitclm.startyr+tstyr)
+                  << xtem.telmnt[0].mitclm.idaySMendL7;
+      
+        daySMname = tempfname.str();
+
+        ifmitdaySML7.open( daySMname.c_str(), ios::in );
+
+        if( !ifmitdaySML7 )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open " << daySMname;
+          xtem.flog1 << " for daily layer 7 soil moisture data input";
+          xtem.flog1 << endl << endl;
+        
+          exit( -1 );
+        }
+
+
+        // Open MIT daily layer 8 soil moisture file
+
+        tempfname.str( "" );
+        tempfname << xtem.telmnt[0].mitclm.idaySMfnameL8
+                  << (xtem.telmnt[0].mitclm.startyr+tstyr)
+                  << xtem.telmnt[0].mitclm.idaySMendL8;
+      
+        daySMname = tempfname.str();
+
+        ifmitdaySML8.open( daySMname.c_str(), ios::in );
+
+        if( !ifmitdaySML8 )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open " << daySMname;
+          xtem.flog1 << " for daily layer 8 soil moisture data input";
+          xtem.flog1 << endl << endl;
+        
+          exit( -1 );
+        }
+
+
+        // Open MIT daily layer 9 soil moisture file
+
+        tempfname.str( "" );
+        tempfname << xtem.telmnt[0].mitclm.idaySMfnameL9
+                  << (xtem.telmnt[0].mitclm.startyr+tstyr)
+                  << xtem.telmnt[0].mitclm.idaySMendL9;
+      
+        daySMname = tempfname.str();
+
+        ifmitdaySML9.open( daySMname.c_str(), ios::in );
+
+        if( !ifmitdaySML9 )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open " << daySMname;
+          xtem.flog1 << " for daily layer 9 soil moisture data input";
+          xtem.flog1 << endl << endl;
+        
+          exit( -1 );
+        }
+      }
+      else
+      {
+        ifmitdaySML1.open( xtem.telmnt[0].mitclm.idaySMfnameL1.c_str(), 
+                           ios::in );
+
+        if( !ifmitdaySML1 )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open ";
+          xtem.flog1 << xtem.telmnt[0].mitclm.idaySMfnameL1;
+          xtem.flog1 << " for daily layer 1 soil moisture data input";
+          xtem.flog1 << endl << endl;
+       
+          exit( -1 );
+        }
+
+
+        ifmitdaySML2.open( xtem.telmnt[0].mitclm.idaySMfnameL2.c_str(), 
+                           ios::in );
+
+        if( !ifmitdaySML2 )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open ";
+          xtem.flog1 << xtem.telmnt[0].mitclm.idaySMfnameL2;
+          xtem.flog1 << " for daily layer 2 soil moisture data input";
+          xtem.flog1 << endl << endl;
+       
+          exit( -1 );
+        }
+
+
+        ifmitdaySML3.open( xtem.telmnt[0].mitclm.idaySMfnameL3.c_str(), 
+                           ios::in );
+
+        if( !ifmitdaySML3 )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open ";
+          xtem.flog1 << xtem.telmnt[0].mitclm.idaySMfnameL3;
+          xtem.flog1 << " for daily layer 3 soil moisture data input";
+          xtem.flog1 << endl << endl;
+       
+          exit( -1 );
+        }
+
+
+        ifmitdaySML4.open( xtem.telmnt[0].mitclm.idaySMfnameL4.c_str(), 
+                           ios::in );
+
+        if( !ifmitdaySML4 )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open ";
+          xtem.flog1 << xtem.telmnt[0].mitclm.idaySMfnameL4;
+          xtem.flog1 << " for daily layer 4 soil moisture data input";
+          xtem.flog1 << endl << endl;
+       
+          exit( -1 );
+        }
+
+
+        ifmitdaySML5.open( xtem.telmnt[0].mitclm.idaySMfnameL5.c_str(), 
+                           ios::in );
+
+        if( !ifmitdaySML5 )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open ";
+          xtem.flog1 << xtem.telmnt[0].mitclm.idaySMfnameL5;
+          xtem.flog1 << " for daily layer 5 soil moisture data input";
+          xtem.flog1 << endl << endl;
+       
+          exit( -1 );
+        }
+
+
+        ifmitdaySML6.open( xtem.telmnt[0].mitclm.idaySMfnameL6.c_str(), 
+                           ios::in );
+
+        if( !ifmitdaySML6 )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open ";
+          xtem.flog1 << xtem.telmnt[0].mitclm.idaySMfnameL6;
+          xtem.flog1 << " for daily layer 6 soil moisture data input";
+          xtem.flog1 << endl << endl;
+       
+          exit( -1 );
+        }
+
+
+        ifmitdaySML7.open( xtem.telmnt[0].mitclm.idaySMfnameL7.c_str(), 
+                           ios::in );
+
+        if( !ifmitdaySML7 )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open ";
+          xtem.flog1 << xtem.telmnt[0].mitclm.idaySMfnameL7;
+          xtem.flog1 << " for daily layer 7 soil moisture data input";
+          xtem.flog1 << endl << endl;
+       
+          exit( -1 );
+        }
+
+
+        ifmitdaySML8.open( xtem.telmnt[0].mitclm.idaySMfnameL8.c_str(), 
+                           ios::in );
+
+        if( !ifmitdaySML8 )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open ";
+          xtem.flog1 << xtem.telmnt[0].mitclm.idaySMfnameL8;
+          xtem.flog1 << " for daily layer 8 soil moisture data input";
+          xtem.flog1 << endl << endl;
+       
+          exit( -1 );
+        }
+
+
+        ifmitdaySML9.open( xtem.telmnt[0].mitclm.idaySMfnameL9.c_str(), 
+                           ios::in );
+
+        if( !ifmitdaySML9 )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open ";
+          xtem.flog1 << xtem.telmnt[0].mitclm.idaySMfnameL9;
+          xtem.flog1 << " for daily layer 9 soil moisture data input";
+          xtem.flog1 << endl << endl;
+       
+          exit( -1 );
+        }
       }
     }
-    
+
+
     if( 1 == xtem.telmnt[0].mitclm.n2oflag )
     {
-      // Open MIT daily air temperature file
-      tempfname.str( "" );
-      tempfname << xtem.telmnt[0].mitclm.idayTairfname
-                << (xtem.telmnt[0].mitclm.startyr+tstyr)
-                << xtem.telmnt[0].mitclm.idayTairend;
-      
-      dayTairname = tempfname.str();
-
-      ifmitdayTair.open( dayTairname.c_str(), ios::in );
-
-      if( !ifmitdayTair )
+      if( 1 == xtem.telmnt[0].mitclm.ttairflag )
       {
-        xtem.flog1 << endl;
-        xtem.flog1 << "Cannot open " << dayTairname;
-        xtem.flog1 << " for DAYTAIR data input";
-        xtem.flog1 << endl << endl;
+        // Open MIT daily air temperature file
+        tempfname.str( "" );
+        tempfname << xtem.telmnt[0].mitclm.idayTairfname
+                  << (xtem.telmnt[0].mitclm.startyr+tstyr)
+                  << xtem.telmnt[0].mitclm.idayTairend;
+      
+        dayTairname = tempfname.str();
+
+        ifmitdayTair.open( dayTairname.c_str(), ios::in );
+
+        if( !ifmitdayTair )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open " << dayTairname;
+          xtem.flog1 << " for DAYTAIR data input";
+          xtem.flog1 << endl << endl;
         
-        exit( -1 );
+          exit( -1 );
+        }
+      }
+      else
+      {
+        ifmitdayTair.open( xtem.telmnt[0].mitclm.idayTairfname.c_str(), 
+                           ios::in );
+
+        if( !ifmitdayTair )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open ";
+          xtem.flog1 << xtem.telmnt[0].mitclm.idayTairfname;
+          xtem.flog1 << " for DAYTAIR data input";
+          xtem.flog1 << endl << endl;
+        
+          exit( -1 );
+        }
       }
 
-      // Open MIT daily rain duration file
-      tempfname.str( "" );
-      tempfname << xtem.telmnt[0].mitclm.irainDurfname
-                << (xtem.telmnt[0].mitclm.startyr+tstyr)
-                << xtem.telmnt[0].mitclm.irainDurend;
+      if( 1 == xtem.telmnt[0].mitclm.tprecflag )
+      {
+        // Open MIT daily rain duration file
+        tempfname.str( "" );
+        tempfname << xtem.telmnt[0].mitclm.irainDurfname
+                  << (xtem.telmnt[0].mitclm.startyr+tstyr)
+                  << xtem.telmnt[0].mitclm.irainDurend;
      
-      rainDurname = tempfname.str();
+        rainDurname = tempfname.str();
 
-      ifmitrainDur.open( rainDurname.c_str(), ios::in );
+        ifmitrainDur.open( rainDurname.c_str(), ios::in );
 
-      if( !ifmitrainDur )
-      {
-        xtem.flog1 << endl;
-        xtem.flog1 << "Cannot open " << rainDurname;
-        xtem.flog1 << " for rain duration data input";
-        xtem.flog1 << endl << endl;
+        if( !ifmitrainDur )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open " << rainDurname;
+          xtem.flog1 << " for rain duration data input";
+          xtem.flog1 << endl << endl;
         
-        exit( -1 );
-      }
+          exit( -1 );
+        }
 
-      // Open MIT daily rain intensity file
-      tempfname.str( "" );
-      tempfname << xtem.telmnt[0].mitclm.irainIntfname
-                << (xtem.telmnt[0].mitclm.startyr+tstyr)
-                << xtem.telmnt[0].mitclm.irainIntend;
+        // Open MIT daily rain intensity file
+        tempfname.str( "" );
+        tempfname << xtem.telmnt[0].mitclm.irainIntfname
+                  << (xtem.telmnt[0].mitclm.startyr+tstyr)
+                  << xtem.telmnt[0].mitclm.irainIntend;
       
-      rainIntname = tempfname.str();
+        rainIntname = tempfname.str();
 
-      ifmitrainInt.open( rainIntname.c_str(), ios::in );
+        ifmitrainInt.open( rainIntname.c_str(), ios::in );
 
-      if( !ifmitrainInt )
-      {
-        xtem.flog1 << endl;
-        xtem.flog1 << "Cannot open " << rainIntname;
-        xtem.flog1 << " for rain intensity data input";
-        xtem.flog1 << endl << endl;
+        if( !ifmitrainInt )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open " << rainIntname;
+          xtem.flog1 << " for rain intensity data input";
+          xtem.flog1 << endl << endl;
         
-        exit( -1 );
-      }
+          exit( -1 );
+        }
 
-      // Open MIT hourly layer 1 soil moisture file
-      tempfname.str( "" );
-      tempfname << xtem.telmnt[0].mitclm.ihrSMfnameL1
-                << (xtem.telmnt[0].mitclm.startyr+tstyr)
-                << xtem.telmnt[0].mitclm.ihrSMendL1;
+        // Open MIT hourly layer 1 soil moisture file
+        tempfname.str( "" );
+        tempfname << xtem.telmnt[0].mitclm.ihrSMfnameL1
+                  << (xtem.telmnt[0].mitclm.startyr+tstyr)
+                  << xtem.telmnt[0].mitclm.ihrSMendL1;
       
-      hrSMname = tempfname.str();
+        hrSMname = tempfname.str();
 
-      ifmithrSML1.open( hrSMname.c_str(), ios::in );
+        ifmithrSML1.open( hrSMname.c_str(), ios::in );
 
-      if( !ifmithrSML1 )
-      {
-        xtem.flog1 << endl;
-        xtem.flog1 << "Cannot open " << hrSMname;
-        xtem.flog1 << " for hourly layer 1 soil moisture data input";
-        xtem.flog1 << endl << endl;
+        if( !ifmithrSML1 )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open " << hrSMname;
+          xtem.flog1 << " for hourly layer 1 soil moisture data input";
+          xtem.flog1 << endl << endl;
         
-        exit( -1 );
-      }
+          exit( -1 );
+        }
 
-      // Open MIT hourly layer 2 soil moisture file
-      tempfname.str( "" );
-      tempfname << xtem.telmnt[0].mitclm.ihrSMfnameL2
-                << (xtem.telmnt[0].mitclm.startyr+tstyr)
-                << xtem.telmnt[0].mitclm.ihrSMendL2;
+        // Open MIT hourly layer 2 soil moisture file
+        tempfname.str( "" );
+        tempfname << xtem.telmnt[0].mitclm.ihrSMfnameL2
+                  << (xtem.telmnt[0].mitclm.startyr+tstyr)
+                  << xtem.telmnt[0].mitclm.ihrSMendL2;
       
-      hrSMname = tempfname.str();
+        hrSMname = tempfname.str();
 
-      ifmithrSML2.open( hrSMname.c_str(), ios::in );
+        ifmithrSML2.open( hrSMname.c_str(), ios::in );
 
-      if( !ifmithrSML2 )
-      {
-        xtem.flog1 << endl;
-        xtem.flog1 << "Cannot open " << hrSMname;
-        xtem.flog1 << " for hourly layer 2 soil moisture data input";
-        xtem.flog1 << endl << endl;
+        if( !ifmithrSML2 )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open " << hrSMname;
+          xtem.flog1 << " for hourly layer 2 soil moisture data input";
+          xtem.flog1 << endl << endl;
        
-        exit( -1 );
-      }
+          exit( -1 );
+        }
 
-      // Open MIT hourly layer 3 soil moisture file
-      tempfname.str( "" );
-      tempfname << xtem.telmnt[0].mitclm.ihrSMfnameL3
-                << (xtem.telmnt[0].mitclm.startyr+tstyr)
-                << xtem.telmnt[0].mitclm.ihrSMendL3;
+        // Open MIT hourly layer 3 soil moisture file
+        tempfname.str( "" );
+        tempfname << xtem.telmnt[0].mitclm.ihrSMfnameL3
+                  << (xtem.telmnt[0].mitclm.startyr+tstyr)
+                  << xtem.telmnt[0].mitclm.ihrSMendL3;
       
-      hrSMname = tempfname.str();
+        hrSMname = tempfname.str();
 
-      ifmithrSML3.open( hrSMname.c_str(), ios::in );
+        ifmithrSML3.open( hrSMname.c_str(), ios::in );
 
-      if( !ifmithrSML3 )
-      {
-        xtem.flog1 << endl;
-        xtem.flog1 << "Cannot open " << hrSMname;
-        xtem.flog1 << " for hourly layer 3 soil moisture data input";
-        xtem.flog1 << endl << endl;
+        if( !ifmithrSML3 )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open " << hrSMname;
+          xtem.flog1 << " for hourly layer 3 soil moisture data input";
+          xtem.flog1 << endl << endl;
         
-        exit( -1 );
-      }
+          exit( -1 );
+        }
 
-      // Open MIT hourly layer 4 soil moisture file
-      tempfname.str( "" );
-      tempfname << xtem.telmnt[0].mitclm.ihrSMfnameL4
-                << (xtem.telmnt[0].mitclm.startyr+tstyr)
-                << xtem.telmnt[0].mitclm.ihrSMendL4;
+        // Open MIT hourly layer 4 soil moisture file
+        tempfname.str( "" );
+        tempfname << xtem.telmnt[0].mitclm.ihrSMfnameL4
+                  << (xtem.telmnt[0].mitclm.startyr+tstyr)
+                  << xtem.telmnt[0].mitclm.ihrSMendL4;
       
-      hrSMname = tempfname.str();
+        hrSMname = tempfname.str();
 
-      ifmithrSML4.open( hrSMname.c_str(), ios::in );
+        ifmithrSML4.open( hrSMname.c_str(), ios::in );
 
-      if( !ifmithrSML4 )
-      {
-        xtem.flog1 << endl;
-        xtem.flog1 << "Cannot open " << hrSMname;
-        xtem.flog1 << " for hourly layer 4 soil moisture data input";
-        xtem.flog1 << endl << endl;
+        if( !ifmithrSML4 )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open " << hrSMname;
+          xtem.flog1 << " for hourly layer 4 soil moisture data input";
+          xtem.flog1 << endl << endl;
       
-        exit( -1 );
-      }
+          exit( -1 );
+        }
 
-      // Open MIT hourly layer 5 soil moisture file
-      tempfname.str( "" );
-      tempfname << xtem.telmnt[0].mitclm.ihrSMfnameL5
-                << (xtem.telmnt[0].mitclm.startyr+tstyr)
-                << xtem.telmnt[0].mitclm.ihrSMendL5;
+        // Open MIT hourly layer 5 soil moisture file
+        tempfname.str( "" );
+        tempfname << xtem.telmnt[0].mitclm.ihrSMfnameL5
+                  << (xtem.telmnt[0].mitclm.startyr+tstyr)
+                  << xtem.telmnt[0].mitclm.ihrSMendL5;
      
-      hrSMname = tempfname.str();
+        hrSMname = tempfname.str();
 
-      ifmithrSML5.open( hrSMname.c_str(), ios::in );
+        ifmithrSML5.open( hrSMname.c_str(), ios::in );
 
-      if( !ifmithrSML5 )
-      {
-        xtem.flog1 << endl;
-        xtem.flog1 << "Cannot open " << hrSMname;
-        xtem.flog1 << " for hourly layer 5 soil moisture data input";
-        xtem.flog1 << endl << endl;
+        if( !ifmithrSML5 )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open " << hrSMname;
+          xtem.flog1 << " for hourly layer 5 soil moisture data input";
+          xtem.flog1 << endl << endl;
        
-        exit( -1 );
-      }
+          exit( -1 );
+        }
 
-      // Open MIT hourly layer 6 soil moisture file
-      tempfname.str( "" );
-      tempfname << xtem.telmnt[0].mitclm.ihrSMfnameL6
-                << (xtem.telmnt[0].mitclm.startyr+tstyr)
-                << xtem.telmnt[0].mitclm.ihrSMendL6;
+        // Open MIT hourly layer 6 soil moisture file
+        tempfname.str( "" );
+        tempfname << xtem.telmnt[0].mitclm.ihrSMfnameL6
+                  << (xtem.telmnt[0].mitclm.startyr+tstyr)
+                  << xtem.telmnt[0].mitclm.ihrSMendL6;
      
-      hrSMname = tempfname.str();
+        hrSMname = tempfname.str();
 
-      ifmithrSML6.open( hrSMname.c_str(), ios::in );
+        ifmithrSML6.open( hrSMname.c_str(), ios::in );
 
-      if( !ifmithrSML6 )
-      {
-        xtem.flog1 << endl;
-        xtem.flog1 << "Cannot open " << hrSMname;
-        xtem.flog1 << " for hourly layer 6 soil moisture data input";
-        xtem.flog1 << endl << endl;
+        if( !ifmithrSML6 )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open " << hrSMname;
+          xtem.flog1 << " for hourly layer 6 soil moisture data input";
+          xtem.flog1 << endl << endl;
         
-        exit( -1 );
+          exit( -1 );
+        }
+      }
+      else
+      {
+        ifmitrainDur.open( xtem.telmnt[0].mitclm.irainDurfname.c_str(), 
+                           ios::in );
+
+        if( !ifmitrainDur )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open ";
+          xtem.flog1 << xtem.telmnt[0].mitclm.irainDurfname;
+          xtem.flog1 << " for rain duration data input";
+          xtem.flog1 << endl << endl;
+        
+          exit( -1 );
+        }
+
+
+        ifmitrainInt.open( xtem.telmnt[0].mitclm.irainIntfname.c_str(), 
+                           ios::in );
+
+        if( !ifmitrainInt )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open ";
+          xtem.flog1 << xtem.telmnt[0].mitclm.irainIntfname;
+          xtem.flog1 << " for rain intensity data input";
+          xtem.flog1 << endl << endl;
+        
+          exit( -1 );
+        }
+
+
+        ifmithrSML1.open( xtem.telmnt[0].mitclm.ihrSMfnameL1.c_str(), 
+                          ios::in );
+
+        if( !ifmithrSML1 )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open ";
+          xtem.flog1 << xtem.telmnt[0].mitclm.ihrSMfnameL1;
+          xtem.flog1 << " for hourly layer 1 soil moisture data input";
+          xtem.flog1 << endl << endl;
+        
+          exit( -1 );
+        }
+
+
+        ifmithrSML2.open( xtem.telmnt[0].mitclm.ihrSMfnameL2.c_str(), 
+                          ios::in );
+
+        if( !ifmithrSML2 )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open ";
+          xtem.flog1 << xtem.telmnt[0].mitclm.ihrSMfnameL2;
+          xtem.flog1 << " for hourly layer 2 soil moisture data input";
+          xtem.flog1 << endl << endl;
+        
+          exit( -1 );
+        }
+
+
+        ifmithrSML3.open( xtem.telmnt[0].mitclm.ihrSMfnameL3.c_str(), 
+                          ios::in );
+
+        if( !ifmithrSML3 )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open ";
+          xtem.flog1 << xtem.telmnt[0].mitclm.ihrSMfnameL3;
+          xtem.flog1 << " for hourly layer 3 soil moisture data input";
+          xtem.flog1 << endl << endl;
+        
+          exit( -1 );
+        }
+
+
+        ifmithrSML4.open( xtem.telmnt[0].mitclm.ihrSMfnameL4.c_str(), 
+                          ios::in );
+
+        if( !ifmithrSML4 )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open ";
+          xtem.flog1 << xtem.telmnt[0].mitclm.ihrSMfnameL4;
+          xtem.flog1 << " for hourly layer 4 soil moisture data input";
+          xtem.flog1 << endl << endl;
+        
+          exit( -1 );
+        }
+
+
+        ifmithrSML5.open( xtem.telmnt[0].mitclm.ihrSMfnameL5.c_str(), 
+                          ios::in );
+
+        if( !ifmithrSML5 )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open ";
+          xtem.flog1 << xtem.telmnt[0].mitclm.ihrSMfnameL5;
+          xtem.flog1 << " for hourly layer 5 soil moisture data input";
+          xtem.flog1 << endl << endl;
+        
+          exit( -1 );
+        }
+
+
+        ifmithrSML6.open( xtem.telmnt[0].mitclm.ihrSMfnameL6.c_str(), 
+                          ios::in );
+
+        if( !ifmithrSML6 )
+        {
+          xtem.flog1 << endl;
+          xtem.flog1 << "Cannot open ";
+          xtem.flog1 << xtem.telmnt[0].mitclm.ihrSMfnameL6;
+          xtem.flog1 << " for hourly layer 6 soil moisture data input";
+          xtem.flog1 << endl << endl;
+        
+          exit( -1 );
+        }
       }
     }
     
@@ -1382,6 +1819,7 @@ void assignMITCLM2TEM( const int& pdyr,
                            ifmithrSML5,
                            ifmithrSML6,
                            ifmitprec,
+                           ifmitpet,
                            ifmiteet,
                            ifmitsh2o1,
                            ifmitsh2o2,
@@ -1438,7 +1876,7 @@ void assignMITCLM2TEM( const int& pdyr,
 
     ifmitprec.close();
   
-//    ifmitpet.close();
+    ifmitpet.close();
   
     ifmiteet.close();
   
@@ -1579,7 +2017,7 @@ void assignTEM2MITCLM( const int& pdyr,
 void initLCLUC( RegMITTEM& xtem )
 {
   int dyr;
-
+  int ichrt;
   
   // Hand 0ff startyr from clm
   
@@ -1615,16 +2053,19 @@ void initLCLUC( RegMITTEM& xtem )
   xtem.flog1 << "Please enter the file name containing the land area ";
   xtem.flog1 << "of grid cells in the region:";
   xtem.flog1 << endl;
-  xtem.flog1 << "        (e.g., LANDAREA) " << endl;
+  xtem.flog1 << "        (e.g., LANDAREA) " << endl  ;
 
   xtem.flog1 << xtem.ilandareafname << endl << endl;
 
-
-  if( 1 == xtem.telmnt[0].lcluc.tlulcflag )
+  if( 0 == xtem.equil )
   {
     xtem.telmnt[0].lcluc.initCohorts( xtem.flog1 );
   }
-  
+  else
+  {
+    xtem.telmnt[0].lcluc.initPotvegCohorts( xtem.flog1 );
+  }
+
   dyr = 0;
   updateLCLUC( dyr, xtem ); 
      
@@ -1665,7 +2106,7 @@ void initMITCLM( RegMITTEM& xtem )
  // Set filenames for spatially explicit potential 
  //   evapotranspiration data
   
-//  xtem.telmnt[0].mitclm.initPET( xtem.flog1 );
+  xtem.telmnt[0].mitclm.initPET( xtem.flog1 );
   
   // Set filenames for spatially explicit estimated actual 
   //   evapotranspiration data
@@ -1728,6 +2169,21 @@ void initMITCLM( RegMITTEM& xtem )
   xtem.telmnt[0].mitclm.setCO2Flags( xtem.flog1, xtem.equil );
   xtem.telmnt[0].mitclm.initCO2( xtem.flog1 );
   
+  if( 0 == xtem.telmnt[0].mitclm.tco2flag )
+  {
+    cout << "Please enter the file name containing ";
+    cout << "the annual atmospheric CO2 data" << endl;
+    cout << "               (e.g., CO2) " << endl;
+
+    cin >> xtem.telmnt[0].mitclm.ico2fname;
+
+    xtem.flog1 << "Please enter the file name containing ";
+    xtem.flog1 << "the annual transient atmospheric CO2 ";
+    xtem.flog1 << "data: " << endl;
+    xtem.flog1 << "               (e.g., CO2) " << endl;
+    xtem.flog1 << xtem.telmnt[0].mitclm.ico2fname << endl << endl;
+  }
+
 
   // Set file names for CFLUX output from TEM
 
@@ -1774,13 +2230,19 @@ void initMITCLM( RegMITTEM& xtem )
   }
   else
   {
-    cout << "Source code has not yet been evaluated";
-    cout << " for this set of conditions" << endl;
+    dyr = 0;
+    dm = 0;
 
-    xtem.flog1 << "Source code has not yet been evaluated";
-    xtem.flog1 << " for this set of conditions" << endl;
+    assignMITCLM2TEM( dyr, dm, xtem );
 
-    exit( 0 );
+
+//    cout << "Source code has not yet been evaluated";
+//    cout << " for this set of conditions" << endl;
+
+//    xtem.flog1 << "Source code has not yet been evaluated";
+//    xtem.flog1 << " for this set of conditions" << endl;
+
+//    exit( 0 );
   }
 
 };
@@ -1812,14 +2274,15 @@ void initTEM( RegMITTEM& xtem )
 
   if( 0 == xtem.istateflag ) 
   { 
+
     dm = 0;
     xtem.initializeMITTEMregion( dm );
-    
+
     for( dm = 1; dm < CYCLE; ++dm )
     {
       assignMITCLM2TEM( dyr, dm, xtem );
       xtem.initializeMITTEMregion( dm );
-    }  
+    }     
   }
   else
   {
@@ -1829,6 +2292,7 @@ void initTEM( RegMITTEM& xtem )
     {
       assignMITCLM2TEM( dyr, dm, xtem );
     }
+
 
     // Use December climate for initialization
 
@@ -1876,7 +2340,6 @@ void updateLCLUC( int& pdyr, RegMITTEM& xtem )
       exit( -1 );
     }
 
-
     // Open land area file
 
     iflandarea = fopen( xtem.ilandareafname.c_str(), "r" );
@@ -1891,8 +2354,9 @@ void updateLCLUC( int& pdyr, RegMITTEM& xtem )
     }
   }
 
-  if( 0 == xtem.telmnt[0].lcluc.tlulcflag
-  	  || (0 == xtem.istateflag && 0 == pdyr) )
+ 
+  if( 0 == xtem.telmnt[0].lcluc.tlulcflag )
+//      || (0 == xtem.istateflag && 0 == pdyr) )
   {
     // Open land use/land cover cohort file
 
@@ -1928,7 +2392,7 @@ void updateLCLUC( int& pdyr, RegMITTEM& xtem )
     //   for spin-up  
       
     tempfname.str( "" );
-     
+    
     tempfname << xtem.telmnt[0].lcluc.ilulcfname
               << (xtem.telmnt[0].mitclm.startyr+tstyr) 
               << xtem.telmnt[0].lcluc.ilulcend;
@@ -1945,13 +2409,13 @@ void updateLCLUC( int& pdyr, RegMITTEM& xtem )
       exit( -1 );
     }
   }
-
+  
   xtem.updateLCLUCregion( pdyr, ifnumchrts, iflandarea, iflulc );
 
-  fclose( ifnumchrts );
-    
-  fclose( iflandarea );
+//  fclose( ifnumchrts );
+   
+//  fclose( iflandarea );
 
-  fclose( iflulc );
+//  fclose( iflulc );
 
 };

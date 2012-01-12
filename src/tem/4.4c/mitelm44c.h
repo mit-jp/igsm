@@ -203,6 +203,8 @@ class MITelmnt44
      float col;
 
      string contnent;
+
+     int dbug;
      
 //     double elev;
      
@@ -343,8 +345,8 @@ class MITelmnt44
 
      void updateChangedCohort( const int& pichrt,
                                const long& pinitarea,
-                               const long& ppropConvertedArea,
-                               const long& ppropAbandonedArea,
+                               const double& ppropConvertedArea,
+                               const double& ppropAbandonedArea,
                                Tveg44& pabandonedVeg,
                                MITsoil44& pconvertedSoil,
                                MITsoil44& pabandonedSoil,

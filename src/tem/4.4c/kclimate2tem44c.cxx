@@ -67,6 +67,8 @@
 
 extern "C" {
 
+  int dbug = 0;
+
 //  #include "climate4tem437.hpp"
 //  extern "C" struct
   //{
@@ -143,7 +145,7 @@ RegMITTEM xtem;
   {
     // Extrapolates TEM across the globe for a single year
   
-    cout << " Call TEM44c  " << year << " " <<  mn << endl;
+    cout << " Call TEM  " << year << " " <<  mn << endl;
     
     xtem.updateMITTEMregion( year,mn );
   }

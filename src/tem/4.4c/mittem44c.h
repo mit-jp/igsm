@@ -610,6 +610,8 @@ class MITTEM44
      
      static double ctol;
 
+     int dbug;
+
      static int diffyr;
 
      // Counter of months since disturbance

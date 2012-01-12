@@ -66,6 +66,7 @@ Modifications:
 20110715 - DWK changed access to updateLCLUCregion() to occur 
            only in the stand-alone version of TEM
 20110715 - DWK added include landareadat44c.h and lulcchrt44c.h
+20111019 - DWK added ifstream ifpet to updateMITCLMregion()
                                                                                               
 ****************************************************************
 ************************************************************* */
@@ -229,6 +230,7 @@ class RegMITTEM
                                 ifstream& ifhrSML5,
                                 ifstream& ifhrSML6,
                                 ifstream& ifprec,
+                                ifstream& ifpet,
                                 ifstream& ifeet,
                                 ifstream& ifsh2o1,
                                 ifstream& ifsh2o2,

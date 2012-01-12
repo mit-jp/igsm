@@ -142,7 +142,7 @@ void LulcCohortdata44::out( ofstream& ofile,
   ofile << year << ' ';
   ofile << icohort << ' ';
   ofile << currentveg << ' ';
-  ofile << setprecision( 9 ) << fracLandArea << ' ';
+  ofile << setprecision( 16 ) << fracLandArea << ' ';
   ofile << region;
   ofile << endl;
 

@@ -77,21 +77,23 @@ void MITHrClmData44::get( ifstream& ifile )
   
   ifile >> year;
 
+  ifile >> day;
+
   ifile >> hour24;
 
-  ifile >> hrname;
+//  ifile >> hrname;
 
-  ifile >> dayname1;
+//  ifile >> dayname1;
 
-  ifile >> dayname2;
+//  ifile >> dayname2;
 
-  ifile >> day;
+//  ifile >> day;
 
   ifile >> varname;
   
   for( dmlat = 0; dmlat < MXMITNLAT; ++dmlat )
   {
-    for( ichrt = 0; ichrt < 19; ++ichrt )
+    for( ichrt = 0; ichrt < CLMMXNVEG; ++ichrt )
     {
       ifile >> latband[dmlat][ichrt];
     }
@@ -152,7 +154,7 @@ void MITHrClmData44::writeclm( ofstream& ofile,
   
   for( dmlat = 0; dmlat < MXMITNLAT; ++dmlat )
   {
-    for( ichrt = 0; ichrt < 19; ++ichrt )
+    for( ichrt = 0; ichrt < CLMMXNVEG; ++ichrt )
     {
       ofile << "  " << setprecision( 2 ) << setw( 8 ) << clm.latband[dmlat][ichrt];
     }

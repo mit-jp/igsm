@@ -34,6 +34,9 @@ LANDCOVER4TEM44C.HPP  - Land cover variables shared between TEM
     // Fraction of total area in an element that is covered by
     //   land for a region of MAXNGRD elements
     double landFrac[MAXNGRD]; 
+
+    // Initial area of vegetation cohort
+    long initialCohortArea[MAXNGRD][CLMMXNVEG]; 
    
   } landcover4tem_; 
 
@@ -53,6 +56,9 @@ LANDCOVER4TEM44C.HPP  - Land cover variables shared between TEM
     // Fraction of total area in an element that is covered by
     //   land for a region of MAXNGRD elements
     double landFrac[MAXNGRD]; 
+
+    // Initial area of vegetation cohort
+    long initialCohortArea[MAXNGRD][CLMMXNVEG]; 
 
   } landcover4tem_; 
 #endif

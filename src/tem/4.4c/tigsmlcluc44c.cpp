@@ -116,7 +116,6 @@ int TEMlcluc44::getNumberOfCohorts( FILE* fnchrts )
 
 void TEMlcluc44::initCohorts( ofstream& rflog1 )
 {
-
   cout << "Please enter the first part of the file name ";
   cout << "containing the cohort data: " << endl;
   cout << "               (e.g., COHORT) " << endl;
@@ -146,6 +145,7 @@ void TEMlcluc44::initCohorts( ofstream& rflog1 )
     rflog1 << "cohort data: " << endl;
     rflog1 << lastyr << endl << endl;
   }
+
 
 };
 
@@ -255,7 +255,7 @@ void TEMlcluc44::setLCLUCFlags( ofstream& rflog1,
     rflog1 << "Enter 0 for No:" << endl;
     rflog1 << "Enter 1 for Yes: ";
     rflog1 << tlulcflag << endl << endl;
-  }
+  }  
 
 };
 

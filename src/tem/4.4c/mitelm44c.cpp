@@ -141,10 +141,30 @@ void MITelmnt44::createCohortProducts( const int& pichrt,
                                        / (((double) cohort[pichrt].chrtarea)
                                        * (double) CYCLE);
 
+    if( cohort[pichrt].vconvrtflx.carbon < ZERO )
+    {
+      cout << " lat = " << row;
+      cout << " ichrt = " << pichrt;
+      cout << " vconvrtc = " << cohort[pichrt].vconvrtflx.carbon;
+      cout << endl;
+
+      exit( -1 );
+    }
+
     cohort[pichrt].sconvrtflx.carbon = psconvrtflx.carbon
                                        * pproparea
                                        / (((double) cohort[pichrt].chrtarea)
                                        * (double) CYCLE);
+
+    if( cohort[pichrt].sconvrtflx.carbon < ZERO )
+    {
+      cout << " lat = " << row;
+      cout << " ichrt = " << pichrt;
+      cout << " sconvrtc = " << cohort[pichrt].sconvrtflx.carbon;
+      cout << endl;
+
+      exit( -1 );
+    }
 
     cohort[pichrt].vconvrtflx.nitrogen = pvconvrtflx.nitrogen
                                          * pproparea
@@ -267,6 +287,7 @@ int MITelmnt44::equilibrateTEM( const int& pchrt,
 
   tem.ECDsetODEstate( tem.veg.cmnt, tem.soil.getPSIPLUSC() );
 
+
   // Set previous value of TEM ODE state variables to the 
   //   current values of TEM ODE state variables for initial
   //   conditions
@@ -340,25 +361,12 @@ int MITelmnt44::equilibrateTEM( const int& pchrt,
 
       tem.atms.setAOT40( climate[mitclm.I_AOT40][dm] );
 
+
       tem.endeq = tem.stepmonth( dyr, 
                                  dm, 
                                  tem.intflag, 
                                  ptol );
 
-//      if ( tem.veg.cmnt == 9 )
-//      {
-//      cout << "equilibrateTEM: " << dyr << " " << dm << " " << tem.veg.getGPP() << " ";
-//      cout << tem.atms.getNIRR() << " ";
-//      cout << tem.atms.getPAR() << " ";
-//      cout << tem.atms.getTAIR() << " ";
-//      cout << tem.soil.getINEET() << " ";
-//      cout << tem.soil.getMOIST() << " ";
-//      cout << tem.soil.getSNOWPACK() << " ";
-//      cout << tem.soil.getSURFRUN() << " ";
-//      cout << tem.soil.getDRAINAGE() << " ";
-//      cout << tem.atms.getCO2() << " ";
-//      cout << tem.atms.getAOT40() << " " << endl;
-//      }
 
       // Save TEM output to telmnt[0].output
       
@@ -877,13 +885,15 @@ void MITelmnt44::landUseChange( const int& pdyr )
 
   long diffarea;
 
-  long diffBiofuelArea;
+  long diffBiofuelArea = 0;
   
-  long diffCropArea;
+  long diffCropArea = 0;
 
-  long diffPastureArea;
+  long diffPastureArea = 0;
 
   int dlyr;
+
+  int dm;
 
 
   // Monthly formation of 10-year wood products
@@ -899,13 +909,14 @@ void MITelmnt44::landUseChange( const int& pdyr )
   
   int ichrt;
 
-  long initarea;
+  long initarea;  
  
+
   // Nitrogen from soil organic matter retained after 
   //   conversion
   double nsretent = ZERO;
 
-  long negadjArea;
+//  long negadjArea;
 
   long negdiffarea;
   
@@ -915,9 +926,23 @@ void MITelmnt44::landUseChange( const int& pdyr )
   
   // Proportion of abandoned area added to cohort
   double propAbandonedArea;
+
+  // Proportion of " extra" biofuels area abandoned
+  double propBiofuelArea; 
   
   // Proportion of converted area added to cohort
   double propConvertedArea;
+
+  // Proportion of " extra" crop area abandoned
+  double propCropArea; 
+
+  // Proportion of "abandoned" area converted to
+  //   other managed land uses
+
+  double propManagedAbandoned; 
+
+  // Proportion of " extra" pasture area abandoned
+  double propPastureArea; 
 
   // Residual soil available N after conversion
 //  double residualAvailN;
@@ -943,7 +968,8 @@ void MITelmnt44::landUseChange( const int& pdyr )
   // Sum of area lost in natural cohorts
   long sumNaturalLoss = 0;
 
-
+  // Sum of converted area not accounted by net changes in area of Managed Lands
+  long xtraManagedLoss = 0;
 
   // Vegetation biomass lost during conversion to agriculture
   Biomass vconvrtflx;
@@ -1342,14 +1368,1163 @@ void MITelmnt44::landUseChange( const int& pdyr )
     lcluc.abandonedVeg.setPLANTN( lcluc.abandonedVeg.getSTRUCTN()
                                   + lcluc.abandonedVeg.getLABILEN() ); 
 
+       
+
+    if( sumManagedLoss < sumNaturalGain )
+    {
+      // Net changes in area do not adequately describe the amount of land
+      //   abandoned or converted.  Adjust areas to account for the "extra"
+      //   area not considered by net changes in area. 
+
+      xtraManagedLoss = sumNaturalGain - sumManagedLoss;
+
+      sumManagedLoss = sumNaturalGain;
 
 
-    // Readjust product pools to account for changes in area of crops and pastures
+      // Assume "extra" abandoned areas come from managed lands that have
+      //   had a net gain in area
+
+      if( diffCropArea > 0 && sumManagedGain > 0 )
+      {
+        propCropArea = (double) diffCropArea / (double) sumManagedGain;
+      }
+      else
+      {
+        propCropArea = ZERO;
+      }
+
+      if( diffBiofuelArea > 0 && sumManagedGain > 0 )
+      {
+        propBiofuelArea = (double) diffBiofuelArea / (double) sumManagedGain;
+      }
+      else
+      {
+        propBiofuelArea = ZERO;
+      }
+
+      if( diffPastureArea > 0 && sumManagedGain > 0 )
+      {
+        propPastureArea = (double) diffPastureArea / (double) sumManagedGain;
+      }
+      else
+      {
+        propPastureArea = ZERO;
+      }
+
+
+      // Assign carbon and nitrogen from "extra" abandoned managed areas
+      //   into common pools and update carbon and nitrogen pools in
+      //   affected managed areas
+
+      lcluc.abandonedVeg.setSTRUCTC( lcluc.abandonedVeg.getSTRUCTC()
+                                     + (cohort[CROPVEG].y[tem.I_VEGC]
+  	                               * propCropArea
+                                       * (double) xtraManagedLoss) 
+                                     + (cohort[BIOFUELS].y[tem.I_VEGC]
+  	                               * propBiofuelArea
+                                       * (double) xtraManagedLoss)  
+                                     + (cohort[PASTURE].y[tem.I_VEGC]
+  	                               * propPastureArea
+                                       * (double) xtraManagedLoss) ); 
+  	  	                                     
+      if( cohort[CROPVEG].prevchrtarea > 0 )
+      {
+        cohort[CROPVEG].y[tem.I_VEGC] -= ((cohort[CROPVEG].y[tem.I_VEGC]
+  	                                 * propCropArea
+                                         * (double) xtraManagedLoss)
+                                         / (double) cohort[CROPVEG].prevchrtarea);
+      }
+
+      if( cohort[BIOFUELS].prevchrtarea > 0 )
+      {
+        cohort[BIOFUELS].y[tem.I_VEGC] -= ((cohort[BIOFUELS].y[tem.I_VEGC]
+  	                                 * propBiofuelArea
+                                         * (double) xtraManagedLoss)
+                                         / (double) cohort[BIOFUELS].prevchrtarea);
+      }
+
+      if( cohort[PASTURE].prevchrtarea > 0 )
+      {
+        cohort[PASTURE].y[tem.I_VEGC] -= ((cohort[PASTURE].y[tem.I_VEGC]
+  	                                 * propPastureArea
+                                         * (double) xtraManagedLoss)
+                                         / (double) cohort[PASTURE].prevchrtarea);
+      }
+
+      lcluc.abandonedVeg.setSTRUCTN( lcluc.abandonedVeg.getSTRUCTN()
+                                     + (cohort[CROPVEG].y[tem.I_STRN]
+  	                               * propCropArea
+                                       * (double) xtraManagedLoss) 
+                                     + (cohort[BIOFUELS].y[tem.I_STRN]
+  	                               * propBiofuelArea
+                                       * (double) xtraManagedLoss)  
+                                     + (cohort[PASTURE].y[tem.I_STRN]
+  	                               * propPastureArea
+                                       * (double) xtraManagedLoss) );
+  	  	                                     
+      if( cohort[CROPVEG].prevchrtarea > 0 )
+      {
+        cohort[CROPVEG].y[tem.I_STRN] -= ((cohort[CROPVEG].y[tem.I_STRN]
+  	                                 * propCropArea
+                                         * (double) xtraManagedLoss)
+                                         / (double) cohort[CROPVEG].prevchrtarea);
+      }
+
+      if( cohort[BIOFUELS].prevchrtarea > 0 )
+      {
+        cohort[BIOFUELS].y[tem.I_STRN] -= ((cohort[BIOFUELS].y[tem.I_STRN]
+  	                                 * propBiofuelArea
+                                         * (double) xtraManagedLoss)
+                                         / (double) cohort[BIOFUELS].prevchrtarea);
+      }
+
+      if( cohort[PASTURE].prevchrtarea > 0 )
+      {
+        cohort[PASTURE].y[tem.I_STRN] -= ((cohort[PASTURE].y[tem.I_STRN]
+  	                                 * propPastureArea
+                                         * (double) xtraManagedLoss)
+                                         / (double) cohort[PASTURE].prevchrtarea);
+      }
+
+      lcluc.abandonedVeg.setLABILEN( lcluc.abandonedVeg.getLABILEN()
+                                     + (cohort[CROPVEG].y[tem.I_STON]
+  	                               * propCropArea
+                                       * (double) xtraManagedLoss)
+                                     + (cohort[BIOFUELS].y[tem.I_STON]
+  	                               * propBiofuelArea
+                                       * (double) xtraManagedLoss)  
+                                     + (cohort[PASTURE].y[tem.I_STON]
+  	                               * propPastureArea
+                                       * (double) xtraManagedLoss) );
+  	  	
+      if( cohort[CROPVEG].prevchrtarea > 0 )
+      {
+        cohort[CROPVEG].y[tem.I_STON] -= ((cohort[CROPVEG].y[tem.I_STON]
+  	                                 * propCropArea
+                                         * (double) xtraManagedLoss)
+                                         / (double) cohort[CROPVEG].prevchrtarea);
+      }
+
+      if( cohort[BIOFUELS].prevchrtarea > 0 )
+      {
+        cohort[BIOFUELS].y[tem.I_STON] -= ((cohort[BIOFUELS].y[tem.I_STON]
+  	                                 * propBiofuelArea
+                                         * (double) xtraManagedLoss)
+                                         / (double) cohort[BIOFUELS].prevchrtarea);
+      }
+
+      if( cohort[PASTURE].prevchrtarea > 0 )
+      {
+        cohort[PASTURE].y[tem.I_STON] -= ((cohort[PASTURE].y[tem.I_STON]
+  	                                 * propPastureArea
+                                         * (double) xtraManagedLoss)
+                                         / (double) cohort[PASTURE].prevchrtarea);
+      }
+
+      lcluc.abandonedSoil.setORGC( lcluc.abandonedSoil.getORGC()
+                                   + (cohort[CROPVEG].y[tem.I_SOLC]
+  	                             * propCropArea
+                                     * (double) xtraManagedLoss) 
+                                   + (cohort[BIOFUELS].y[tem.I_SOLC]
+  	                             * propBiofuelArea
+                                     * (double) xtraManagedLoss)  
+                                   + (cohort[PASTURE].y[tem.I_SOLC]
+  	                             * propPastureArea
+                                     * (double) xtraManagedLoss) );
+  	  	                                     
+      if( cohort[CROPVEG].prevchrtarea > 0 )
+      {
+        cohort[CROPVEG].y[tem.I_SOLC] -= ((cohort[CROPVEG].y[tem.I_SOLC]
+  	                                 * propCropArea
+                                         * (double) xtraManagedLoss)
+                                         / (double) cohort[CROPVEG].prevchrtarea);
+      }
+
+      if( cohort[BIOFUELS].prevchrtarea > 0 )
+      {
+        cohort[BIOFUELS].y[tem.I_SOLC] -= ((cohort[BIOFUELS].y[tem.I_SOLC]
+  	                                 * propBiofuelArea
+                                         * (double) xtraManagedLoss)
+                                         / (double) cohort[BIOFUELS].prevchrtarea);
+      }
+
+      if( cohort[PASTURE].prevchrtarea > 0 )
+      {
+        cohort[PASTURE].y[tem.I_SOLC] -= ((cohort[PASTURE].y[tem.I_SOLC]
+  	                                 * propPastureArea
+                                         * (double) xtraManagedLoss)
+                                         / (double) cohort[PASTURE].prevchrtarea);
+      }
+
+      lcluc.abandonedSoil.setORGN( lcluc.abandonedSoil.getORGN()
+                                   + (cohort[CROPVEG].y[tem.I_SOLN]
+  	                             * propCropArea
+                                     * (double) xtraManagedLoss) 
+                                   + (cohort[BIOFUELS].y[tem.I_SOLN]
+  	                             * propBiofuelArea
+                                     * (double) xtraManagedLoss)  
+                                   + (cohort[PASTURE].y[tem.I_SOLN]
+  	                             * propPastureArea
+                                     * (double) xtraManagedLoss) );
+  	  	                                       	  	
+      if( cohort[CROPVEG].prevchrtarea > 0 )
+      {
+        cohort[CROPVEG].y[tem.I_SOLN] -= ((cohort[CROPVEG].y[tem.I_SOLN]
+  	                                 * propCropArea
+                                         * (double) xtraManagedLoss)
+                                         / (double) cohort[CROPVEG].prevchrtarea);
+      }
+
+      if( cohort[BIOFUELS].prevchrtarea > 0 )
+      {
+        cohort[BIOFUELS].y[tem.I_SOLN] -= ((cohort[BIOFUELS].y[tem.I_SOLN]
+  	                                 * propBiofuelArea
+                                         * (double) xtraManagedLoss)
+                                         / (double) cohort[BIOFUELS].prevchrtarea);
+      }
+
+      if( cohort[PASTURE].prevchrtarea > 0 )
+      {
+        cohort[PASTURE].y[tem.I_SOLN] -= ((cohort[PASTURE].y[tem.I_SOLN]
+  	                                 * propPastureArea
+                                         * (double) xtraManagedLoss)
+                                         / (double) cohort[PASTURE].prevchrtarea);
+      }
+
+      lcluc.abandonedSoil.setAVLN( lcluc.abandonedSoil.getAVLN()
+                                   + (cohort[CROPVEG].y[tem.I_AVLN]
+  	                             * propCropArea
+                                     * (double) xtraManagedLoss)  
+                                   + (cohort[BIOFUELS].y[tem.I_AVLN]
+  	                             * propBiofuelArea
+                                     * (double) xtraManagedLoss)  
+                                   + (cohort[PASTURE].y[tem.I_AVLN]
+  	                             * propPastureArea
+                                     * (double) xtraManagedLoss) );  	  	
+
+      if( cohort[CROPVEG].prevchrtarea > 0 )
+      {
+        cohort[CROPVEG].y[tem.I_AVLN] -= ((cohort[CROPVEG].y[tem.I_AVLN]
+  	                                 * propCropArea
+                                         * (double) xtraManagedLoss)
+                                         / (double) cohort[CROPVEG].prevchrtarea);
+      }
+
+      if( cohort[BIOFUELS].prevchrtarea > 0 )
+      {
+        cohort[BIOFUELS].y[tem.I_AVLN] -= ((cohort[BIOFUELS].y[tem.I_AVLN]
+  	                                 * propBiofuelArea
+                                         * (double) xtraManagedLoss)
+                                         / (double) cohort[BIOFUELS].prevchrtarea);
+      }
+
+      if( cohort[PASTURE].prevchrtarea > 0 )
+      {
+        cohort[PASTURE].y[tem.I_AVLN] -= ((cohort[PASTURE].y[tem.I_AVLN]
+  	                                 * propPastureArea
+                                         * (double) xtraManagedLoss)
+                                         / (double) cohort[PASTURE].prevchrtarea);
+      }
+
+      abandonedNONSOLC += ((cohort[CROPVEG].NEMnsolc 
+  	                     * propCropArea
+                             * (double) xtraManagedLoss) 
+                           + (cohort[BIOFUELS].NEMnsolc 
+  	                     * propBiofuelArea
+                             * (double) xtraManagedLoss)   
+                           + (cohort[PASTURE].NEMnsolc 
+  	                     * propPastureArea
+                             * (double) xtraManagedLoss));
+
+      if( cohort[CROPVEG].prevchrtarea > 0 )
+      {
+        cohort[CROPVEG].NEMnsolc -= ((cohort[CROPVEG].NEMnsolc
+  	                           * propCropArea
+                                   * (double) xtraManagedLoss)
+                                   / (double) cohort[CROPVEG].prevchrtarea);
+      }
+
+      if( cohort[BIOFUELS].prevchrtarea > 0 )
+      {
+        cohort[BIOFUELS].NEMnsolc -= ((cohort[BIOFUELS].NEMnsolc
+  	                            * propBiofuelArea
+                                    * (double) xtraManagedLoss)
+                                    / (double) cohort[BIOFUELS].prevchrtarea);
+      }
+
+      if( cohort[PASTURE].prevchrtarea > 0 )
+      {
+        cohort[PASTURE].NEMnsolc -= ((cohort[PASTURE].NEMnsolc
+  	                           * propPastureArea
+                                   * (double) xtraManagedLoss)
+                                   / (double) cohort[PASTURE].prevchrtarea);
+      }
+
+      for( dlyr = 0; dlyr < NLVL; ++dlyr )
+      {
+        abandonedANH4IN[dlyr] += ((cohort[CROPVEG].NEManh4in[dlyr]
+  	                           * propCropArea
+                                   * (double) xtraManagedLoss) 
+                                 + (cohort[BIOFUELS].NEManh4in[dlyr]
+  	                           * propBiofuelArea
+                                   * (double) xtraManagedLoss) 
+                                 + (cohort[PASTURE].NEManh4in[dlyr]
+  	                           * propPastureArea
+                                   * (double) xtraManagedLoss));
+
+        if( cohort[CROPVEG].prevchrtarea > 0 )
+        {
+          cohort[CROPVEG].NEManh4in[dlyr] -= ((cohort[CROPVEG].NEManh4in[dlyr]
+  	                                     * propCropArea
+                                             * (double) xtraManagedLoss)
+                                             / (double) cohort[CROPVEG].prevchrtarea);
+        }
+
+        if( cohort[BIOFUELS].prevchrtarea > 0 )
+        {
+          cohort[BIOFUELS].NEManh4in[dlyr] -= ((cohort[BIOFUELS].NEManh4in[dlyr]
+  	                                      * propBiofuelArea
+                                              * (double) xtraManagedLoss)
+                                              / (double) cohort[BIOFUELS].prevchrtarea);
+        }
+
+        if( cohort[PASTURE].prevchrtarea > 0 )
+        {
+          cohort[PASTURE].NEManh4in[dlyr] -= ((cohort[PASTURE].NEManh4in[dlyr]
+  	                                   * propPastureArea
+                                           * (double) xtraManagedLoss)
+                                           / (double) cohort[PASTURE].prevchrtarea);
+        }
+
+        abandonedANO3IN[dlyr] += ((cohort[CROPVEG].NEMano3in[dlyr]
+  	                           * propCropArea
+                                   * (double) xtraManagedLoss)
+                                 + (cohort[BIOFUELS].NEMano3in[dlyr]
+  	                           * propBiofuelArea
+                                   * (double) xtraManagedLoss) 
+                                 + (cohort[PASTURE].NEMano3in[dlyr]
+  	                           * propPastureArea
+                                   * (double) xtraManagedLoss));
+
+        if( cohort[CROPVEG].prevchrtarea > 0 )
+        {
+          cohort[CROPVEG].NEMano3in[dlyr] -= ((cohort[CROPVEG].NEMano3in[dlyr]
+  	                                     * propCropArea
+                                             * (double) xtraManagedLoss)
+                                             / (double) cohort[CROPVEG].prevchrtarea);
+        }
+
+        if( cohort[BIOFUELS].prevchrtarea > 0 )
+        {
+          cohort[BIOFUELS].NEMano3in[dlyr] -= ((cohort[BIOFUELS].NEMano3in[dlyr]
+  	                                      * propBiofuelArea
+                                              * (double) xtraManagedLoss)
+                                              / (double) cohort[BIOFUELS].prevchrtarea);
+        }
+
+        if( cohort[PASTURE].prevchrtarea > 0 )
+        {
+          cohort[PASTURE].NEMano3in[dlyr] -= ((cohort[PASTURE].NEMano3in[dlyr]
+  	                                     * propPastureArea
+                                             * (double) xtraManagedLoss)
+                                             / (double) cohort[PASTURE].prevchrtarea);
+        }
+
+        abandonedDPHUMIN[dlyr] += ((cohort[CROPVEG].NEMdphumin[dlyr]
+  	                            * propCropArea
+                                    * (double) xtraManagedLoss) 
+                                  + (cohort[BIOFUELS].NEMdphumin[dlyr]
+  	                            * propBiofuelArea
+                                    * (double) xtraManagedLoss) 
+                                  + (cohort[PASTURE].NEMdphumin[dlyr]
+  	                            * propPastureArea
+                                    * (double) xtraManagedLoss));
+
+        if( cohort[CROPVEG].prevchrtarea > 0 )
+        {
+          cohort[CROPVEG].NEMdphumin[dlyr] -= ((cohort[CROPVEG].NEMdphumin[dlyr]
+  	                                      * propCropArea
+                                              * (double) xtraManagedLoss)
+                                              / (double) cohort[CROPVEG].prevchrtarea);
+        }
+
+        if( cohort[BIOFUELS].prevchrtarea > 0 )
+        {
+          cohort[BIOFUELS].NEMdphumin[dlyr] -= ((cohort[BIOFUELS].NEMdphumin[dlyr]
+  	                                       * propBiofuelArea
+                                               * (double) xtraManagedLoss)
+                                               / (double) cohort[BIOFUELS].prevchrtarea);
+        }
+
+        if( cohort[PASTURE].prevchrtarea > 0 )
+        {
+          cohort[PASTURE].NEMdphumin[dlyr] -= ((cohort[PASTURE].NEMdphumin[dlyr]
+  	                                      * propPastureArea
+                                              * (double) xtraManagedLoss)
+                                              / (double) cohort[PASTURE].prevchrtarea);
+        }
+
+        abandonedOCIN[dlyr] += ((cohort[CROPVEG].NEMocin[dlyr]
+  	                         * propCropArea
+                                 * (double) xtraManagedLoss) 
+                               + (cohort[BIOFUELS].NEMocin[dlyr]
+  	                         * propBiofuelArea
+                                 * (double) xtraManagedLoss) 
+                               + (cohort[PASTURE].NEMocin[dlyr]
+  	                         * propPastureArea
+                                 * (double) xtraManagedLoss));
+
+        if( cohort[CROPVEG].prevchrtarea > 0 )
+        {
+          cohort[CROPVEG].NEMocin[dlyr] -= ((cohort[CROPVEG].NEMocin[dlyr]
+  	                                   * propCropArea
+                                           * (double) xtraManagedLoss)
+                                           / (double) cohort[CROPVEG].prevchrtarea);
+        }
+
+        if( cohort[BIOFUELS].prevchrtarea > 0 )
+        {
+          cohort[BIOFUELS].NEMocin[dlyr] -= ((cohort[BIOFUELS].NEMocin[dlyr]
+  	                                    * propBiofuelArea
+                                            * (double) xtraManagedLoss)
+                                            / (double) cohort[BIOFUELS].prevchrtarea);
+        }
+
+        if( cohort[PASTURE].prevchrtarea > 0 )
+        {
+          cohort[PASTURE].NEMocin[dlyr] -= ((cohort[PASTURE].NEMocin[dlyr]
+  	                                   * propPastureArea
+                                           * (double) xtraManagedLoss)
+                                           / (double) cohort[PASTURE].prevchrtarea);
+        }
+
+        abandonedRCLIN[dlyr] += ((cohort[CROPVEG].NEMrclin[dlyr]
+  	                          * propCropArea
+                                  * (double) xtraManagedLoss) 
+                                + (cohort[BIOFUELS].NEMrclin[dlyr]
+  	                          * propBiofuelArea
+                                  * (double) xtraManagedLoss) 
+                                + (cohort[PASTURE].NEMrclin[dlyr]
+  	                          * propPastureArea
+                                  * (double) xtraManagedLoss));
+
+        if( cohort[CROPVEG].prevchrtarea > 0 )
+        {
+          cohort[CROPVEG].NEMrclin[dlyr] -= ((cohort[CROPVEG].NEMrclin[dlyr]
+  	                                    * propCropArea
+                                            * (double) xtraManagedLoss)
+                                            / (double) cohort[CROPVEG].prevchrtarea);
+        }
+
+        if( cohort[BIOFUELS].prevchrtarea > 0 )
+        {
+          cohort[BIOFUELS].NEMrclin[dlyr] -= ((cohort[BIOFUELS].NEMrclin[dlyr]
+  	                                     * propBiofuelArea
+                                             * (double) xtraManagedLoss)
+                                             / (double) cohort[BIOFUELS].prevchrtarea);
+        }
+
+        if( cohort[PASTURE].prevchrtarea > 0 )
+        {
+          cohort[PASTURE].NEMrclin[dlyr] -= ((cohort[PASTURE].NEMrclin[dlyr]
+  	                                    * propPastureArea
+                                            * (double) xtraManagedLoss)
+                                            / (double) cohort[PASTURE].prevchrtarea);
+        }
+
+        abandonedRCRIN[dlyr] += ((cohort[CROPVEG].NEMrcrin[dlyr]
+  	                          * propCropArea
+                                  * (double) xtraManagedLoss) 
+                                + (cohort[BIOFUELS].NEMrcrin[dlyr]
+  	                          * propBiofuelArea
+                                  * (double) xtraManagedLoss) 
+                                + (cohort[PASTURE].NEMrcrin[dlyr]
+  	                          * propPastureArea
+                                  * (double) xtraManagedLoss));
+
+        if( cohort[CROPVEG].prevchrtarea > 0 )
+        {
+          cohort[CROPVEG].NEMrcrin[dlyr] -= ((cohort[CROPVEG].NEMrcrin[dlyr]
+  	                                    * propCropArea
+                                            * (double) xtraManagedLoss)
+                                            / (double) cohort[CROPVEG].prevchrtarea);
+        }
+
+        if( cohort[BIOFUELS].prevchrtarea > 0 )
+        {
+          cohort[BIOFUELS].NEMrcrin[dlyr] -= ((cohort[BIOFUELS].NEMrcrin[dlyr]
+  	                                     * propBiofuelArea
+                                             * (double) xtraManagedLoss)
+                                             / (double) cohort[BIOFUELS].prevchrtarea);
+        }
+
+        if( cohort[PASTURE].prevchrtarea > 0 )
+        {
+          cohort[PASTURE].NEMrcrin[dlyr] -= ((cohort[PASTURE].NEMrcrin[dlyr]
+  	                                    * propPastureArea
+                                            * (double) xtraManagedLoss)
+                                            / (double) cohort[PASTURE].prevchrtarea);
+        }
+
+        abandonedRCVLIN[dlyr] += ((cohort[CROPVEG].NEMrcvlin[dlyr]
+  	                           * propCropArea
+                                   * (double) xtraManagedLoss) 
+                                 + (cohort[BIOFUELS].NEMrcvlin[dlyr]
+  	                           * propBiofuelArea
+                                   * (double) xtraManagedLoss) 
+                                 + (cohort[PASTURE].NEMrcvlin[dlyr]
+  	                           * propPastureArea
+                                   * (double) xtraManagedLoss)); 
+
+        if( cohort[CROPVEG].prevchrtarea > 0 )
+        {
+          cohort[CROPVEG].NEMrcvlin[dlyr] -= ((cohort[CROPVEG].NEMrcvlin[dlyr]
+  	                                     * propCropArea
+                                             * (double) xtraManagedLoss)
+                                             / (double) cohort[CROPVEG].prevchrtarea);
+        }
+
+        if( cohort[BIOFUELS].prevchrtarea > 0 )
+        {
+          cohort[BIOFUELS].NEMrcvlin[dlyr] -= ((cohort[BIOFUELS].NEMrcvlin[dlyr]
+  	                                      * propBiofuelArea
+                                              * (double) xtraManagedLoss)
+                                              / (double) cohort[BIOFUELS].prevchrtarea);
+        }
+
+        if( cohort[PASTURE].prevchrtarea > 0 )
+        {
+          cohort[PASTURE].NEMrcvlin[dlyr] -= ((cohort[PASTURE].NEMrcvlin[dlyr]
+  	                                     * propPastureArea
+                                             * (double) xtraManagedLoss)
+                                             / (double) cohort[PASTURE].prevchrtarea);
+        }
+      }
+    }  
+
+    // Reassign product pools to other managed areas when remaining area of a managed
+    //   cohort is abandoned
+
+    if( 0 == cohort[CROPVEG].chrtarea && 0 != cohort[CROPVEG].prevchrtarea )
+    { 
+      if( 0 != cohort[BIOFUELS].chrtarea && 0 != cohort[BIOFUELS].prevchrtarea )
+      {
+        // Agricultural products
+
+        for( dm = 0; dm < CYCLE; ++dm )
+        {
+          cohort[BIOFUELS].initPROD1[dm].carbon = (((double) cohort[CROPVEG].prevchrtarea
+                                                  *  cohort[CROPVEG].initPROD1[dm].carbon)
+                                                  +  ((double) cohort[BIOFUELS].prevchrtarea
+                                                  *  cohort[BIOFUELS].initPROD1[dm].carbon))
+                                                     / (double) cohort[BIOFUELS].prevchrtarea;     
+
+          cohort[BIOFUELS].initPROD1[dm].nitrogen = (((double) cohort[CROPVEG].prevchrtarea 
+                                                    *  cohort[CROPVEG].initPROD1[dm].nitrogen)
+                                                    + ((double) cohort[BIOFUELS].prevchrtarea 
+                                                    *  cohort[BIOFUELS].initPROD1[dm].nitrogen))
+                                                    / (double) cohort[BIOFUELS].prevchrtarea;   
+
+          cohort[CROPVEG].initPROD1[dm].carbon = ZERO;
+          cohort[CROPVEG].initPROD1[dm].nitrogen = ZERO;
+        }
+
+        cohort[BIOFUELS].prevPROD1.carbon = (((double) cohort[CROPVEG].prevchrtarea
+                                            * cohort[CROPVEG].prevPROD1.carbon)
+                                            + ((double) cohort[BIOFUELS].prevchrtarea
+                                            * cohort[BIOFUELS].prevPROD1.carbon)) 
+                                            / (double) cohort[BIOFUELS].prevchrtarea;     
+
+        cohort[BIOFUELS].prevPROD1.nitrogen = (((double) cohort[CROPVEG].prevchrtarea
+                                              * cohort[CROPVEG].prevPROD1.nitrogen)
+                                              + ((double) cohort[BIOFUELS].prevchrtarea
+                                              * cohort[BIOFUELS].prevPROD1.nitrogen))
+                                              / (double) cohort[BIOFUELS].prevchrtarea;     
+
+        cohort[CROPVEG].prevPROD1.carbon = ZERO;
+        cohort[CROPVEG].prevPROD1.nitrogen = ZERO;
+
+        // 10-year Woody Products
+
+        for( i10 = 0; i10 < 10; ++i10 )
+        {
+          cohort[BIOFUELS].initPROD10[i10].carbon = (((double) cohort[CROPVEG].prevchrtarea
+                                                    * cohort[CROPVEG].initPROD10[i10].carbon)
+                                                    + ((double) cohort[BIOFUELS].prevchrtarea
+                                                    * cohort[BIOFUELS].initPROD10[i10].carbon))
+                                                     / (double) cohort[BIOFUELS].prevchrtarea;     
+
+          cohort[BIOFUELS].initPROD10[i10].nitrogen = (((double) cohort[CROPVEG].prevchrtarea 
+                                                      * cohort[CROPVEG].initPROD10[i10].nitrogen)
+                                                      + ((double) cohort[BIOFUELS].prevchrtarea 
+                                                      * cohort[BIOFUELS].initPROD10[i10].nitrogen))
+                                                       / (double) cohort[BIOFUELS].prevchrtarea;   
+
+          cohort[CROPVEG].initPROD10[i10].carbon = ZERO;
+          cohort[CROPVEG].initPROD10[i10].nitrogen = ZERO;
+        }
+
+        cohort[BIOFUELS].prevPROD10.carbon = (((double) cohort[CROPVEG].prevchrtarea 
+                                             * cohort[CROPVEG].prevPROD10.carbon)
+                                             + ((double) cohort[BIOFUELS].prevchrtarea 
+                                             * cohort[BIOFUELS].prevPROD10.carbon))
+                                             / (double) cohort[BIOFUELS].prevchrtarea; 
+
+        cohort[BIOFUELS].prevPROD10.nitrogen = (((double) cohort[CROPVEG].prevchrtarea 
+                                               * cohort[CROPVEG].prevPROD10.nitrogen)
+                                               + ((double) cohort[BIOFUELS].prevchrtarea 
+                                               * cohort[BIOFUELS].prevPROD10.nitrogen))
+                                               / (double) cohort[BIOFUELS].prevchrtarea; 
+
+        cohort[CROPVEG].prevPROD10.carbon = ZERO;
+        cohort[CROPVEG].prevPROD10.nitrogen = ZERO;
+
+        // 100-year Woody Products
+
+        for( i100 = 0; i100 < 100; ++i100 )
+        {
+          cohort[BIOFUELS].initPROD100[i100].carbon = (((double) cohort[CROPVEG].prevchrtarea
+                                                      * cohort[CROPVEG].initPROD100[i100].carbon)
+                                                      + ((double) cohort[BIOFUELS].prevchrtarea
+                                                      * cohort[BIOFUELS].initPROD100[i100].carbon)) 
+                                                      / (double) cohort[BIOFUELS].prevchrtarea;     
+
+          cohort[BIOFUELS].initPROD100[i100].nitrogen = (((double) cohort[CROPVEG].prevchrtarea 
+                                                        * cohort[CROPVEG].initPROD100[i100].nitrogen)
+                                                        + ((double) cohort[BIOFUELS].prevchrtarea 
+                                                        * cohort[BIOFUELS].initPROD100[i100].nitrogen)) 
+                                                        /(double) cohort[BIOFUELS].prevchrtarea;   
+
+          cohort[CROPVEG].initPROD100[i100].carbon = ZERO;
+          cohort[CROPVEG].initPROD100[i100].nitrogen = ZERO;
+        }
+
+        cohort[BIOFUELS].prevPROD100.carbon = (((double) cohort[CROPVEG].prevchrtarea 
+                                              * cohort[CROPVEG].prevPROD100.carbon)
+                                              + ((double) cohort[BIOFUELS].prevchrtarea 
+                                              * cohort[BIOFUELS].prevPROD100.carbon))
+                                              / (double) cohort[BIOFUELS].prevchrtarea;     
+
+        cohort[BIOFUELS].prevPROD100.nitrogen = (((double) cohort[CROPVEG].prevchrtarea
+                                                * cohort[CROPVEG].prevPROD100.nitrogen)
+                                                + ((double) cohort[BIOFUELS].prevchrtarea
+                                                * cohort[BIOFUELS].prevPROD100.nitrogen))    
+                                                / (double) cohort[BIOFUELS].prevchrtarea;     
+
+        cohort[CROPVEG].prevPROD100.carbon = ZERO;
+        cohort[CROPVEG].prevPROD100.nitrogen = ZERO;
+      }
+      else 
+      {
+        if( 0 != cohort[PASTURE].chrtarea && 0 != cohort[PASTURE].prevchrtarea )
+        {
+          // Agricultural products
+
+          for( dm = 0; dm < CYCLE; ++dm )
+          {
+            cohort[PASTURE].initPROD1[dm].carbon = (((double) cohort[CROPVEG].prevchrtarea
+                                                   *  cohort[CROPVEG].initPROD1[dm].carbon)
+                                                   +  ((double) cohort[PASTURE].prevchrtarea
+                                                   *  cohort[PASTURE].initPROD1[dm].carbon))
+                                                   / (double) cohort[PASTURE].prevchrtarea;     
+
+            cohort[PASTURE].initPROD1[dm].nitrogen = (((double) cohort[CROPVEG].prevchrtarea 
+                                                     *  cohort[CROPVEG].initPROD1[dm].nitrogen)
+                                                     + ((double) cohort[PASTURE].prevchrtarea 
+                                                     *  cohort[PASTURE].initPROD1[dm].nitrogen))
+                                                     / (double) cohort[PASTURE].prevchrtarea;   
+
+            cohort[CROPVEG].initPROD1[dm].carbon = ZERO;
+            cohort[CROPVEG].initPROD1[dm].nitrogen = ZERO;
+          }
+
+          cohort[PASTURE].prevPROD1.carbon = (((double) cohort[CROPVEG].prevchrtarea
+                                             * cohort[CROPVEG].prevPROD1.carbon)
+                                             + ((double) cohort[PASTURE].prevchrtarea
+                                             * cohort[PASTURE].prevPROD1.carbon)) 
+                                             / (double) cohort[PASTURE].prevchrtarea;     
+
+          cohort[PASTURE].prevPROD1.nitrogen = (((double) cohort[CROPVEG].prevchrtarea
+                                               * cohort[CROPVEG].prevPROD1.nitrogen)
+                                               + ((double) cohort[PASTURE].prevchrtarea
+                                               * cohort[PASTURE].prevPROD1.nitrogen))
+                                               / (double) cohort[PASTURE].prevchrtarea;     
+
+          cohort[CROPVEG].prevPROD1.carbon = ZERO;
+          cohort[CROPVEG].prevPROD1.nitrogen = ZERO;
+
+          // 10-year Woody Products
+
+          for( i10 = 0; i10 < 10; ++i10 )
+          {
+            cohort[PASTURE].initPROD10[i10].carbon = (((double) cohort[CROPVEG].prevchrtarea
+                                                     * cohort[CROPVEG].initPROD10[i10].carbon)
+                                                     + ((double) cohort[PASTURE].prevchrtarea
+                                                     * cohort[PASTURE].initPROD10[i10].carbon))
+                                                     / (double) cohort[PASTURE].prevchrtarea;     
+
+            cohort[PASTURE].initPROD10[i10].nitrogen = (((double) cohort[CROPVEG].prevchrtarea 
+                                                       * cohort[CROPVEG].initPROD10[i10].nitrogen)
+                                                       + ((double) cohort[PASTURE].prevchrtarea 
+                                                       * cohort[PASTURE].initPROD10[i10].nitrogen))
+                                                       / (double) cohort[PASTURE].prevchrtarea;   
+
+            cohort[CROPVEG].initPROD10[i10].carbon = ZERO;
+            cohort[CROPVEG].initPROD10[i10].nitrogen = ZERO;
+          }
+
+          cohort[PASTURE].prevPROD10.carbon = (((double) cohort[CROPVEG].prevchrtarea 
+                                              * cohort[CROPVEG].prevPROD10.carbon)
+                                              + ((double) cohort[PASTURE].prevchrtarea 
+                                              * cohort[PASTURE].prevPROD10.carbon))
+                                              / (double) cohort[PASTURE].prevchrtarea; 
+
+          cohort[PASTURE].prevPROD10.nitrogen = (((double) cohort[CROPVEG].prevchrtarea 
+                                                * cohort[CROPVEG].prevPROD10.nitrogen)
+                                                + ((double) cohort[PASTURE].prevchrtarea 
+                                                * cohort[PASTURE].prevPROD10.nitrogen))
+                                                / (double) cohort[PASTURE].prevchrtarea; 
+
+          cohort[CROPVEG].prevPROD10.carbon = ZERO;
+          cohort[CROPVEG].prevPROD10.nitrogen = ZERO;
+
+          // 100-year Woody Products
+
+          for( i100 = 0; i100 < 100; ++i100 )
+          {
+            cohort[PASTURE].initPROD100[i100].carbon = (((double) cohort[CROPVEG].prevchrtarea
+                                                       * cohort[CROPVEG].initPROD100[i100].carbon)
+                                                       + ((double) cohort[PASTURE].prevchrtarea
+                                                       * cohort[PASTURE].initPROD100[i100].carbon)) 
+                                                       / (double) cohort[PASTURE].prevchrtarea;     
+
+            cohort[PASTURE].initPROD100[i100].nitrogen = (((double) cohort[CROPVEG].prevchrtarea 
+                                                          * cohort[CROPVEG].initPROD100[i100].nitrogen)
+                                                          + ((double) cohort[PASTURE].prevchrtarea 
+                                                          * cohort[PASTURE].initPROD100[i100].nitrogen)) 
+                                                          /(double) cohort[PASTURE].prevchrtarea;   
+
+            cohort[CROPVEG].initPROD100[i100].carbon = ZERO;
+            cohort[CROPVEG].initPROD100[i100].nitrogen = ZERO;
+          }
+
+          cohort[PASTURE].prevPROD100.carbon = (((double) cohort[CROPVEG].prevchrtarea 
+                                               * cohort[CROPVEG].prevPROD100.carbon)
+                                               + ((double) cohort[PASTURE].prevchrtarea 
+                                               * cohort[PASTURE].prevPROD100.carbon))
+                                               / (double) cohort[PASTURE].prevchrtarea;     
+
+          cohort[PASTURE].prevPROD100.nitrogen = (((double) cohort[CROPVEG].prevchrtarea
+                                                 * cohort[CROPVEG].prevPROD100.nitrogen)
+                                                 + ((double) cohort[PASTURE].prevchrtarea
+                                                 * cohort[PASTURE].prevPROD100.nitrogen))    
+                                                 / (double) cohort[PASTURE].prevchrtarea;     
+
+          cohort[CROPVEG].prevPROD100.carbon = ZERO;
+          cohort[CROPVEG].prevPROD100.nitrogen = ZERO;
+        } 
+      }
+    }
+
+    if( 0 == cohort[BIOFUELS].chrtarea && 0 != cohort[BIOFUELS].prevchrtarea )
+    { 
+      if( 0 != cohort[PASTURE].chrtarea && 0 != cohort[PASTURE].prevchrtarea )
+      {
+        // Agricultural products
+
+        for( dm = 0; dm < CYCLE; ++dm )
+        {
+          cohort[PASTURE].initPROD1[dm].carbon = (((double) cohort[BIOFUELS].prevchrtarea
+                                                 *  cohort[BIOFUELS].initPROD1[dm].carbon)
+                                                 +  ((double) cohort[PASTURE].prevchrtarea
+                                                 *  cohort[PASTURE].initPROD1[dm].carbon))
+                                                 / (double) cohort[PASTURE].prevchrtarea;     
+
+          cohort[PASTURE].initPROD1[dm].nitrogen = (((double) cohort[BIOFUELS].prevchrtarea 
+                                                   *  cohort[BIOFUELS].initPROD1[dm].nitrogen)
+                                                   + ((double) cohort[PASTURE].prevchrtarea 
+                                                   *  cohort[PASTURE].initPROD1[dm].nitrogen))
+                                                   / (double) cohort[PASTURE].prevchrtarea;   
+
+          cohort[BIOFUELS].initPROD1[dm].carbon = ZERO;
+          cohort[BIOFUELS].initPROD1[dm].nitrogen = ZERO;
+        }
+
+        cohort[PASTURE].prevPROD1.carbon = (((double) cohort[BIOFUELS].prevchrtarea
+                                           * cohort[BIOFUELS].prevPROD1.carbon)
+                                           + ((double) cohort[PASTURE].prevchrtarea
+                                           * cohort[PASTURE].prevPROD1.carbon)) 
+                                           / (double) cohort[PASTURE].prevchrtarea;     
+
+        cohort[PASTURE].prevPROD1.nitrogen = (((double) cohort[BIOFUELS].prevchrtarea
+                                             * cohort[BIOFUELS].prevPROD1.nitrogen)
+                                             + ((double) cohort[PASTURE].prevchrtarea
+                                             * cohort[PASTURE].prevPROD1.nitrogen))
+                                             / (double) cohort[PASTURE].prevchrtarea;     
+
+        cohort[BIOFUELS].prevPROD1.carbon = ZERO;
+        cohort[BIOFUELS].prevPROD1.nitrogen = ZERO;
+
+        // 10-year Woody Products
+
+        for( i10 = 0; i10 < 10; ++i10 )
+        {
+          cohort[PASTURE].initPROD10[i10].carbon = (((double) cohort[BIOFUELS].prevchrtarea
+                                                   * cohort[BIOFUELS].initPROD10[i10].carbon)
+                                                   + ((double) cohort[PASTURE].prevchrtarea
+                                                   * cohort[PASTURE].initPROD10[i10].carbon))
+                                                   / (double) cohort[PASTURE].prevchrtarea;     
+
+          cohort[PASTURE].initPROD10[i10].nitrogen = (((double) cohort[BIOFUELS].prevchrtarea 
+                                                     * cohort[BIOFUELS].initPROD10[i10].nitrogen)
+                                                     + ((double) cohort[PASTURE].prevchrtarea 
+                                                     * cohort[PASTURE].initPROD10[i10].nitrogen))
+                                                     / (double) cohort[PASTURE].prevchrtarea;   
+
+          cohort[BIOFUELS].initPROD10[i10].carbon = ZERO;
+          cohort[BIOFUELS].initPROD10[i10].nitrogen = ZERO;
+        }
+
+        cohort[PASTURE].prevPROD10.carbon = (((double) cohort[BIOFUELS].prevchrtarea 
+                                            * cohort[BIOFUELS].prevPROD10.carbon)
+                                            + ((double) cohort[PASTURE].prevchrtarea 
+                                            * cohort[PASTURE].prevPROD10.carbon))
+                                            / (double) cohort[PASTURE].prevchrtarea; 
+
+        cohort[PASTURE].prevPROD10.nitrogen = (((double) cohort[BIOFUELS].prevchrtarea 
+                                              * cohort[BIOFUELS].prevPROD10.nitrogen)
+                                              + ((double) cohort[PASTURE].prevchrtarea 
+                                              * cohort[PASTURE].prevPROD10.nitrogen))
+                                              / (double) cohort[PASTURE].prevchrtarea; 
+
+        cohort[BIOFUELS].prevPROD10.carbon = ZERO;
+        cohort[BIOFUELS].prevPROD10.nitrogen = ZERO;
+
+        // 100-year Woody Products
+
+        for( i100 = 0; i100 < 100; ++i100 )
+        {
+          cohort[PASTURE].initPROD100[i100].carbon = (((double) cohort[BIOFUELS].prevchrtarea
+                                                     * cohort[BIOFUELS].initPROD100[i100].carbon)
+                                                     + ((double) cohort[PASTURE].prevchrtarea
+                                                     * cohort[PASTURE].initPROD100[i100].carbon)) 
+                                                     / (double) cohort[PASTURE].prevchrtarea;     
+
+          cohort[PASTURE].initPROD100[i100].nitrogen = (((double) cohort[BIOFUELS].prevchrtarea 
+                                                        * cohort[BIOFUELS].initPROD100[i100].nitrogen)
+                                                        + ((double) cohort[PASTURE].prevchrtarea 
+                                                        * cohort[PASTURE].initPROD100[i100].nitrogen)) 
+                                                        /(double) cohort[PASTURE].prevchrtarea;   
+
+          cohort[BIOFUELS].initPROD100[i100].carbon = ZERO;
+          cohort[BIOFUELS].initPROD100[i100].nitrogen = ZERO;
+        }
+
+        cohort[PASTURE].prevPROD100.carbon = (((double) cohort[BIOFUELS].prevchrtarea 
+                                             * cohort[BIOFUELS].prevPROD100.carbon)
+                                             + ((double) cohort[PASTURE].prevchrtarea 
+                                             * cohort[PASTURE].prevPROD100.carbon))
+                                             / (double) cohort[PASTURE].prevchrtarea;     
+
+        cohort[PASTURE].prevPROD100.nitrogen = (((double) cohort[BIOFUELS].prevchrtarea
+                                               * cohort[BIOFUELS].prevPROD100.nitrogen)
+                                               + ((double) cohort[PASTURE].prevchrtarea
+                                               * cohort[PASTURE].prevPROD100.nitrogen))    
+                                               / (double) cohort[PASTURE].prevchrtarea;     
+
+        cohort[BIOFUELS].prevPROD100.carbon = ZERO;
+        cohort[BIOFUELS].prevPROD100.nitrogen = ZERO;
+      } 
+      else
+      {
+        if( 0 != cohort[CROPVEG].chrtarea && 0 != cohort[CROPVEG].prevchrtarea )
+        {
+          // Agricultural products
+
+          for( dm = 0; dm < CYCLE; ++dm )
+          {
+            cohort[CROPVEG].initPROD1[dm].carbon = (((double) cohort[BIOFUELS].prevchrtarea
+                                                   *  cohort[BIOFUELS].initPROD1[dm].carbon)
+                                                   +  ((double) cohort[CROPVEG].prevchrtarea
+                                                   *  cohort[CROPVEG].initPROD1[dm].carbon))
+                                                   / (double) cohort[CROPVEG].prevchrtarea;     
+
+            cohort[CROPVEG].initPROD1[dm].nitrogen = (((double) cohort[BIOFUELS].prevchrtarea 
+                                                     *  cohort[BIOFUELS].initPROD1[dm].nitrogen)
+                                                     + ((double) cohort[CROPVEG].prevchrtarea 
+                                                     *  cohort[CROPVEG].initPROD1[dm].nitrogen))
+                                                     / (double) cohort[CROPVEG].prevchrtarea;   
+
+            cohort[BIOFUELS].initPROD1[dm].carbon = ZERO;
+            cohort[BIOFUELS].initPROD1[dm].nitrogen = ZERO;
+          }
+
+          cohort[CROPVEG].prevPROD1.carbon = (((double) cohort[BIOFUELS].prevchrtarea
+                                             * cohort[BIOFUELS].prevPROD1.carbon)
+                                             + ((double) cohort[CROPVEG].prevchrtarea
+                                             * cohort[CROPVEG].prevPROD1.carbon)) 
+                                             / (double) cohort[CROPVEG].prevchrtarea;     
+
+          cohort[CROPVEG].prevPROD1.nitrogen = (((double) cohort[BIOFUELS].prevchrtarea
+                                               * cohort[BIOFUELS].prevPROD1.nitrogen)
+                                               + ((double) cohort[CROPVEG].prevchrtarea
+                                               * cohort[CROPVEG].prevPROD1.nitrogen))
+                                               / (double) cohort[CROPVEG].prevchrtarea;     
   
-    for( i10 = 0; i10 < 10; ++i10 )
+          cohort[BIOFUELS].prevPROD1.carbon = ZERO;
+          cohort[BIOFUELS].prevPROD1.nitrogen = ZERO;
+
+        // 10-year Woody Products
+
+        for( i10 = 0; i10 < 10; ++i10 )
+        {
+          cohort[CROPVEG].initPROD10[i10].carbon = (((double) cohort[BIOFUELS].prevchrtarea
+                                                   * cohort[BIOFUELS].initPROD10[i10].carbon)
+                                                   + ((double) cohort[CROPVEG].prevchrtarea
+                                                   * cohort[CROPVEG].initPROD10[i10].carbon))
+                                                   / (double) cohort[CROPVEG].prevchrtarea;     
+
+          cohort[CROPVEG].initPROD10[i10].nitrogen = (((double) cohort[BIOFUELS].prevchrtarea 
+                                                     * cohort[BIOFUELS].initPROD10[i10].nitrogen)
+                                                     + ((double) cohort[CROPVEG].prevchrtarea 
+                                                     * cohort[CROPVEG].initPROD10[i10].nitrogen))
+                                                     / (double) cohort[CROPVEG].prevchrtarea;   
+
+          cohort[BIOFUELS].initPROD10[i10].carbon = ZERO;
+          cohort[BIOFUELS].initPROD10[i10].nitrogen = ZERO;
+        }
+
+        cohort[CROPVEG].prevPROD10.carbon = (((double) cohort[BIOFUELS].prevchrtarea 
+                                            * cohort[BIOFUELS].prevPROD10.carbon)
+                                            + ((double) cohort[CROPVEG].prevchrtarea 
+                                            * cohort[CROPVEG].prevPROD10.carbon))
+                                            / (double) cohort[CROPVEG].prevchrtarea; 
+
+        cohort[CROPVEG].prevPROD10.nitrogen = (((double) cohort[BIOFUELS].prevchrtarea 
+                                              * cohort[BIOFUELS].prevPROD10.nitrogen)
+                                              + ((double) cohort[CROPVEG].prevchrtarea 
+                                              * cohort[CROPVEG].prevPROD10.nitrogen))
+                                              / (double) cohort[CROPVEG].prevchrtarea; 
+
+        cohort[BIOFUELS].prevPROD10.carbon = ZERO;
+        cohort[BIOFUELS].prevPROD10.nitrogen = ZERO;
+
+        // 100-year Woody Products
+
+        for( i100 = 0; i100 < 100; ++i100 )
+        {
+          cohort[CROPVEG].initPROD100[i100].carbon = (((double) cohort[BIOFUELS].prevchrtarea
+                                                     * cohort[BIOFUELS].initPROD100[i100].carbon)
+                                                     + ((double) cohort[CROPVEG].prevchrtarea
+                                                     * cohort[CROPVEG].initPROD100[i100].carbon)) 
+                                                     / (double) cohort[CROPVEG].prevchrtarea;     
+
+          cohort[CROPVEG].initPROD100[i100].nitrogen = (((double) cohort[BIOFUELS].prevchrtarea 
+                                                        * cohort[BIOFUELS].initPROD100[i100].nitrogen)
+                                                        + ((double) cohort[CROPVEG].prevchrtarea 
+                                                        * cohort[CROPVEG].initPROD100[i100].nitrogen)) 
+                                                        /(double) cohort[CROPVEG].prevchrtarea;   
+
+          cohort[BIOFUELS].initPROD100[i100].carbon = ZERO;
+          cohort[BIOFUELS].initPROD100[i100].nitrogen = ZERO;
+        }
+
+        cohort[CROPVEG].prevPROD100.carbon = (((double) cohort[BIOFUELS].prevchrtarea 
+                                             * cohort[BIOFUELS].prevPROD100.carbon)
+                                             + ((double) cohort[CROPVEG].prevchrtarea 
+                                             * cohort[CROPVEG].prevPROD100.carbon))
+                                             / (double) cohort[CROPVEG].prevchrtarea;     
+
+        cohort[CROPVEG].prevPROD100.nitrogen = (((double) cohort[BIOFUELS].prevchrtarea
+                                               * cohort[BIOFUELS].prevPROD100.nitrogen)
+                                               + ((double) cohort[CROPVEG].prevchrtarea
+                                               * cohort[CROPVEG].prevPROD100.nitrogen))    
+                                               / (double) cohort[CROPVEG].prevchrtarea;     
+
+        cohort[BIOFUELS].prevPROD100.carbon = ZERO;
+        cohort[BIOFUELS].prevPROD100.nitrogen = ZERO;
+
+        }
+      }
+    }
+
+    if( 0 == cohort[PASTURE].chrtarea && 0 != cohort[PASTURE].prevchrtarea )
     {
       if( 0 != cohort[CROPVEG].chrtarea && 0 != cohort[CROPVEG].prevchrtarea )
-      { 
+      {
+        // 10-year Woody Products
+
+        for( i10 = 0; i10 < 10; ++i10 )
+        {
+          cohort[CROPVEG].initPROD10[i10].carbon = (((double) cohort[PASTURE].prevchrtarea
+                                                   * cohort[PASTURE].initPROD10[i10].carbon)
+                                                   + ((double) cohort[CROPVEG].prevchrtarea
+                                                   * cohort[CROPVEG].initPROD10[i10].carbon))
+                                                   / (double) cohort[CROPVEG].prevchrtarea;     
+
+          cohort[CROPVEG].initPROD10[i10].nitrogen = (((double) cohort[PASTURE].prevchrtarea 
+                                                     * cohort[PASTURE].initPROD10[i10].nitrogen)
+                                                     + ((double) cohort[CROPVEG].prevchrtarea 
+                                                     * cohort[CROPVEG].initPROD10[i10].nitrogen))
+                                                     / (double) cohort[CROPVEG].prevchrtarea;   
+
+          cohort[PASTURE].initPROD10[i10].carbon = ZERO;
+          cohort[PASTURE].initPROD10[i10].nitrogen = ZERO;
+        }
+
+        cohort[CROPVEG].prevPROD10.carbon = (((double) cohort[PASTURE].prevchrtarea 
+                                            * cohort[PASTURE].prevPROD10.carbon)
+                                            + ((double) cohort[CROPVEG].prevchrtarea 
+                                            * cohort[CROPVEG].prevPROD10.carbon))
+                                            / (double) cohort[CROPVEG].prevchrtarea; 
+
+        cohort[CROPVEG].prevPROD10.nitrogen = (((double) cohort[PASTURE].prevchrtarea 
+                                              * cohort[PASTURE].prevPROD10.nitrogen)
+                                              + ((double) cohort[CROPVEG].prevchrtarea 
+                                              * cohort[CROPVEG].prevPROD10.nitrogen))
+                                              / (double) cohort[CROPVEG].prevchrtarea; 
+
+        cohort[PASTURE].prevPROD10.carbon = ZERO;
+        cohort[PASTURE].prevPROD10.nitrogen = ZERO;
+
+        // 100-year Woody Products
+
+        for( i100 = 0; i100 < 100; ++i100 )
+        {
+          cohort[CROPVEG].initPROD100[i100].carbon = (((double) cohort[PASTURE].prevchrtarea
+                                                     * cohort[PASTURE].initPROD100[i100].carbon)
+                                                     + ((double) cohort[CROPVEG].prevchrtarea
+                                                     * cohort[CROPVEG].initPROD100[i100].carbon)) 
+                                                     / (double) cohort[CROPVEG].prevchrtarea;     
+
+          cohort[CROPVEG].initPROD100[i100].nitrogen = (((double) cohort[PASTURE].prevchrtarea 
+                                                       * cohort[PASTURE].initPROD100[i100].nitrogen)
+                                                       + ((double) cohort[CROPVEG].prevchrtarea 
+                                                       * cohort[CROPVEG].initPROD100[i100].nitrogen)) 
+                                                       /(double) cohort[CROPVEG].prevchrtarea;   
+
+          cohort[PASTURE].initPROD100[i100].carbon = ZERO;
+          cohort[PASTURE].initPROD100[i100].nitrogen = ZERO;
+        }
+
+        cohort[CROPVEG].prevPROD100.carbon = (((double) cohort[PASTURE].prevchrtarea 
+                                             * cohort[PASTURE].prevPROD100.carbon)
+                                             + ((double) cohort[CROPVEG].prevchrtarea 
+                                             * cohort[CROPVEG].prevPROD100.carbon))
+                                             / (double) cohort[CROPVEG].prevchrtarea;     
+
+        cohort[CROPVEG].prevPROD100.nitrogen = (((double) cohort[PASTURE].prevchrtarea
+                                               * cohort[PASTURE].prevPROD100.nitrogen)
+                                               + ((double) cohort[CROPVEG].prevchrtarea
+                                               * cohort[CROPVEG].prevPROD100.nitrogen))    
+                                               / (double) cohort[CROPVEG].prevchrtarea;     
+
+        cohort[PASTURE].prevPROD100.carbon = ZERO;
+        cohort[PASTURE].prevPROD100.nitrogen = ZERO;
+      }
+      else 
+      {
+        if( 0 != cohort[BIOFUELS].chrtarea && 0 != cohort[BIOFUELS].prevchrtarea )
+        {
+          // 10-year Woody Products
+
+          for( i10 = 0; i10 < 10; ++i10 )
+          {
+            cohort[BIOFUELS].initPROD10[i10].carbon = (((double) cohort[PASTURE].prevchrtarea
+                                                      * cohort[PASTURE].initPROD10[i10].carbon)
+                                                      + ((double) cohort[BIOFUELS].prevchrtarea
+                                                      * cohort[BIOFUELS].initPROD10[i10].carbon))
+                                                      / (double) cohort[BIOFUELS].prevchrtarea;     
+
+            cohort[BIOFUELS].initPROD10[i10].nitrogen = (((double) cohort[PASTURE].prevchrtarea 
+                                                        * cohort[PASTURE].initPROD10[i10].nitrogen)
+                                                        + ((double) cohort[BIOFUELS].prevchrtarea 
+                                                        * cohort[BIOFUELS].initPROD10[i10].nitrogen))
+                                                        / (double) cohort[BIOFUELS].prevchrtarea;   
+
+            cohort[PASTURE].initPROD10[i10].carbon = ZERO;
+            cohort[PASTURE].initPROD10[i10].nitrogen = ZERO;
+          }
+
+          cohort[BIOFUELS].prevPROD10.carbon = (((double) cohort[PASTURE].prevchrtarea 
+                                               * cohort[PASTURE].prevPROD10.carbon)
+                                               + ((double) cohort[BIOFUELS].prevchrtarea 
+                                               * cohort[BIOFUELS].prevPROD10.carbon))
+                                               / (double) cohort[BIOFUELS].prevchrtarea; 
+
+          cohort[BIOFUELS].prevPROD10.nitrogen = (((double) cohort[PASTURE].prevchrtarea 
+                                                 * cohort[PASTURE].prevPROD10.nitrogen)
+                                                 + ((double) cohort[BIOFUELS].prevchrtarea 
+                                                 * cohort[BIOFUELS].prevPROD10.nitrogen))
+                                                 / (double) cohort[BIOFUELS].prevchrtarea; 
+
+          cohort[PASTURE].prevPROD10.carbon = ZERO;
+          cohort[PASTURE].prevPROD10.nitrogen = ZERO;
+
+          // 100-year Woody Products
+
+          for( i100 = 0; i100 < 100; ++i100 )
+          {
+            cohort[BIOFUELS].initPROD100[i100].carbon = (((double) cohort[PASTURE].prevchrtarea
+                                                        * cohort[PASTURE].initPROD100[i100].carbon)
+                                                        + ((double) cohort[BIOFUELS].prevchrtarea
+                                                        * cohort[BIOFUELS].initPROD100[i100].carbon)) 
+                                                        / (double) cohort[BIOFUELS].prevchrtarea;     
+
+            cohort[BIOFUELS].initPROD100[i100].nitrogen = (((double) cohort[PASTURE].prevchrtarea 
+                                                          * cohort[PASTURE].initPROD100[i100].nitrogen)
+                                                          + ((double) cohort[BIOFUELS].prevchrtarea 
+                                                          * cohort[BIOFUELS].initPROD100[i100].nitrogen)) 
+                                                          /(double) cohort[BIOFUELS].prevchrtarea;   
+
+            cohort[PASTURE].initPROD100[i100].carbon = ZERO;
+            cohort[PASTURE].initPROD100[i100].nitrogen = ZERO;
+          }
+
+          cohort[BIOFUELS].prevPROD100.carbon = (((double) cohort[PASTURE].prevchrtarea 
+                                               * cohort[PASTURE].prevPROD100.carbon)
+                                               + ((double) cohort[BIOFUELS].prevchrtarea 
+                                               * cohort[BIOFUELS].prevPROD100.carbon))
+                                               / (double) cohort[BIOFUELS].prevchrtarea;     
+
+          cohort[BIOFUELS].prevPROD100.nitrogen = (((double) cohort[PASTURE].prevchrtarea
+                                                 * cohort[PASTURE].prevPROD100.nitrogen)
+                                                 + ((double) cohort[BIOFUELS].prevchrtarea
+                                                 * cohort[BIOFUELS].prevPROD100.nitrogen))    
+                                                 / (double) cohort[BIOFUELS].prevchrtarea;     
+
+          cohort[PASTURE].prevPROD100.carbon = ZERO;
+          cohort[PASTURE].prevPROD100.nitrogen = ZERO;
+        } 
+      }
+    }
+
+ 
+    // Readjust product pools to account for changes in area of crops and pastures
+ 
+    if( 0 != cohort[CROPVEG].chrtarea && 0 != cohort[CROPVEG].prevchrtarea )
+    { 
+      // Agricultural products
+
+      for( dm = 0; dm < CYCLE; ++dm )
+      {
+        cohort[CROPVEG].initPROD1[dm].carbon *= ((double) cohort[CROPVEG].prevchrtarea 
+                                                   / (double) cohort[CROPVEG].chrtarea);     
+
+        cohort[CROPVEG].initPROD1[dm].nitrogen *= ((double) cohort[CROPVEG].prevchrtarea 
+                                                     / (double) cohort[CROPVEG].chrtarea);   
+      }
+
+      cohort[CROPVEG].prevPROD1.carbon *= ((double) cohort[CROPVEG].prevchrtarea 
+                                                   / (double) cohort[CROPVEG].chrtarea);     
+
+      cohort[CROPVEG].prevPROD1.nitrogen *= ((double) cohort[CROPVEG].prevchrtarea 
+                                                   / (double) cohort[CROPVEG].chrtarea);     
+
+      // 10-year Woody Products
+
+      for( i10 = 0; i10 < 10; ++i10 )
+      {
         cohort[CROPVEG].initPROD10[i10].carbon *= ((double) cohort[CROPVEG].prevchrtarea 
                                                    / (double) cohort[CROPVEG].chrtarea);     
 
@@ -1357,7 +2532,52 @@ void MITelmnt44::landUseChange( const int& pdyr )
                                                      / (double) cohort[CROPVEG].chrtarea);   
       }
 
-      if( 0 != cohort[BIOFUELS].chrtarea && 0 != cohort[BIOFUELS].prevchrtarea )
+      cohort[CROPVEG].prevPROD10.carbon *= ((double) cohort[CROPVEG].prevchrtarea 
+                                           / (double) cohort[CROPVEG].chrtarea); 
+
+      cohort[CROPVEG].prevPROD10.nitrogen *= ((double) cohort[CROPVEG].prevchrtarea 
+                                             / (double) cohort[CROPVEG].chrtarea); 
+
+      // 100-year Woody Products
+
+      for( i100 = 0; i100 < 100; ++i100 )
+      {
+        cohort[CROPVEG].initPROD100[i100].carbon *= ((double) cohort[CROPVEG].prevchrtarea 
+                                                     / (double) cohort[CROPVEG].chrtarea);     
+
+        cohort[CROPVEG].initPROD100[i100].nitrogen *= ((double) cohort[CROPVEG].prevchrtarea 
+                                                       /(double) cohort[CROPVEG].chrtarea);   
+      }
+
+      cohort[CROPVEG].prevPROD100.carbon *= ((double) cohort[CROPVEG].prevchrtarea 
+                                            / (double) cohort[CROPVEG].chrtarea);     
+
+      cohort[CROPVEG].prevPROD100.nitrogen *= ((double) cohort[CROPVEG].prevchrtarea    
+                                              / (double) cohort[CROPVEG].chrtarea);     
+    }
+
+    if( 0 != cohort[BIOFUELS].chrtarea && 0 != cohort[BIOFUELS].prevchrtarea )
+    { 
+      // Agricultural products
+
+      for( dm = 0; dm < CYCLE; ++dm )
+      {
+        cohort[BIOFUELS].initPROD1[dm].carbon *= ((double) cohort[BIOFUELS].prevchrtarea 
+                                                   / (double) cohort[BIOFUELS].chrtarea);     
+
+        cohort[BIOFUELS].initPROD1[dm].nitrogen *= ((double) cohort[BIOFUELS].prevchrtarea 
+                                                     / (double) cohort[BIOFUELS].chrtarea);   
+      }
+
+      cohort[BIOFUELS].prevPROD1.carbon *= ((double) cohort[BIOFUELS].prevchrtarea 
+                                                   / (double) cohort[BIOFUELS].chrtarea);     
+
+      cohort[BIOFUELS].prevPROD1.nitrogen *= ((double) cohort[BIOFUELS].prevchrtarea 
+                                                   / (double) cohort[BIOFUELS].chrtarea);     
+
+      // 10-year Woody Products
+
+      for( i10 = 0; i10 < 10; ++i10 )
       {
         cohort[BIOFUELS].initPROD10[i10].carbon *= ((double) cohort[BIOFUELS].prevchrtarea 
                                                     / (double) cohort[BIOFUELS].chrtarea);     
@@ -1366,28 +2586,15 @@ void MITelmnt44::landUseChange( const int& pdyr )
                                                       / (double) cohort[BIOFUELS].chrtarea);   
       }
 
-      if (0 != cohort[PASTURE].chrtarea && 0 != cohort[PASTURE].prevchrtarea )
-      {
-        cohort[PASTURE].initPROD10[i10].carbon *= ((double) cohort[PASTURE].prevchrtarea 
-                                                   / (double) cohort[PASTURE].chrtarea);     
+      cohort[BIOFUELS].prevPROD10.carbon *= ((double) cohort[BIOFUELS].prevchrtarea 
+                                           / (double) cohort[BIOFUELS].chrtarea); 
 
-        cohort[PASTURE].initPROD10[i10].nitrogen *= ((double) cohort[PASTURE].prevchrtarea 
-                                                     / (double) cohort[PASTURE].chrtarea);   
-      }
-    }
+      cohort[BIOFUELS].prevPROD10.nitrogen *= ((double) cohort[BIOFUELS].prevchrtarea 
+                                             / (double) cohort[BIOFUELS].chrtarea); 
 
-    for( i100 = 0; i100 < 100; ++i100 )
-    {
-      if( 0 != cohort[CROPVEG].chrtarea && 0 != cohort[CROPVEG].prevchrtarea )
-      { 
-        cohort[CROPVEG].initPROD100[i100].carbon *= ((double) cohort[CROPVEG].prevchrtarea 
-                                                     / (double) cohort[CROPVEG].chrtarea);     
+      // 100-year Woody Products
 
-        cohort[CROPVEG].initPROD100[i100].nitrogen *= ((double) cohort[CROPVEG].prevchrtarea 
-                                                       /(double) cohort[CROPVEG].chrtarea);   
-      }
-
-      if( 0 != cohort[BIOFUELS].chrtarea && 0 != cohort[BIOFUELS].prevchrtarea )
+      for( i100 = 0; i100 < 100; ++i100 )
       {
         cohort[BIOFUELS].initPROD100[i100].carbon *= ((double) cohort[BIOFUELS].prevchrtarea 
                                                       / (double) cohort[BIOFUELS].chrtarea);     
@@ -1396,7 +2603,36 @@ void MITelmnt44::landUseChange( const int& pdyr )
                                                         / (double) cohort[BIOFUELS].chrtarea);   
       }
 
-      if( 0 != cohort[PASTURE].chrtarea && 0 != cohort[PASTURE].prevchrtarea )
+      cohort[BIOFUELS].prevPROD100.carbon *= ((double) cohort[BIOFUELS].prevchrtarea 
+                                            / (double) cohort[BIOFUELS].chrtarea);     
+
+      cohort[BIOFUELS].prevPROD100.nitrogen *= ((double) cohort[BIOFUELS].prevchrtarea    
+                                              / (double) cohort[BIOFUELS].chrtarea);     
+    }
+
+
+    if (0 != cohort[PASTURE].chrtarea && 0 != cohort[PASTURE].prevchrtarea )
+    {
+      // 10-year Woody Products
+
+      for( i10 = 0; i10 < 10; ++i10 )
+      {
+        cohort[PASTURE].initPROD10[i10].carbon *= ((double) cohort[PASTURE].prevchrtarea 
+                                                   / (double) cohort[PASTURE].chrtarea);     
+
+        cohort[PASTURE].initPROD10[i10].nitrogen *= ((double) cohort[PASTURE].prevchrtarea 
+                                                     / (double) cohort[PASTURE].chrtarea);   
+      }
+
+      cohort[PASTURE].prevPROD10.carbon *= ((double) cohort[PASTURE].prevchrtarea 
+                                           / (double) cohort[PASTURE].chrtarea); 
+
+      cohort[PASTURE].prevPROD10.nitrogen *= ((double) cohort[PASTURE].prevchrtarea 
+                                             / (double) cohort[PASTURE].chrtarea); 
+
+      // 100-year Woody Products
+
+      for( i100 = 0; i100 < 100; ++i100 )
       {
         cohort[PASTURE].initPROD100[i100].carbon *= ((double) cohort[PASTURE].prevchrtarea 
                                                      / (double) cohort[PASTURE].chrtarea);     
@@ -1404,6 +2640,12 @@ void MITelmnt44::landUseChange( const int& pdyr )
         cohort[PASTURE].initPROD100[i100].nitrogen *= ( (double) cohort[PASTURE].prevchrtarea 
                                                        / (double) cohort[PASTURE].chrtarea);   
       }
+
+      cohort[PASTURE].prevPROD100.carbon *= ((double) cohort[PASTURE].prevchrtarea 
+                                            / (double) cohort[PASTURE].chrtarea);     
+
+      cohort[PASTURE].prevPROD100.nitrogen *= ((double) cohort[PASTURE].prevchrtarea    
+                                              / (double) cohort[PASTURE].chrtarea);     
     }
 
 
@@ -1420,49 +2662,19 @@ void MITelmnt44::landUseChange( const int& pdyr )
 
       // Land conversion to food crops
      
-      if( diffCropArea > ZERO )
+      if( diffCropArea > 0 )
       {
-        if( diffBiofuelArea >= ZERO
-            && diffPastureArea >= ZERO )
+        if( sumNaturalLoss > 0 )
         {
           propConvertedArea = (double) diffCropArea 
                               / (double) sumManagedGain;
         }
-        else if( diffBiofuelArea < ZERO
-                 && diffPastureArea >= ZERO )
+        else
         {
-          adjArea = lround( ((double) diffCropArea
-                            / (double) (diffCropArea 
-                            + diffPastureArea))
-                            * (double) diffBiofuelArea );
-                   
-
-          propConvertedArea = (double) (diffCropArea 
-                              + adjArea) 
-                              / (double) sumManagedGain;
+          propConvertedArea = ZERO;
         }
-        else if( diffBiofuelArea >= ZERO
-                 && diffPastureArea < ZERO )
-        {
-          adjArea = lround( ((double) diffCropArea
-                            / (double) (diffCropArea 
-                            + diffBiofuelArea))
-                            * (double) diffPastureArea );
-                   
 
-          propConvertedArea = (double) (diffCropArea 
-                              + adjArea) 
-                              / (double) sumManagedGain;
-        }
-        else  // both diffBiofuelArea and diffPastureArea < ZERO
-        {
-          adjArea =  diffBiofuelArea + diffPastureArea;
 
-          propConvertedArea = (double) (diffCropArea 
-                              + adjArea) 
-                              / (double) sumManagedGain;
-        }
-      
         createCohortProducts( CROPVEG,
                               propConvertedArea,
                               formPROD10,
@@ -1481,48 +2693,18 @@ void MITelmnt44::landUseChange( const int& pdyr )
 
       // Land conversion to biofuel 
  
-      if( diffBiofuelArea > ZERO )
+      if( diffBiofuelArea > 0 )
       {
-        if( diffCropArea >= ZERO
-            && diffPastureArea >= ZERO )
+        if( sumNaturalLoss > 0 )
         {
           propConvertedArea = (double) diffBiofuelArea 
                               / (double) sumManagedGain;
         }
-        else if( diffCropArea < ZERO
-                 && diffPastureArea >= ZERO )
+        else
         {
-          adjArea = lround( ((double) diffBiofuelArea
-                            / (double) (diffBiofuelArea 
-                            + diffPastureArea))
-                            * (double) diffCropArea );
-                   
-
-          propConvertedArea = (double) (diffBiofuelArea 
-                              + adjArea) 
-                              / (double) sumManagedGain;
+          propConvertedArea = ZERO;
         }
-        else if( diffCropArea >= ZERO
-                 && diffPastureArea < ZERO )
-        {
-          adjArea = lround( ((double) diffBiofuelArea
-                            / (double) (diffBiofuelArea 
-                            + diffCropArea))
-                            * (double) diffPastureArea );
-                   
 
-          propConvertedArea = (double) (diffBiofuelArea 
-                              + adjArea) 
-                              / (double) sumManagedGain;
-        }
-        else  // both diffCropArea and diffPastureArea < ZERO
-        {
-          adjArea =  diffCropArea + diffPastureArea;
-
-          propConvertedArea = (double) (diffBiofuelArea 
-                              + adjArea) 
-                              / (double) sumManagedGain;
-        }
       
         createCohortProducts( BIOFUELS,
                               propConvertedArea,
@@ -1542,49 +2724,19 @@ void MITelmnt44::landUseChange( const int& pdyr )
 
       // Land conversion to pasture
  
-      if( diffPastureArea > ZERO )
+      if( diffPastureArea > 0 )
       {
-        if( diffCropArea >= ZERO
-            && diffBiofuelArea >= ZERO )
+        if( sumNaturalLoss > 0 )
         {
           propConvertedArea = (double) diffPastureArea 
                               / (double) sumManagedGain;
         }
-        else if( diffCropArea < ZERO
-                 && diffBiofuelArea >= ZERO )
+        else
         {
-          adjArea = lround( ((double) diffPastureArea
-                            / (double) (diffPastureArea 
-                            + diffBiofuelArea))
-                            * (double) diffCropArea );
-                   
-
-          propConvertedArea = (double) (diffPastureArea 
-                              + adjArea) 
-                              / (double) sumManagedGain;
+          propConvertedArea = ZERO;
         }
-        else if( diffCropArea >= ZERO
-                 && diffBiofuelArea < ZERO )
-        {
-          adjArea = lround( ((double) diffPastureArea
-                            / (double) (diffPastureArea 
-                            + diffCropArea))
-                            * (double) diffBiofuelArea );
-                   
 
-          propConvertedArea = (double) (diffPastureArea 
-                              + adjArea) 
-                              / (double) sumManagedGain;
-        }
-        else  // both diffCropArea and diffBiofuelArea < ZERO
-        {
-          adjArea =  diffCropArea + diffBiofuelArea;
 
-          propConvertedArea = (double) (diffPastureArea 
-                              + adjArea) 
-                              / (double) sumManagedGain;
-        }
-      
         createCohortProducts( PASTURE,
                               propConvertedArea,
                               formPROD10,
@@ -1605,263 +2757,138 @@ void MITelmnt44::landUseChange( const int& pdyr )
 
     for( ichrt = 0; ichrt < maxcohorts; ++ichrt )
     {
-      diffarea = cohort[ichrt].chrtarea - cohort[ichrt].prevchrtarea;
-      initarea = cohort[ichrt].prevchrtarea; 
-
-//      if( 15 == cohort[ichrt].currentveg 
-//          || 16 == cohort[ichrt].currentveg
-//          || 33 == cohort[ichrt].currentveg )
-//      {
-//        cout << " yr = " << pdyr;
-//        cout << " lat = " << row;
-//        cout << " ichrt = " << ichrt;
-//        cout << endl;
-//      }
-  	
-      if( diffarea > 0 )
+      if( BAREGRND != cohort[ichrt].currentveg
+          && GLACIERS != cohort[ichrt].currentveg
+          && LAKES != cohort[ichrt].currentveg )
       {
-        // Update food crop cohort
+        diffarea = cohort[ichrt].chrtarea - cohort[ichrt].prevchrtarea;
+        initarea = cohort[ichrt].prevchrtarea; 
 
-  	if( CROPVEG == cohort[ichrt].currentveg )
-  	{
-          if( diffBiofuelArea >= 0
-              && diffPastureArea >= 0 )
-          {
-            propConvertedArea = (double) diffCropArea 
-                                / (double) sumManagedGain;
-
-            propAbandonedArea = ZERO;
-          }
-          else if( diffBiofuelArea < 0
-                   && diffPastureArea >= 0 )
-          {
-            adjArea = lround( ((double) diffCropArea
-                              / (double) (diffCropArea 
-                              + diffPastureArea))
-                              * (double) diffBiofuelArea );
-                   
-            negadjArea = adjArea * -1;
-
-            propConvertedArea = (double) (diffCropArea 
-                                + adjArea) 
-                                / (double) sumManagedGain;
-
-            propAbandonedArea = (double) negadjArea
-                                / (double) (sumNaturalGain
-                                - diffBiofuelArea); 
-          }
-          else if( diffBiofuelArea >= 0
-                   && diffPastureArea < 0 )
-          {
-            adjArea = lround( ((double) diffCropArea
-                              / (double) (diffCropArea 
-                              + diffBiofuelArea))
-                              * (double) diffPastureArea );
-                   
-            negadjArea = adjArea * -1;
-
-            propConvertedArea = (double) (diffCropArea 
-                                + adjArea) 
-                                / (double) sumManagedGain;
-
-            propAbandonedArea = (double) negadjArea
-                                / (double) (sumNaturalGain
-                                - diffPastureArea); 
-          }
-          else  // both diffBiofuelArea and diffPastureArea < ZERO
-          {
-            adjArea =  diffBiofuelArea + diffPastureArea;
-
-            negadjArea = adjArea * -1;
-
-            propConvertedArea = (double) (diffCropArea 
-                                + adjArea) 
-                                / (double) sumManagedGain;
-
-            propAbandonedArea = (double) negadjArea
-                                / (double) (sumNaturalGain
-                                - diffBiofuelArea
-                                - diffPastureArea); 
-          }
-               
-          updateChangedCohort( ichrt,
-                               initarea,
-                               propConvertedArea,
-                               propAbandonedArea,
-                               lcluc.abandonedVeg,
-                               lcluc.convertedSoil,
-                               lcluc.abandonedSoil,
-                               convertedNONSOLC,
-                               abandonedNONSOLC,
-                               convertedANH4IN,
-                               abandonedANH4IN,
-                               convertedANO3IN,
-                               abandonedANO3IN,
-                               convertedDPHUMIN,
-                               abandonedDPHUMIN,
-                               convertedOCIN,
-                               abandonedOCIN,
-                               convertedRCLIN,
-                               abandonedRCLIN,
-                               convertedRCRIN,
-                               abandonedRCRIN,
-                               convertedRCVLIN,
-                               abandonedRCVLIN );                               
-        }
-
-        // Update Biofuel cohort
-
-        else if( BIOFUELS == cohort[ichrt].currentveg )
+  	
+        if( diffarea > 0 )
         {
-          if( diffCropArea >= 0
-              && diffPastureArea >= 0 )
-          {
-            propConvertedArea = (double) diffBiofuelArea 
-                                / (double) sumManagedGain;
+          // Update food crop cohort
 
-            propAbandonedArea = ZERO;
+  	  if( CROPVEG == cohort[ichrt].currentveg )
+  	  {
+            if( sumNaturalLoss > 0 
+                && sumManagedGain > 0 )
+            {
+              propConvertedArea = (double) diffCropArea 
+                                  / (double) sumManagedGain;
+            }
+            else
+            {
+              propConvertedArea = ZERO;
+            }
+
+            if( sumManagedLoss > 0
+                && sumManagedGain > 0 )
+            {
+              propManagedAbandoned = (double) (sumManagedLoss - sumNaturalGain)
+                                     / (double) sumManagedLoss;
+ 
+              if( propManagedAbandoned < ZERO )
+              {
+                propManagedAbandoned = ZERO;
+              }
+
+              propAbandonedArea = ((double) diffCropArea
+                                  / (double) sumManagedGain)
+                                  * propManagedAbandoned;
+            }
+            else
+            {
+              propAbandonedArea = ZERO;
+            }
           }
-          else if( diffCropArea < 0
-                   && diffPastureArea >= 0 )
+
+          // Update Biofuel cohort
+
+          else if( BIOFUELS == cohort[ichrt].currentveg )
           {
-            adjArea = lround( ((double) diffBiofuelArea
-                              / (double) (diffBiofuelArea 
-                              + diffPastureArea))
-                              * (double) diffCropArea );
-                   
-            negadjArea = adjArea * -1;
+            if( sumNaturalLoss > 0 
+                && sumManagedGain > 0 )
+            {
+              propConvertedArea = (double) diffBiofuelArea 
+                                  / (double) sumManagedGain;
+            }
+            else
+            {
+              propConvertedArea = ZERO;
+            }
 
-            propConvertedArea = (double) (diffBiofuelArea 
-                                + adjArea) 
-                                / (double) sumManagedGain;
+            if( sumManagedLoss > 0
+                && sumManagedGain > 0 )
+            {
+              propManagedAbandoned = (double) (sumManagedLoss - sumNaturalGain)
+                                     / (double) sumManagedLoss;
+ 
+              if( propManagedAbandoned < ZERO )
+              {
+                propManagedAbandoned = ZERO;
+              }
 
-            propAbandonedArea = (double) negadjArea
-                                / (double) (sumNaturalGain
-                                - diffCropArea); 
+              propAbandonedArea = ((double) diffBiofuelArea
+                                  / (double) sumManagedGain)
+                                  * propManagedAbandoned;
+            }
+            else
+            {
+              propAbandonedArea = ZERO;
+            }
           }
-          else if( diffCropArea >= 0
-                   && diffPastureArea < 0 )
-          {
-            adjArea = lround( ((double) diffBiofuelArea
-                              / (double) (diffBiofuelArea 
-                              + diffCropArea))
-                              * (double) diffPastureArea );
-                   
-            negadjArea = adjArea * -1;
-
-            propConvertedArea = (double) (diffBiofuelArea 
-                                + adjArea) 
-                                / (double) sumManagedGain;
-
-            propAbandonedArea = (double) negadjArea
-                                / (double) (sumNaturalGain
-                                - diffPastureArea); 
-          }
-          else  // both diffCropArea and diffPastureArea < ZERO
-          {
-            adjArea =  diffCropArea + diffPastureArea;
-
-            negadjArea = adjArea * -1;
-
-            propConvertedArea = (double) (diffBiofuelArea 
-                                + adjArea) 
-                                / (double) sumManagedGain;
-
-            propAbandonedArea = (double) negadjArea
-                                / (double) (sumNaturalGain
-                                - diffCropArea
-                                - diffPastureArea); 
-          }
-               
-          updateChangedCohort( ichrt,
-                               initarea,
-                               propConvertedArea,
-                               propAbandonedArea,
-                               lcluc.abandonedVeg,
-                               lcluc.convertedSoil,
-                               lcluc.abandonedSoil,
-                               convertedNONSOLC,
-                               abandonedNONSOLC,
-                               convertedANH4IN,
-                               abandonedANH4IN,
-                               convertedANO3IN,
-                               abandonedANO3IN,
-                               convertedDPHUMIN,
-                               abandonedDPHUMIN,
-                               convertedOCIN,
-                               abandonedOCIN,
-                               convertedRCLIN,
-                               abandonedRCLIN,
-                               convertedRCRIN,
-                               abandonedRCRIN,
-                               convertedRCVLIN,
-                               abandonedRCVLIN );                               
-        }
        
-        // Update Pasture cohort
+          // Update Pasture cohort
 
-        else if( PASTURE == cohort[ichrt].currentveg )
-        {
-          if( diffCropArea >= 0
-              && diffBiofuelArea >= 0 )
+          else if( PASTURE == cohort[ichrt].currentveg )
           {
-            propConvertedArea = (double) diffPastureArea 
-                                / (double) sumManagedGain;
+            if( sumNaturalLoss > 0 
+                && sumManagedGain > 0 )
+            {
+              propConvertedArea = (double) diffPastureArea 
+                                  / (double) sumManagedGain;
+            }
+            else
+            {
+              propConvertedArea = ZERO;
+            }
 
-            propAbandonedArea = ZERO;
+            if( sumManagedLoss > 0
+                && sumManagedGain > 0 )
+            {
+              propManagedAbandoned = (double) (sumManagedLoss - sumNaturalGain)
+                                     / (double) sumManagedLoss;
+ 
+              if( propManagedAbandoned < ZERO )
+              {
+                propManagedAbandoned = ZERO;
+              }
+
+              propAbandonedArea = ((double) diffPastureArea
+                                  / (double) sumManagedGain)
+                                  * propManagedAbandoned;
+            }
+            else
+            {
+              propAbandonedArea = ZERO;
+            }
           }
-          else if( diffCropArea < 0
-                   && diffBiofuelArea >= 0 )
+
+          // Update natural cohorts
+
+          else  
           {
-            adjArea = lround( ((double) diffPastureArea
-                              / (double) (diffPastureArea 
-                              + diffBiofuelArea))
-                              * (double) diffCropArea );
-                   
-            negadjArea = adjArea * -1;
+            propConvertedArea = ZERO;
 
-            propConvertedArea = (double) (diffPastureArea 
-                                + adjArea) 
-                                / (double) sumManagedGain;
+//            propAbandonedArea = (double) diffarea
+//                                / (double) sumNaturalGain;
 
-            propAbandonedArea = (double) negadjArea
-                                / (double) (sumNaturalGain
-                                - diffCropArea); 
+            propAbandonedArea = (double) diffarea
+                                / (double) sumManagedLoss;
           }
-          else if( diffCropArea >= 0
-                   && diffBiofuelArea < 0 )
-          {
-            adjArea = lround( ((double) diffPastureArea
-                              / (double) (diffPastureArea 
-                              + diffCropArea))
-                              * (double) diffBiofuelArea );
-                   
-            negadjArea = adjArea * -1;
 
-            propConvertedArea = (double) (diffPastureArea 
-                                + adjArea) 
-                                / (double) sumManagedGain;
 
-            propAbandonedArea = (double) negadjArea
-                                / (double) (sumNaturalGain
-                                - diffBiofuelArea); 
-          }
-          else  // both diffCropArea and diffBiofuelArea < ZERO
-          {
-            adjArea =  diffCropArea + diffBiofuelArea;
-
-            negadjArea = adjArea * -1;
-
-            propConvertedArea = (double) (diffPastureArea 
-                                + adjArea) 
-                                / (double) sumManagedGain;
-
-            propAbandonedArea = (double) negadjArea
-                                / (double) (sumNaturalGain
-                                - diffCropArea
-                                - diffPastureArea); 
-          }
-               
           updateChangedCohort( ichrt,
                                initarea,
                                propConvertedArea,
@@ -1885,178 +2912,88 @@ void MITelmnt44::landUseChange( const int& pdyr )
                                abandonedRCRIN,
                                convertedRCVLIN,
                                abandonedRCVLIN );                               
-        }
 
-        // Update natural cohorts
 
-        else  
-        {
-          propConvertedArea = ZERO;
-
-          if( diffCropArea < 0
-              && diffBiofuelArea < 0
-              && diffPastureArea < 0 )
+          if( cohort[ichrt].y[tem.I_VEGC] < ZERO )
           {
-            propAbandonedArea = (double) diffarea
-                                / (double) sumNaturalGain;
+            cohort[ichrt].y[tem.I_VEGC] = ZERO;
           }
-          else if( diffCropArea < 0
-                   && diffBiofuelArea >= 0
-                   && diffPastureArea >= 0 )
+
+          if( cohort[ichrt].y[tem.I_STRN] < ZERO )
           {
-            propAbandonedArea = (double) diffarea
-                                / (double) (sumNaturalGain
-                                - diffCropArea); 
+            cohort[ichrt].y[tem.I_STRN] = ZERO;
           }
-          else if( diffCropArea >= 0
-                   && diffBiofuelArea < 0
-                   && diffPastureArea >= 0 )
+
+          if( cohort[ichrt].y[tem.I_STON] < ZERO )
+          { 
+            cohort[ichrt].y[tem.I_STON] = ZERO; 
+          }
+
+          if( cohort[ichrt].y[tem.I_SOLC] < ZERO )
           {
-            propAbandonedArea = (double) diffarea
-                                / (double) (sumNaturalGain
-                                - diffBiofuelArea); 
+            cohort[ichrt].y[tem.I_SOLC] = ZERO; 
           }
-          else if( diffCropArea >= 0
-                   && diffBiofuelArea >= 0
-                   && diffPastureArea < 0 )
+
+          if( cohort[ichrt].y[tem.I_SOLN] < ZERO )
           {
-            propAbandonedArea = (double) diffarea
-                                / (double) (sumNaturalGain
-                                - diffPastureArea); 
+            cohort[ichrt].y[tem.I_SOLN] = ZERO; 
           }
-          else if( diffCropArea < 0
-                   && diffBiofuelArea < 0
-                   && diffPastureArea >= 0 )
+
+          if( cohort[ichrt].y[tem.I_AVLN] < ZERO )
           {
-            propAbandonedArea = (double) diffarea
-                                / (double) (sumNaturalGain
-                                - diffCropArea
-                                - diffBiofuelArea); 
+            cohort[ichrt].y[tem.I_AVLN] = ZERO; 
           }
-          else if( diffCropArea < 0
-                   && diffBiofuelArea >= 0
-                   && diffPastureArea < 0 )
+
+          for( dlyr = 0; dlyr < NLVL; ++dlyr )
           {
-            propAbandonedArea = (double) diffarea
-                                / (double) (sumNaturalGain
-                                - diffCropArea
-                                - diffPastureArea); 
-          }
-          else if( diffCropArea >= 0
-                   && diffBiofuelArea < 0
-                   && diffPastureArea < 0 )
-          {
-            propAbandonedArea = (double) diffarea
-                                / (double) (sumNaturalGain
-                                - diffBiofuelArea
-                                - diffPastureArea); 
-          }
-               
-          updateChangedCohort( ichrt,
-                               initarea,
-                               propConvertedArea,
-                               propAbandonedArea,
-                               lcluc.abandonedVeg,
-                               lcluc.convertedSoil,
-                               lcluc.abandonedSoil,
-                               convertedNONSOLC,
-                               abandonedNONSOLC,
-                               convertedANH4IN,
-                               abandonedANH4IN,
-                               convertedANO3IN,
-                               abandonedANO3IN,
-                               convertedDPHUMIN,
-                               abandonedDPHUMIN,
-                               convertedOCIN,
-                               abandonedOCIN,
-                               convertedRCLIN,
-                               abandonedRCLIN,
-                               convertedRCRIN,
-                               abandonedRCRIN,
-                               convertedRCVLIN,
-                               abandonedRCVLIN );                               
-        }
-
-
-        if( cohort[ichrt].y[tem.I_VEGC] < ZERO )
-        {
-          cohort[ichrt].y[tem.I_VEGC] = ZERO;
-        }
-
-        if( cohort[ichrt].y[tem.I_STRN] < ZERO )
-        {
-          cohort[ichrt].y[tem.I_STRN] = ZERO;
-        }
-
-        if( cohort[ichrt].y[tem.I_STON] < ZERO )
-        { 
-          cohort[ichrt].y[tem.I_STON] = ZERO; 
-        }
-
-        if( cohort[ichrt].y[tem.I_SOLC] < ZERO )
-        {
-          cohort[ichrt].y[tem.I_SOLC] = ZERO; 
-        }
-
-        if( cohort[ichrt].y[tem.I_SOLN] < ZERO )
-        {
-          cohort[ichrt].y[tem.I_SOLN] = ZERO; 
-        }
-
-        if( cohort[ichrt].y[tem.I_AVLN] < ZERO )
-        {
-          cohort[ichrt].y[tem.I_AVLN] = ZERO; 
-        }
-
-        for( dlyr = 0; dlyr < NLVL; ++dlyr )
-        {
-          if( cohort[ichrt].NEManh4in[dlyr] < ZERO )
-          {
-            cohort[ichrt].NEManh4in[dlyr] = ZERO;
-          }
+            if( cohort[ichrt].NEManh4in[dlyr] < ZERO )
+            {
+              cohort[ichrt].NEManh4in[dlyr] = ZERO;
+            }
         
-          if( cohort[ichrt].NEMano3in[dlyr] < ZERO )
-          {                            
-            cohort[ichrt].NEMano3in[dlyr] = ZERO;
+            if( cohort[ichrt].NEMano3in[dlyr] < ZERO )
+            {                            
+              cohort[ichrt].NEMano3in[dlyr] = ZERO;
+            }
+
+            if( cohort[ichrt].NEMdphumin[dlyr] < ZERO )
+            {                              
+              cohort[ichrt].NEMdphumin[dlyr] = ZERO;
+            }
+
+            if( cohort[ichrt].NEMocin[dlyr] < ZERO )
+            {                                    
+              cohort[ichrt].NEMocin[dlyr] = ZERO;
+            }
+
+            if( cohort[ichrt].NEMrclin[dlyr] < ZERO )
+            {
+              cohort[ichrt].NEMrclin[dlyr] = ZERO;
+            }
+
+            if( cohort[ichrt].NEMrcrin[dlyr] < ZERO )
+            {
+              cohort[ichrt].NEMrcrin[dlyr] = ZERO;
+            }
+
+            if( cohort[ichrt].NEMrcvlin[dlyr] < ZERO )
+            {
+              cohort[ichrt].NEMrcvlin[dlyr] = ZERO;
+            }
           }
 
-          if( cohort[ichrt].NEMdphumin[dlyr] < ZERO )
-          {                             
-            cohort[ichrt].NEMdphumin[dlyr] = ZERO;
-          }
+          cohort[ichrt].prevy[tem.I_VEGC] = cohort[ichrt].y[tem.I_VEGC];
 
-          if( cohort[ichrt].NEMocin[dlyr] < ZERO )
-          {                                    
-            cohort[ichrt].NEMocin[dlyr] = ZERO;
-          }
+          cohort[ichrt].prevy[tem.I_STRN] = cohort[ichrt].y[tem.I_STRN];
 
-          if( cohort[ichrt].NEMrclin[dlyr] < ZERO )
-          {
-            cohort[ichrt].NEMrclin[dlyr] = ZERO;
-          }
-
-          if( cohort[ichrt].NEMrcrin[dlyr] < ZERO )
-          {
-            cohort[ichrt].NEMrcrin[dlyr] = ZERO;
-          }
-
-          if( cohort[ichrt].NEMrcvlin[dlyr] < ZERO )
-          {
-            cohort[ichrt].NEMrcvlin[dlyr] = ZERO;
-          }
-        }
-
-        cohort[ichrt].prevy[tem.I_VEGC] = cohort[ichrt].y[tem.I_VEGC];
-
-        cohort[ichrt].prevy[tem.I_STRN] = cohort[ichrt].y[tem.I_STRN];
-
-        cohort[ichrt].prevy[tem.I_STON] = cohort[ichrt].y[tem.I_STON];
+          cohort[ichrt].prevy[tem.I_STON] = cohort[ichrt].y[tem.I_STON];
     
-        cohort[ichrt].prevy[tem.I_SOLC] = cohort[ichrt].y[tem.I_SOLC];
+          cohort[ichrt].prevy[tem.I_SOLC] = cohort[ichrt].y[tem.I_SOLC];
+ 
+          cohort[ichrt].prevy[tem.I_SOLN] = cohort[ichrt].y[tem.I_SOLN];
 
-        cohort[ichrt].prevy[tem.I_SOLN] = cohort[ichrt].y[tem.I_SOLN];
-
-        cohort[ichrt].prevy[tem.I_AVLN] = cohort[ichrt].y[tem.I_AVLN];
+          cohort[ichrt].prevy[tem.I_AVLN] = cohort[ichrt].y[tem.I_AVLN];
+        }
       }
     } 
   }
@@ -3512,17 +4449,11 @@ void MITelmnt44::setTEMequilState( ofstream& rflog1,
     //   besides ice and open water; and all TEM parameters 
     //   are valid (i.e. cohort[pichrt].qc < 100 )
 
-//    if( (cohort[pichrt].qc < 100
-//         && tem.veg.cmnt > 1 
-//         && (mxtair < -1.0))
-//         || cohort[pichrt].chrtarea < 1 )
-//    {
-      // Set tqc flag to assign zero to all TEM variables 
-      //   during simulation
-      	
-      cohort[pichrt].tqc = TQCZEROFLAG; 
-//    }
-//    else { cohort[pichrt].tqc = REJECT; }
+    // Set tqc flag to assign zero to all TEM variables 
+    //   during simulation
+    	
+    cohort[pichrt].tqc = TQCZEROFLAG; 
+
 
     // Set missing values to telmnt[0].output
 
@@ -3656,8 +4587,6 @@ void MITelmnt44::setTEMequilState( ofstream& rflog1,
   } // End of "cohort.qc == ACCEPT"
 
   // Save TEM state of cohort to telmnt[0].cohort
-
-//  cout << "End of equil TEM cmnt = " << tem.veg.cmnt << endl;
 
   saveTEMCohortState( pichrt );
 
@@ -5321,8 +6250,8 @@ int MITelmnt44::transqc( int& maxyears,
 ************************************************************* */
 void MITelmnt44::updateChangedCohort( const int& pichrt,
                                       const long& pinitarea,
-                                      const long& ppropConvertedArea,
-                                      const long& ppropAbandonedArea,
+                                      const double& ppropConvertedArea,
+                                      const double& ppropAbandonedArea,
                                       Tveg44& pabandonedVeg,
                                       MITsoil44& pconvertedSoil,
                                       MITsoil44& pabandonedSoil,
@@ -5346,26 +6275,27 @@ void MITelmnt44::updateChangedCohort( const int& pichrt,
 {
   int dlyr;
 
+
   cohort[pichrt].y[tem.I_VEGC] = ((cohort[pichrt].y[tem.I_VEGC]  
-                                 * pinitarea) 
+                                 * (double) pinitarea) 
                                  + (pabandonedVeg.getSTRUCTC() 
                                  * ppropAbandonedArea))
                                  / (double) cohort[pichrt].chrtarea;
 
   cohort[pichrt].y[tem.I_STRN] = ((cohort[pichrt].y[tem.I_STRN] 
-                                 * pinitarea)
+                                 * (double) pinitarea)
                                  + (pabandonedVeg.getSTRUCTN() 
                                  * ppropAbandonedArea))
                                  / (double) cohort[pichrt].chrtarea;
 
   cohort[pichrt].y[tem.I_STON] = ((cohort[pichrt].y[tem.I_STON] 
-                                 * pinitarea)
+                                 * (double) pinitarea)
                                  + (pabandonedVeg.getLABILEN() 
                                  * ppropAbandonedArea))
                                  / (double) cohort[pichrt].chrtarea;
     
   cohort[pichrt].y[tem.I_SOLC] = ((cohort[pichrt].y[tem.I_SOLC] 
-                                 * pinitarea)
+                                 * (double) pinitarea)
                                  + (pconvertedSoil.getORGC() 
                                  * ppropConvertedArea)
                                  + (pabandonedSoil.getORGC() 
@@ -5373,7 +6303,7 @@ void MITelmnt44::updateChangedCohort( const int& pichrt,
                                  / (double) cohort[pichrt].chrtarea;
 
   cohort[pichrt].y[tem.I_SOLN] = ((cohort[pichrt].y[tem.I_SOLN] 
-                                 * pinitarea)
+                                 * (double) pinitarea)
                                  + (pconvertedSoil.getORGN() 
                                  * ppropConvertedArea)
                                  + (pabandonedSoil.getORGN() 
@@ -5381,7 +6311,7 @@ void MITelmnt44::updateChangedCohort( const int& pichrt,
                                  / (double) cohort[pichrt].chrtarea;
 
   cohort[pichrt].y[tem.I_AVLN] = ((cohort[pichrt].y[tem.I_AVLN] 
-                                 * pinitarea)
+                                 * (double) pinitarea)
                                  + (pconvertedSoil.getAVLN() 
                                  * ppropConvertedArea)
                                  + (pabandonedSoil.getAVLN() 
@@ -5389,7 +6319,7 @@ void MITelmnt44::updateChangedCohort( const int& pichrt,
                                  / (double) cohort[pichrt].chrtarea;
 
   cohort[pichrt].NEMnsolc = ((cohort[pichrt].NEMnsolc 
-                            * pinitarea)
+                            * (double) pinitarea)
                             + (pconvertedNONSOLC 
                             * ppropConvertedArea)
                             + (pabandonedNONSOLC 
@@ -5399,7 +6329,7 @@ void MITelmnt44::updateChangedCohort( const int& pichrt,
   for( dlyr = 0; dlyr < NLVL; ++dlyr )
   {
     cohort[pichrt].NEManh4in[dlyr] = ((cohort[pichrt].NEManh4in[dlyr] 
-                                     * pinitarea)
+                                     * (double) pinitarea)
                                      + (pconvertedANH4IN[dlyr] 
                                      * ppropConvertedArea)
                                      + (pabandonedANH4IN[dlyr] 
@@ -5407,7 +6337,7 @@ void MITelmnt44::updateChangedCohort( const int& pichrt,
                                      / (double) cohort[pichrt].chrtarea;
                                     
     cohort[pichrt].NEMano3in[dlyr] = ((cohort[pichrt].NEMano3in[dlyr] 
-                                     * pinitarea) 
+                                     * (double) pinitarea) 
                                      + (pconvertedANO3IN[dlyr] 
                                      * ppropConvertedArea)
                                      + (pabandonedANO3IN[dlyr] 
@@ -5415,7 +6345,7 @@ void MITelmnt44::updateChangedCohort( const int& pichrt,
                                      / (double) cohort[pichrt].chrtarea;
                              
     cohort[pichrt].NEMdphumin[dlyr] = ((cohort[pichrt].NEMdphumin[dlyr] 
-                                      * pinitarea)
+                                      * (double) pinitarea)
                                       + (pconvertedDPHUMIN[dlyr] 
                                       * ppropConvertedArea)
                                       + (pabandonedDPHUMIN[dlyr] 
@@ -5423,7 +6353,7 @@ void MITelmnt44::updateChangedCohort( const int& pichrt,
                                       / (double) cohort[pichrt].chrtarea;
                                     
     cohort[pichrt].NEMocin[dlyr] = ((cohort[pichrt].NEMocin[dlyr] 
-                                   * pinitarea)
+                                   * (double) pinitarea)
                                    + (pconvertedOCIN[dlyr] 
                                    * ppropConvertedArea)
                                    + (pabandonedOCIN[dlyr] 
@@ -5431,7 +6361,7 @@ void MITelmnt44::updateChangedCohort( const int& pichrt,
                                    / (double) cohort[pichrt].chrtarea;
 
     cohort[pichrt].NEMrclin[dlyr] = ((cohort[pichrt].NEMrclin[dlyr] 
-                                    * pinitarea)
+                                    * (double) pinitarea)
                                     + (pconvertedRCLIN[dlyr] 
                                     * ppropConvertedArea)
                                     + (pabandonedRCLIN[dlyr] 
@@ -5439,7 +6369,7 @@ void MITelmnt44::updateChangedCohort( const int& pichrt,
                                     / (double) cohort[pichrt].chrtarea;
 
     cohort[pichrt].NEMrcrin[dlyr] = ((cohort[pichrt].NEMrcrin[dlyr] 
-                                    * pinitarea)
+                                    * (double) pinitarea)
                                     + (pconvertedRCRIN[dlyr] 
                                     * ppropConvertedArea)
                                     + (pabandonedRCRIN[dlyr] 
@@ -5447,7 +6377,7 @@ void MITelmnt44::updateChangedCohort( const int& pichrt,
                                     / (double) cohort[pichrt].chrtarea;
 
     cohort[pichrt].NEMrcvlin[dlyr] = ((cohort[pichrt].NEMrcvlin[dlyr] 
-                                     * pinitarea)
+                                     * (double) pinitarea)
                                      + (pconvertedRCVLIN[dlyr] 
                                      * ppropConvertedArea)
                                      + (pabandonedRCVLIN[dlyr] 
@@ -5475,6 +6405,12 @@ void MITelmnt44::updateTEMmonth( const int& equil,
 
   getTEMCohortState( pichrt );
 
+//  if( 0 == pdm && 2 == pdyr && 16 == pichrt && row > -42.0 && row < -34.0  )
+//  {
+//    tem.dbug = 1;
+//  }
+//  else { tem.dbug = 0; }
+  
 
   // Assign land cover data to cohort
 

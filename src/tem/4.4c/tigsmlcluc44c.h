@@ -119,7 +119,7 @@ class TEMlcluc44 : public Biome44
      int maxtype;
 
      int potveg;
- 
+
      int startyr;
      
      // portion of carea in a particular cohort, km^2
