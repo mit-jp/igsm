@@ -42,7 +42,7 @@ C     === Local variables ===
 
       ENDDO !  End of time loop
 
-C      CALL DRIVER_FINISH   ! not doing anything
+      CALL ATM2D_FINISH( myThid)
 
       CALL date(buf)
       CALL time(buf1)

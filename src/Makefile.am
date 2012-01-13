@@ -22,6 +22,7 @@ bin_PROGRAMS = igsm22
 igsm22_SOURCES = driver/atm2d_init_fixed.F \
 	driver/atm2d_init_vars.F \
 	driver/driver_IGSM22.F \
+        driver/atm2d_finish.F \
 	driver/forward_step_atm2d.F
 
 igsm22_FFLAGS = -Mdalign -Msave
