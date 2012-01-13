@@ -13,6 +13,7 @@ Makefile.in
 /config.status
 /config.log
 /configure
+/ctrparam.h.in
 /ctrparam-test
 /depcomp
 /install-sh

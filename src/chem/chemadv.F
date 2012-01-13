@@ -316,7 +316,7 @@ c     dta =dt1*3.0      ! dta=1 hr.
 c
 c 111596:
 c
-	dt1hr = dta*3.0
+	dt1hr = 3600.
 
       dt2 =dta*0.5
 
@@ -326,7 +326,7 @@ c
 c-------------------------------
 c  Start do loop for tracers:
 
-      do 1000 ntime=1,3
+      do 1000 ntime=1,ndyn
 
 c-------------------------------------------------------
 c   Scaling mixing ratio with PAI:
@@ -806,7 +806,7 @@ c     dta =dt1*3.0      ! dta=1 hr.
 c
 c 111596:
 c
-        dt1hr = dta*3.0
+        dt1hr = 3600.
 
       dt2 =dta*0.5
 
@@ -816,7 +816,7 @@ c
 c-------------------------------
 c  Start do loop for tracers:
 
-      do 1000 ntime=1,3
+      do 1000 ntime=1,ndyn
 
 c-------------------------------------------------------
 c   Scaling mixing ratio with PAI:

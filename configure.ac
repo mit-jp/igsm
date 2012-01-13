@@ -12,12 +12,12 @@ if test -z "$srcdir" -o "$srcdir" = "."; then
     ./build/README.])
 fi
 # generate ctrparam.h
-AC_CONFIG_HEADERS([src/inc/ctrparam.h])
+AC_CONFIG_HEADERS([ctrparam.h])
 # keep a comment at the bottom of ctrparam.h(.in) indicating where the user can
 # set custom symbols
-AH_BOTTOM([/* Add custom IGSM preprocessor #defines below this comment. Some known (but
-   undocumented) symbols are: ACCRI, DATA4TEM, FIXED_FOR, FIXED_PCO2, GHS_ALB,
-   HR_DATA, IPCC_EMI, OLD_LAPGAS, and ORBITAL_FOR.                            */])
+AH_BOTTOM([/* Add custom IGSM preprocessor #defines below this comment. Some known
+   symbols are: ACCRI, DATA4TEM, FIXED_FOR, FIXED_PCO2, GHS_ALB, HR_DATA, IPCC_EMI,
+   OLD_LAPGAS, and ORBITAL_FOR. */])
 
 
 ### Package options
@@ -68,13 +68,20 @@ AC_ARG_ENABLE([mitgcm],
   [ocean=3D],
   [ocean=2D])
 
+# Package option for chemistry version
+AC_ARG_WITH([chem],
+  [AS_HELP_STRING([--with-chem],
+    [select version of the atmospheric chemistry model: ARG=95 or 12 (default)])],
+  [CHEM_VERSION=$withval],
+  [CHEM_VERSION=12])
+
 # Package option for CLM version
 AC_ARG_WITH([clm],
   [AS_HELP_STRING([--with-clm],
-    [select version of the Common Land Model: ARG=2.1 (default) or 3.5; \
-     --without-clm implies --without-tem])],
+    [select version of the Common Land Model: ARG=2.1 or 3.5 (default); \
+     --without-clm implies --disable-tem])],
   [CLM_VERSION=$withval],
-  [CLM_VERSION=2.1])
+  [CLM_VERSION=3.5])
 
 # Package option for TEM version
 AC_ARG_ENABLE([tem],
@@ -92,6 +99,12 @@ if test $CLM_VERSION = no -a $tem = yes; then
   AC_MSG_ERROR([cannot give both --enable-tem and --without-clm])
 fi
 
+# Package option for tracers
+AC_ARG_ENABLE([tracers],
+  [AS_HELP_STRING([--enable-tracers],
+    [enable non-reactive substances for tracing (default: disabled)])],
+  [tracers=$enableval],
+  [tracers=no])
 
 ### Build environment & language features
 # This section checks whether certain common language features are available in
@@ -113,8 +126,7 @@ AC_PROG_F77
 AC_PROG_FC(pgf90)
 # FIXME: this is cheating. The IGSM modules atm, ocm, ocn_ml and meta contain
 # Fortran files with the extension '.F', which typically denotes Fortran 77, but
-# must be compiled with the pgf90 compiler. It's not clear which variant of
-# Fortran these are.
+# are actually Fortran 90 code with 
 F77=$FC
 # TODO: the following three checks may not be necessary. Remove if possible.
 AC_FC_DUMMY_MAIN
@@ -123,16 +135,33 @@ AC_FC_MAIN
 AC_PROG_RANLIB
 AC_PROG_MAKE_SET
 
-# Checks for header files.
-AC_CHECK_HEADERS([netcdf.h fcntl.h malloc.h sys/time.h unistd.h])
-
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL
-AC_HEADER_STDC
 AC_C_INLINE
 
 # Checks for library functions.
-AC_CHECK_FUNCS([gettimeofday memset modf pow strcasecmp strchr])
+AC_CHECK_FUNCS([modf pow])
+
+# Checks for NetCDF libraries.
+AC_CHECK_HEADER([netcdf.h], [AC_CHECK_LIB([netcdf], [nc_inq_libvers])])
+# the Fortran library
+AC_MSG_CHECKING([[for nf_inq_libvers in -lnetcdff]])
+LIBS+=" -lnetcdff"
+AC_LANG_PUSH([Fortran])
+AC_LINK_IFELSE(
+  [AC_LANG_PROGRAM(, [      include 'netcdf.inc'
+      print *, nf_inq_libvers()])],
+  [AC_MSG_RESULT([yes])], [AC_MSG_FAILURE([no])])
+AC_LANG_POP
+# the include path (for CLM)
+if test "$INC_NETCDF" = ""; then
+  INC_NETCDF=`nc-config --includedir`
+  LIB_NETCDF=`ldconfig -p | grep -m1 libnetcdf | sed "s@.* => \(.*\)@\1@" | xargs dirname`
+  MOD_NETCDF="/home/software/netcdf-new/netcdf-4.1.2/include"
+  AC_SUBST(INC_NETCDF)
+  AC_SUBST(LIB_NETCDF)
+  AC_SUBST(MOD_NETCDF)
+fi
 
 # Common compiler flags for IGSM code
 FFLAGS+=" -r8 -i4"
@@ -163,7 +192,7 @@ fi
 if test $CLM_VERSION != no; then
   CLM_DIR="clm/$CLM_VERSION"
   MODULE_DIRS+=" $CLM_DIR"
-  MODULE_LDADD+=" -L$CLM_DIR -lclm"
+  MODULE_LDADD+=" $CLM_DIR/libclm.a"
   if test $CLM_VERSION = 2.1; then
     # CLM 2.1 requires the ESMF library to be linked explicitly
     MODULE_LDADD+=" -lesmf"
@@ -205,13 +234,15 @@ if test $meta = yes; then
   MODULE_DIRS+=" meta"
   MODULE_LDADD+=" meta/libmeta.a"
 fi
-# 6. NetCDF libraries. The path LIB_NETCDF should be defined in the build
-#    environment.
-# TODO: check if all three of these are necessary
-MODULE_LDADD+=" -L${LIB_NETCDF} -lnetcdff -lnetcdf -lnetcdf_c++"
+# 6. Tracers
+if test $tracers = yes; then
+  MODULE_DIRS+=" tracers"
+  MODULE_LDADD+=" tracers/libtracers.a"
+fi
 
 # substitute the resulting variables in src/Makefile.am
 AC_SUBST(MODULE_DIRS)
+MODULE_LDADD+=" -L$LIB_NETCDF"
 AC_SUBST(MODULE_LDADD)
 
 # only build the igsm22 executable if using the 2D ocean
@@ -236,8 +267,7 @@ AC_DEFINE(NYR_CHEM, 1, [Number of year of chemistry model integration (124 for
 if test $CLM_VERSION != no; then
   AC_DEFINE(CLM, 1, [Coupling CLM])
   if test $CLM_VERSION = 3.5; then
-    # TODO: ensure this matches new code from sokolov ca. 2011-09-24
-    AC_DEFINE(CPL_CLM35, 1, [Coupling CLM 3.5])
+    AC_DEFINE(CLM35, 1, [Coupling CLM 3.5])
   fi
   if test $tem = yes; then
     AC_DEFINE(CPL_TEM, 1, [Coupling chemistry])
@@ -266,6 +296,11 @@ if test $model = fullchem; then
     chemistry model to calculate radiative forcing (ifaerpredict)])
   AC_DEFINE(PREDICTED_BC, 1, [Use predicted black carbon concentrations by
     chemistry model to calculate radiative forcing])
+  # OLD_CHEM only for the old version
+  if test $CHEM_VERSION = 95; then
+    AC_DEFINE(OLD_CHEM, 1, [Old (1995) version of the atmospheric chemistry
+      model is in use])
+  fi
   # more options for chemistry runs only
   AC_DEFINE(INC_3GASES, 1, [Including "3 gases"])
   AC_DEFINE(O3_RAD, 1, [Use predicted ozone in radiation module])
@@ -288,8 +323,9 @@ fi
 # Unusual defines. See README.dev for information on how to use these.
 if true; then
   # always ON
-  AC_DEFINE(OLD_LAPGAS, 1, [Use an old way of handling greenhouse effects of
-    different gases in atm/radia0.F (for backwards compatibility)])
+  AC_DEFINE(ORBITAL_FOR, 1, [Use radiative forcing adjusted for Earth's
+    orbital parameters. If undefined, the default from a (which?) NASA GISS
+    model is used])
 else
   # always OFF
   AC_DEFINE(ACCRI, 1, [Include GHG emissions from aviation. Requires accri_data
@@ -304,9 +340,8 @@ else
   AC_DEFINE(HR_DATA, 1, [(with DATA4TEM) write data hourly])
   AC_DEFINE(IPCC_EMI, 1, [Use a simple carbon model with carbon emissions from
     the file specified by co2_data in name.dat])
-  AC_DEFINE(ORBITAL_FOR, 1, [Use radiative forcing adjusted for Earth's
-    orbital parameters. If undefined, the default from a (which?) NASA GISS
-    model is used])
+  AC_DEFINE(OLD_LAPGAS, 1, [Use an old way of handling greenhouse effects of
+    different gases in atm/radia0.F (for backwards compatibility)])
 fi
 
 
@@ -321,6 +356,7 @@ AC_CONFIG_FILES([Makefile
 	src/ocn_ml/Makefile
 	src/tem/4.3.8/Makefile
 	src/tem/4.4c/Makefile
+  src/tracers/Makefile
 	util/Makefile
 	util/analysis/Makefile
 	util/eppa/Makefile])

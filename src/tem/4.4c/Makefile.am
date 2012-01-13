@@ -1,5 +1,7 @@
 noinst_LIBRARIES = libtem.a
-# TODO: original Makefile had "-fpic -O2 -Mscalarsse"; these could be used here
+
+libtem_a_CXXFLAGS = -O2
+
 libtem_a_SOURCES = elmnt437.cpp \
 	kclimate2tem44c.cxx \
 	landareadat44c.cpp \

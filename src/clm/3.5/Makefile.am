@@ -1,13 +1,18 @@
 CLMROOT = $(abs_builddir)
-CLMFLAGS = -maxpft 17 \
+CLMFLAGS = -fopt -O2 \
+	-maxpft 17 \
 	-mit2d on \
 	-nospmd \
 	-nosmp \
 	-pcp2pft on \
 	-rtm off \
 	-stoch on \
-        -fopt -O2 \
 	-tem $(CLM35_TEM)
+
+# pnk: temporarily disabled
+#	-nc_inc $(INC_NETCDF)
+#	-nc_lib $(LIB_NETCDF)
+#	-nc_mod $(MOD_NETCDF)
 
 libclm.a:
 	mkdir -p exe

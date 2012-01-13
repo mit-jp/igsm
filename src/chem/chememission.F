@@ -45,6 +45,10 @@ c For Emission
 #endif
 
 	dimension x11(nlev)
+#if ( defined ACCRI )
+        COMMON U,V,T,P,Q
+        dimension  emi_accri(nlev)
+#endif
 	
 	real emi_new
         data ifirst /0/
@@ -58,14 +62,19 @@ c For Emission
 	call chemmeta
 #endif
         if (ifirst.eq.0) then
+#if ( defined ACCRI )
+        print *,'ACCRI is true in chem with H2O emissions'
+#endif
          print *,'First year of emissions from chememi=',myyear
-         print *,'CO2 emissions for ',myyear
+	 print *,'CO2 emissions for ',myyear
          print *,(edailyco2(1,j,myyear),j=1,nlat)
-         print *,'n_urban for ',myyear
-         do k=1,3
-          print *,k
-          print *,(n_urban(k,j,myyear),j=1,nlat)
-         enddo
+! print *,'CO2 emissions for ',myyear-1
+!        print *,(edailyco2(1,j,myyear-1),j=1,nlat)
+!        print *,'n_urban for ',myyear
+!        do k=1,3
+!         print *,k
+!         print *,(n_urban(k,j,myyear),j=1,nlat)
+!        enddo
          ifirst=1
         endif
 	do k=1,nlev
@@ -122,8 +131,13 @@ cold &          + EN2OCHIEN(j) *1.e9 *44.0/28.0*9.333/13.  !convert to ppb(m)
       call chememission2(1,j,ktop,0.0,
      &                   tmass1,xemin2o,x11)
 #else
+!APS 062210
+        xemin2o = edailyn2o(i,j,myyear)
+c       fixed  NEM of 10.8 *1.e9  kg of N 
+     &          + 10.8/365.*1.e9 *44.0/28.0  !convert to ppb(m)
       call chememission2(1,j,ktop,0.0,
-     &                   tmass1,edailyn2o(i,j,myyear),x11)
+!!   &                   tmass1,edailyn2o(i,j,myyear),x11)
+     &                   tmass1,xemin2o,x11)
 #endif
 
       do k=1,kup
@@ -148,8 +162,13 @@ cold &          + ECH4CHIEN(j) *1.e9*126./136.          !convert to ppb(m)
       call chememission2(1,j,ktop,0.0,
      &                   tmass1,xemich4,x11)
 #else
+!APS 062210
+        xemich4 = edailych4(i,j,myyear)
+c       fixed NEM emission  144 *1.e9 kg of CH4
+     &          + 144./365.*1.e9          !convert to ppb(m)
       call chememission2(1,j,ktop,0.0,
-     &                   tmass1,edailych4(i,j,myyear),x11)
+     &                   tmass1,xemich4,x11)
+!!!  &                   tmass1,edailych4(i,j,myyear),x11)
 #endif
 
       do k=1,kup
@@ -162,7 +181,6 @@ c
       do k=1,kup
         x11(k) = co (i,j,k)
       enddo
-
 #if ( defined CPL_META )
       ! --- Convert flux in kg/day into
       ! --- 	daily emission in 10^-9 kg
@@ -368,6 +386,152 @@ c
         ocarbon(i,j,k) = x11(k)
       enddo
 
+#if ( defined ACCRI )
+!       print *,"ACCRI emissions"
+c
+c 1. CO2:
+c
+      do k=1,nlev
+        x11(k) = zco2 (i,j,k)
+      enddo
+       call int_accri_emi(j,ps4accri(i,j),co2accri,emi_accri,
+     &                     mymonth,myyear)
+
+      call chememissionA(1,j,nlev,
+     &                   emi_accri,x11)
+
+      if(j.eq.-23) then
+      print *,'CO2 before and after chememissionA'
+      do k=1,nlev
+        print *,k,(zco2 (i,j,k)-x11(k)),emi_accri(k)
+      enddo
+      endif
+      do k=1,nlev
+        zco2(i,j,k) = x11(k)
+      enddo
+c
+c 2. CO:
+c
+      do k=1,nlev
+        x11(k) =  co  (i,j,k)
+      enddo
+       call int_accri_emi(j,ps4accri(i,j),coaccri,emi_accri,
+     &                     mymonth,myyear)
+
+      call chememissionA(1,j,nlev,
+     &                   emi_accri,x11)
+      do k=1,nlev
+         co (i,j,k) = x11(k)
+      enddo
+c
+c
+c 3. NO:
+c
+      do k=1,nlev
+        x11(k) =  xno  (i,j,k)
+      enddo
+       call int_accri_emi(j,ps4accri(i,j),NOaccri,emi_accri,
+     &                     mymonth,myyear)
+
+      call chememissionA(1,j,nlev,
+     &                   emi_accri,x11)
+      do k=1,nlev
+         xno (i,j,k) = x11(k)
+      enddo
+c
+c
+c 4. NO2:
+c
+      do k=1,nlev
+        x11(k) =  xno2  (i,j,k)
+      enddo
+       call int_accri_emi(j,ps4accri(i,j),NO2accri,emi_accri,
+     &                     mymonth,myyear)
+
+      call chememissionA(1,j,nlev,
+     &                   emi_accri,x11)
+      do k=1,nlev
+         xno2 (i,j,k) = x11(k)
+      enddo
+c
+c
+c 5. BC:
+c
+      do k=1,nlev
+        x11(k) =  bcarbon  (i,j,k)
+      enddo
+       call int_accri_emi(j,ps4accri(i,j),BCaccri,emi_accri,
+     &                     mymonth,myyear)
+
+      call chememissionA(1,j,nlev,
+     &                   emi_accri,x11)
+      do k=1,nlev
+         bcarbon (i,j,k) = x11(k)
+      enddo
+c
+c
+c 6. OC:
+c
+      do k=1,nlev
+        x11(k) =  ocarbon  (i,j,k)
+      enddo
+       call int_accri_emi(j,ps4accri(i,j),OCaccri,emi_accri,
+     &                     mymonth,myyear)
+
+      call chememissionA(1,j,nlev,
+     &                   emi_accri,x11)
+      do k=1,nlev
+         ocarbon (i,j,k) = x11(k)
+      enddo
+c
+c
+c 7. SO2:
+c
+      do k=1,nlev
+        x11(k) =  so2  (i,j,k)
+      enddo
+       call int_accri_emi(j,ps4accri(i,j),SO2accri,emi_accri,
+     &                     mymonth,myyear)
+
+      call chememissionA(1,j,nlev,
+     &                   emi_accri,x11)
+      do k=1,nlev
+         so2 (i,j,k) = x11(k)
+      enddo
+c
+c
+c 8. CH2O:
+c
+      do k=1,nlev
+        x11(k) =  ch2o  (i,j,k)
+      enddo
+       call int_accri_emi(j,ps4accri(i,j),CH2Oaccri,emi_accri,
+     &                     mymonth,myyear)
+
+      call chememissionA(1,j,nlev,
+     &                   emi_accri,x11)
+      do k=1,nlev
+         ch2o (i,j,k) = x11(k)
+      enddo
+c
+c 9. H2O:
+c
+!     print *,' ACCRI H2o'
+      do k=1,nlev
+        x11(k) =  Q  (i,j,k)
+      enddo
+       call int_accri_emi(j,ps4accri(i,j),H2Oaccri,emi_accri,
+     &                     mymonth,myyear)
+
+      call chememissionA(1,j,nlev,
+     &                   emi_accri,x11)
+      do k=1,nlev
+         Q (i,j,k) = x11(k)
+      enddo
+c
+
+#endif
+
 1     continue
 
 #endif
@@ -375,6 +539,46 @@ c
       return
        end
 
+#if ( defined ACCRI )
+c=====================================================
+
+      subroutine chememissionA(i,j,ktop,
+     &                         emi_accri,x11)
+c     ===========================================
+
+c======================================================c
+c  A subroutine for adding ACCRI emission               c
+c     into layers from k=1 to ktop (nlev)    c
+c======================================================c
+
+#include "chem_para"
+#include "chem_com"
+
+      dimension x11(ktop)
+      dimension emi_accri(ktop)
+
+#if ( defined CPL_CHEM )
+!     print *,'  '
+!       xmass    	!Total tracer mass in 10^-9 kg
+      do k=1,ktop
+        xmass    = 
+!    &             airmass(i,j,k)*x11(k)
+     &             x11(k)
+        xemi     = ( xmass 
+!    &           + emi_accri(k) ) / airmass(i,j,k)	! ppbm
+     &           + emi_accri(k) / airmass(i,j,k) )	! ppbm
+
+!     print *,(x11(k)-xemi),emi_accri(k)
+
+        x11(k)  = xemi
+      enddo
+!     print *,'  '
+#endif
+
+      return
+       end
+
+#endif
 c=====================================================
 
       subroutine chememission2(i,j,ktop,eratio,tmass1,

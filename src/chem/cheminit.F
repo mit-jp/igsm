@@ -31,7 +31,7 @@
 !	==========================================================
 
 !
-	subroutine cheminit(ISTRT1,pt,qv)
+	subroutine cheminit(ISTRT1,INYEAR,pt,qv)
 !	=================================
 
 #include "chem_para"
@@ -320,6 +320,7 @@ c      read(163,101)specdata
 c101   format(6e11.3)
 
 c--------------------------------------------------
+       print *,'cheminit INYEAR=',INYEAR
        print *,'cheminit emissions for ',nchemyr,'years'
 c   Read integrated daily emission data:
 c
@@ -449,13 +450,22 @@ c      o3top  (i,j) = o3(i,j,nlev)
 3     continue
 
 #if ( defined INC_3GASES )
+      if(  INYEAR.eq.1991) then
 !      10/28/2008
-!     reading hfc, pfc, and sf6 from initfile for Dec 1990
-      print *, 'reading hfc, pfc, and sf6 from initfile '
-      read(161)hfc134a
-      read(161)pfc
-      read(161)sf6
-	close(161)
+!      reading hfc, pfc, and sf6 from initfile for Dec 1990
+       print *, 'reading hfc, pfc, and sf6 from initfile '
+       read(161)hfc134a
+       read(161)pfc
+       read(161)sf6
+       close(161)
+      else
+       if(  INYEAR.eq.1977) then
+        print *, 'hfc, pfc, and sf6 for 1977 '
+       else
+        print *,' Wrong ,INYEAR ',INYEAR
+        stop
+       endif
+      endif
 #endif
 
 	do i=1,n3d
@@ -486,12 +496,7 @@ c ===== For renew a run:
 c
 	if(ISTRT1.eq.1)then
 
-c  open(179,file='DUMP/renewchem.dat',
-c    &             form='unformatted',
-c    &             status='unknown')
-C  open statment moved to assign.inc
-C    file number changed to 279
-
+        print *,'Reading data from chemrestrt file'
 	read(279)iyearchem,mymonth,airmass,
      &              cfc11  ,cfc110,
      &              cfc11m ,
@@ -561,6 +566,16 @@ c
         so2m    (i,1,1) = 0.0
         h2so4m  (i,1,1) = 0.0
         sviodm  (i,1,1) = 0.0
+
+!APS 5/11/2011
+        xxnom (i,1,1) = 0.0
+        xxno2m (i,1,1) = 0.0
+        hno3m (i,1,1) = 0.0
+        ohm (i,1,1) = 0.0
+        h2o2m (i,1,1) = 0.0
+        ho2m (i,1,1) = 0.0
+        xn2o5m (i,1,1) = 0.0
+!APS
 	
 	hfc134am(i,1,1) = 0.0
 	pfcm    (i,1,1) = 0.0

@@ -71,24 +71,24 @@ c Troposphere first:
      &           + amass 
 
         totalf11 = totalf11 
-     &           + amass * cfc11(i,j,k)
+     &           + amass * cfc11m(i,j,k)
         totalch4 = totalch4 
-     &           + amass * ch4(i,j,k)
+     &           + amass * ch4m(i,j,k)
         totalco  = totalco 
-     &           + amass * co(i,j,k)
+     &           + amass * com(i,j,k)
 	totalo3  = totalo3
-     &           + amass * o3(i,j,k)
+     &           + amass * o3m(i,j,k)
 	totaloh  = totaloh
-     &           + amass * ho(i,j,k)
+     &           + amass * ohm(i,j,k)
 	totalso2 = totalso2
-     &           + amass * so2(i,j,k)
+     &           + amass * so2m(i,j,k)
 	totalnox = totalnox
-     &           + amass * 14.0*(xno(i,j,k)/30.0
-     &		               + xno2(i,j,k)/46.0)  !Convert to N
+     &           + amass * 14.0*(xxnom(i,j,k)/30.0
+     &		               + xxno2m(i,j,k)/46.0)  !Convert to N
         totalbc  = totalbc 
-     &           + amass * bcarbon(i,j,k)
+     &           + amass * bcm(i,j,k)
 	totaloc  = totaloc
-     &           + amass * ocarbon(i,j,k)
+     &           + amass * ocm(i,j,k)
 112   continue
 111   continue
 
@@ -103,15 +103,15 @@ c Whole Atmosphere:
      &           + amass 
 
         totalf11 = totalf11 
-     &           + amass * cfc11(i,j,k)
+     &           + amass * cfc11m(i,j,k)
         totalch4 = totalch4 
-     &           + amass * ch4(i,j,k)
+     &           + amass * ch4m(i,j,k)
         totalco  = totalco 
-     &           + amass * co(i,j,k)
+     &           + amass * com(i,j,k)
         totalbc  = totalbc 
-     &           + amass * bcarbon(i,j,k)
+     &           + amass * bcm(i,j,k)
 	totaloc  = totaloc
-     &           + amass * ocarbon(i,j,k)
+     &           + amass * ocm(i,j,k)
 116   continue
 115   continue
 
@@ -127,7 +127,7 @@ c troposphere only:
 	totalso2 = totalso2 * 1.e-18		!TGSO2
 	totalnox = totalnox * 1.e-18		!TGN
 
-      write(167,100) iyearchem, monthchem,
+      write(167,100) iyearchem, mymonth,
      &               totalair,tropair,
      &               totalf11,
      &               totalch4,

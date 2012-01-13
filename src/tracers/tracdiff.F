@@ -23,7 +23,7 @@
 !
 !	==========================================================
 
-      Subroutine chemdiff(ifdiff,x00,x11,dta)
+      Subroutine tracdiff(ifdiff,x00,x11,dta)
 
 #include "chem_para"
 #include "chem_com"
@@ -34,7 +34,6 @@
 
       dimension dcdy(nlat,nlev)
 
-#if ( defined CPL_CHEM )
 
 c-------------------------------------------------------
 c   Definitions of parameters:
@@ -96,9 +95,8 @@ c
        end do
        end do
 
-c	call chemcheck(x00)
+c	call traccheck(x00)
 
-#endif
 
 	return
 	 end

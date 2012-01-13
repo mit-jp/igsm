@@ -9,7 +9,8 @@ DIST_SUBDIRS = atm \
 	ocn_ml \
 	meta \
 	tem/4.3.8 \
-	tem/4.4c
+	tem/4.4c \
+	tracers
 
 if IGSM_BIN
 

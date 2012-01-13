@@ -59,6 +59,16 @@ c     &                + ho2   (i,1,1)
         h2so4m(i,1,1) = h2so4m(i,1,1) + h2so4(i,1,1)
         sviodm(i,1,1) = sviodm(i,1,1) + sviod(i,1,1)
 
+!APS 5/11/2011
+        xxnom (i,1,1) = xxnom (i,1,1) + xno   (i,1,1)
+        xxno2m (i,1,1) = xxno2m (i,1,1) + xno2  (i,1,1)
+        hno3m (i,1,1) = hno3m (i,1,1) + hno3  (i,1,1)
+        ohm (i,1,1) = ohm (i,1,1) + ho  (i,1,1)
+        h2o2m (i,1,1) = h2o2m (i,1,1) + h2o2  (i,1,1)
+        ho2m (i,1,1) = ho2m (i,1,1) + ho2  (i,1,1)
+        xn2o5m (i,1,1) = xn2o5m (i,1,1) + xn2o5  (i,1,1)
+!APS
+
 #ifdef INC_3GASES
         ! === if hfc, pfc, and sf6 are included:
 	! === 032698
@@ -81,7 +91,7 @@ c     &                + ho2   (i,1,1)
        end
 
 !	=====================
-	subroutine chemmonth2
+	subroutine chemmonth2 (p)
 !	=====================
 
 !	=============================================================
@@ -128,6 +138,17 @@ c calculate monthly averaged values:
         h2so4m(i,1,1) = h2so4m(i,1,1)*haha
         sviodm(i,1,1) = sviodm(i,1,1)*haha
 
+!APS 5/11/2011
+        xxnom (i,1,1) = xxnom (i,1,1)*haha
+        xxno2m (i,1,1) = xxno2m (i,1,1)*haha
+        hno3m (i,1,1) = hno3m (i,1,1)*haha
+        ohm (i,1,1) = ohm (i,1,1)*haha
+        h2o2m (i,1,1) = h2o2m (i,1,1)*haha
+        ho2m (i,1,1) = ho2m (i,1,1)*haha
+        xn2o5m (i,1,1) = xn2o5m (i,1,1)*haha
+!APS
+
+
 #ifdef INC_3GASES
 	! === if hfc, pfc, and sf6 are included:
 	! === 032698:
@@ -158,6 +179,16 @@ c calculate monthly averaged values:
 	write(169)ocm
 	write(169)bcodm
 	write(169)ocodm
+
+!APS 5/11/2011
+        write(189)xxnom 
+        write(189)xxno2m
+        write(189)hno3m
+        write(189)ohm 
+        write(189)h2o2m
+        write(189)ho2m 
+        write(189)xn2o5m
+!APS
 
 #ifdef INC_3GASES
 	! === if hfc, pfc, and sf6 are included:
@@ -346,6 +377,8 @@ c 020196:
      &		   hfc134aglobal,pfcglobal,sf6global
 102	format(i6,3f10.3)
 #endif
+ 
+        call chembudget (p)
 
       do i=1,n3d
         cfc11m(i,1,1) = 0.0
@@ -361,6 +394,19 @@ c 020196:
         so2m  (i,1,1) = 0.0
         h2so4m(i,1,1) = 0.0
         sviodm(i,1,1) = 0.0
+
+#if ( defined ACCRI )
+!APS 5/11/2011
+        xxnom (i,1,1) = 0.0
+        xxno2m (i,1,1) = 0.0
+        hno3m (i,1,1) = 0.0
+        ohm (i,1,1) = 0.0
+        h2o2m (i,1,1) = 0.0
+        ho2m (i,1,1) = 0.0
+        xn2o5m (i,1,1) = 0.0
+!APS
+#endif
+
 
 #ifdef INC_3GASES
 	! === if hfc, pfc, and sf6 are included:

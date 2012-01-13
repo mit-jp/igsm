@@ -12,6 +12,7 @@ libchem_a_SOURCES = chemadv.F \
 	chememission.F \
 	chemfilter.F \
 	cheminit.F \
+	chemint_accri_emi.F \
 	chemlsodesrc.F \
 	chemmass.F \
 	chemmeta.F \
