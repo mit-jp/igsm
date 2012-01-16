@@ -1,0 +1,102 @@
+C $Header: /u/gcmpack/MITgcm/eesupp/src/exch_uv_bgrid_3d_rx.template,v 1.2 2010/05/19 01:53:46 jmc Exp $
+C $Name:  $
+
+#include "PACKAGES_CONFIG.h"
+#include "CPP_EEOPTIONS.h"
+
+CBOP
+C     !ROUTINE: EXCH_UV_BGRID_3D_RL
+
+C     !INTERFACE:
+      SUBROUTINE EXCH_UV_BGRID_3D_RL(
+     U                                 uPhi, vPhi,
+     I                                 withSigns, myNz, myThid )
+
+C     !DESCRIPTION:
+C*=====================================================================*
+C  Purpose: SUBROUTINE EXCH_UV_BGRID_3D_RL
+C      handle exchanges for a 3D vector field on an B-grid.
+C
+C  Input:
+C    uPhi(lon,lat,levs,bi,bj) :: first component of vector
+C    vPhi(lon,lat,levs,bi,bj) :: second component of vector
+C    withSigns (logical)      :: true to use sign of components
+C    myNz                     :: 3rd dimension of input arrays uPhi,vPhi
+C    myThid                   :: my Thread Id number
+C
+C  Output: uPhi and vPhi are updated (halo regions filled)
+C
+C  Branch to appropriate exchange routine for B-grid vector field
+C*=====================================================================*
+
+C     !USES:
+      IMPLICIT NONE
+
+#include "SIZE.h"
+#include "EEPARAMS.h"
+
+C     !INPUT/OUTPUT PARAMETERS:
+C     == Argument list variables ==
+      INTEGER myNz
+      _RL uPhi(1-OLx:sNx+OLx,1-OLy:sNy+OLy,myNz,nSx,nSy)
+      _RL vPhi(1-OLx:sNx+OLx,1-OLy:sNy+OLy,myNz,nSx,nSy)
+      LOGICAL withSigns
+      INTEGER myThid
+
+C     !LOCAL VARIABLES:
+#ifndef ALLOW_EXCH2
+C     == Local variables ==
+C     OL[wens]      :: Overlap extents in west, east, north, south.
+C     exchWidth[XY] :: Extent of regions that will be exchanged.
+
+      INTEGER OLw, OLe, OLn, OLs, exchWidthX, exchWidthY
+#endif
+CEOP
+
+#ifdef ALLOW_EXCH2
+      CALL EXCH2_UV_BGRID_3D_RL(
+     U                       uPhi, vPhi,
+     I                       withSigns, myNz, myThid )
+      RETURN
+#else /* ALLOW_EXCH2 */
+      OLw        = OLx
+      OLe        = OLx
+      OLn        = OLy
+      OLs        = OLy
+      exchWidthX = OLx
+      exchWidthY = OLy
+
+      IF ( useCubedSphereExchange ) THEN
+C---  using CubedSphereExchange:
+
+       CALL EXCH1_BG_RL_CUBE(
+     U            uPhi, vPhi,
+     I            withSigns,
+     I            OLw, OLe, OLs, OLn, myNz,
+     I            exchWidthX, exchWidthY,
+     I            EXCH_UPDATE_CORNERS, myThid )
+
+      ELSE
+C---  not using CubedSphereExchange:
+
+       CALL EXCH1_RL( uPhi,
+     I            OLw, OLe, OLs, OLn, myNz,
+     I            exchWidthX, exchWidthY,
+     I            EXCH_UPDATE_CORNERS, myThid )
+       CALL EXCH1_RL( vPhi,
+     I            OLw, OLe, OLs, OLn, myNz,
+     I            exchWidthX, exchWidthY,
+     I            EXCH_UPDATE_CORNERS, myThid )
+
+C---  using or not using CubedSphereExchange: end
+      ENDIF
+
+      RETURN
+#endif /* ALLOW_EXCH2 */
+      END
+
+C---+----1----+----2----+----3----+----4----+----5----+----6----+----7-|--+----|
+
+CEH3 ;;; Local Variables: ***
+CEH3 ;;; mode:fortran ***
+CEH3 ;;; End: ***

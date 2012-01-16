@@ -1,3 +1,5 @@
+# Invoke the CLM 3.5 build system
+
 CLMROOT = $(abs_builddir)
 CLMFLAGS = -fopt -O2 \
 	-maxpft 17 \
@@ -19,11 +21,12 @@ libclm.a:
 	cd exe && ../bld/configure $(CLMFLAGS) -usr_src \
 	  $(shell find -L bld/usr.src -type d -printf '../%p,') && make nolink
 	rm exe/program_igsm.o
-	ar r libclm.a exe/*.o
+	$(AR) $(ARFLAGS) $@ exe/*.o
+	$(RANLIB) $@
 
-.PHONY: all clean distclean
+.PHONY: all clean-local
 
 all: libclm.a
 
-distclean clean:
+clean-local:
 	rm -rf exe libclm.a

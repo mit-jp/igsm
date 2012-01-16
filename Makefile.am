@@ -1,4 +1,6 @@
 SUBDIRS = src util
 
-all-local:
-	cp src/igsm2[23] ./
+all-local: $(BINARIES)
+
+igsm22 igsm23:
+	cp src/$@ .

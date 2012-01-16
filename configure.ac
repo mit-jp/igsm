@@ -178,16 +178,18 @@ CXXFLAGS+=" -Mscalarsse -fpic"
 if test $ocean = 2D; then
   MODULE_DIRS+=" ocn_ml"
   # the 2D ocean module must be listed before libatm.a
-  MODULE_LDADD="ocn_ml/libml.a atm/libatm.a"
+  MODULE_LDADD="ocn_ml/libml.a"
   # the ocm module is only for carbon in a 2D ocean
   if test $ocncarbon = yes; then
     MODULE_DIRS+=" ocm"
     MODULE_LDADD+=" ocm/libocm.a"
   fi
 else
+  MODULE_DIRS+=" ocn_3d"
   # if using the 3D ocean, the first library is libatm.a
-  MODULE_LDADD="atm/libatm.a"
+  MODULE_LDADD="ocn_3d/libocn_3d.a"
 fi
+MODULE_LDADD+=" atm/libatm.a"
 # 2. Appropriate version of the Common Land Model
 if test $CLM_VERSION != no; then
   CLM_DIR="clm/$CLM_VERSION"
@@ -245,9 +247,13 @@ AC_SUBST(MODULE_DIRS)
 MODULE_LDADD+=" -L$LIB_NETCDF"
 AC_SUBST(MODULE_LDADD)
 
-# only build the igsm22 executable if using the 2D ocean
-AM_CONDITIONAL([IGSM_BIN], [test $ocean = 2D])
-
+# only build the igsm22 executable if using the 2D ocean; otherwise build igsm23
+AM_CONDITIONAL([IGSM_2D], [test $ocean = 2D])
+if test $ocean = 2D; then
+  AC_SUBST([BINARIES], [igsm22])
+else
+  AC_SUBST([BINARIES], [igsm23])
+fi
 
 ### Defines.
 # This section sets the C/C++/Fortran preprocessor symbols (#define) that are
@@ -353,10 +359,12 @@ AC_CONFIG_FILES([Makefile
 	src/inc/Makefile
 	src/meta/Makefile
 	src/ocm/Makefile
+	src/ocn_3d/Makefile
+	src/ocn_3d/options.sh
 	src/ocn_ml/Makefile
 	src/tem/4.3.8/Makefile
 	src/tem/4.4c/Makefile
-  src/tracers/Makefile
+	src/tracers/Makefile
 	util/Makefile
 	util/analysis/Makefile
 	util/eppa/Makefile])
