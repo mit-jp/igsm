@@ -1,6 +1,6 @@
 # Invoke the CLM 3.5 build system
 
-CLMROOT = $(abs_builddir)
+CLMROOT = .
 CLMFLAGS = -fopt -O2 \
 	-maxpft 17 \
 	-mit2d on \

@@ -19,6 +19,8 @@ bin_PROGRAMS = $(BINARIES)
 
 EXTRA_PROGRAMS = igsm22 igsm23
 
+LDADD = $(MODULE_LDADD) $(FCLIBS) -lstd -lC -lgcc -lc -lstdc++
+
 if IGSM_2D
 
 # The driver routines are only built for the igsm22 executable.
@@ -35,10 +37,17 @@ igsm22_LINK = $(FC) -fastsse -o $@
 
 # Libraries to be linked.
 # FIXME: determine which libraries from the last set are redundant
-igsm22_LDADD = $(MODULE_LDADD) $(FCLIBS) -lstd -lC -lgcc -lc -lstdc++
+#igsm22_LDADD = $(MODULE_LDADD) $(FCLIBS) -lstd -lC -lgcc -lc -lstdc++
 
 else !IGSM_2D
 
-igsm23_LDADD = $(MODULE_LDADD) $(FCLIBS) -lstd -lC -lgcc -lc -lstdc++
+# no additional sources for the 23 executable
+igsm23_SOURCES =
+
+# Use the MPI Fortran, rather than C/C++, linker
+igsm23_LINK = $(MPI_FC) -fastsse -o $@
+
+# libraries to be linked
+#igsm23_LDADD = $(MODULE_LDADD) $(FCLIBS) -lstd -lC -lgcc -lc -lstdc++
 
 endif !IGSM_2D

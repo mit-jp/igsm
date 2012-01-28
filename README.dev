@@ -12,13 +12,13 @@ The build system does not provide an interface to all features of the IGSM. In
 particular, there are some preprocessor symbols that may be defined manually. To
 do this, there are three options, in order of increasing permanence:
 
- 1. In the build directory, edit the file src/inc/ctrparam.h, adding custom
-    #define statements where indicated. This must be repeated (or the file
-    restored from a backup copy) every time the build is reconfigured.
- 2. Edit the file src/inc/ctrparam.h.in, adding custom #define statements at the
-    bottom of the file, where indicated. Reconfigure the build. This must be
-    repeated (or the file restored from a backup copy) every time auto(re)conf
-    is run, and will affect all builds configured from the same script.
+ 1. In the build directory, edit the file ctrparam.h, adding custom #define
+    statements where indicated. This must be repeated (or the file restored from
+    a backup copy) every time the build is reconfigured.
+ 2. Edit the file ctrparam.h.in, adding custom #define statements at the bottom
+    of the file, where indicated. Reconfigure the build. This must be repeated
+    (or the file restored from a backup copy) every time auto(re)conf is run,
+    and will affect all builds configured from the same script.
  3. Edit the file configure.ac near the comment "Unusual defines". Move the
     AC_DEFINE() calls between the "always ON" and "always OFF" sections as
     necessary. Run autoreconf and then reconfigure the build. This will also
@@ -32,28 +32,43 @@ No other documentation is currently available.
 SOURCE OVERRIDES
 ----------------
 The build system performs a "VPATH build", which allows selective replacement of
-files in the codebase.
+source code.
 
-  When configure is invoked in the build directory (e.g. './build'), a directory
-structure and Makefiles are produced, but no source files. When the build is
-started (with 'make'), the following occurs for each source file:
+  When configure is invoked in the build directory, a directory structure (or
+"tree") which mirrors '/src' is created, containing Makefiles but no source
+files. When the build is started (with 'make'), the following occurs for each
+source file:
 
- - First, a file is sought in the current directory. If found, it is compiled.
+ 1. A file is sought in the build tree. If found, it is compiled.
+ 2. A file is sought *outside* of the build tree, in the corresponding
+    subdirectory of /src.
 
- - Next, the file is sought *outside* of the build tree, in the original /src
-   directory.
+  Thus (for example) in order to override the source file 'src/atm/example.F',
+place a file named 'example.F' (with changes) in the directory 'build/src/atm'.
 
-  Thus, in order to override the source file 'src/atm/example.F', the user may
-place a source file named 'example.F' (with changes) in 'build/src/atm'.
+There are some exceptions/limitations to this system:
 
-  There are some limitations to this system:
+ - MITgcm ('src/ocn_3d') has its own build system. This works almost the same as
+   a VPATH build, but it creates symlinks from the build tree to the source
+   tree.
 
- - It does not work for CLM. Because CLM has its own build system, the CLM
-   source is symlinked from within the build directory ('build/src/clm/x.x' is a
-   symbolic link to 'src/clm/x.x') and the IGSM build simply invokes the
-   standard CLM build. To modify CLM source, copy the existing file to, for
-   example 'src/clm/2.1/main/example.F90.orig', and make your changes in
-   'src/clm/2.1/main/example.F90'.
+   To modify the MITgcm source, place a source file named 'example.F' (with
+   changes) in 'build/src/ocn_3d'. The MITgcm build system will *not* create a
+   symlink to 'src/ocn_3d/example.F', but will instead use the file in the build
+   tree.
+
+   Care must be taken not to accidentally edit the source tree by editing files
+   which are actually symlinks. One way to do this is to execute 'make clean' in
+   'build/src/ocn_3d' directory, which will remove symlinks, but not user
+   overrides. 
+
+ - CLM ('src/clm') has its own build system. When configure is invoked, the CLM
+   source is copied into the build directory ('src/clm/x.x' is copied to
+   'build/src/clm/x.x') and the IGSM build invokes the standard CLM build.
+
+   To modify the source of CLM 3.5 only, place a file named 'example.F90' in the
+   directory 'build/src/clm/3.5/bld/usr.src'. The CLM build system will use this
+   file instead of the corresponding file in 'src/clm/3.5/src'.
 
  - It will not automatically detect *new* source files. In order to do this,
    please read through "Adding new sources" below.

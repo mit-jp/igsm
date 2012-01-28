@@ -132,6 +132,9 @@ F77=$FC
 AC_FC_DUMMY_MAIN
 AC_FC_LIBRARY_LDFLAGS
 AC_FC_MAIN
+
+AC_SUBST([MPI_FC], [mpif90])
+
 AC_PROG_RANLIB
 AC_PROG_MAKE_SET
 
@@ -161,6 +164,14 @@ if test "$INC_NETCDF" = ""; then
   AC_SUBST(INC_NETCDF)
   AC_SUBST(LIB_NETCDF)
   AC_SUBST(MOD_NETCDF)
+fi
+
+# Checks for OpenMPI libraries
+if test `which ompi_info 2>/dev/null`; then
+  INC_MPI=`ompi_info --parseable --path incdir | cut -d: -f 3`
+  LIB_MPI=`ompi_info --parseable --path libdir | cut -d: -f 3`
+  AC_SUBST(INC_MPI)
+  AC_SUBST(LIB_MPI)
 fi
 
 # Common compiler flags for IGSM code

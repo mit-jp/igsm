@@ -15,7 +15,7 @@ data/ -- Common data files (grids, etc.) for running the model
      init/ -- General initialization data
           46lat/ -- Data specific to a 46-latitude-band grid
           forcing/ -- Forcing data
-     tem/ -- Data for the Terrestrial Ecosystem Model (TEM)
+     tem/ -- Data for the Terrestrial Ecosystem Model (TEM) [2]
 
 src/ -- Source code for the modules of the model, including…
     atm/ -- atmosphere model
@@ -23,6 +23,7 @@ src/ -- Source code for the modules of the model, including…
     clm/ -- CLM, versions 2.1 and 3.5
     inc/ -- INClude files common to all modules
     meta/ -- urban METAmodel
+    ocn_3d/ -- the MIT General Cirgcm [3])
     ocn_ml/ -- two-dimensional, Multi-Layer (ML) OCeaN model
     ocm/ -- Ocean Carbon Model
     tem/ -- TEM, versions 4.3.8 and 4.4c
@@ -39,19 +40,19 @@ DEPENDENCIES
 ------------
 The following third-party packages are included in the code:
 
- clm/2.1/utils/esmf -- Earth System Modelling Framework (ESMF) [2]
+ clm/2.1/utils/esmf -- Earth System Modelling Framework (ESMF) [4]
 
 
 BUILD
 -----
   The following process has only been tested on svante.mit.edu -- a Fedora Core
-14 x86_64 system with GNU Make 3.82 [3]; PGI 9.0.4 or 11.4; and NetCDF 3.6.2.
+14 x86_64 system with GNU Make 3.82 [5]; PGI 9.0.4 or 11.4; and NetCDF 3.6.2.
 
  1. If building directly from version control, in the root directory type:
 
     $ autoreconf --install
 
- 2. Load the PGI [4] compilers and the NetCDF [5] libraries:
+ 2. Load the PGI [6] compilers and the NetCDF [7] libraries:
 
     $ module load pgi netcdf
 
@@ -102,7 +103,9 @@ this preprocessor also works for EPPA 4 output.
 REFERENCES
 ----------
 1. http://www.cgd.ucar.edu/tss/clm
-2. http://www.earthsystemmodeling.org/
-3. http://www.gnu.org/software/make/
-4. http://www.pgroup.com/
-5. http://www.unidata.ucar.edu/software/netcdf/
+2. http://ecosystems.mbl.edu/TEM/
+3. http://mitgcm.org/
+4. http://www.earthsystemmodeling.org/
+5. http://www.gnu.org/software/make/
+6. http://www.pgroup.com/
+7. http://www.unidata.ucar.edu/software/netcdf/
