@@ -10,9 +10,7 @@ libocn_3d.a: igsm.make
 	$(AR) $(ARFLAGS) $@ *.o
 	$(RANLIB) $@
 
-.PHONY: all clean-local
-
-all: libocn_3d.a
+all-local: libocn_3d.a
 
 clean-local:
 	make -f igsm.make CLEAN

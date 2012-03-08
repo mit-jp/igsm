@@ -24,9 +24,7 @@ libclm.a:
 	$(AR) $(ARFLAGS) $@ exe/*.o
 	$(RANLIB) $@
 
-.PHONY: all clean-local
-
-all: libclm.a
+all-local: libclm.a
 
 clean-local:
 	rm -rf exe libclm.a
