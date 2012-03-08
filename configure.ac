@@ -186,10 +186,11 @@ CXXFLAGS+=" -Mscalarsse -fpic"
 # is important and should not be disturbed.
 
 # 1. Multilayer 2D ocean, atmosphere, ocean carbon
+MODULE_LDADD="atm/libatm.a"
 if test $ocean = 2D; then
   MODULE_DIRS+=" ocn_ml"
   # the 2D ocean module must be listed before libatm.a
-  MODULE_LDADD="ocn_ml/libml.a"
+  MODULE_LDADD+=" ocn_ml/libml.a"
   # the ocm module is only for carbon in a 2D ocean
   if test $ocncarbon = yes; then
     MODULE_DIRS+=" ocm"
@@ -200,7 +201,6 @@ else
   # if using the 3D ocean, the first library is libatm.a
   MODULE_LDADD="ocn_3d/libocn_3d.a"
 fi
-MODULE_LDADD+=" atm/libatm.a"
 # 2. Appropriate version of the Common Land Model
 if test $CLM_VERSION != no; then
   CLM_DIR="clm/$CLM_VERSION"
