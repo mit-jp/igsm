@@ -149,7 +149,9 @@ AC_CHECK_FUNCS([modf pow])
 AC_CHECK_HEADER([netcdf.h], [AC_CHECK_LIB([netcdf], [nc_inq_libvers])])
 # the Fortran library
 AC_MSG_CHECKING([[for nf_inq_libvers in -lnetcdff]])
-LIBS+=" -lnetcdff"
+if test `which nc-config 2>/dev/null`; then
+  LIBS+=" "`nc-config --flibs`
+fi
 AC_LANG_PUSH([Fortran])
 AC_LINK_IFELSE(
   [AC_LANG_PROGRAM(, [      include 'netcdf.inc'
