@@ -3736,7 +3736,6 @@ void RegMITTEM::updateMITTEMregion( const int& pdyr,
         if( telmnt[igrd].cohort[ichrt].eetmx < telmnt[igrd].tem.soil.getEET() )
         {
           telmnt[igrd].cohort[ichrt].eetmx = telmnt[igrd].tem.soil.getEET();
-          telmnt[igrd].cohort[ichrt].prveetmx = telmnt[igrd].cohort[ichrt].eetmx;
         }
 
         if( telmnt[igrd].tem.atms.getPET() < telmnt[igrd].tem.soil.getEET() )
@@ -3747,7 +3746,6 @@ void RegMITTEM::updateMITTEMregion( const int& pdyr,
         if( telmnt[igrd].cohort[ichrt].petmx < telmnt[igrd].tem.atms.getPET() )
         {
           telmnt[igrd].cohort[ichrt].petmx = telmnt[igrd].tem.atms.getPET();
-          telmnt[igrd].cohort[ichrt].prvpetmx = telmnt[igrd].cohort[ichrt].petmx;
         }
 
         if( CROPVEG == ichrt || BIOFUELS == ichrt || PASTURE == ichrt )

@@ -290,6 +290,11 @@ double Tveg44::deltaleaf( const int& pdcmnt,
     unnormleaf = 0.5 * minleaf[pdcmnt];
   }
 
+  if( unnormleaf > 1.000000000 )
+  {
+    unnormleaf = 1.000000000;
+  }
+
   return unnormleaf;
 
 };
@@ -1295,7 +1300,15 @@ void Tveg44::updateDynamics( const int& pdcmnt,
   }
 
   if( prvleafmx <= ZERO ) { leaf = ZERO; }
-  else { leaf = unnormleaf / prvleafmx; }
+  else 
+  { 
+    if( prvleafmx > 1.000000000 )
+    {
+      prvleafmx = 1.000000000;
+    }
+
+    leaf = unnormleaf / prvleafmx; 
+  }
 
   if( leaf < minleaf[pdcmnt] )
   {
