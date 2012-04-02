@@ -73,7 +73,7 @@
 // Maximum number of years in a simulation
 #ifndef MAXRTIME_CONST    
 #define MAXRTIME_CONST
-  const int MAXRTIME = 1100;
+  const int MAXRTIME = 2200;
 #endif
 
 // Maximum stand age (years)
