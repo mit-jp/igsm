@@ -149,8 +149,8 @@ AC_CHECK_FUNCS([modf pow])
 AC_CHECK_HEADER([netcdf.h], [AC_CHECK_LIB([netcdf], [nc_inq_libvers])])
 # the Fortran library
 AC_MSG_CHECKING([[for nf_inq_libvers in -lnetcdff]])
-if test `which nc-config 2>/dev/null`; then
-  LIBS+=" "`nc-config --flibs`
+if test `which nf-config 2>/dev/null`; then
+  LIBS+=" "`nf-config --flibs`
 fi
 AC_LANG_PUSH([Fortran])
 AC_LINK_IFELSE(
@@ -160,7 +160,7 @@ AC_LINK_IFELSE(
 AC_LANG_POP
 # the include path (for CLM)
 if test "$INC_NETCDF" = ""; then
-  INC_NETCDF=`nc-config --includedir`
+  INC_NETCDF=`nf-config --includedir`
   LIB_NETCDF=`ldconfig -p | grep -m1 libnetcdf | sed "s@.* => \(.*\)@\1@" | xargs dirname`
   MOD_NETCDF="/home/software/netcdf-new/netcdf-4.1.2/include"
   AC_SUBST(INC_NETCDF)
