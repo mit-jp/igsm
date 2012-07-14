@@ -366,7 +366,7 @@ contains
 
     found = .false.
     do c = lbc, ubc
-       if (abs(errsoi_col(c)) > 1.0e-7_r8 ) then
+       if (abs(errsoi_col(c)) > 1.0e-6_r8 ) then
           found = .true.
           index = c
        end if
@@ -379,8 +379,8 @@ contains
        end if
     end if
 
-100 format (1x,a14,' nstep =',i10,' point =',i6,' imbalance =',f8.2,' W/m2')
-200 format (1x,a14,' nstep =',i10,' point =',i6,' imbalance =',f8.2,' mm')
+100 format (1x,a18,' nstep =',i10,' point =',i6,' imbalance =',f8.6,' W/m2')
+200 format (1x,a18,' nstep =',i10,' point =',i6,' imbalance =',f8.6,' mm')
 
   end subroutine BalanceCheck
 
