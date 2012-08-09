@@ -26,7 +26,7 @@ contains
     use clm_varpar   , only : nlevsoi, nlevsno, nlevlak
     use clm_varcon   , only : bdsno, istice, istwet, istsoil, denice, denh2o, spval, sb
     use spmdMod      , only : masterproc
-    use decompMod    , only : get_proc_bounds
+    use decompMod    , only : get_proc_bounds, ldecomp
 !
 ! !ARGUMENTS:
     implicit none
@@ -43,6 +43,7 @@ contains
 !
     integer , pointer :: pcolumn(:)        ! column index associated with each pft
     integer , pointer :: clandunit(:)      ! landunit index associated with each column
+    integer , pointer :: cgridcell(:)      ! gridcell index associated with each column
     integer , pointer :: ltype(:)          ! landunit type
     logical , pointer :: lakpoi(:)         ! true => landunit is a lake point
     real(r8), pointer :: dz(:,:)           ! layer thickness depth (m)
@@ -95,6 +96,7 @@ contains
     ! Assign local pointers to derived subtypes components (column-level)
 
     clandunit  => clm3%g%l%c%landunit
+    cgridcell  => clm3%g%l%c%gridcell
     snl        => clm3%g%l%c%cps%snl
     dz         => clm3%g%l%c%cps%dz
     watsat     => clm3%g%l%c%cps%watsat
@@ -156,9 +158,13 @@ contains
        ! snow water
 
        l = clandunit(c)
+       j = ldecomp%gdc2j(cgridcell(c))
        if (ltype(l) == istice) then
-          !h2osno(c) = 1000._r8
-          h2osno(c) = 4000000._r8  !CAS high snowcover for glacier points to minimize CS amplification
+          if ( j >= 7 .and. j <= 41) then
+            h2osno(c) = 1000._r8
+          else 
+            h2osno(c) = 4000000._r8  !CAS high initial glacial SWE for Antarctica and Greenland
+          endif 
        else
           h2osno(c) = 0._r8
        endif
