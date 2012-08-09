@@ -157,7 +157,8 @@ contains
 
        l = clandunit(c)
        if (ltype(l) == istice) then
-          h2osno(c) = 1000._r8
+          !h2osno(c) = 1000._r8
+          h2osno(c) = 4000000._r8  !CAS high snowcover for glacier points to minimize CS amplification
        else
           h2osno(c) = 0._r8
        endif
