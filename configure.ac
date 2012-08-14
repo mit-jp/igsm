@@ -151,6 +151,8 @@ AC_CHECK_HEADER([netcdf.h], [AC_CHECK_LIB([netcdf], [nc_inq_libvers])])
 AC_MSG_CHECKING([[for nf_inq_libvers in -lnetcdff]])
 if test `which nf-config 2>/dev/null`; then
   LIBS+=" "`nf-config --flibs`
+else
+  LIBS+=" -L$LIB_NETCDF -lnetcdff -lnetcdf"
 fi
 AC_LANG_PUSH([Fortran])
 AC_LINK_IFELSE(
