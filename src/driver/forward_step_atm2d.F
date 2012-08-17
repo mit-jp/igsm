@@ -1,4 +1,4 @@
-C $Header: /u/gcmpack/MITgcm/pkg/atm2d/forward_step_atm2d.F,v 1.22 2012/01/10 21:58:22 jscott Exp $
+C $Header: /u/gcmpack/MITgcm/pkg/atm2d/forward_step_atm2d.F,v 1.21 2011/06/28 21:59:46 jscott Exp $
 C $Name:  $
 
 #include "ctrparam.h"
@@ -61,11 +61,15 @@ C      212*24,243*24,273*24,304*24,334*24,365*24
       INTEGER iloop_ocn
 #endif
 #ifdef DATA4TEM 
-      CHARACTER *40 f4tem,f4clm
+      CHARACTER *40 f4tem,f4clm,f24tem,f34tem
       CHARACTER *4  cfile
       CHARACTER *8  f14tem,f14clm
+      character *9 f124tem,f134tem
       f14tem='data4tem'
       f14clm='data4clm'
+      f124tem='data24tem'
+      f134tem='data34tem'
+      nfile=1
 #endif
 
 C     print *,'*** Top of forwrdstep_atm',iloop,myTime,myIter
@@ -87,6 +91,8 @@ C    &             idyear,iyr,inyr,monid,inday,dayid
         IF (nfile.gt.1)THEN
           CLOSE(935)
           CLOSE(937)
+          CLOSE(938)
+          CLOSE(939)
         ENDIF
         IF(iyr.gt.1000) THEN
            nfile=iyr
@@ -96,8 +102,12 @@ C    &             idyear,iyr,inyr,monid,inday,dayid
         WRITE (cfile,'i4'),nfile
         f4tem=f14tem//cfile
         f4clm=f14clm//cfile
+        f24tem=f124tem//cfile
+        f34tem=f134tem//cfile
         OPEN(935,file=f4clm,form='unformatted',status='new')
         OPEN(937,file=f4tem,form='unformatted',status='new')
+        OPEN(938,file=f24tem,form='unformatted',status='new')
+        OPEN(939,file=f34tem,form='unformatted',status='new')
         nfile=nfile+1
 #endif
 #ifdef CPL_TEM
@@ -223,6 +233,7 @@ C        PRINT *,'***block at end of day'
 #ifdef CLM
 #  ifdef CPL_TEM
         CALL climate2tem(monid,ndmonth(monid))
+c        PRINT *,'From driver before call tem',' idyear=',idyear
         CALL tem(idyear,monid-1)
         CALL tem2climate(idyear,monid-1)
         ch4mn=0.0
@@ -244,14 +255,20 @@ C        PRINT *,'***block at end of day'
 #    endif
         DO j=1,jm0
           temnep(monid,j)=temco2(j)
-        ENDDO 
-
+        ENDDO ! j
+c        PRINT *,'After tem2climate'
+c        PRINT *,'TEMNEP'
+c        PRINT *,(temco2(j),j=1,jm0)
+c        PRINT *,'CH4'
+c        PRINT *,(temch4(j),j=1,jm0)
+c        PRINT *,'N2O'
+c        PRINT *,(temn2o(j),j=1,jm0)
         DO j=1,jm0
           antemnep(j)=antemnep(j)+temnep(monid,j)
           nepan=nepan+temnep(monid,j)
           ch4ann=ch4ann+temch4(j)
           n2oann=n2oann+temn2o(j)
-        ENDDO 
+        ENDDO ! j
 
 #  endif
 #endif
@@ -272,18 +289,19 @@ c   12.e-15 from moles to Gt carbon
 #ifdef IPCC_EMI
         PRINT *,'Month=',monid
         nepmn=nepmn/1000.
-C         nepmn is converted from Tg/mn to Gt/mn of C
+!         nepmn is converted from Tg/mn to Gt/mn of C
         ocumn=ocumn*12.e-15
-C         ocumn is converted from mole(C) to Gt (C)
-C        tnow= jyear + (jday-.5)/365.
-C        CALL emissipcc(tnow,nepmn,ocumn,CO2,xco2ann)
-        PRINT *,nepmn,ocumn,xco2ann
-C         ch4mn is in kg/mn of CH4
-C         nepmn is in Gt/mn of C
+!         ocumn is converted from mole(C) to Gt (C)
+!        tnow= jyear + (jday-.5)/365.
+!        CALL emissipcc(tnow,nepmn,ocumn,CO2,xco2ann)
+         print *,nepmn,ocumn,xco2ann
+!         ch4mn is in kg/mn of CH4
+!         nepmn is in Gt/mn of C
          tcumn=nepmn-ch4mn*12./16.*1.e-12
-        PRINT *,'tcumn,ocumn,xco2ann'
-        PRINT *,tcumn,ocumn,xco2ann
+         print *,'tcumn,ocumn,xco2ann'
+         print *,tcumn,ocumn,xco2ann
         CALL emissipcc_mn(tcumn,ocumn,xco2ann)
+!       CALL emissipcc_mn(nepmn,ocumn,xco2ann)
 #endif
       ENDIF  !end block done at month-end
 
@@ -309,7 +327,7 @@ C         nepmn is in Gt/mn of C
         IF (iyr.eq.endYear) THEN
 C         NEM emissions and NEP for start of climate-chemistry run
           adupt=aduptt
-          CALL wr_rstrt_nem
+           CALL wr_rstrt_nem
         ENDIF
 
 #endif
@@ -344,8 +362,8 @@ C If necessary, next line can be moved outside OCEAN_3D for IGSM2.2 cleanups
 #  endif
         OPEN(333,ACCESS='APPEND',FILE=caruptfile,STATUS='old')
 C        WRITE(333,'(2f9.5)')nepan,ocuptp
-        WRITE(333,'(i7,3e15.5)') iyr,nepan,
-     &            nepan-1.e-12*ch4ann*12./16.,ocuptp
+        WRITE(333,'(i7,3e15.5)')iyr,nepan,nepan-1.e-12*ch4ann*12./16.
+     &                  ,ocuptp
         CLOSE(333)
 
 #  if (defined CPL_OCEANCO2) && (defined ML_2D)

@@ -81,6 +81,7 @@ c
       common/ SNOWALB/FRSNALB,III
       common/ S0XR/S0RATE,CFS0X
       common/ BACKGRGHG/GHGBGR(5)
+      DIMENSION XNOW(5),XREF(5),XDT0(5),XDAT(5),XRAT(5),KFOR(5)
       COMMON/CO2TRND/ALFFOR,CO2TR,YEARGT,CO2IN,INYRAD
      & ,YEARGG,YEARS0,YEARSA,YEARVA
      & ,KTREND
@@ -147,6 +148,10 @@ C****                                                                   5069.
 
       IF(MODRD.EQ.0) IDACC(2)=IDACC(2)+1                                5070.   
       IF (IFIRST.NE.1) GO TO 50                                         5071.   
+           print *,'FROM RADIA HPRNT=',HPRNT
+#ifdef ADJUSTED_CO2
+        print *,' ADJUSTED_CO2'
+#endif
       if(GHSF)then
        do j=1,jm
         ghflux(1,j)=ghostf(1,j)
@@ -165,7 +170,7 @@ c        GHGBGR(2)=GHGBGR0(2)
 c        GHGBGR(3)=GHGBGR0(3)
 c        GHGBGR(4)=GHGBGR0(4)*1000.
 c        GHGBGR(5)=GHGBGR0(5)*1000.
-c     print *,'Background GHGs'
+      print *,'Background GHGs'
       print '(5E12.4)',GHGBGR
          nreadcld=0
          nrbyyr=24*365/5
@@ -238,7 +243,10 @@ C     S0X=1.                                                            5089.1
       print *,'From first call of radia CFS0X=',CFS0X
       S0X0=S0X
       if(S0FOR)then
-        print *,' Initial value for solar constant=',S0X0*1367
+         call obssolar(S0X,S0XAV,YEARS0+0.5)
+         S0X=S0X/1367.
+         S0X0=S0X
+        print *,' Reference value for solar constant=',S0X0*1367
       endif
 
 #if ( defined FIXED_FOR )
@@ -459,12 +467,27 @@ c    &           *28.97296245/44.0*1.e-3,j=1,jm)
       JMLAST=JMONTH
 !print *,' form radia TAU=',TAU,'MODRD=',MODRD
 C
-      IF (JDAY.NE.JDLAST.AND.KTREND.GT.0) THEN
+!     IF (JDAY.NE.JDLAST.AND.KTREND.GT.0) THEN
+      IF (JDAY.NE.JDLAST) THEN
+       IF (KTREND.GT.0) THEN
         if(KTREND.NE.7) then
          CALL FORGET(TNOW,KTREND,KWRITE)
         else
          CALL FORGET(YEARGG,KTREND,KWRITE)
         endif
+       ELSE
+         FULGAS(2)=CO2
+#ifdef ADJUSTED_CO2
+          XNOW(1)=GHGBGR(1)*CO2
+          KFOR(1)=1
+!         print *,'CO2 adjustnemt  ',XNOW(1),GHGBGR(1),KFOR(1)
+!         increasing CO2 forcing
+          CALL DTDX1D(XNOW,GHGBGR,XDT0,SDT0,KFOR,1)   
+          CALL DXDT3D(XNOW,GHGBGR,XDT0,SDT0,KFOR,1) 
+          FULGAS(2)=XNOW(1)/GHGBGR(1)
+!         print *,'CO2 adjustnemt  ',XNOW(1),GHGBGR(1)
+#endif
+       ENDIF
          if(FORGHG.or.CO2FOR) then
          FULCO2=FULGAS(2)
          FULN2O=FULGAS(6)
@@ -789,10 +812,17 @@ C****                                                                   5260.
       SNOWOI=GDATA(I,J,1)                                               5269.   
       SNOWLI=GDATA(I,J,12)                                              5270.   
       SNOWE=GDATA(I,J,2)                                                5271.   
+#if ( defined CLM35 )
+!     SNOWLI=1.e-5
+!     SNOWE=1.e-5
+#endif
       AGESN=GDATA(I,J,11)                                               5272.   
-c     print *,'From radia J=',J,' TAU=',TAU,' TS=',TS
-c     print *,TGO,TGOI,TGLI,TGE
-c     print *,SNOWOI,SNOWLI,SNOWE,AGESN
+      if( J.eq.-46) then
+      print *,'From radia J=',J,' TAU=',TAU,' TS=',TS
+      print *,TGO,TGOI,TGLI,TGE
+      print *,PWATER,POICE,POCEAN
+!     print *,SNOWOI,SNOWLI,SNOWE,AGESN
+      endif
       WEARTH=(GDATA(I,J,5)+GDATA(I,J,6))/(VDATA(I,J,9)+1.E-20)          5273.   
       DO 430 K=1,8                                                      5274.   
   430 PVT(K)=VDATA(I,J,K)                                               5275.   
@@ -895,7 +925,8 @@ c     FGOLDU(3)=XFRADJ*PEARTH                                           5278.
         if (KTREND.GT.0) THEN
          FULGAS(2)=FULCO2
         else
-         FULGAS(2)=CO2
+!        FULGAS(2)=CO2
+         FULGAS(2)=FULCO2
         endif
       endif
       if(FORVOL)then
@@ -903,13 +934,15 @@ c     FGOLDU(3)=XFRADJ*PEARTH                                           5278.
       endif
 !
 #if ( defined IPCC_EMI )
+#if ( !defined ADJUSTED_CO2 )
         FULGAS(2)=CO2
+#endif
 !     IF(DMOD(TAU,365.*24.).EQ.0..and.J.eq.-JM/2) then
       IF(DMOD(TAU,365.*24.).EQ.0..and.J.eq.1) then
         print *,'IPCC_EMI CO2 from radia ', CO2
         print *,'FULGAS(2)=',FULGAS(2)
-       print *,"tau=",tau,j,ii
-       CALL WRITER (1,0)
+!      print *,"tau=",tau,j,ii
+!      CALL WRITER (1,0)
       endif
 #endif
 
@@ -1412,7 +1445,7 @@ c    For TEM
       if(HPRNT)then
        print *,' radia TAU=',TAU
        print *,' after 860'
-       print 'B66',T(1,1,1)
+       print *,'B66',T(1,1,1)
        print *,'COSZ1(1,1)',COSZ1(1,1),' COE(1)=',COE(1)
        print *,'SRHR'
        print *,(SRHR(1,1,L+1),L=1,LM)

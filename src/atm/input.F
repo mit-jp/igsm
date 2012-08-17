@@ -142,7 +142,7 @@ c==== 012201
      &  ,flin_nep,last_clm,SEN_dat,nemdatdir
      &  ,GHSFALB,GHSF,ALBCF,FVOLADD,ghostfile,fl_volaer,fl_orbital
      &  ,STRARFOR,GSOEQ,CO2FOR,CO2F,FORSULF,FORBC,S0FOR,FORVOL,FORGHG
-     &  ,VEGCH,vegfile,TRVEG
+     &  ,VEGCH,vegfile,TRVEG,KVCT
      &  ,fclmlice,fbaresoil,fwmax,fprratio,o3datadir,CLIMO3
 #if ( defined CLM35 )
      &  ,wetfrac_data
@@ -164,7 +164,7 @@ c jrs      common/TIMESTEPS/dtatm,dtocn
       LOGICAL LFR,NLFR,wr25,TRANSR,WRCLD,CONTRR,CLDFEED,OBSFOR
      &,GHSF,VEGCH,TRVEG,GSOEQ,OCNGEOM,GHSFALB,STRARFOR,CO2FOR
      & ,FORSULF,FORBC,S0FOR,FORVOL,FORGHG
-     &  ,ORBTRANS
+     &  ,ORBTRANS,KVCT
 #if ( defined ORBITAL_FOR )
       common/ORBITAL/YEARORB,ORBTRANS,OBLIQ,ECCN,OMEGT
 #endif
@@ -172,6 +172,7 @@ c jrs      common/TIMESTEPS/dtatm,dtocn
       common/vaerosol/fl_volaer
       common/orbitalfl/fl_orbital
       common/eqgso/GSOEQ
+      common/cfocarb/KVCT
       common/ghstfor/GHSFALB,GHSF,ALBCF,FVOLADD,STRARFOR,S0FOR,CO2FOR,
      &  CO2F,ghostfv(LM0+1),ghostf(LM0+1,JM0)
       common/veg/TRVEG,IYVEG
@@ -282,6 +283,7 @@ C
       S0FOR=.false.
       CO2F=2.0
       GSOEQ=.false.
+      KVCT=.false.
       VEGCH=.false.
       TRVEG=.false.
       PRTREND=.false.
@@ -752,8 +754,11 @@ C  open statment moved from cheminit.F file number change to 279
 
 c     open file for carbon uptake
 #if ( defined CPL_TEM || defined CPL_OCEANCO2 )
-c     open(333,file=caruptfile,status='new',form='formatted')
+        if(ISTRT1.eq.0)then
       open(333,file=caruptfile,status='replace',form='formatted')
+        else
+      open(333,file=caruptfile,status='old',form='formatted')
+        endif
       close(333)
 #endif
 
@@ -764,10 +769,16 @@ c     open(333,file=caruptfile,status='new',form='formatted')
      &   form='unformatted',status='old')
 !     open(670,file=fl_dic_eq,
 !    &   form='unformatted',status='old')
+        if(ISTRT1.eq.0)then
       open(602,file=flrco2av,status='new',form='unformatted')
+        else
+      open(602,file=flrco2av,
+     &  status='old',form='unformatted')
+        endif
 #endif
 
 ce    open statments
+#if ( defined ORBITAL_FOR )
       if(GSOEQ)then
        if (abs(YEARGT-YEARORB).gt.0.1) then
          print *,'Wrong setting for  GSOEQ run'
@@ -775,6 +786,7 @@ ce    open statments
          stop
        endif
        endif
+#endif
       call bgrghg(YEARGT)
 #if ( defined IPCC_EMI )
 !     if(YEARGT.eq.1765)then
@@ -962,7 +974,7 @@ C      For restart of the run
 !         open (368,file=init_4nem,form='unformatted',status='old')
 c         file init_4nem contains data for the restart of NEM
 c         from the results of a previous run
-          open (277,file=fnememiss,form='unformatted',status='replace')
+          open (277,file=fnememiss,form='unformatted',status='old')
           close(277)
 #endif
 #endif
@@ -1456,6 +1468,9 @@ C**** CALCULATE DSIG AND DSIGO                                          1808.
   760 DSIGO(L)=SIG(L)-SIG(L+1)                                          1812.   
 
 #if ( defined CPL_CHEM || defined TRACERS )
+
+!      changing Kvcarbon
+        KVCT=.true.
 !
 ! --- Calculate air mass, First step
 ! ---   (need to time surface pressure p(i,j) :

@@ -34,11 +34,14 @@ C**** DRAG.  IT ALSO CALCULATES INSTANTANEOUSLY SURFACE TEMPERATURE,    5805.
 C**** SURFACE SPECIFIC HUMIDITY, AND SURFACE WIND COMPONENTS.           5806.   
 C****                                                                   5807.   
 
-#if ( defined CPL_CHEM )
+#if ( defined CPL_CHEM || defined TRACERS)
 !
 #include "chem_para"
 #include "chem_com"
 !
+#endif
+#if ( defined TRACERS)
+#include "tracer_com.h"
 #endif
 
 #include "BD2G04.COM"
@@ -580,6 +583,11 @@ C**** LOOP OVER GROUND TIME STEPS                                       6148.
       QG=QSAT(TG,PS,ELHX)                                               6151.   
       TGV=TG*(1.+QG*RVX)                                                6152.   
       W1=SQRT(U1*U1+V1*V1)
+!     03/08/2012
+      UG=0.75*U1    
+      VG=0.75*V1     
+      W1=SQRT(UG*UG+VG*VG)
+!     03/08/2012
       WS0=W1
 c     WS=SQRT(W1*W1+0.8*WMG)
 !     WMG=WMG0+WMGMIN
@@ -591,6 +599,9 @@ c     WS=SQRT(W1*W1+0.8*WMG)
       endif
 !     07/17/2006
       WS=SQRT((0.75*W1)**2+WMG)
+!     03/08/2012
+       WS=SQRT(W1**2+WMG) 
+!     03/08/2012
       if(J.eq.JPR)then
         print *,' '
         print *,'TAU=',TAU,' NS=',NS,' ITYPE=',ITYPE
@@ -652,6 +663,8 @@ C     surface layer has stable stratification
       VSR=SIN(CIA)*HEMI
       UG=U1
       VG=V1
+      UG=U1*0.75
+      VG=V1*0.75
       US=(USR*UG-VSR*VG)
       VS=(VSR*UG+USR*VG)
       RCDHWS=CDH*WS*100.*PS/(RGAS*TSV)
@@ -959,6 +972,11 @@ C****                                                                   6587.
       BLDATA(I,J,6)=USS                                                 6593.   
       BLDATA(I,J,7)=VSS                                                 6594.   
       BLDATA(I,J,8)=TAUS                                                6595.   
+      if (j.eq. -42) then
+      print *,'SURFACE tau=',tau
+      print *,WSS,TSS,QSS,T2MS
+      print *,USS,VSS,TAUS 
+      endif
 c     print *,j,T(I,J,1),Q(I,J,1)
 c     print *,(TGRND(I,J,k),k=1,4)
 c     print *,(EVAPOR(I,J,k),k=1,4)
@@ -1136,6 +1154,12 @@ c      h2o2ms  = h2o2 (i,j,1)*dsig(1) + h2o2 (i,j,2)*dsig(2)
 
 !
 #endif
+#if ( defined TRACERS)
+         do ntr=1,ntracers
+         tracersms(ntr)=tracers(i,j,1,ntr) *dsig(1)
+     &       +tracers(i,j,2,ntr)*dsig(2)
+         enddo
+#endif
 
       DO 8140 L=3,LM                                                    6727.   
       IF(THETA.LT.T(I,J,L)*(1.+Q(I,J,L)*RVX)) GO TO 8160                6728.   
@@ -1197,6 +1221,11 @@ c 062295
 c        h2o2ms  = h2o2ms  + h2o2 (i,j,l)*dsig(l)
 !
 #endif
+#if ( defined TRACERS)
+         do ntr=1,ntracers
+         tracersms(ntr)=tracersms(ntr) +tracers(i,j,l,ntr)*dsig(l)
+         enddo
+#endif
 
  8140 THETA=TVMS/PKMS                                                   6733.   
       L=LM+1                                                            6734.   
@@ -1256,6 +1285,11 @@ c      h2o2ms  = h2o2ms*rdsigs
 c
 !
 #endif
+#if ( defined TRACERS)
+         do ntr=1,ntracers
+         tracersms(ntr)=tracersms(ntr) *rdsigs
+         enddo
+#endif
 
       BLDATA(I,J,4)=LMAX                                                6739.   
       DO 8180 L=1,LMAX                                                  6740.   
@@ -1313,6 +1347,12 @@ c        h2o2(i,j,l)  = h2o2ms
 c
 !
 #endif
+#if ( defined TRACERS)
+         do ntr=1,ntracers
+           tracers(i,j,l,ntr) =tracersms(ntr)
+         enddo
+#endif
+
 
  8180 Q(I,J,L)=QMS                                                      6743.   
       IF(POLE) GO TO 8300                                               6744.   

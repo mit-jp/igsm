@@ -27,12 +27,16 @@ C     NUMERICALLY INTEGRATING THE NON-SOURCE TERMS OF                   2002.
 C     THE 2-DIMENSIONAL CLIMATE MODEL                                   2002.5  
 C                                                                       2003.   
 
-#if ( defined CPL_CHEM )
+#if ( defined CPL_CHEM || defined TRACERS)
 !
 #include "chem_para"
 #include "chem_com"
 !
 #endif
+#if ( defined TRACERS)
+#include "tracer_com.h"
+#endif
+
 
 #include "BD2G04.COM"                                                   2003.5  
 
@@ -127,7 +131,7 @@ C                                                                       2035.5
       DO 50 I=1,IS                                                      2036.5  
  50   FD(I,J)=PT(I,J)*DXYP(J)                                           2037.   
 
-#if ( defined CPL_CHEM )
+#if ( defined CPL_CHEM || defined TRACERS )
 !
 ! --- get PAI for chemical advection:
 !
@@ -207,7 +211,7 @@ C                                                                       2052.
       DO 2168 I=1,IX                                                    2054.   
       PV(I,J)=(P(I,J)+P(I,J-1))*V(I,J,L)*TEMP                           2054.5  
 
-#if ( defined CPL_CHEM )
+#if ( defined CPL_CHEM || defined TRACERS )
 !
 ! --- get V for chemical advection:
 !
@@ -361,7 +365,7 @@ C     PIT(I,J)=CONV(I,J,1)                                              2092.5
       DO 2440 I=1,IS                                                    2098.5  
  2440 SD(I,J,L)=SD(I,J,L+1)+CONV(I,J,L+1)-DSIG(L+1)*PIT(I,J)            2099.   
 
-#if ( defined CPL_CHEM )
+#if ( defined CPL_CHEM || defined TRACERS )
 !
 ! --- get Omiga for chemical advection:
 !
@@ -587,7 +591,7 @@ C     IF (MRCH.NE.0) CALL EDDYPA (UT,VT,TT,PT,QT,U,V,T,P,Q,DT1)         2161.5
       MODEDY=MOD(MRCHT,ICHK)                                            2161.6  
       MODTVR=MOD(MRCHT,ICHK1)
 
-#if ( defined CPL_CHEM )
+#if ( defined CPL_CHEM || defined TRACERS )
 !
 ! --- Get time parameter for eddy calculation:
 !
@@ -643,7 +647,7 @@ C                                                                       2163.
       DO 1910 I=1,IM                                                    2164.   
  1910 FD(I,J)=PT(I,J)*DXYP(J)                                           2164.5  
 
-#if ( defined CPL_CHEM )
+#if ( defined CPL_CHEM || defined TRACERS )
 !
 ! --- get PAI for chemical advection (mass remapping):
 !

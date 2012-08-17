@@ -126,7 +126,9 @@ c     IF(KTREN.GE.21.and.KTREN.LE.29)
 c    &    CALL STBTRND(XNOW,TNOW,NGAS,KTREN)
 c     if(KTREN.LE.5)then
       CALL DTDX1D(XNOW,XREF,XDT0,SDT0,KFOR,NGAS)                        9109.8  
+#if ( !defined ADJUSTED_CO2 )
       CALL DTDX3D(XNOW,XREF,XDT0,SDT0,KFOR,1)                           9109.9  
+#endif
       CALL DXDT3D(XNOW,XREF,XDT0,SDT0,KFOR,NGAS)                        9110.   
 c     endif
       FULGAS(2)=XNOW(1)/XREF(1)                                         9110.1  
@@ -154,7 +156,7 @@ c     endif
        ENDIF
 #if ( !defined IPCC_EMI && !defined FIXED_PCO2)
        do j=1,nlat
-        atm_co2(j)=XNOW(1)
+        atm_co2(j)=XNOWO(1)
        enddo
 #endif
       endif

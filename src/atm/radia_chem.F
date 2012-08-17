@@ -858,7 +858,10 @@ C *********
 #if ( defined CLM )
 C        for TEM CLM
             DSWSRF(j)=SRDFLB(1)
+            DLWSRF(j)=TRSURF(J,2)
+#if ( defined OLD_CHEM && !defined CLM35 )
             DLWSRF(j)=TRDFLB(1)
+#endif
             DSWVIS(j)=SRDVIS
             DSWNIR(j)=SRDNIR
 C        for TEM CLM

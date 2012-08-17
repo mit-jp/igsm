@@ -89,6 +89,8 @@ C                                                                       5035.
       common/aexpc/AEXP,ISTRT1
       common/ SNOWALB/FRSNALB
       common/ S0XR/S0RATE
+      common/ BACKGRGHG/GHGBGR(5)
+      DIMENSION XNOW(5),XREF(5),XDT0(5),XDAT(5),XRAT(5),KFOR(5)
       COMMON/CO2TRND/ALFFOR,CO2TR,YEARGT,CO2IN,INYRAD
      & ,YEARGG,YEARS0,YEARSA,YEARVA
      & ,KTREND
@@ -150,6 +152,9 @@ C****        9  WATER FIELD CAPACITY OF FIRST LAYER (KG/M**2)           5068.
 C****                                                                   5069.   
       IF(MODRD.EQ.0) IDACC(2)=IDACC(2)+1                                5070.   
       IF (IFIRST.NE.1) GO TO 50                                         5071.   
+#ifdef ADJUSTED_CO2
+        print *,' ADJUSTED_CO2'
+#endif
       BETA=0.29
       JDAYR=JNDAY
       JYEARR=INYEAR
@@ -223,7 +228,12 @@ C     S0X=1.                                                            5089.1
         RSDISTAV=0.0
       ELSE
          if(KSTREND.eq.0)then
-           print *,' Run with fixed solar constan ',S0X*1367.
+!          print *,' Run with fixed solar constan ',S0X*1367.
+         call obssolar(S0X,S0XAV,YEARS0+0.5)
+!        S0X=S0X/1367.
+         S0X=S0XAV/1367.
+          print '(A30,2F9.2)','Average Sconstant for year ',
+     &   YEARS0+0.5,S0X*1367.
          endif
       ENDIF
       RVOL=0.012
@@ -331,22 +341,44 @@ c          print *,'S0X=',S0X,' TNOW=',TNOW
 
       endif
       JMLAST=JMONTH
-      IF (JDAY.NE.JDLAST.AND.KTREND.GT.0) then
+!     IF (JDAY.NE.JDLAST.AND.KTREND.GT.0) then
+      IF (JDAY.NE.JDLAST) THEN
+       IF (KTREND.GT.0) THEN
 c         print *,'TNOW=',TNOW
         if(KTREND.NE.7) then
          CALL FORGET(TNOW,KTREND,KWRITE)
         else
          CALL FORGET(YEARGG,KTREND,KWRITE)
         endif
+       ELSE
+         FULGAS(2)=CO2
+#ifdef ADJUSTED_CO2
+          XNOW(1)=GHGBGR(1)*CO2
+          KFOR(1)=1
+!         increasing CO2 forcing
+          CALL DTDX1D(XNOW,GHGBGR,XDT0,SDT0,KFOR,1)
+          CALL DXDT3D(XNOW,GHGBGR,XDT0,SDT0,KFOR,1)
+          FULGAS(2)=XNOW(1)/GHGBGR(1)
+#endif
+      ENDIF
       ENDIF
 #if ( defined IPCC_EMI )
+#ifdef ADJUSTED_CO2
+          XNOW(1)=GHGBGR(1)*CO2
+          KFOR(1)=1
+!         increasing CO2 forcing
+          CALL DTDX1D(XNOW,GHGBGR,XDT0,SDT0,KFOR,1)
+          CALL DXDT3D(XNOW,GHGBGR,XDT0,SDT0,KFOR,1)
+          FULGAS(2)=XNOW(1)/GHGBGR(1)
+#else
         FULGAS(2)=CO2
+#endif
 !     IF(DMOD(TAU,365.*24.).EQ.0..and.J.eq.-JM/2) then
-      IF(DMOD(TAU,365.*24.).EQ.0..and.J.eq.1) then
+      IF(DMOD(TAU,365.*24.).EQ.0.) then
         print *,'IPCC_EMI CO2 from radiagso ', CO2
         print *,'FULGAS(2)=',FULGAS(2)
-       print *,"tau=",tau
-       CALL WRITER (1,0)
+!      print *,"tau=",tau
+!      CALL WRITER (1,0)
       endif
 #endif
  

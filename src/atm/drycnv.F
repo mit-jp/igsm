@@ -32,11 +32,14 @@ C**** CONVECTION IN THE BOUNDARY LAYER IS DONE IN SUBROUTINE SURFCE,    7504.
 C**** THIS ROUTINE ONLY CHECKS LAYERS 2 TO LM.                          7505.   
 C****                                                                   7506.   
 
-#if ( defined CPL_CHEM )
+#if ( defined CPL_CHEM || defined TRACERS )
 !
 #include "chem_para"
 #include "chem_com"
 !
+#endif
+#if ( defined TRACERS)
+#include "tracer_com.h"
 #endif
 
 #include "BD2G04.COM"                                                   7507.   
@@ -149,6 +152,12 @@ c      h2o2ms =h2o2(i,j,lmin)  *dsig(lmin)
 c     &       +h2o2(i,j,lmin+1)*dsig(lmin+1)
 !
 #endif
+#if ( defined TRACERS)
+         do ntr=1,ntracers
+         tracersms(ntr)=tracers(i,j,lmin,ntr) *dsig(lmin)
+     &       +tracers(i,j,lmin+1,ntr)*dsig(lmin+1)
+         enddo
+#endif
 
       IF(LMIN+1.GE.LM) GO TO 150                                        7544.   
       TVMS=T(I,J,LMIN)*(1.+Q(I,J,LMIN)*RVX)*(PK(I,J,LMIN)*DSIG(LMIN))   7545.   
@@ -216,6 +225,11 @@ c      h2o2ms =h2o2ms+h2o2(i,j,l)*dsig(l)
 
 !
 #endif
+#if ( defined TRACERS)
+         do ntr=1,ntracers
+         tracersms(ntr)=tracersms(ntr) +tracers(i,j,l,ntr)*dsig(l)
+         enddo
+#endif
 
       TVMS=TVMS+T(I,J,L)*(1.+Q(I,J,L)*RVX)*(PK(I,J,L)*DSIG(L))          7555.   
   140 THETA=TVMS/PKMS                                                   7556.   
@@ -276,6 +290,11 @@ c      h2o2ms  = h2o2ms*rdsigs
 
 !
 #endif
+#if ( defined TRACERS)
+         do ntr=1,ntracers
+         tracersms(ntr)=tracersms(ntr) *rdsigs
+         enddo
+#endif
 
       DO 180 L=LMIN,LMAX                                                7562.   
          AJL(J,L,12)=AJL(J,L,12)+(THM-T(I,J,L))*PK(I,J,L)*P(I,J)        7563.   
@@ -333,6 +352,11 @@ c        h2o2(i,j,l) = h2o2ms
 !
 #endif     
 
+#if ( defined TRACERS)
+         do ntr=1,ntracers
+           tracers(i,j,l,ntr) =tracersms(ntr)
+         enddo
+#endif
 180   continue
 
       IF(POLE) GO TO 300                                                7566.   

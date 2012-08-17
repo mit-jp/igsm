@@ -34,11 +34,14 @@ C**** DRAG.  IT ALSO CALCULATES INSTANTANEOUSLY SURFACE TEMPERATURE,    5805.
 C**** SURFACE SPECIFIC HUMIDITY, AND SURFACE WIND COMPONENTS.           5806.   
 C****                                                                   5807.   
 
-#if ( defined CPL_CHEM )
+#if ( defined CPL_CHEM || defined TRACERS )
 !
 #include "chem_para"
 #include "chem_com"
 !
+#endif
+#if ( defined TRACERS)
+#include "tracer_com.h"
 #endif
 
 #include "BD2G04.COM"
@@ -142,7 +145,7 @@ C****                                                                   5874.
 c     print *,'surface TAU=',TAU
       NSTEPS=NSURF*NSTEP/NDYN                                           5875.   
       IF(IFIRST.NE.1) GO TO 50                                          5876.   
-      print *,' SURFACE after CLM'
+      print *,' SURFACE FOR OCEAN'
       IFIRST=0                                                          5877.   
       print *,'JM=',jm
 !     WMGMIN=8.
@@ -211,7 +214,6 @@ C     SRCORX=1.                                                         5878.13
       SINI(I)=SIN((I-1)*TWOPI/FIM)                                      5902.   
    20 COSI(I)=COS((I-1)*TWOPI/FIM)                                      5903.   
    50 S0=S0X*1367./RSDIST                                               5904.   
-c     print *,'IM=',IM
 c     do i=1,200
 c      print *,'HERE1'
 c     enddo
@@ -246,7 +248,7 @@ C****                                                                   5929.
       JPR=-7
       JPRR=-31
       DO 7000 J=1,JM                                                    5930.   
-      PRNT=j.eq.8
+      PRNT=j.eq.46
       PRNT=.FALSE.
       HEMI=1.                                                           5931.   
       IF(J.LE.JM/2) HEMI=-1.                                            5932.   
@@ -339,7 +341,6 @@ C****                                                                   5973.
       U1=.25*(U(IM1,J,1)+U(I,J,1)+U(IM1,J+1,1)+U(I,J+1,1))              5994.   
       V1=.25*(V(IM1,J,1)+V(I,J,1)+V(IM1,J+1,1)+V(I,J+1,1))              5995.   
       if(J.eq.JPR.or.J.eq.-12)then
-        print *,' J=',J
         print *,'TAU=',TAU,' NS=',NS,' ITYPE=',ITYPE
        print *,'U(I,J,1)=',U(I,J,1),' V(I,J,1)=',V(I,J,1)
        print *,'U(I,J+1,1)=',U(I,J+1,1),' V(I,J+1,1)=',V(I,J+1,1)
@@ -641,14 +642,15 @@ C**** ACCUMULATE SURFACE FLUXES AND PROGNOSTIC AND DIAGNOSTIC QUANTITIES6517.
       if(PRNT)then
 c      write(78,*) ,'    '
 c      write(78,*) ,'TAU=',TAU
-       write(78,*) ,'J=',j,' ITYPE=',ITYPE,' PTYPE=',PTYPE
-       write(78,*) ,'TS=',TS,' TG=',TG,' QS=',QS
-       write(78,*) ,'TG1=',TG1,' TG1OLD=',TG1OLD
-       write(78,*) ,'TG2=',TG2
-       write(78,*) ,'SHEAT=',SHEAT,' EVHEAT=',EVHEAT
-       write(78,*) ,'TRHEAT=',TRHEAT,' SRHEAT=',SRHEAT
-       write(78,*) ,'EVAP mm/day=',24.*3600.*EVAP/DTSURF
-       write(78,*) ,'EVAP=',EVAP,
+       write(6,*) ,'J=',j,' ITYPE=',ITYPE,' PTYPE=',PTYPE
+       print *,PWATER,POICE,POCEAN
+       write(6,*) ,'TS=',TS,' TG=',TG,' QS=',QS
+       write(6,*) ,'TG1=',TG1,' TG1OLD=',TG1OLD
+       write(6,*) ,'TG2=',TG2
+       write(6,*) ,'SHEAT=',SHEAT,' EVHEAT=',EVHEAT
+       write(6,*) ,'TRHEAT=',TRHEAT,' SRHEAT=',SRHEAT
+       write(6,*) ,'EVAP mm/day=',24.*3600.*EVAP/DTSURF
+       write(6,*) ,'EVAP=',EVAP,
      &  ' F0DT=',F0DT/DTSURF,' F1DT=',F1DT/DTSURF
       endif
 #if ( defined OCEAN_3D || defined ML_2D )
@@ -785,6 +787,11 @@ c     print *,j,DU1(1,j),DV1(1,j)
       BLDATA(I,J,7)=VSS                                                 6594.   
       BLDATA(I,J,8)=TAUS                                                6595.   
        T2MZ(J)=T2MS
+      if (j.eq. -42) then
+      print *,'SURF_OCEAN tau=',tau 
+      print *,WSS,TSS,QSS,T2MS
+      print *,USS,VSS,TAUS 
+      endif
 c     print *,j,T(I,J,1),Q(I,J,1)
 c     print *,(TGRND(I,J,k),k=1,4)
 c     print *,(EVAPOR(I,J,k),k=1,4)
@@ -967,6 +974,12 @@ c      h2o2ms  = h2o2 (i,j,1)*dsig(1) + h2o2 (i,j,2)*dsig(2)
 
 !
 #endif
+#if ( defined TRACERS)
+         do ntr=1,ntracers
+         tracersms(ntr)=tracers(i,j,1,ntr) *dsig(1)
+     &       +tracers(i,j,2,ntr)*dsig(2)
+         enddo
+#endif
 
       DO 8140 L=3,LM                                                    6727.   
       IF(THETA.LT.T(I,J,L)*(1.+Q(I,J,L)*RVX)) GO TO 8160                6728.   
@@ -1028,6 +1041,11 @@ c 062295
 c        h2o2ms  = h2o2ms  + h2o2 (i,j,l)*dsig(l)
 !
 #endif
+#if ( defined TRACERS)
+         do ntr=1,ntracers
+         tracersms(ntr)=tracersms(ntr) +tracers(i,j,l,ntr)*dsig(l)
+         enddo
+#endif
 
  8140 THETA=TVMS/PKMS                                                   6733.   
       L=LM+1                                                            6734.   
@@ -1087,6 +1105,12 @@ c      h2o2ms  = h2o2ms*rdsigs
 c
 !
 #endif
+#if ( defined TRACERS)
+         do ntr=1,ntracers
+         tracersms(ntr)=tracersms(ntr) *rdsigs
+         enddo
+#endif
+
 
       BLDATA(I,J,4)=LMAX                                                6739.   
       DO 8180 L=1,LMAX                                                  6740.   
@@ -1143,6 +1167,11 @@ c 062295
 c        h2o2(i,j,l)  = h2o2ms
 c
 !
+#endif
+#if ( defined TRACERS)
+         do ntr=1,ntracers
+           tracers(i,j,l,ntr) =tracersms(ntr)
+         enddo
 #endif
 
  8180 Q(I,J,L)=QMS                                                      6743.   
@@ -1207,7 +1236,7 @@ C**** MIX MOMENTUM THROUGHOUT THE BOUNDARY LAYER AT POLAR GRID BOXES    6767.
 !     print *,' From surf_ocean T2MZ'
 !     print *,T2MZ
       do 9001 J=1,JM
-c      TSURFD(J)=TSURFD(J)+(BLDATA(1,J,2)-273.16)/24.
+!      TSURFD(J)=TSURFD(J)+(BLDATA(1,J,2)-273.16)/24.
 !      TSURFD(J)=TSURFD(J)+(T2MZ(J)-273.16)/24.
        TSURFD(J)=TSURFD(J)+(T2MZ(J)-273.16)/NCLMPERDAY
        T2ML(J)=0.0

@@ -1,4 +1,3 @@
-
 #include "ctrparam.h"
 
 !       ==========================================================
@@ -13,7 +12,7 @@ C                                                                       2181.5
 C     THIS ROUTINE DEALS WITH THE PARAMETERIZATION OF                   2182.   
 C     EDDY TRANSPORTS AND VARIANCES                                     2182.5  
 C                                                                       2183.   
-#if ( defined CPL_CHEM )
+#if ( defined CPL_CHEM || defined TRACERS )
 !
 #include "chem_para"
 #include "chem_com"
@@ -203,7 +202,7 @@ c      print *,COSV
         first=.false.
       endif
 C                                                                       2276.5  
-#if ( defined CPL_CHEM )
+#if ( defined CPL_CHEM || defined TRACERS )
 !
       do 1 j=1,nlat
         beta1(j)=0.0
@@ -297,7 +296,7 @@ c     DSHDP(J,L)=(Q(1,J,L)-Q(1,J,L+1))/(P(1,J)*DSIGO(L))                2293.
      *  PSRK(J,L+1)/PRESR(J,L+1)/ P(1,J)                                2294.   
       TEMX=GRAV*PRESR(J,L+1)/(.5*RGAS*(TZA(J,L)+TZA(J,L+1)))            2294.5  
 
-#if ( defined CPL_CHEM )
+#if ( defined CPL_CHEM || defined TRACERS )
 !
       deltap(j,l)=1./(p(1,j)*dsigo(l))
       dp2dz (j,l)=-temx
@@ -1088,7 +1087,7 @@ C                                                                       2525.5
       IF(L.EQ.1) COEJL(J,L)=COEJL(J,L)*.3935                            2530.5  
       IF(L.EQ.2) COEJL(J,L)=COEJL(J,L)*.8347                            2531.   
       VTH(J,L)=-.5*COEJL(J,L)*DTDYJ(J)                                  2531.5  
-#if ( defined CPL_CHEM )
+#if ( defined CPL_CHEM || defined TRACERS )
 !
 ! --- Get the Kt
 !
@@ -1203,7 +1202,7 @@ c     IF(RFAC.LT.0.01) RFAC=0.01                                        2568.
       TEMPB=BETA*SHJ(J)/(FO(J)*GAMAP(j)+1.E-20)                         2569.   
       IF ((DTDYJ(J)+DTDYJ(J+1))*FO(J).GT.0.) TEMPB=0.                   2569.1  
 
-#if ( defined CPL_CHEM )
+#if ( defined CPL_CHEM || defined TRACERS )
 !
 ! --- Get parameters:
 !
@@ -1233,7 +1232,7 @@ c     IF(RFAC.LT.0.01) RFAC=0.01                                        2568.
       WQ(J,L)=-.25*(VQ(J,L)+VQ(J,L+1)+VQ(J+1,L)+VQ(J+1,L+1))*TEM*       2578.5  
      *       (P(1,J)*SIGE(L+1)+PTOP)/SCLH(J,L)/P(1,J)                   2579.   
 
-#if ( defined CPL_CHEM )
+#if ( defined CPL_CHEM || defined TRACERS )
 !
 ! --- Get parameters:
 !
