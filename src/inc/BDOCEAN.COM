@@ -9,8 +9,8 @@ C      GDATA_ICE(3) OCEAN ICE TEMPERATURE OF SECOND LAYER GDATA(7)
       common /OCEAN_GEOM/CLAND_OCEAN(io0,jm0)
       common /OCEAN_DATAAV/ ODATA_OCEANAV(IO0,JM0,5),
      &  GDATA_ICEAV(IO0,JM0,3),QFLUXTAV(IO0,JM0),HF2MLAV(IO0,JM0)
-      COMMON/WORKO1/PREC(IM0,JM0),
-     &   TPREC(IM0,JM0)                                            
+      COMMON/WORKO1/PREC(IO0,JM0),
+     &   TPREC(IO0,JM0)                                            
       COMMON/WORKO3/E0(IO0,JM0,4),E1(IO0,JM0,4),EVAPOR(IO0,JM0,4)  
       common/QFLO/QFLUXMN(IO0,JM0,0:13),QFLUXT(IO0,JM0)
 c    &   ,QFLUXTZAN(JM0)

@@ -46,9 +46,8 @@ C       REAL*8 fluxco2mn(jm0)
 #endif
 
 #ifdef IPCC_EMI
-      COMMON /DRIVER_VAR_IPCC/nemis, tcumn
+      COMMON /DRIVER_VAR_IPCC/nemis
        INTEGER nemis
-       REAL*8 tcumn
 
 C      COMMON/ BACKGRGHG/ghgbgr
 C       REAL*8 ghgbgr(5)

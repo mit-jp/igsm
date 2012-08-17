@@ -395,7 +395,6 @@ c 020196:
         h2so4m(i,1,1) = 0.0
         sviodm(i,1,1) = 0.0
 
-#if ( defined ACCRI )
 !APS 5/11/2011
         xxnom (i,1,1) = 0.0
         xxno2m (i,1,1) = 0.0
@@ -405,7 +404,6 @@ c 020196:
         ho2m (i,1,1) = 0.0
         xn2o5m (i,1,1) = 0.0
 !APS
-#endif
 
 
 #ifdef INC_3GASES
