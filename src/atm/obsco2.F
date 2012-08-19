@@ -4,7 +4,7 @@
       subroutine  obsco2(iyearr,nm)
 #include "BD2G04.COM" 
 #include "chem_para"
-      parameter (nyears=337)
+      parameter (nyears=2000)
       character * 120 oco2file,co2rfile
       dimension co2rat1990(nlat,12),co2rat1860(nlat,12),
      * co2(nlat,12)
@@ -12,6 +12,8 @@
       common /ATCO2/atm_co2(nlat),oco2file,co2rfile
       data ifirst /1/
       if(ifirst.eq.1) then
+        print *,'From obsco2 nyears=', nyears
+        print *,oco2file
 c       open( unit=645,file=oco2file,
 c    &  status='old',form='formatted')
         open( unit=561,file=oco2file,
@@ -21,6 +23,7 @@ c    &  status='old',form='formatted')
         do n=1,nyears
 c         read(645,'(i4,f8.2)') iyearobs(n),anco2obs(n)
           read(561,end=500,*) iyearobs(n),anco2obs(n)
+!         print *, iyearobs(n),anco2obs(n)
         enddo
   500   continue
         close (561)

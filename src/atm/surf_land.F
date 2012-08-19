@@ -523,7 +523,9 @@ C**** LOOP OVER GROUND TIME STEPS                                       6148.
       WS0=W1
 !     WMG=WMG0+WMGMIN
 !     07/17/2006
-      WMG=WMG0+WMGMIN
+!     02/19/2012
+!     WMG=WMG0+WMGMIN
+      WMG=max(WMG0,WMGMIN)
       WS=SQRT(W1**2+WMG)
       if(J.eq.JPR)then
         print *,' '

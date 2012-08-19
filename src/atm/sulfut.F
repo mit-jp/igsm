@@ -83,12 +83,12 @@ c     land and ocean fraction respectively
          BSO4LAND(J)=cf*BSO4LD86(j)
          BSO4OCEAN(J)=cf*BSO4ON86(j)
         enddo
-c       print *,' TNOW=',TNOW
-c       print *,' n=',n,' YSULF(n)=',YSULF(n),
-c    &   ' YSULF(n+1)=',YSULF(n+1)
-c      print *,' BSO4LAND'
-c      print ('(6F7.4)'),(BSO4LAND(J)*1.e6,j=1,JM)
-c      print *,' BSO4OCEAN'
-c      print ('(6F7.4)'),(BSO4OCEAN(J)*1.e6,j=1,JM)
+!       print *,' TNOW=',TNOW
+!       print *,' n=',n,' YSULF(n)=',YSULF(n),
+!    &   ' YSULF(n+1)=',YSULF(n+1)
+!      print *,' BSO4LAND'
+!      print ('(6F7.4)'),(BSO4LAND(J)*1.e6,j=1,JM)
+!      print *,' BSO4OCEAN'
+!      print ('(6F7.4)'),(BSO4OCEAN(J)*1.e6,j=1,JM)
        return
        end

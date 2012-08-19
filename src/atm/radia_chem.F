@@ -328,9 +328,6 @@ c         print *,' MNAER=', MNAER,' MONTH=',JMONTH
       endif
       JMLAST=JMONTH
 c     print *,'FROM radia, JDAY=',JDAY,' JDLAST=',JDLAST
-c     print *,' KTREND=',KTREND
-!     IF (JDAY.NE.JDLAST.AND.KTREND.GT.0) 
-!    &    CALL FORGET(TNOW,KTREND,KWRITE)
       IF (JDAY.NE.JDLAST)then
       
 #ifdef PREDICTED_GASES

@@ -341,7 +341,20 @@ c    &		 status='unknown')
 C***
          do 245 nr=1,nwr-1
           READ (546)  
+#if ( defined CPL_TEM )
+          READ (277),iyr
+          print *,'IYR=',iyr
+#endif
   245    continue
+#if ( defined CPL_OCEANCO2 && defined ML_2D)
+         do nr=1,nwr/12
+          READ (602),iyr
+          READ (602)
+          READ (602)
+          READ (602)
+          READ (602)
+         enddo
+#endif
       endif
 c     CALL FRTR0(IO)                                                      18.   
       KBGN=KINC+1                                                         18.5  
