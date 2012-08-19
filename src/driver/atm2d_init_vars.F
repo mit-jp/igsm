@@ -33,6 +33,12 @@ C     === Local variables ===
       print *,'After clm4mit2d  initialization'
       print *,'orbfix=',orbfix,' dyn_pft=',dyn_pft
       print *,'orbyr=',orbyr,' rampyr_dynpft=',rampyr_dynpft
+#      if  ( !defined ORBITAL_FOR )
+        if(orbyr.ne.2000) then
+          print *,'Wrong orbyr for CLM3.5'
+          stop
+        endif
+#      endif
 !     stop
       CALL atmosphere(0,0)   ! initialize the atmospheric model
 #  endif
