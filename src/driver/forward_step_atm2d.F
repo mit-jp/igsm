@@ -1,4 +1,4 @@
-C $Header: /u/gcmpack/MITgcm/pkg/atm2d/forward_step_atm2d.F,v 1.21 2011/06/28 21:59:46 jscott Exp $
+C $Header: /u/gcmpack/MITgcm/pkg/atm2d/forward_step_atm2d.F,v 1.23 2012/08/20 17:51:24 jscott Exp $
 C $Name:  $
 
 #include "ctrparam.h"
@@ -22,6 +22,11 @@ C     \==========================================================/
 #  include "EEPARAMS.h"
 #  include "PARAMS.h"
 #  include "ATM2D_VARS.h"
+#endif
+
+#ifdef NCEPWIND 
+      COMMON  /SEED/JSEED,IFRST,NEXTN
+      INTEGER JSEED,IFRST,NEXTN
 #endif
 
 C     !INPUT/OUTPUT PARAMETERS:
@@ -59,6 +64,10 @@ C      212*24,243*24,273*24,304*24,334*24,365*24
 #endif
 #ifdef OCEAN_3D
       INTEGER iloop_ocn
+#  ifdef NCEPWIND 
+      REAL*8  RAND
+      CHARACTER *4 ncep_yr
+#  endif
 #endif
 #ifdef DATA4TEM 
       CHARACTER *40 f4tem,f4clm,f24tem,f34tem
@@ -87,6 +96,23 @@ C    &             idyear,iyr,inyr,monid,inday,dayid
 
       IF (inyr.EQ.dtcouple) THEN !do this block at start of new year
         PRINT *,'*** Starting a new year'
+#ifdef NCEPWIND 
+        WRITE(ncep_yr,'(I4)') (NINT(RAND()*60.0+0.5) + 1947)
+        PRINT *,'Using NCEP wind variations from year: ',ncep_yr
+         OPEN(6007, 
+     &     FILE='ncep_taux_variations_'//ncep_yr//'.bin',STATUS='old',
+     &     ACCESS='direct', RECL=4*sNx*sNy,
+     &     FORM='unformatted')
+         OPEN(6008, 
+     &     FILE='ncep_tauy_variations_'//ncep_yr//'.bin',STATUS='old',
+     &     ACCESS='direct', RECL=4*sNx*sNy,
+     &     FORM='unformatted')
+         OPEN(6009, 
+     &     FILE='ncep_speed_variations_'//ncep_yr//'.bin',STATUS='old',
+     &     ACCESS='direct', RECL=4*sNx*sNy,
+     &     FORM='unformatted')
+         ncep_counter = 1
+#endif
 #ifdef DATA4TEM
         IF (nfile.gt.1)THEN
           CLOSE(935)
@@ -161,6 +187,14 @@ C------------------- Top of Coupled Period Loop --------------------------
 C
 
 #ifdef OCEAN_3D
+#  ifdef NCEPWIND
+C     Read in the next timestep of ncep wind stress variations
+C      PRINT *,'*** Read in next NCEP record'
+      READ(6007, REC=ncep_counter), fu_ncep
+      READ(6008, REC=ncep_counter), fv_ncep
+      READ(6009, REC=ncep_counter), fs_ncep
+      ncep_counter=ncep_counter+1
+#  endif
 #  ifdef ATM2D_MPI_ON
       CALL CPL_RECV_OCN_FIELDS
 #  endif
@@ -229,7 +263,7 @@ C        PRINT *,'***block at end of day'
       ENDIF  !end block end-of-day
 
       IF (inyr.EQ.jdofmhr(monid)) THEN !do block if month-end
-       PRINT *,'***end of month reached'
+        PRINT *,'***end of month reached'
 #ifdef CLM
 #  ifdef CPL_TEM
         CALL climate2tem(monid,ndmonth(monid))
@@ -255,20 +289,13 @@ c        PRINT *,'From driver before call tem',' idyear=',idyear
 #    endif
         DO j=1,jm0
           temnep(monid,j)=temco2(j)
-        ENDDO ! j
-c        PRINT *,'After tem2climate'
-c        PRINT *,'TEMNEP'
-c        PRINT *,(temco2(j),j=1,jm0)
-c        PRINT *,'CH4'
-c        PRINT *,(temch4(j),j=1,jm0)
-c        PRINT *,'N2O'
-c        PRINT *,(temn2o(j),j=1,jm0)
+        ENDDO 
         DO j=1,jm0
           antemnep(j)=antemnep(j)+temnep(monid,j)
           nepan=nepan+temnep(monid,j)
           ch4ann=ch4ann+temch4(j)
           n2oann=n2oann+temn2o(j)
-        ENDDO ! j
+        ENDDO 
 
 #  endif
 #endif
@@ -280,7 +307,7 @@ c        PRINT *,(temn2o(j),j=1,jm0)
 #ifdef CPL_OCEANCO2
         IF (monid.EQ.12) THEN
           ocupt=ocupt*12.e-15
-c   12.e-15 from moles to Gt carbon
+C   12.e-15 from moles to Gt carbon
           ocuptp=ocupt
           ocupt=0.0
         ENDIF
@@ -289,19 +316,19 @@ c   12.e-15 from moles to Gt carbon
 #ifdef IPCC_EMI
         PRINT *,'Month=',monid
         nepmn=nepmn/1000.
-!         nepmn is converted from Tg/mn to Gt/mn of C
+C         nepmn is converted from Tg/mn to Gt/mn of C
         ocumn=ocumn*12.e-15
-!         ocumn is converted from mole(C) to Gt (C)
-!        tnow= jyear + (jday-.5)/365.
-!        CALL emissipcc(tnow,nepmn,ocumn,CO2,xco2ann)
+C         ocumn is converted from mole(C) to Gt (C)
+C        tnow= jyear + (jday-.5)/365.
+C        CALL emissipcc(tnow,nepmn,ocumn,CO2,xco2ann)
          print *,nepmn,ocumn,xco2ann
-!         ch4mn is in kg/mn of CH4
-!         nepmn is in Gt/mn of C
+C         ch4mn is in kg/mn of CH4
+C         nepmn is in Gt/mn of C
          tcumn=nepmn-ch4mn*12./16.*1.e-12
          print *,'tcumn,ocumn,xco2ann'
          print *,tcumn,ocumn,xco2ann
         CALL emissipcc_mn(tcumn,ocumn,xco2ann)
-!       CALL emissipcc_mn(nepmn,ocumn,xco2ann)
+C       CALL emissipcc_mn(nepmn,ocumn,xco2ann)
 #endif
       ENDIF  !end block done at month-end
 
@@ -346,6 +373,11 @@ C    Data for the restart of the 2D ML model
         CALL YR_END_DIAGS(iyr,myTime,myIter,myThid)
 C If necessary, next line can be moved outside OCEAN_3D for IGSM2.2 cleanups
         IF (iloop.EQ.nTimeSteps) CALL ATM2D_FINISH(myThid)
+#  ifdef NCEPWIND
+        OPEN(unit=334,file='rand_state_new.dat',status='replace')
+        WRITE(334,*) JSEED,IFRST,NEXTN
+        CLOSE(334)
+#  endif
 #endif
 
 #if (defined CPL_TEM) || (defined CPL_OCEANCO2)
@@ -361,18 +393,18 @@ C If necessary, next line can be moved outside OCEAN_3D for IGSM2.2 cleanups
         PRINT *,' CH4=',ch4ann,' N2O=',n2oann
 #  endif
         OPEN(333,ACCESS='APPEND',FILE=caruptfile,STATUS='old')
-#    if (!defined CPL_TEM)
-!   For ocean carbon model only
+#    ifdef CPL_TEM
+C   For ocean carbon model only
         WRITE(333,'(i7,3e15.5)')iyr,ocuptp
 #    else
-#      if (!defined CPL_OCEANCO2)
-!       For ocean TEM only
+#      ifndef CPL_OCEANCO2
+C       For ocean TEM only
         WRITE(333,'(i7,3e15.5)')iyr,nepan,nepan-1.e-12*ch4ann*12./16.
-#       else
-! For ocean both TEM OCM
+#      else
+C For ocean both TEM OCM
         WRITE(333,'(i7,3e15.5)')iyr,nepan,nepan-1.e-12*ch4ann*12./16.
      &                  ,ocuptp
-#       endif
+#      endif
 #    endif
         CLOSE(333)
 #  if (defined CPL_OCEANCO2) && (defined ML_2D)
@@ -402,3 +434,40 @@ C If necessary, next line can be moved outside OCEAN_3D for IGSM2.2 cleanups
 
       RETURN
       END
+
+#ifdef NCEPWIND
+      REAL*8 FUNCTION RAND()
+C
+C  This function returns a pseudo-random number for each invocation.
+C  It is a FORTRAN 77 adaptation of the "Integer Version 2" minimal 
+C  standard number generator whose Pascal code appears in the article:
+C
+C     Park, Steven K. and Miller, Keith W., "Random Number Generators: 
+C     Good Ones are Hard to Find", Communications of the ACM, 
+C     October, 1988.
+C
+      PARAMETER (MPLIER=16807,MODLUS=2147483647,MOBYMP=127773,
+     +           MOMDMP=2836)
+C
+      COMMON  /SEED/JSEED,IFRST,NEXTN
+      INTEGER JSEED,IFRST,NEXTN
+      INTEGER HVLUE, LVLUE, TESTV
+C
+      IF (IFRST .EQ. 0) THEN
+        NEXTN = JSEED
+        IFRST = 1
+      ENDIF
+C
+      HVLUE = NEXTN / MOBYMP
+      LVLUE = MOD(NEXTN, MOBYMP)
+      TESTV = MPLIER*LVLUE - MOMDMP*HVLUE
+      IF (TESTV .GT. 0) THEN
+        NEXTN = TESTV
+      ELSE
+        NEXTN = TESTV + MODLUS
+      ENDIF
+      RAND = REAL(NEXTN)/REAL(MODLUS)
+C
+      RETURN
+      END
+#endif
