@@ -1,4 +1,4 @@
-C $Header: /u/gcmpack/MITgcm/pkg/atm2d/atm2d_write_pickup.F,v 1.7 2009/08/27 18:00:01 jmc Exp $
+C $Header: /u/gcmpack/MITgcm/pkg/atm2d/atm2d_write_pickup.F,v 1.9 2012/08/06 16:56:59 jmc Exp $
 C $Name:  $
 
 #include "ctrparam.h"
@@ -61,10 +61,10 @@ CEOP
 
 #ifdef ALLOW_CAL
       IF ( useCAL ) THEN
-         CALL CAL_TIME2DUMP( pChkPtFreq, deltaTClock,
+         CALL CAL_TIME2DUMP( zeroRL, pChkPtFreq, deltaTClock,
      U                       permCheckPoint,
      I                       myTime, myIter, myThid )
-         CALL CAL_TIME2DUMP( chkPtFreq,  deltaTClock,
+         CALL CAL_TIME2DUMP( zeroRL, chkPtFreq,  deltaTClock,
      U                       tempCheckPoint,
      I                       myTime, myIter, myThid )
       ENDIF
