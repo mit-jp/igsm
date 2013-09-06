@@ -19,7 +19,7 @@ bin_PROGRAMS = $(BINARIES)
 
 EXTRA_PROGRAMS = igsm22 igsm23
 
-LDADD = $(MODULE_LDADD) $(FCLIBS) -lstd -lC -lgcc -lc -lstdc++
+LDADD = $(MODULE_LDADD) $(FCLIBS) -lstd -lC -lgcc -lgcc_s -lc -lstdc++
 
 if IGSM_2D
 

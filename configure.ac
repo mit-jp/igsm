@@ -150,13 +150,14 @@ AC_CHECK_HEADER([netcdf.h], [AC_CHECK_LIB([netcdf], [nc_inq_libvers])])
 # the Fortran library
 AC_MSG_CHECKING([[for nf_inq_libvers in -lnetcdff]])
 if test `which nf-config 2>/dev/null`; then
-  LIBS+=" "`nf-config --flibs`
+  LIBS+=" $(nf-config --flibs) $(nf-config --fflags)"
 else
   LIBS+=" -L$LIB_NETCDF -lnetcdff -lnetcdf"
 fi
 AC_LANG_PUSH([Fortran])
 AC_LINK_IFELSE(
-  [AC_LANG_PROGRAM(, [      include 'netcdf.inc'
+  [AC_LANG_PROGRAM(, [
+      include 'netcdf.inc'
       print *, nf_inq_libvers()])],
   [AC_MSG_RESULT([yes])], [AC_MSG_FAILURE([no])])
 AC_LANG_POP

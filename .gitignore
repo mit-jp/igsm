@@ -3,6 +3,8 @@
 *.mod
 *.o
 .deps
+config.guess
+config.sub
 stamp-h1
 Makefile
 Makefile.in
