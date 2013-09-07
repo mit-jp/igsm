@@ -146,12 +146,18 @@ AC_C_INLINE
 AC_CHECK_FUNCS([modf pow])
 
 # Checks for NetCDF libraries.
+CFLAGS+=" $(nc-config --cflags)"
+CPPFLAGS+=" $(nc-config --cflags)"
+LIBS+=" $(nc-config --libs)"
 AC_CHECK_HEADER([netcdf.h], [AC_CHECK_LIB([netcdf], [nc_inq_libvers])])
 # the Fortran library
 AC_MSG_CHECKING([[for nf_inq_libvers in -lnetcdff]])
 if test `which nf-config 2>/dev/null`; then
-  LIBS+=" $(nf-config --flibs) $(nf-config --fflags)"
+  FFLAGS+=" $(nf-config --fflags)"
+  FCFLAGS+=" $(nf-config --fflags)"
+  LIBS+=" $(nf-config --flibs)"
 else
+  # nf-config is not available; simply guess
   LIBS+=" -L$LIB_NETCDF -lnetcdff -lnetcdf"
 fi
 AC_LANG_PUSH([Fortran])
