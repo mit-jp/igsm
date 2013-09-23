@@ -219,7 +219,7 @@ if test $CLM_VERSION != no; then
   MODULE_LDADD+=" $CLM_DIR/libclm.a"
   if test $CLM_VERSION = 2.1; then
     # CLM 2.1 requires the ESMF library to be linked explicitly
-    MODULE_LDADD+=" -lesmf"
+    MODULE_LDADD+=" -L$CLM_DIR -lesmf"
   else
     CLM35_TEM="off"
   fi
