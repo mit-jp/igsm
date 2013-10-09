@@ -11,20 +11,20 @@ CLMFLAGS = -fopt -O2 \
 	-stoch on \
 	-tem $(CLM35_TEM)
 
-# pnk: temporarily disabled
-#	-nc_inc $(INC_NETCDF)
-#	-nc_lib $(LIB_NETCDF)
-#	-nc_mod $(MOD_NETCDF)
-
-libclm.a:
-	mkdir -p exe
-	cd exe && ../bld/configure $(CLMFLAGS) -usr_src \
-	  $(shell find -L bld/usr.src -type d -printf '../%p,') && make nolink
+libclm.a: exe/program_igsm.o
 	rm exe/program_igsm.o
 	$(AR) $(ARFLAGS) $@ exe/*.o
 	$(RANLIB) $@
 
+exe/program_igsm.o: exe/preproc.h
+	cd exe && make nolink
+
+exe/preproc.h:
+	mkdir -p exe
+	cd exe && ../bld/configure $(CLMFLAGS) -usr_src \
+	  $(shell find -L bld/usr.src -type d -printf '../%p,')
+
 all-local: libclm.a
 
 clean-local:
-	rm -rf exe libclm.a
+	rm -rf libclm.a
