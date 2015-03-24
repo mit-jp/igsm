@@ -135,9 +135,10 @@ end type lnd2atm_type
   real(r8) :: tsoiclm(1,lsmlat,nlevsoi)
   real(r8) :: h2olclm(1,lsmlat,nlevsoi)
   real(r8) :: h2oiclm(1,lsmlat,nlevsoi)
+  real(r8) :: declin_clm
   common/clm4mit/lhfclm,shfclm,tauxclm,tauyclm,asdirclm,aldirclm,asdifclm,aldifclm,&
          sroclm,ssrclm,glrclm,vetclm,sevclm,cevclm,lwuclm,tref2mclm,tflxclm,tgndclm,&
-         snwdclm,snwcclm,tsoiclm,h2oiclm,h2olclm
+         snwdclm,snwcclm,tsoiclm,h2oiclm,h2olclm,declin_clm
 #endif
 
   type(atm2lnd_type),public,target :: atm_a2l      ! a2l fields on atm grid
@@ -877,14 +878,6 @@ end subroutine clm_mapl2a
      do g = begg,endg
         clm_l2a%t_rad(g) = sqrt(sqrt(clm_l2a%eflx_lwrad_out(g)/sb))
      end do
-#if (defined COUP_MIT2D)
-	 do g = begg,endg
-           asdirclm(1,g) = clm_l2a%albd(g,1)
-           aldirclm(1,g) = clm_l2a%albd(g,2)
-           asdifclm(1,g) = clm_l2a%albi(g,1)
-           aldifclm(1,g) = clm_l2a%albi(g,2)
-	 enddo
-#endif
   else
 
      call c2g(begc, endc, begl, endl, begg, endg, cptr%cws%h2osno, clm_l2a%h2osno,&
@@ -1067,6 +1060,7 @@ end subroutine clm_mapl2a
        asdifclm(1,g2i) = clm_l2a%albi(g,1)
        aldifclm(1,g2i) = clm_l2a%albi(g,2)
      enddo
+     declin_clm = cptr%cps%decl(1)
      !do l = 1,nlevsoi
        !write (6,*) 'CLM_ATMLAND: SOIL LAYER: ',l
        !write (6,*) 'CLM_ATMLAND: LIQ. SOIL H2O TO IGSM'

@@ -26,6 +26,43 @@ module SurfaceAlbedoMod
   private :: SnowAlbedo    ! Determine snow albedos
   private :: SoilAlbedo    ! Determine ground surface albedo
   private :: TwoStream     ! Two-stream fluxes for canopy radiative transfer
+! MIT 2D COMMON BLOCK
+!
+#if (defined COUP_MIT2D)
+  integer, parameter :: lsmlon = 1
+  integer, parameter :: lsmlat = 46
+  integer, parameter :: nlevsoi = 10
+  integer :: g2i
+  real(r8) :: lhfclm(1,lsmlat)
+  real(r8) :: shfclm(1,lsmlat)
+  real(r8) :: tauxclm(1,lsmlat)
+  real(r8) :: tauyclm(1,lsmlat)
+  real(r8) :: asdirclm(1,lsmlat)
+  real(r8) :: aldirclm(1,lsmlat)
+  real(r8) :: asdifclm(1,lsmlat)
+  real(r8) :: aldifclm(1,lsmlat)
+  real(r8) :: sroclm(1,lsmlat)
+  real(r8) :: ssrclm(1,lsmlat)
+  real(r8) :: glrclm(1,lsmlat)
+  real(r8) :: vetclm(1,lsmlat)
+  real(r8) :: sevclm(1,lsmlat)
+  real(r8) :: cevclm(1,lsmlat)
+  real(r8) :: emvclm(1,lsmlat)
+  real(r8) :: lwuclm(1,lsmlat)
+  real(r8) :: tref2mclm(1,lsmlat)
+  real(r8) :: tflxclm(1,lsmlat)
+  real(r8) :: tgndclm(1,lsmlat)
+  real(r8) :: snwdclm(1,lsmlat)
+  real(r8) :: snwcclm(1,lsmlat)
+  real(r8) :: tsoiclm(1,lsmlat,nlevsoi)
+  real(r8) :: h2olclm(1,lsmlat,nlevsoi)
+  real(r8) :: h2oiclm(1,lsmlat,nlevsoi)
+  real(r8) :: declin_clm
+  common/clm4mit/lhfclm,shfclm,tauxclm,tauyclm,asdirclm,aldirclm,asdifclm,aldifclm,&
+         sroclm,ssrclm,glrclm,vetclm,sevclm,cevclm,lwuclm,tref2mclm,tflxclm,tgndclm,&
+         snwdclm,snwcclm,tsoiclm,h2oiclm,h2olclm,declin_clm
+#endif
+
 !
 ! !REVISION HISTORY:
 ! Created by Mariana Vertenstein
@@ -196,7 +233,12 @@ contains
 !cdir nodep
     do g = lbg, ubg
        coszen_gcell(g) = shr_orb_cosz (caldayp1, lat(g), lon(g), declinp1)
+!      print '(5e14.6)',caldayp1, lat(g), lon(g), declinp1,coszen_gcell(g)
     end do
+#if (defined COUP_MIT2D)
+       declin_clm = declinp1
+!       write (6,*) 'Declination to IGSM2D= ', declin_clm
+#endif
 
     ! Save coszen and declination values to  clm3 data structures for
     ! use in other places in the CN code

@@ -14,6 +14,9 @@ module BiogeophysRestMod
 ! !USES:
   use shr_kind_mod, only : r8 => shr_kind_r8
   use abortutils,   only : endrun
+#if (defined STOCHASTIC)
+    use stochrdMod
+#endif
 !
 ! !PUBLIC TYPES:
   implicit none
@@ -112,6 +115,110 @@ contains
        end if
     end if
 ! Changes by Erwan end here
+
+! Begin additions for stochastic precipitation (CAS: 6/2014)
+
+#if (defined STOCHASTIC)
+
+    ! grid stochastic precip - prc_poiss
+
+    if (flag == 'define') then
+       call ncd_defvar(ncid=ncid, varname='PRC_POISS', xtype=nf_double,  &
+            dim1name='gridcell', &
+            long_name='stochastic accumulated convective precip', units='mm/s')
+    else if (flag == 'read' .or. flag == 'write') then
+       call ncd_iolocal(varname='PRC_POISS', data=gptr%pcpc_resid, &
+            dim1name='gridcell', &
+            ncid=ncid, flag=flag, readvar=readvar)
+       if (flag == 'read' .and. .not. readvar) then
+          if (is_restart()) call endrun()
+       end if
+    end if
+
+    ! grid stochastic precip - prl_poiss
+
+    if (flag == 'define') then
+       call ncd_defvar(ncid=ncid, varname='PRL_POISS', xtype=nf_double,  &
+            dim1name='gridcell', &
+            long_name='stochastic accumulated large-scale precip', units='mm/s')
+    else if (flag == 'read' .or. flag == 'write') then
+       call ncd_iolocal(varname='PRL_POISS', data=gptr%pcpl_resid, &
+            dim1name='gridcell', &
+            ncid=ncid, flag=flag, readvar=readvar)
+       if (flag == 'read' .and. .not. readvar) then
+          if (is_restart()) call endrun()
+       end if
+    end if
+ 
+    ! grid stochastic precip - t_dry
+
+    if (flag == 'define') then
+       call ncd_defvar(ncid=ncid, varname='T_DRY', xtype=nf_double,  &
+            dim1name='gridcell', &
+            long_name='Inter-storm period', units='sec')
+    else if (flag == 'read' .or. flag == 'write') then
+       call ncd_iolocal(varname='T_DRY', data=gptr%t_dry, &
+            dim1name='gridcell', &
+            ncid=ncid, flag=flag, readvar=readvar)
+       if (flag == 'read' .and. .not. readvar) then
+          if (is_restart()) call endrun()
+       end if
+    end if
+ 
+    ! grid stochastic precip - t_storm
+
+    if (flag == 'define') then
+       call ncd_defvar(ncid=ncid, varname='T_STORM', xtype=nf_double,  &
+            dim1name='gridcell', &
+            long_name='Storm duration', units='sec')
+    else if (flag == 'read' .or. flag == 'write') then
+       call ncd_iolocal(varname='T_STORM', data=gptr%t_storm, &
+            dim1name='gridcell', &
+            ncid=ncid, flag=flag, readvar=readvar)
+       if (flag == 'read' .and. .not. readvar) then
+          if (is_restart()) call endrun()
+       end if
+    end if
+ 
+    ! grid stochastic precip - dtcumu 
+
+    if (flag == 'define') then
+       call ncd_defvar(ncid=ncid, varname='DTCUMU', xtype=nf_double,  &
+            dim1name='gridcell', &
+            long_name='Time since last storm', units='timsteps')
+    else if (flag == 'read' .or. flag == 'write') then
+       call ncd_iolocal(varname='DTCUMU', data=gptr%dtcumu, &
+            dim1name='gridcell', &
+            ncid=ncid, flag=flag, readvar=readvar)
+       if (flag == 'read' .and. .not. readvar) then
+          if (is_restart()) call endrun()
+       end if
+    end if
+ 
+#endif
+
+! End additions for stochastic precipitation
+
+! Begin addition for MIT2D coupling
+
+#if (defined COUP_MIT2D)
+
+    ! column type physical state variable - coszen
+
+    if (flag == 'define') then
+       call ncd_defvar(ncid=ncid, varname='decl', xtype=nf_double,  &
+            dim1name='column', &
+            long_name='declination', units='')
+    else if (flag == 'read' .or. flag == 'write') then
+       call ncd_iolocal(varname='decl', data=cptr%cps%decl, &
+            dim1name='column', &
+            ncid=ncid, flag=flag, readvar=readvar)
+       if (flag == 'read' .and. .not. readvar) then
+          if (is_restart()) call endrun()
+       end if
+    end if
+
+#endif
 
     ! pft energy flux - eflx_lwrad_out
 

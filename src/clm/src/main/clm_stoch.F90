@@ -1,31 +1,33 @@
       subroutine stoch(pcpc,pcpl,pcpcpoiss,pcplpoiss, &
                        storm,exptr,expta,trout,taout, &
-                       dtcum,strmnum,pcpcacc,pcplacc)
+                       dtcum,strmnum,pcpcacc,pcplacc, &
+                       pcprnd1,pcprnd2,prnt_stoch)
       use clm_time_manager, only : get_step_size
       implicit none
       real*8 :: pcpl
       real*8 :: pcpc
       integer,parameter :: nranmx=10000
-      integer,save :: iexpon
       integer :: storm
       integer,save :: tr
       integer,save :: ta
       integer :: dtcum
       integer :: strmnum
       integer :: irn, iter
-      real,save :: expon(nranmx)
       real,save :: dt
-      real :: pcpcacc
-      real :: pcplacc
+      real :: expon
+      real*8 :: pcpcacc
+      real*8 :: pcplacc
       real :: pcpcpoiss
       real :: pcplpoiss
-      real :: trout
-      real :: taout
+      real*8 :: trout
+      real*8 :: taout
       real :: expta
       real :: exptr
+      real*8 :: pcprnd1
+      real*8 :: pcprnd2
       logical,save :: start
+      logical :: prnt_stoch
       data start/.true./
-      data iexpon/1/
 !
 !  This was adapted from the file relfns.f that was used for Milly (WRR,
 !  30(7), 1994). 
@@ -34,13 +36,16 @@
 !
      if (start) then
        dt=get_step_size()
-       call random(expon,nranmx,iexpon)
+!
+!  Initialize accumlators
+!
        start=.false.
        write (6,*) 'Initializing Stochastic Forcing Routine'
      endif
      tr=int(trout/dt)
      ta=int(taout/dt)
 !      write (6,*) dtcum,dt,tr,ta
+!      write (6,*) pcprnd1, pcprnd2
 !
 !	check whether at beginning, within or after pcp Poisson-box event
 !
@@ -50,71 +55,70 @@
 !
 !	Calculate the pcp rate of current Poisson event, accumulate event counter
 !
-       pcpcpoiss=pcpcacc/float(tr)
-       pcplpoiss=pcplacc/float(tr)
        storm=tr
        pcpcacc=0.
        pcplacc=0.
-       iexpon = iexpon + 1
-       if (iexpon.gt.nranmx) call random(expon,nranmx,iexpon)
 !
 !	Round storm duration to the nearest whole number of timesteps
 !	If tr < model timestep, set tr = model timestep
 !
        tr=0
-       tr = int(((exptr/dt)*expon(iexpon))+0.5)
+       expon = -alog(pcprnd1)
+       tr = int(((exptr/dt)*expon)+0.5)
        if ( tr < 1 ) tr = 1
-       iexpon = iexpon + 1
-       if (iexpon.gt.nranmx) call random(expon,nranmx,iexpon)
 !
 !	Round inter-storm period to nearest whole number of timesteps
-!	Assure that the storm duration is shorter than or equal to inter-storm arrival period
 !
        ta=0
        iter = 1
-       do while (ta<=tr)
-          ta = int(((expta/dt)*expon(iexpon))+0.5)
-          iexpon = iexpon + 1 
-          iter = iter + 1
-          if (iexpon.gt.nranmx) call random(expon,nranmx,iexpon)
-          if ( iter > 50 ) then
-            ta = tr
-            print *,"CLM: TDRY set equal to TSTORM"
-            exit
-          endif
-        enddo
-        taout=ta*dt
-        trout=tr*dt
-!        write (6,10) ta,tr
-!10      format ('Inter storm period: ',i8,' timesteps;  Storm duration ',i8,' timesteps')
+!      do while (ta<=tr)
+          expon = -alog(pcprnd2)
+          ta = int(((expta/dt)*expon)+0.5)
+          if ( ta < 1 ) ta = 1
+!      enddo
+       taout=ta*dt
+       trout=tr*dt
+     if (prnt_stoch ) then
+         write (6,50) dtcum
+        write (6,20) pcprnd1,pcprnd2
+ 20      format ('Rand1 storm period: ',e20.12,'  Rand2 duration ',e20.12)
+         write (6,10) ta,tr
+ 10      format ('Inter storm period: ',i8,' timesteps;  Storm duration ',i8,' timesteps')
+      endif
+!       write (6,70) taout,trout
+!70      format ('Inter storm period: ',e20.12,'  Storm duration ',e20.12)
      endif
      dtcum=dtcum+1
-     if (dtcum==ta) then
+     if (prnt_stoch ) then
+         write (6,50) dtcum
+        write (6,30) pcpcacc,pcplacc
+     endif
+     if (dtcum<=ta) then
+        pcpcacc=pcpcacc+pcpc
+        pcplacc=pcplacc+pcpl
+        pcpcpoiss=0.
+        pcplpoiss=0.
+     elseif(dtcum <ta+tr) then
+       pcpcpoiss=pcpcacc/float(tr)+pcpc
+       pcplpoiss=pcplacc/float(tr)+pcpl
+     else
+       pcpcpoiss=pcpcacc/float(tr)+pcpc
+       pcplpoiss=pcplacc/float(tr)+pcpl
         dtcum=0
         strmnum=strmnum+1
      endif
-     if (dtcum>storm) then
-        pcpcpoiss=0.
-        pcplpoiss=0.
+     if (prnt_stoch ) then
+         write (6,10) ta,tr
+        write (6,60) pcpc,pcpl
+ 60      format (' IGSM pcpc= ',e20.12,'  IGSM pcpl= ',e20.12)
+        write (6,30) pcpcacc,pcplacc
+ 30      format (' pcpcacc= ',e20.12,'  pcplacc= ',e20.12)
+        write (6,40) pcpcpoiss,pcplpoiss
+ 40      format (' pcpcpoiss= ',e20.12,'  pcplpoiss= ',e20.12)
+         write (6,50) dtcum
+ 50      format ('DTCUM= ',i8,' timesteps;')
      endif
-     pcpcacc=pcpcacc+pcpc
-     pcplacc=pcplacc+pcpl
      pcpc=pcpcpoiss
      pcpl=pcplpoiss
      return
      end
-!===============================================================================
-      subroutine random (expon,nranmx,iexpon)
-      real expon(nranmx)
-      call random_number (harvest=expon)
-      do irn = 1, nranmx
-        do while (expon(irn)==0.or.expon(irn)==1) 
-          expon(irn)=ran(irn)
-        enddo
-        expon(irn) = -alog(expon(irn))
-        if (expon(irn)==0) expon(irn)=-alog(ran(nranmx))
-      enddo
-      iexpon=1
-      return
-      end
-!===============================================================================

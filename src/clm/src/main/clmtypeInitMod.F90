@@ -437,6 +437,20 @@ contains
    allocate(g%coli(beg:end),g%colf(beg:end),g%ncolumns  (beg:end))
    allocate(g%pfti(beg:end),g%pftf(beg:end),g%npfts     (beg:end))
 
+#if (defined STOCHASTIC)
+   allocate(g%dtcumu(beg:end))
+   allocate(g%t_dry(beg:end))
+   allocate(g%t_storm(beg:end))
+   allocate(g%pcpc_resid(beg:end))
+   allocate(g%pcpl_resid(beg:end))
+
+   g%dtcumu = 0._r8
+   g%t_dry = 0._r8
+   g%t_storm = 0._r8
+   g%pcpc_resid = 0._r8
+   g%pcpl_resid = 0._r8
+#endif
+
    allocate(g%area(beg:end))
    allocate(g%lat(beg:end))
    allocate(g%lon(beg:end))
