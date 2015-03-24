@@ -20,13 +20,13 @@ data/ -- Common data files (grids, etc.) for running the model
 src/ -- Source code for the modules of the model, including…
     atm/ -- atmosphere model
     chem/ -- atmospheric chemistry model
-    clm/ -- CLM, versions 2.1 and 3.5
+    clm/ -- Common Land Model, version 3.5
     inc/ -- INClude files common to all modules
     meta/ -- urban METAmodel
     ocn_3d/ -- the MIT General Cirgcm [3])
     ocn_ml/ -- two-dimensional, Multi-Layer (ML) OCeaN model
     ocm/ -- Ocean Carbon Model
-    tem/ -- TEM, versions 4.3.8 and 4.4c
+    tem/ -- Terrestrial Ecosystem Model, version 4.4c
 
 util/ -- Utilities
      analysis/ -- Extract data from output files
@@ -34,13 +34,6 @@ util/ -- Utilities
 
 tests/ -- Example input files for common use cases
       run_fullchem/ -- 1990-2100 predicted-emissions case, full model, 2D ocean
-
-
-DEPENDENCIES
-------------
-The following third-party packages are included in the code:
-
- clm/2.1/utils/esmf -- Earth System Modelling Framework (ESMF) [4]
 
 
 BUILD

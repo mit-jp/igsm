@@ -2,15 +2,13 @@ SUBDIRS = atm inc $(MODULE_DIRS)
 
 DIST_SUBDIRS = atm \
 	chem \
-	clm/2.1 \
-	clm/3.5 \
+	clm \
 	inc \
 	ocm \
 	ocn_3d \
 	ocn_ml \
 	meta \
-	tem/4.3.8 \
-	tem/4.4c \
+	tem \
 	tracers
 
 AM_CPPFLAGS = -I$(top_srcdir)/src/inc
