@@ -1,2 +1,0 @@
-//#define STANDALONE_TEM
-#undef STANDALONE_TEM

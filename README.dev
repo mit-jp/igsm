@@ -60,15 +60,15 @@ There are some exceptions/limitations to this system:
    Care must be taken not to accidentally edit the source tree by editing files
    which are actually symlinks. One way to do this is to execute 'make clean' in
    'build/src/ocn_3d' directory, which will remove symlinks, but not user
-   overrides. 
+   overrides.
 
  - CLM ('src/clm') has its own build system. When configure is invoked, the CLM
-   source is copied into the build directory ('src/clm/x.x' is copied to
-   'build/src/clm/x.x') and the IGSM build invokes the standard CLM build.
+   source is copied into the build directory ('src/clm/' is copied to
+   'build/src/clm') and the IGSM build invokes the standard CLM build.
 
-   To modify the source of CLM 3.5 only, place a file named 'example.F90' in the
-   directory 'build/src/clm/3.5/bld/usr.src'. The CLM build system will use this
-   file instead of the corresponding file in 'src/clm/3.5/src'.
+   To modify the source of CLM, place a file named 'example.F90' in the
+   directory 'build/src/clm/bld/usr.src'. The CLM build system will use this
+   file instead of the corresponding file in 'src/clm/src'.
 
  - It will not automatically detect *new* source files. In order to do this,
    please read through "Adding new sources" below.
@@ -125,4 +125,3 @@ If you make improvements to the IGSM code, you may wish to commit them to the
 git repository so that others may to use them. To do this, you will need contact
 Jeff Scott <jscott@MIT.EDU> to obtain commit access, and read the git
 documentation (type 'man git').
-

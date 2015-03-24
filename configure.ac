@@ -68,20 +68,20 @@ AC_ARG_ENABLE([mitgcm],
   [ocean=3D],
   [ocean=2D])
 
-# Package option for chemistry version
+# Package option for chemistry module
 AC_ARG_WITH([chem],
   [AS_HELP_STRING([--with-chem],
     [select version of the atmospheric chemistry model: ARG=95 or 12 (default)])],
   [CHEM_VERSION=$withval],
   [CHEM_VERSION=12])
 
-# Package option for CLM version
-AC_ARG_WITH([clm],
-  [AS_HELP_STRING([--with-clm],
-    [select version of the Common Land Model: ARG=2.1 or 3.5 (default); \
-     --without-clm implies --disable-tem])],
-  [CLM_VERSION=$withval],
-  [CLM_VERSION=3.5])
+# Package option for CLM module
+AC_ARG_ENABLE([clm],
+  [AS_HELP_STRING([--enable-clm],
+    [enable the Common Land Model v3.5 module (default); \
+     --disable-clm implies --disable-tem])],
+  [clm=$enableval],
+  [clm=yes])
 
 # Package option for TEM version
 AC_ARG_ENABLE([tem],
@@ -89,14 +89,14 @@ AC_ARG_ENABLE([tem],
     [enable the Terrestrial Ecosystem Model (default for \
      --with-setup=historical and fullchem)])],
   [tem=$enableval],
-  [if test $model = climate -o $CLM_VERSION = no; then
+  [if test $model = climate -o $clm = no; then
      tem=no
    else
      tem=yes
    fi])
 # check that the user gave sensible arguments
-if test $CLM_VERSION = no -a $tem = yes; then
-  AC_MSG_ERROR([cannot give both --enable-tem and --without-clm])
+if test $clm = no -a $tem = yes; then
+  AC_MSG_ERROR([cannot give both --disable-clm and --enable-tem])
 fi
 
 # Package option for tracers
@@ -126,7 +126,7 @@ AC_PROG_F77
 AC_PROG_FC(pgf90)
 # FIXME: this is cheating. The IGSM modules atm, ocm, ocn_ml and meta contain
 # Fortran files with the extension '.F', which typically denotes Fortran 77, but
-# are actually Fortran 90 code with 
+# are actually Fortran 90 code with
 F77=$FC
 # TODO: the following three checks may not be necessary. Remove if possible.
 AC_FC_DUMMY_MAIN
@@ -212,41 +212,28 @@ else
   # if using the 3D ocean, the first library is libatm.a
   MODULE_LDADD="ocn_3d/libocn_3d.a"
 fi
-# 2. Appropriate version of the Common Land Model
-if test $CLM_VERSION != no; then
-  CLM_DIR="clm/$CLM_VERSION"
-  MODULE_DIRS+=" $CLM_DIR"
-  MODULE_LDADD+=" $CLM_DIR/libclm.a"
-  if test $CLM_VERSION = 2.1; then
-    # CLM 2.1 requires the ESMF library to be linked explicitly
-    MODULE_LDADD+=" -L$CLM_DIR -lesmf"
-  else
-    CLM35_TEM="off"
-  fi
+# 2. Common Land Model
+if test $clm = yes; then
+  MODULE_DIRS+=" clm"
+  MODULE_LDADD+=" clm/libclm.a"
+  # give CLM35_TEM a default value; overwritten in the next section if TEM
+  # actually is enabled
+  CLM35_TEM="off"
+  # commented...
   # the CLM directory must be symlinked from within the build tree, because CLM
   # has its own build system
-  #AC_CONFIG_LINKS([src/$CLM_DIR:$srcdir/src/$CLM_DIR])
+  #AC_CONFIG_LINKS([clm:clm])
+  # ...copy the source instead
   AC_CONFIG_COMMANDS([clm],
-    [mkdir -p src/$clmdir && cp -r $srcdir/src/$clmdir/* src/$clmdir],
-    [clmdir=$CLM_DIR])
-fi
-# 3. Appropriate version of the Terrestrial Ecosystem Model
-if test $tem = yes; then
-  # CLM and TEM versions only work in specific combinations
-  if test $CLM_VERSION = 2.1; then
-    TEM_VERSION=4.3.8
-  else
-    # CLM_VERSION=3.5
-    TEM_VERSION=4.4c
+    [mkdir -p src/clm && cp -r $srcdir/src/clm/* src/clm])
+  # 3. Terrestrial Ecosystem Model
+  if test $tem = yes; then
+    MODULE_DIRS+=" tem"
+    MODULE_LDADD+=" tem/libtem.a"
     CLM35_TEM="on"
   fi
-  MODULE_DIRS+=" tem/$TEM_VERSION"
-  MODULE_LDADD+=" tem/$TEM_VERSION/libtem.a"
-fi
-# substitute in the CLM 3.5 makefile if necessary
-if test $CLM_VERSION = 3.5; then
   AC_SUBST(CLM35_TEM)
-  AC_CONFIG_FILES([src/clm/3.5/Makefile])
+  AC_CONFIG_FILES([src/clm/Makefile])
 fi
 # 4. Atmospheric chemistry model
 if test $model = fullchem; then
@@ -292,11 +279,9 @@ AC_DEFINE(NYR_CHEM, 1, [Number of year of chemistry model integration (124 for
   period from 1977 to 2100)]) #this need in chem common blocks, always included
 
 # Defines when using CLM and TEM
-if test $CLM_VERSION != no; then
+if test $clm = yes; then
   AC_DEFINE(CLM, 1, [Coupling CLM])
-  if test $CLM_VERSION = 3.5; then
-    AC_DEFINE(CLM35, 1, [Coupling CLM 3.5])
-  fi
+  AC_DEFINE(CLM35, 1, [Coupling CLM 3.5])
   if test $tem = yes; then
     AC_DEFINE(CPL_TEM, 1, [Coupling chemistry])
     AC_DEFINE(CPL_NEM, 1, [Coupling natural emission model])
@@ -384,8 +369,7 @@ AC_CONFIG_FILES([Makefile
 	src/ocn_3d/Makefile
 	src/ocn_3d/options.sh
 	src/ocn_ml/Makefile
-	src/tem/4.3.8/Makefile
-	src/tem/4.4c/Makefile
+	src/tem/Makefile
 	src/tracers/Makefile
 	util/Makefile
 	util/analysis/Makefile
