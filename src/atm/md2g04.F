@@ -194,6 +194,7 @@ C**** PERFORM FILTER ON V-WIND
       END                                                               8589.   
       SUBROUTINE DTDX1D(XNOW,XREF,XDT0,SDT0,KFOR,NFOR)                  9112.4  
       DIMENSION XNOW(5),XREF(5),XDT0(5),KFOR(5)                         9112.5  
+#if ( !defined IPCC_FORCING )
 C     FCO2(X)=DLOG(1.0+1.3365*X+9.29E-03*X*X+2.1766E-06*X**3)           9112.6  
 C     FFNC(X,Y)=1.54*DLOG(1.0+1.11*X**0.77) - 0.068*DLOG(1.0+X*Y)       9112.7  
 C    +          +0.231*Y**0.65/(1.0+0.113*Y**0.71)                      9112.8  
@@ -206,8 +207,26 @@ C                                                                       9113.2
      +          +(0.394*Y**0.66+0.16*Y*EXP(-1.6*Y))                     9113.5  
      +                         /(1.0+0.169*Y**0.62)                     9113.6  
      +          -0.14*DLOG(1.0+0.636*(X*Y)**0.75+0.007*Y*(X*Y)**1.52)   9113.7  
+!APS
+      FCH4(X,Y)=FFNC(X,Y)
+      FN2O(X,Y)=FFNC(X,Y)
+      FF11(X)=0.066*X
+      FF12(X)=0.084*X
 C                                                                       9113.8  
+#else
+!     FCO2(X)=CF*5.35*LOG(X)
+!     Instanteneous forcing
+!     FCO2(X)=1.136*CF*5.35*LOG(X)
+!      Adjustment for 3D CO2 fit
+      FCO2(X)=1.1024*CF*5.35*LOG(X)
+      GI(X,Y)=0.47*DLOG(1.+2.01e-5*(X*Y)**0.75+5.31e-15*Y*(X*Y)**1.52)
+      FCH4(X,Y)=CF*(0.036*SQRT(Y)-GI(X,Y))
+      FN2O(X,Y)=CF*(0.12*SQRT(X)-GI(X,Y))
+      FF11(X)=CF*0.25*X
+      FF12(X)=CF*0.32*X
+#endif
       SUM=0.0                                                           9113.9  
+      CF=1.22/4.3
       DO 200 K=1,NFOR                                                   9114.   
       XDT0(K)=0.0                                                       9114.1  
       XX=XNOW(K)                                                        9114.2  
@@ -220,24 +239,35 @@ C                                                                       9113.8
       GO TO 190                                                         9114.9  
  120  YY=XNOW(3)                                                        9115.   
       YR=XREF(3)                                                        9115.1  
-      XDTX=FFNC(XX,YR)                                                  9115.2  
-      XDTR=FFNC(XR,YR)                                                  9115.3  
+#if ( defined IPCC_FORCING )
+      XX=XX*1000
+      XR=XR*1000
+      YY=YY*1000
+      YR=YR*1000
+#endif
+      XDTX=FN2O(XX,YR)                                                  9115.2  
+      XDTR=FN2O(XR,YR)                                                  9115.3  
       GO TO 190                                                         9115.4  
  130  XR=XREF(2)                                                        9115.5  
       YY=XNOW(3)                                                        9115.6  
       YR=XREF(3)                                                        9115.7  
-      XDTX=FFNC(XR,YY)                                                  9115.8  
-      XDTR=FFNC(XR,YR)                                                  9115.9  
+#if ( defined IPCC_FORCING )
+      XR=XR*1000
+      YY=YY*1000
+      YR=YR*1000
+#endif
+      XDTX=FCH4(XR,YY)                                                  9115.8  
+      XDTR=FCH4(XR,YR)                                                  9115.9  
       GO TO 190                                                         9116.   
  140  XX=XNOW(4)                                                        9116.1  
       XR=XREF(4)                                                        9116.2  
-      XDTX=0.066*XX                                                     9116.3  
-      XDTR=0.066*XR                                                     9116.4  
+      XDTX=FF11(XX)                                                     9116.3  
+      XDTR=FF11(XR)                                                     9116.4  
       GO TO 190                                                         9116.5  
  150  XX=XNOW(5)                                                        9116.6  
       XR=XREF(5)                                                        9116.7  
-      XDTX=0.084*XX                                                     9116.8  
-      XDTR=0.084*XR                                                     9116.9  
+      XDTX=FF12(XX)                                                     9116.8  
+      XDTR=FF12(XR )                                                    9116.9  
       GO TO 190                                                         9117.   
  190  XDT0(K)=XDTX-XDTR                                                 9117.1  
       SUM=SUM+XDT0(K)                                                   9117.2  
@@ -397,6 +427,7 @@ C                                                                       9131.7
       IF(abs(XN-XR).le.1.e-10) GO TO 200  
       IF(KFOR(K).EQ.0) GO TO 200                                        9132.4  
       GO TO (110,120,130,140,150),K                                     9132.5  
+!            CO2 N2O CH4 F11 F12
       GO TO 200                                                         9132.6  
  110  TR=FCO2(XR)                                                       9132.7  
  111  TN=FCO2(XN)                                                       9132.8  
@@ -412,6 +443,11 @@ C                                                                       9131.7
       TR=FFNC(XR,YR)                                                    9133.8  
   121 TN=FFNC(XN,YR)                                                    9133.9  
       DTNR=TN-TR                                                        9134.   
+!APS
+#if ( !defined OLD_LAPGAS )
+      DTNR=1.5*DTNR
+#endif
+!APS
       ITER=ITER+1                                                       9134.1  
       SLOPE=DTNR/(XN-XR)                                                9134.2  
       DT=DTK-DTNR                                                       9134.3  
@@ -425,6 +461,11 @@ C                                                                       9131.7
       TR=FFNC(XR,YR)                                                    9135.1  
   131 TN=FFNC(XR,YN)                                                    9135.2  
       DTNR=TN-TR                                                        9135.3  
+!APS
+#if ( !defined OLD_LAPGAS )
+      DTNR=1.6*DTNR
+#endif
+!APS
       ITER=ITER+1                                                       9135.4  
       SLOPE=DTNR/(YN-YR)                                                9135.5  
       DT=DTK-DTNR                                                       9135.6  

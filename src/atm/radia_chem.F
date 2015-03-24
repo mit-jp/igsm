@@ -77,6 +77,8 @@ C                                                                       5035.
      Q             ,SRTVIS,SRRVIS,SRAVIS,SRTNIR,SRRNIR,SRANIR,FTRUFG(4) 5040.   
      R             ,TRDFGW,TRUFGW,TRUFTW,BTEMPW,TRDFSL,TRUFSL,DTRUFG(4) 5041.   
      S             ,TRSLTS,TRSLTG,TRSLWV,TRSLBS,TTRUFG,LBOTCL,LTOPCL    5042.   
+      COMMON/RADFO3/JYEARO3
+
       DIMENSION COE(39)                                                 5043.   
       LOGICAL POLE,DC25,HPRNT,WRCLD,CLDFEED                             5044.
 #if ( defined OCEAN_3D )
@@ -265,6 +267,7 @@ C**** RADIATION AVERAGING IN I AND J       4       2       2            5110.
    50 JALTER=MOD(NSTEP,NRAD*JRA)/NRAD                                   5113.   
       JDAYR=JDAY
       JYEARR=JYEAR
+      JYEARO3=JYEARR
       IALTER=MOD(NSTEP,NRAD*IJRA)/(NRAD*JRA)                            5114.   
       TNOW=JYEAR+(JDAY-.5)/365.                                         5127.1
       IF (JDAY.NE.JDLAST.AND.KSTREND.NE.0) then
@@ -282,7 +285,9 @@ c          print *,'S0X=',S0X,' TNOW=',TNOW
            S0X=S0X/1367.
         ENDIF
       ENDIF
+!          print *,'From radia TNOW= S0X=',TNOW,S0X
       S0=S0X*1367./RSDIST                                               5115.
+!          print *,'From radia S0=',S0
       S0R=S0
 !     JDLAST=JDAY                                                       5129.   
 C**** CALCULATE AVERAGE COSINE OF ZENITH ANGLE FOR CURRENT COMP3 STEP   5116.   
@@ -308,6 +313,10 @@ C
 C
       ROT2=ROT1+TWOPI*NRAD*DT/SDAY                                      5122.   
       CALL COSZS (IO,JM,SIND,COSD,ROT1,ROT2,COSZ2,COSZA)                5123.   
+#if ( defined CLM35 )
+        COSZ2 = COSZ1
+        COSZA = COSZ1
+#endif
 C****                                                                   5124.   
 C**** COMPUTE EARTH ALBEDOS AND OTHER PARAMETERS FOR BEGINNING OF DAY   5125.   
 
@@ -332,6 +341,12 @@ c     print *,'FROM radia, JDAY=',JDAY,' JDLAST=',JDLAST
       
 #ifdef PREDICTED_GASES
 	call chemglobal(P)
+      if(HPRNT)then
+        print *,'GLGASS'
+        do l=1,nlev
+         print *,(glbgas(l,i),i=1,5)
+        enddo
+      endif
 #endif
 
       call sulfr(BSO4LAND,BSO4OCEAN,TNOW)
@@ -482,6 +497,9 @@ C****                                                                   5131.
 C**** MAIN J LOOP                                                       5132.   
 C****                                                                   5133.   
       DO 600 J=1,JM                                                     5134.   
+#if ( defined CLM35 )
+       STBOLAND(j)=STBO
+#endif
       IF ((J-1)*(JM-J).NE.0) GO TO 140                                  5135.   
 C**** CONDITIONS AT THE POLES                                           5136.   
       POLE=.TRUE.                                                       5137.   
@@ -509,6 +527,13 @@ c     RVOL=0.012
 
       JLAT=J                                                            5145.1  
       IF(MODRJ.EQ.0) CALL RCOMPJ                                        5146.   
+      if(HPRNT)then
+       if (J.eq.14) then
+        do l=1,nlev
+         print *,(ULGAS(l,i),i=1,9)
+        enddo
+       endif
+      endif
       SWIN(j,1)=0.0
       SWNET(j,1)=0.0
       SWIN(j,2)=0.0
@@ -541,6 +566,12 @@ c     RANDSS=RANDU(X)                                                   5165.
 c     RANDMC=RANDU(X)                                                   5166.   
       CALL RANDUU(RANDSS,X)
       CALL RANDUU(RANDMC,X)
+#if ( defined CLM35 )
+      CALL RANDUU(RANCLM1,X)
+      CALL RANDUU(RANCLM2,X)
+      rnd14clm(1,j)=RANCLM1
+      rnd24clm(1,j)=RANCLM2
+#endif
 C
          CSS=0.                                                         5167.   
          CMC=0.                                                         5168.   
@@ -856,6 +887,7 @@ C *********
 C        for TEM CLM
             DSWSRF(j)=SRDFLB(1)
             DLWSRF(j)=TRSURF(J,2)
+            STBOLAND(j)=TRUFLB(1)/(TGAL**4)
 #if ( defined OLD_CHEM && !defined CLM35 )
             DLWSRF(j)=TRDFLB(1)
 #endif
@@ -1171,6 +1203,13 @@ C****                                                                   5506.
       DO 820 I=1,IMAX                                                   5511.   
  820  RQT(I,J,LR)=RQT(I,J,LR)+(SRHRS(I,J,LR)*COSZ2(I,J)                 5512.   
      *  +TRHRS(I,J,LR))*COE(LR+LM)                                      5513.   
+      if(HPRNT)then
+!      if(J.eq.1)then
+       print *,' radia TAU=',TAU
+       print *,' Before 860'
+       print *,(T(1,14,L),L=1,LM)
+!     endif
+      endif
   840 DO 860 J=1,JM                                                     5514.   
 #if ( defined CLM )
           i=1
@@ -1204,5 +1243,18 @@ c    For TEM
 
   860 T(I,J,L)=T(I,J,L)+(SRHR(I,J,L+1)*COSZ1(I,J)+TRHR(I,J,L+1))        5519.   
      *  *COE(L)/(P(I,J)*PK(I,J,L))                                      5520.   
+      if(HPRNT)then
+       print *,' radia TAU=',TAU
+       print *,' after 860'
+       print *,'B66',T(1,14,1)
+       print *,'COSZ1(1,14)',COSZ1(1,14),' COE(1)=',COE(1)
+       print *,'SRHR'
+       print *,(SRHR(1,14,L+1),L=1,LM)
+       print *,'TRHR'
+       print *,(TRHR(1,14,L+1),L=1,LM)
+       print *,'T'
+       print *,(T(1,14,L),L=1,LM)
+      endif
+
       RETURN                                                            5521.   
       END                                                               5522.  

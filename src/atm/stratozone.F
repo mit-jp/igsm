@@ -26,7 +26,7 @@
 !                                 
 !	==========================================================
 
-      subroutine getforcedozone( jyear, jday)
+      subroutine getstratozone( jyear, jday )
 
 !     parameter (nm=1728)  ! for o3.46x14.dat
 !     parameter (nm=2040) ! for new data
@@ -59,7 +59,7 @@ C      ULGAS = cm^3 (STP)/cm^2
       logical first
       integer year0, nlevp3 ,yrmax, yearf,yearl
       real date, o3f(nlat,nlev+3,nm1), o3dummy ! 03/20/2006
-c      real date, o3f(24,11,nm+1), o3dummy
+!     real date, o3f(nlat,nlev+3,nm+12), o3dummy
       character*43 filen
       DIMENSION JDOFM(13)
       data first / .true. /
@@ -72,9 +72,6 @@ c   year0 = 1979 for o3giss.MR.dat
 c   year0 = 1850 for o3.1850_2050.giss.46x11.dat
 c   year0 = 1859 for o3.1859_2002.giss.46x11.dat
 c
-C      filen = '/data11/ceforest/forcing/dummyozone.dat'
-c     filen = '/data11/ceforest/forcing/o3giss.MR.dat'
-C      filen = '/data11/ceforest/forcing/o3hadley.dat'
 
       if (first) then
          print *,'GetForcedOzone: reading data for 14 layers'
@@ -93,7 +90,6 @@ c
          nm=(yearl-yearf+1)*12
           print *,'yearf=',yearf,' yearl=',yearl
           print *,'nm=',nm
-
 
          do i=1,nm
             do k=1, nlevp3
@@ -115,7 +111,7 @@ c            enddo
 ! 03/20/2006 Data for anaditional year are added
 !            really only data for January are used
            do m=1, 12
-             do k=1, nlev
+             do k=1, n_tropopause
                 do j = 1,nlat
                    o3f(j,k,nm+m) = o3f(j,k,nm-12+m)
                 enddo
@@ -127,6 +123,7 @@ c            enddo
       yrmax=yearl
       print *,'Ozone data for ',nyears,' years '
       print *,'from ',year0,' to ',yrmax
+      print *,'Changing stratospheric ozone only'
       endif
 
       
@@ -136,7 +133,7 @@ c            enddo
 !     print *,'Ozone for year ',jyear1,iy
       if (iy.lt.0) then
          do i=1,nlat
-            do j=1,nlevp3
+            do j=1,n_tropopause
                o3dev(1,i,j) = 0.
             enddo
          enddo
@@ -147,7 +144,7 @@ C---  o3interp(o3f, o3dev, date, year0)
 
          if (iy .eq. 0 .and. jdd.le.0) then
             do i=1,nlat
-               do j=1,nlevp3
+               do j=n_tropopause+1,nlevp3
                   dl = ( 31. + float(jdd) )/31.
                   o3dev(1,i,j) = o3f(i,j,1)*dl
                enddo
@@ -174,37 +171,15 @@ C            endif
                stop 25
             endif
             
+!            print *,'From forcedozone ',jyear,jday,iy,im,dl
             do j=1,nlat
-               do k=1,nlevp3
+               do k=n_tropopause+1,nlevp3
                   o3dev(1,j,k) = o3f(j,k,imm)*(1.-dl)+o3f(j,k,imm+1)*dl
 !            print *,j,k,o3dev(1,j,k)
                enddo
             enddo
          endif 
       endif
-            if(jday.eq.1) then
-             print *,'From forcedozone ',jyear,jday,iy,im,dl
-            endif
-#if ( defined CPL_CHEM )
-             mo3top = 1
-            do i=1,12 
-               if (jday.gt.jdofm(i) .and. jday.le.jdofm(i+1)) then
-                  mo3top = i
-               endif
-            enddo
-            do j=1,nlat
-               do k=1,4
-                  o3top(j,k,mo3top) = o3dev(1,j,n_tropopause+k)
-               enddo
-            enddo
-            if(jday.eq.1) then
-             print *,'o3top for chemistry '
-             print *,jyear1,jday,im
-              print *,(o3top(2,k,mo3top),k=1,4)
-              print *,(o3top(23,k,mo3top),k=1,4)
-              print *,(o3top(46,k,mo3top),k=1,4)
-            endif
-#endif
 c     print *,'GetForcedOzone: JYEAR, JDAY, IY=', jyear,jday, iy 
 c     if (iy.ge.0) print *,'GetForcedOzone: imm=', imm
 

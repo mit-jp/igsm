@@ -142,6 +142,7 @@ c==== 012201
      &  ,flin_nep,last_clm,SEN_dat,nemdatdir
      &  ,GHSFALB,GHSF,ALBCF,FVOLADD,ghostfile,fl_volaer,fl_orbital
      &  ,STRARFOR,GSOEQ,CO2FOR,CO2F,FORSULF,FORBC,S0FOR,FORVOL,FORGHG
+     &  ,FORO3
      &  ,VEGCH,vegfile,TRVEG,KVCT
      &  ,fclmlice,fbaresoil,fwmax,fprratio,o3datadir,CLIMO3
 #if ( defined CLM35 )
@@ -163,12 +164,12 @@ Cjrs     &  ,dtatm,dtocn
 c jrs      common/TIMESTEPS/dtatm,dtocn
       LOGICAL LFR,NLFR,wr25,TRANSR,WRCLD,CONTRR,CLDFEED,OBSFOR
      &,GHSF,VEGCH,TRVEG,GSOEQ,OCNGEOM,GHSFALB,STRARFOR,CO2FOR
-     & ,FORSULF,FORBC,S0FOR,FORVOL,FORGHG
+     & ,FORSULF,FORBC,S0FOR,FORVOL,FORGHG,FORO3
      &  ,ORBTRANS,KVCT
 #if ( defined ORBITAL_FOR )
       common/ORBITAL/YEARORB,ORBTRANS,OBLIQ,ECCN,OMEGT
 #endif
-      common/FORAERSOL/FORSULF,FORBC,FORVOL,FORGHG
+      common/FORAERSOL/FORSULF,FORBC,FORVOL,FORGHG,FORO3
       common/vaerosol/fl_volaer
       common/orbitalfl/fl_orbital
       common/eqgso/GSOEQ
@@ -279,6 +280,7 @@ C
       FORBC=.false.
       FORVOL=.false.
       FORGHG=.false.
+      FORO3=.false.
       CO2FOR=.false.
       S0FOR=.false.
       CO2F=2.0
@@ -695,6 +697,11 @@ c     &        status='new')
       open(180,file=cfname,
      &         status='new')
      
+!APS 11/16/2012
+      cfname = chemout(1:len_trim(chemout))//'/'//'globalmean3'
+      open(276,file=cfname,
+     &        status='new')
+
       cfname = chemout(1:len_trim(chemout))//'/'//'meta'
       open(181,file=cfname,
      &        form='unformatted',
@@ -875,7 +882,10 @@ Cold  CFAEROSOL=(-AERFOR/AFBYCF)**1.035/(SO2ER**0.7248)
       print *,'AFBYCF=',AFBYCF
       CFAEROSOL=(-AERFOR/AFBYCF)**1.21
       CFAEROSOL=CFAEROSOL/(SO2ER**1.01)
+#if ( defined CLM35 )
+      CFAEROSOL=CFAEROSOL*1.72
       print *,'AERFOR=',AERFOR,'CFAEROSOL=',CFAEROSOL
+#endif
 #if ( defined OCEAN_3D )
        CFAEROSOL=CFAEROSOL/1.35
        print *,'CFAEROSOL_3D=',CFAEROSOL
@@ -883,6 +893,9 @@ Cold  CFAEROSOL=(-AERFOR/AFBYCF)**1.035/(SO2ER**0.7248)
 #endif
 #if ( defined SVI_ALBEDO )
       ALFA=-16.7*AERFOR*1.e3
+#if ( defined CLM35 )
+      ALFA=-14.3*AERFOR*1.e3
+#endif
       print *,'AERFOR=',AERFOR,' ALFA=',ALFA
 #endif
 C**** SET DEPENDENT QUANTITIES                                          1608.   
@@ -1024,11 +1037,15 @@ c      print *,' Form input '
      *   TG3M,RTGO,STG3,DTG3
         endif
        if(.not.CONTRR)then
+!       IRAND
 	JC(16)=JC1(16)
+!       JMONTH
 	C(38)=C1(38)
+!       JMONTH0
 	C(39)=C1(39)
 	do i=41,50
 c   print *,i,JC1(i)
+!     IYEAR,IDAY,IDAY0,JYEAR,JYEAR0,  JDAY,JDATE,JDATE0,NSTEP,MRCH
 	  JC(i)=JC1(i)
 	end do
 	end if
@@ -1571,12 +1588,17 @@ CJRS         FDATA(I,JM0,2)=cflan(jmocean)
        open (767,file=fclmlice,status='old')
        do j=1,jm
         read(767,*),clmlice(j)
+#if ( defined CLM35 )
+        clmlice(j)=0.0
+#endif
         FDATA(1,J,3)=0.01*clmlice(j)
        enddo
        close (767)
        open (767,file=fbaresoil,status='old')
+        print *,'BARESOIL'
        do j=1,jm
         read(767,*),baresoil(j),baresoil(j)
+        print *,baresoil(j),baresoil(j)
        enddo
        close (767)
        open (767,file=fwmax,status='old')
@@ -1847,6 +1869,19 @@ C     CALL IJSET (IM,JM,FDATA(1,1,2))                                   1866.
       endif
 #else
             print *,'Run with default orbital parameters '
+#if ( defined CLM35 )
+        if(.not.orbfix) then
+         print *,'Difference in orbital setting '
+         print *,'between CLM and IGSM '
+         print *,'ORBITAL_FOR is undeffined but',' orbfix=',orbfix
+          stop
+        endif
+        if(orbyr.ne.2000) then
+          print *,'Wrong orbyr for CLM3.5'
+          stop
+        endif
+#endif
+
 #endif
       WRITE (6,INPUTZ)                                                  1867.   
 C     information for main program

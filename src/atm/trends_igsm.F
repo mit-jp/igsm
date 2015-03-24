@@ -67,10 +67,12 @@ c      ifirst=1
       endif
       YEAR=YEART
       DT=YEAR-INYRAD
+!     DT=YEAR-1
       XX0=CO2IN
       XX=XX0*(1.+ALFFOR)**DT
       XGAS(1)=XX                                                        9182.3
       CO2TR=XGAS(1)
+!      print *,'GTREND ',YEART,DT,CO2TR
        do ii=2,5
          XGAS(ii)=GHGBGR(ii)
         enddo

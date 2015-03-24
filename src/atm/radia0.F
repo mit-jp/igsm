@@ -9,6 +9,9 @@ C****                                                                   4505.
 
 #include "chem_para"
 #include "chem_com"
+#if ( defined CLM )
+#include "CLM.h"
+#endif
 
       REAL LT1,LT2                                                      4506.   
       DIMENSION COSZ(IM,JM),COSZA(IM,JM)                                4507.   
@@ -74,6 +77,16 @@ C**** COMPUTE THE AREA WEIGHTED LATITUDES AND THEIR SINES AND COSINES   4522.
       DEGLAT(JM)=(360./TWOPI)*PHIM                                      4542.   
       SINJ(JM)=SIN(PHIM)                                                4543.   
       COSJ(JM)=COS(PHIM)                                                4544.   
+#if ( defined CLM35 )
+!APS
+      DO 21 J=1,JM
+      PHIM=-TWOPI*0.25+TWOPI/360.*(J-1)*180./JMM1
+!     print *,j,PHIM,PHIM*360./TWOPI
+      DEGLAT(J)=(360./TWOPI)*PHIM                                       4532.   
+      SINJ(J)=SIN(PHIM)                                                 4533.   
+      COSJ(J)=COS(PHIM)                                                 4534.   
+   21 CONTINUE
+#endif
 C**** COMPUTE THE SINES AND COSINES OF LONGITUDE                        4545.   
       DO 40 I=1,IM                                                      4546.   
       RI(I)=(TWOPI/IM)*(I-1)                                            4547.   
@@ -116,6 +129,11 @@ C     FULGAS(9)=0.                                                      4553.65
 C     FGOLDU(1)=.005/.012                                               4553.7  
 c  50 CALL RCOMP1 (21,0,60)                                             4553.75 
    50 continue
+#if ( defined IPCC_FORCING )
+      print *,'Run with IPCC FORCING'
+#else
+      print *,'Run with GISS FORCING'
+#endif
           print *,' RADIA0 JYEAR=',JYEAR,' JDAY=',JDAY
 c     IF (KTREND.GT.0) CALL FORSET(1958.,KTREND,1)                      4553.8  
       IF (KTREND.GT.0)then
@@ -148,6 +166,16 @@ C**** HOURS FROM ROT1 TO ROT2, GREENWICH MEAN TIME IN RADIANS.  ROT1    4561.
 C**** MUST BE BETWEEN 0 AND 2*PI.  ROT2 MUST BE BETWEEN ROT1 AND        4562.   
 C**** ROT1+2*PI.  I=1 MUST LIE ON THE INTERNATIONAL DATE LINE.          4563.   
 C****                                                                   4564.   
+#if ( defined CLM35 )
+! FOR CLM35
+      DAYFRAC=ROT1/TWOPI
+      SINDD = sin(declin_clm)
+      COSD = DSQRT(1.-SINDD*SINDD)                                      8283.
+      SIND = SINDD                                                      8284.
+!     print *,'FROM COSZT'
+!     print *,'declin_clm=',declin_clm
+! FOR CLM35
+#endif
       DROT=ROT2-ROT1                                                    4565.   
 C**** COMPUTE THE SINES AND COSINES OF THE INITIAL AND FINAL GMT'S      4566.   
   100 SR1=SIN(ROT1)                                                     4567.   
@@ -165,8 +193,16 @@ C****                                                                   4578.
 C**** CALCULATION FOR POLAR GRID BOXES                                  4579.   
 C****                                                                   4580.   
       DO 200 J=1,JM,JMM1                                                4581.   
+!     print '(i3,4e14.6)',J,SINJ(J),SIND,COSJ(J),COSD  
+!     print '(2e14.6)',ASIN(SINJ(J)),180.*ASIN(SINJ(J))/3.1415
       SJSD=SINJ(J)*SIND                                                 4582.   
       CJCD=COSJ(J)*COSD                                                 4583.   
+#if ( defined CLM35 )
+      COSZ(1,J)=max(0.0,
+     & SJSD-CJCD*cos((float(JDAY)+DAYFRAC)*TWOPI+0.5*TWOPI))
+!     print '(4e14.6)',DAYFRAC,float(JDAY)+DAYFRAC,
+!    &   cos((float(JDAY)+DAYFRAC)*TWOPI+0.5*TWOPI),COSZ(1,J)
+#else
       IF(SJSD+CJCD.LE.ZERO1) GO TO 180                                  4584.   
       IF(SJSD-CJCD.GE.0.) GO TO 160                                     4585.   
 C**** AVERAGE COSZ FROM DAWN TO DUSK NEAR THE POLES                     4586.   
@@ -181,13 +217,20 @@ C**** CONSTANT DAYLIGHT NEAR THE POLES                                  4593.
       GO TO 200                                                         4595.   
 C**** CONSTANT NIGHTIME NEAR THE POLES                                  4596.   
   180 COSZ(1,J)=0.                                                      4597.   
+#endif
   200 CONTINUE                                                          4598.   
 C****                                                                   4599.   
 C**** LOOP OVER NON-POLAR LATITUDES                                     4600.   
 C****                                                                   4601.   
       DO 500 J=2,JMM1                                                   4602.   
+!     print '(i3,4e14.6)',J,SINJ(J),SIND,COSJ(J),COSD  
+!     print '(2e14.6)',ASIN(SINJ(J)),180.*ASIN(SINJ(J))/3.1415
       SJSD=SINJ(J)*SIND                                                 4603.   
       CJCD=COSJ(J)*COSD                                                 4604.   
+#if ( defined CLM35 )
+      COSZ(1,J)=max(0.0,
+     & SJSD-CJCD*cos((float(JDAY)+DAYFRAC)*TWOPI+0.5*TWOPI))
+#else
       IF(SJSD+CJCD.LE.ZERO1) GO TO 460                                  4605.   
       IF(SJSD-CJCD.GE.0.) GO TO 420                                     4606.   
 C**** COMPUTE DAWN AND DUSK (AT LOCAL TIME) AND THEIR SINES             4607.   
@@ -236,6 +279,9 @@ C**** CONSTANT DAYLIGHT AT THIS LATITUDE                                4644.
 C**** CONSTANT NIGHTIME AT THIS LATITUDE                                4648.   
   460 DO 480 I=1,IM                                                     4649.   
   480 COSZ(I,J)=0.                                                      4650.   
+#endif
+!     print '(4e14.6)',DAYFRAC,float(JDAY)+DAYFRAC,
+!    &   cos((float(JDAY)+DAYFRAC)*TWOPI+0.5*TWOPI),COSZ(1,J)
   500 CONTINUE                                                          4651.   
       RETURN                                                            4652.   
 C****                                                                   4653.   

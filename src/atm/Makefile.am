@@ -7,6 +7,7 @@ libatm_a_FFLAGS = -Mdalign -Msave
 libatm_a_SOURCES = atmosphere.F \
 	bgrghg.F \
 	check_settings.F \
+	checkvegfraction.F\
 	chemglobal.F \
 	chemtemco2.F \
 	climate2tem.F \
@@ -14,7 +15,6 @@ libatm_a_SOURCES = atmosphere.F \
 	condse.F \
 	daily_new.F \
 	daily_ocean.F \
-	dd2g04.F \
 	drycnv.F \
 	eddypa.F \
 	emissipcc.F \
@@ -36,19 +36,20 @@ libatm_a_SOURCES = atmosphere.F \
 	newcon.F \
 	obsco2.F \
 	obssolar.F \
-	orbit.F \
 	prland.F \
 	r95mit.F \
 	radia0.F \
 	radia_chem.F \
 	radia.F \
 	radiagso_clm.F \
+	radmonth.F\
 	readOrbital.F \
 	readSTAER.F \
 	robso3.F \
 	rtgases.F \
 	sdrag.F \
 	senint.F \
+	stratozone.F\
 	sulfut.F \
 	sur4clm.F \
 	surface.F \
@@ -59,8 +60,8 @@ libatm_a_SOURCES = atmosphere.F \
 	tgases.F \
 	trends_giss.F \
 	trends_igsm.F \
+	tropozone.F\
 	trvdata.F \
-	util.F \
 	vegfracadjustment.F \
 	vfunct.F \
 	wr_rstrt_nem.F \

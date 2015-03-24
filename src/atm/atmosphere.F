@@ -212,6 +212,7 @@ C     CALL ERRSET (208,256,-1)                                            14.
 c     CALL HARMO(36,1,24,ACO,BSI,CCO,DSI,1)                               14.5  
       IPFLAG=0                                                            15.   
 C     CALL ENQJOB                                                         16.   
+      print *,'TEST CHEM'
       CALL INPUT                                                          17.   
       
  
@@ -278,11 +279,11 @@ C New coefficients for horizontal diffusion 11/16/00
 
 c     call cheminit(ISTRT1,T,q)
 c     11/30/2000 ISTRTCHEM for restart of chemistry model
-      print *,' JYEAR befor cheninit ',JYEAR
+!     print *,' JYEAR befor cheninit ',JYEAR
       call cheminit(ISTRTCHEM,JYEAR,T,q)
 !
 
-      call chembudget (p)
+!     call chembudget (p)
 !
 ! --- Set cfcnsf = 0.0
 !
@@ -443,11 +444,15 @@ c     WRITE (6,901) IDAY,TOFDAY,JDATE,JMONTH,MINC,MELSE,PERCNT,TAU        39.
       IF(TAU.GE.TAUE) GO TO 820                                           42.   
       HPRNT=.TRUE.
       HPRNT=.FALSE.
+!     if(JYEAR.ge.3) then
+!     HPRNT=.TRUE.
+!     endif
       JPR=7
-      JPR=1
       JPR=14
+      JPR=2
       LPR=1
       print *,' MAIN MRCHT=',MRCHT
+      print *,' HPRNT=',HPRNT
 c
 c     print *,' TAUE=',TAUE
       TAUEM=TAUE
@@ -564,6 +569,7 @@ CJRS removed below from ocean_3d
       NOCLM=.true.
 #if ( defined CLM )
       NOCLM=.false.
+!     declin_clm =-0.4030116157152766
 #endif
       print *,' atmosphere DTATM=',DTATM
       print *,' It is running'
@@ -580,6 +586,9 @@ C**** MAIN LOOP                                                           44.
 C****                                                                     45.   
 C
 cprint *,' atmosphere TAU=',tau
+!     if(JYEAR.ge.3) then
+!     HPRNT=.TRUE.
+!     endif
       TAUE=TAU+DTATM
 c     HPRNT=TAU.ge.17520.0.and.TAU.lt.17545.0
 c     print *,' TAUE=',TAUE
@@ -642,6 +651,7 @@ c     HPRNT=TAU.ge.17520.00
       NSTEP1=NSTEP                                                        46.5  
 C**** WRITE RESTART INFORMATION ONTO DISK                                 47.   
   120 CALL RFINAL (IRAND)                                                 48.   
+!     print *,'After RFINAL IRAND=',IRAND
       IF(NSTEP.EQ.NSTEP2) GO TO 116                                       48.3  
       DO 115 K=1,22                                                       48.5  
       DO 115 J=1,JM                                                       48.6  
@@ -778,7 +788,25 @@ C For Emission
        enddo
 #endif
       timeinday=1./(365.)          !daily emission
+      if(HPRNT) then
+       zxy=0.
+       do j=1,jm
+        zxy=zxy+zco2(1,j,1)
+     &           *28.97296245/44.0*1.e-3
+       enddo
+       print *,' CO2 before emission ',zxy/jm
+      endif
+
       call chememission(timeinday)
+
+      if(HPRNT) then
+       zxy=0.
+       do j=1,jm
+        zxy=zxy+zco2(1,j,1)
+     &           *28.97296245/44.0*1.e-3
+       enddo
+       print *,' CO2 after emission ',zxy/jm
+      endif
 #endif
        endif
 
@@ -956,6 +984,15 @@ C                                                                        139.
 !
 	call chemadv0 (dt)
 
+
+      if(HPRNT) then
+       zxy=0.
+       do j=1,jm
+        zxy=zxy+zco2(1,j,1)
+     &           *28.97296245/44.0*1.e-3
+       enddo
+       print *,' CO2 after chemadv0  ',zxy/jm
+      endif
 !
 
 ! === Calculate total n-s transport amount
@@ -992,6 +1029,15 @@ C                                                                        139.
  	call chemmass2(1.0,zco2,zco2mass)
 #endif
 
+      if(HPRNT) then
+       zxy=0.
+       do j=1,jm
+        zxy=zxy+zco2(1,j,1)
+     &           *28.97296245/44.0*1.e-3
+       enddo
+       print *,' CO2 after chemmass2  ',zxy/jm
+      endif
+
 !call chemmass6(150.0,1.0,xn2o,xn2omass)
         call chemmass6(120.0,1.0,xn2o,xn2omass)
 	call chemmass2(1.0,ch4, ch4mass )
@@ -1013,6 +1059,16 @@ C                                                                        139.
        dt_chem_h = dth*float(nhr_for_chem)
        if(ievenodd.eq.0) then
        call chemtrop0(0, T, q, dt_chem_h, 1)
+
+
+      if(HPRNT) then
+       zxy=0.
+       do j=1,jm
+        zxy=zxy+zco2(1,j,1)
+     &           *28.97296245/44.0*1.e-3
+       enddo
+       print *,' CO2 after chemtrop0  ',zxy/jm
+      endif
 
 c     print *,'H2SO4 after chemtrop0 ',h2so4(1,33,1)
 c     print *,'SVIOD after chemtrop0 ',SVIOD(1,33,1)
@@ -1058,6 +1114,15 @@ c     print *,'H2SO4 after chemairmass ',h2so4(1,33,1)
       call chemmass1(xn2o,  xn2omass)
       call chemmass1(zco2,  zco2mass)
       call chemmass1(ch4,   ch4mass)
+
+      if(HPRNT) then
+       zxy=0.
+       do j=1,jm
+        zxy=zxy+zco2(1,j,1)
+     &           *28.97296245/44.0*1.e-3
+       enddo
+       print *,' CO2 after chemmass1  ',zxy/jm
+      endif
 
         ! === if hfc, pfc, and sf6 are included:
 #ifdef INC_3GASES
@@ -1115,6 +1180,7 @@ C**** RADIATION, SOLAR AND THERMAL                                       149.
 #include "PRNT.COM"
       print *,' IRAND=',IRAND
       endif
+!     print *,' main before radia',' TAU=',TAU,TOFDAY
 
 #if ( defined PREDICTED_GASES || defined PREDICTED_AEROSOL )
 
@@ -1188,7 +1254,8 @@ C**** SURFACE INTERACTION AND GROUND CALCULATION                         157.
 !    &  dsw4clm,
 !    &  dlw4clm,pco24clm
 !    &  ,swinr4clm,swvis4clm
-#if ( defined DATA4TEM )
+!#if ( defined DATA4TEM )
+#if ( defined DATA4CLM )
 c     if(JYEAR.gt.20)then
         write (935),ps4clm,pcpl4clm,
      & pcpc4clm,tpr4clm,
@@ -1202,15 +1269,49 @@ c      endif
 #endif
 
        ncallclm=ncallclm+1
-c       print *,'before clm4mit2d ncallclm=',ncallclm
+!       print *,'before clm4mit2d ncallclm=',ncallclm
       if(HPRNT)then
       print *,' main before clm4mit2d',' TAU=',TAU
 #include "PRNT.COM"
       endif
+!     print *,' main before clm',' TAU=',TAU,TOFDAY
+!      print *,'RANDOM NUMBERS'
+!      do j=1,jm
+!       print *,j, rnd14clm(1,j),rnd24clm(1,j)
+!      enddo
+      if(1.ge.3) then
+!     if(JYEAR.ge.3) then
+!     print *,' main before clm',' TAU=',TAU,dt2mland
+      write(99, *),' main before clm',' TAU=',TAU,dt2mland
+      do j=1,jm
+       write(99, *),ps4clm(1,j),pcpl4clm(1,j),pcpc4clm(1,j),
+     & tpr4clm(1,j),
+     &  tsl4clm(1,j),qs4clm(1,j),
+     & ws4clm(1,j),us4clm(1,j),vs4clm(1,j),dsw4clm(1,j),dlw4clm(1,j),
+     &  pco24clm(1,j),
+     &  swinr4clm(1,j),swvis4clm(1,j),rnd14clm(1,j),rnd24clm(1,j)
+      enddo
+      endif
        call clm4mit2d
+      if(1.ge.3) then
+!     if(JYEAR.ge.3) then
+      write(99, *),' main after clm',' TAU=',TAU,dt2mland
+       write(99, *),'declin_clm=',declin_clm
+      do j=1,jm
+       write(99, *),lhfclm(1,j),shfclm(1,j),tauxclm(1,j),tauyclm(1,j),
+     &  asdirclm(1,j),aldirclm(1,j),
+     & asdifclm(1,j),aldifclm(1,j),sroclm(1,j),ssrclm(1,j),
+     &  glrclm(1,j),vetclm(1,j),
+     &  sevclm(1,j),cevclm(1,j),lwuclm(1,j),tref2mclm(1,j),
+     &  tflxclm(1,j),tgndclm(1,j),snwdclm(1,j),snwcclm(1,j),
+     &  tsoiclm(1,j,1),h2oiclm(1,j,1),h2olclm(1,j,1)
+      enddo
+      endif
 !      print *,'AFTER CLM'
+!      print *,'declin_clm=',declin_clm
       if(HPRNT)then
       print *,' main after clm4mit2d',' TAU=',TAU
+       print *,'declin_clm=',declin_clm
 #include "PRNT.COM"
       endif
 
@@ -1409,13 +1510,6 @@ c     print *,' JDATE=',JDATE,' JMONTH=',JMONTH
 !
 ! === Calculate emission once per day:
 !
-c      zxy=0.
-c      do j=1,jm
-c       zxy=zxy+zco2(1,j,1)
-c    &           *28.97296245/44.0*1.e-3
-c      enddo
-c      print *,' CO2 before emission ',zxy/jm
-
       timeinday=1./(365.)          !daily emission
 #if ( defined ACCRI || defined TRACERS)
        do j=1,jm
@@ -1425,13 +1519,6 @@ c      print *,' CO2 before emission ',zxy/jm
       if(EMISATEND) then
        call chememission(timeinday)
       endif
-
-c      zxy=0.
-c      do j=1,jm
-c       zxy=zxy+zco2(1,j,1)
-c    &           *28.97296245/44.0*1.e-3
-c      enddo
-c      print *,' CO2 after emission ',zxy/jm
 !
 #endif
 C                                                                        202.   
@@ -1701,7 +1788,8 @@ cwrite(124)sfc3hro3
 !      call chemprt     !closed 032697
 
 !     call chembudget (p)
-      print *,' Atmosphre after chembudget mymonth=',mymonth
+!     print *,' Atmosphre after chembudget mymonth=',mymonth
+!     chembudget is called by chemmoth2
 ! === 09/26/94
 ! ===   Reset year and month index:
 !
@@ -1924,6 +2012,7 @@ C     Data for possible restart for OCM
 
        print *,' KDISK0=',KDISK0
        CALL RFINAL (IRAND)
+!     print *,'After RFINAL IRAND=',IRAND
        REWIND KDISK0                                                    
        if(TRANSR)then
         WRITE(KDISK0) AEXP,TAU,JC,C,RC,KEYNR,U,V,T,P,Q,ODATA,GDATA,
@@ -1949,6 +2038,7 @@ C  690 changed to 691 02/21/2003
   680    IF(KCOPY.LE.0) GO TO 691                                        284.   
 C**** WRITE A COPY OF THE FINAL RESTART DATA SET ONTO DISK               285.   
          CALL RFINAL (IRAND)                                             285.5  
+!     print *,'After RFINAL IRAND=',IRAND
          print *,' after 680'
          print *,' TAU=',TAU,' IRAND=',IRAND
          IF(KCOPY.GT.99) GO TO 687                                       286.   
@@ -1977,6 +2067,7 @@ C**** RUN TERMINATED BECAUSE SENSE SWITCH 6 WAS TURNED ON                299.
   800 WRITE (6,904)                                                      300.   
       IF(EVENT(TAUT)) GO TO 820                                          301.   
       CALL RFINAL (IRAND)                                                302.   
+!     print *,'After RFINAL IRAND=',IRAND
       print *,' after 800'
       print *,' TAU=',TAU,' IRAND=',IRAND
       if(wr25) then

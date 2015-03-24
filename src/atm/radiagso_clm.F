@@ -68,6 +68,7 @@ C                                                                       5035.
      Q             ,SRTVIS,SRRVIS,SRAVIS,SRTNIR,SRRNIR,SRANIR,FTRUFG(4) 5040.   
      R             ,TRDFGW,TRUFGW,TRUFTW,BTEMPW,TRDFSL,TRUFSL,DTRUFG(4) 5041.   
      S             ,TRSLTS,TRSLTG,TRSLWV,TRSLBS,TTRUFG,LBOTCL,LTOPCL    5042.   
+      COMMON/RADFO3/JYEARO3
       DIMENSION COE(39)                                                 5043.   
 #if ( defined OCEAN_3D )
 #include "AGRID.h"
@@ -268,6 +269,7 @@ C**** RADIATION AVERAGING IN I AND J       4       2       2            5110.
    50 JALTER=MOD(NSTEP,NRAD*JRA)/NRAD                                   5113.   
       JDAYR=JDAY
       JYEARR=JYEAR
+      JYEARO3=JYEARR
       IALTER=MOD(NSTEP,NRAD*IJRA)/(NRAD*JRA)                            5114.   
       S0=S0X*1367./RSDIST                                               5115.   
 c      print *,'S0X0=',S0X0,' S0X=',S0X,' RSDIST=',RSDIST
@@ -294,6 +296,11 @@ C
 C
       ROT2=ROT1+TWOPI*NRAD*DT/SDAY                                      5122.   
       CALL COSZS (IO,JM,SIND,COSD,ROT1,ROT2,COSZ2,COSZA)                5123.   
+
+#if ( defined CLM35 )
+        COSZ2 = COSZ1
+        COSZA = COSZ1
+#endif
 C****                                                                   5124.   
 C**** COMPUTE EARTH ALBEDOS AND OTHER PARAMETERS FOR BEGINNING OF DAY   5125.   
 
@@ -533,6 +540,9 @@ C****                                                                   5131.
 C**** MAIN J LOOP                                                       5132.   
 C****                                                                   5133.   
       DO 600 J=1,JM                                                     5134.   
+#if ( defined CLM35 )
+       STBOLAND(j)=STBO
+#endif
       IF ((J-1)*(JM-J).NE.0) GO TO 140                                  5135.   
 C**** CONDITIONS AT THE POLES                                           5136.   
       POLE=.TRUE.                                                       5137.   
@@ -593,6 +603,12 @@ c     RANDSS=RANDU(X)                                                   5165.
 c     RANDMC=RANDU(X)                                                   5166.   
       CALL RANDUU(RANDSS,X)
       CALL RANDUU(RANDMC,X)
+#if ( defined CLM35 )
+      CALL RANDUU(RANCLM1,X)
+      CALL RANDUU(RANCLM2,X)
+      rnd14clm(1,j)=RANCLM1
+      rnd24clm(1,j)=RANCLM2
+#endif
 C
          CSS=0.                                                         5167.   
          CMC=0.                                                         5168.   
@@ -712,8 +728,15 @@ C****                                                                   5260.
       SNOWOI=GDATA(I,J,1)                                               5269.   
       SNOWLI=GDATA(I,J,12)                                              5270.   
       SNOWE=GDATA(I,J,2)                                                5271.   
+#if ( defined CLM35 )
+      SNOWLI=1.e-5
+      SNOWE=1.e-5
+#endif
       AGESN=GDATA(I,J,11)                                               5272.   
       WEARTH=(GDATA(I,J,5)+GDATA(I,J,6))/(VDATA(I,J,9)+1.E-20)          5273.   
+#if ( defined CLM35 )
+      WEARTH=1.0
+#endif
       DO 430 K=1,8                                                      5274.   
   430 PVT(K)=VDATA(I,J,K)                                               5275.   
       WS=BLDATA(I,J,1)                                                  5276.   
@@ -898,6 +921,7 @@ c 05/02/2003
 C        for TEM CLM
             DSWSRF(j)=SRDFLB(1)
             DLWSRF(j)=TRSURF(J,2)
+            STBOLAND(j)=TRUFLB(1)/(TGAL**4)
             DSWVIS(j)=SRDVIS
             DSWNIR(j)=SRDNIR
             ALBV(j)=ALBVIS
@@ -1291,6 +1315,8 @@ c          print *,CLEAR(j),ALBAER,ALBC,(1.-ALBAER)/(1.-ALBC)
            swvis4clm(i,j)=DSWVIS(j)*COSZ1(1,j)
           endif
           dlw4clm(i,j)=DLWSRF(j)
+          albinrclm(j)=0.7*aldirclm(i,j)+0.3*aldifclm(i,j)
+          albvisclm(j)=0.7*asdirclm(i,j)+0.3*asdifclm(i,j)
 c    For TEM
           swtd4tem(j)=swtd4tem(j)+S0*COSZ1(1,j)
 !         swsd4tem(j)=swsd4tem(j)+DSWSRF(j)*COSZ1(1,j)
