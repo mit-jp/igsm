@@ -71,3 +71,13 @@ libatm_a_SOURCES = atmosphere.F \
 	vweigav.F \
 	zclimate2tem.F
 
+if IGSM_2D
+
+# The driver routines are only built for the igsm22 executable.
+libatm_a_SOURCES += ../driver/atm2d_init_fixed.F \
+	../driver/atm2d_init_vars.F \
+	../driver/driver_IGSM22.F \
+	../driver/atm2d_finish.F \
+	../driver/forward_step_atm2d.F
+
+endif IGSM_2D

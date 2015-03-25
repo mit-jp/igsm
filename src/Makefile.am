@@ -17,18 +17,14 @@ bin_PROGRAMS = $(BINARIES)
 
 EXTRA_PROGRAMS = igsm22 igsm23
 
-LDADD = $(MODULE_LDADD) $(FCLIBS) -lhdf5_hl -lhdf5 -lpgmp -lnuma -lpthread -lpgf90 -lpgf90_rpm1 -lpgf902 -lpgf90rtl -lpgftnrtl -lnspgc -lpgc -lrt -lm  -lstd -lC -lgcc -lgcc_s -lc -lstdc++
+LDADD = $(MODULE_LDADD) $(FCLIBS) -lhdf5_hl -lhdf5 -lpgmp -lnuma -lpthread \
+	-lpgf90 -lpgf90_rpm1 -lpgf902 -lpgf90rtl -lpgftnrtl -lnspgc -lpgc -lrt \
+	-lm -lstd -lC -lgcc -lgcc_s -lc -lstdc++
 
 if IGSM_2D
 
-# The driver routines are only built for the igsm22 executable.
-igsm22_SOURCES = driver/atm2d_init_fixed.F \
-	driver/atm2d_init_vars.F \
-	driver/driver_IGSM22.F \
-	driver/atm2d_finish.F \
-	driver/forward_step_atm2d.F
-
-igsm22_FFLAGS = -Mdalign -Msave
+# no additional sources for the 22 executable
+igsm22_SOURCES =
 
 # Use the PGI Fortran, rather than C/C++, linker.
 igsm22_LINK = $(FC) -fastsse -o $@
