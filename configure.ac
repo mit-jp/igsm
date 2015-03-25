@@ -3,7 +3,7 @@
 ### Initialization
 AC_PREREQ([2.66])
 AC_INIT(igsm, [1.0], [globalchange@mit.edu])
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([foreign])
 # check that $srcdir points to the actual location of the source code
 AC_CONFIG_SRCDIR([src/atm/atmosphere.F])
 # …but that we are not in the top source directory
