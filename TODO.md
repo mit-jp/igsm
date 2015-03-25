@@ -1,8 +1,6 @@
 To-Do List
 ==========
 
-- Move some subroutines (which?) from src/driver to src/atm.
-
 - Add more verification experiments, including maybe:
   - atm-only
   - atm-clm
