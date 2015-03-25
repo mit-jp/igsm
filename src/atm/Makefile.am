@@ -15,6 +15,7 @@ libatm_a_SOURCES = atmosphere.F \
 	condse.F \
 	daily_new.F \
 	daily_ocean.F \
+	dd2g04.F\
 	drycnv.F \
 	eddypa.F \
 	emissipcc.F \
@@ -37,6 +38,7 @@ libatm_a_SOURCES = atmosphere.F \
 	obsco2.F \
 	obssolar.F \
 	prland.F \
+	orbit.F\
 	r95mit.F \
 	radia0.F \
 	radia_chem.F \
@@ -65,6 +67,7 @@ libatm_a_SOURCES = atmosphere.F \
 	vegfracadjustment.F \
 	vfunct.F \
 	wr_rstrt_nem.F \
+	util.F\
 	vweigav.F \
 	zclimate2tem.F
 
