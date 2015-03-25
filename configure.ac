@@ -321,14 +321,18 @@ if test $model = fullchem; then
     AC_DEFINE(CPL_META, 1, [Coupling parameterized urban airshed model (meta)])
   fi
 fi
+# Defines for climate or historical mode
+if test $model = climate -o $model = historical ; then
+  AC_DEFINE(O3_FORCED, 1, [Use forced ozone scenario (ifo3forced)])
+fi
 
 # Defines for historical mode only
 if test $model = historical; then
-  AC_DEFINE(O3_FORCED, 1, [Use forced ozone scenario (ifo3forced)])
   AC_DEFINE(SVI_ALBEDO, 1, [Modify albedo to simulate sulfate aerosol forcing
     (ifsulfalb)])
 fi
 
+# Defines for historical or fullchem mode 
 if test $model = historical -o $model = fullchem; then
   AC_DEFINE(VOL_AER, 1, [Include aerosol forcing due to volcanic activitiy])
 fi
@@ -336,11 +340,12 @@ fi
 # Unusual defines. See README.dev for information on how to use these.
 if true; then
   # always ON
+  AC_DEFINE(IPCC_FORCING, 1, [Use IPCC Forcings rather than GISS]) 
+else
+  # always OFF
   AC_DEFINE(ORBITAL_FOR, 1, [Use radiative forcing adjusted for Earth's
     orbital parameters. If undefined, the default from a (which?) NASA GISS
     model is used])
-else
-  # always OFF
   AC_DEFINE(ACCRI, 1, [Include GHG emissions from aviation. Requires accri_data
     and accri_scaling defined in eppaemis.dat])
   AC_DEFINE(DATA4TEM, 1, [Save data for offline simulations with CLM/TEM])
