@@ -59,6 +59,9 @@ C      212*24,243*24,273*24,304*24,334*24,365*24
       CHARACTER *10 buf
       CHARACTER *10 buf1
 #endif
+#ifdef IPCC_EMI
+      REAL*8 tcumn
+#endif
 #ifdef OCEAN_3D
       INTEGER iloop_ocn
 #endif

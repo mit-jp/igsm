@@ -60,6 +60,7 @@ C
      C             ,JNORTH,ALVISD(22),ALNIRD(22)
 C$   D             ,ISRHDR(100),SRTBL(44800)
 C
+      COMMON/RADFO3/JYEARO3
        common/ SNOWALB/FRSNALB,IFFF0
        common/ BACKGRGHG/GHGBGR(5)
        external  mth_i_dpowi

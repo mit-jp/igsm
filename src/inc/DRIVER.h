@@ -1,12 +1,9 @@
-C $Header: /u/gcmpack/MITgcm/pkg/atm2d/DRIVER.h,v 1.13 2012/08/21 18:43:13 jscott Exp $
+C $Header: /u/gcmpack/MITgcm/pkg/atm2d/DRIVER.h,v 1.9 2011/06/03 21:13:11 jscott Exp $
 C $Name:  $
 
       COMMON /DRIVER_VARS/
      &        dtcouple, dtatm, dtocn, startYear, endYear, taveDump,
      &        ncall_atm, ncall_ocean
-#ifdef NCEPWIND
-     &        , rand_newseed
-#endif
        INTEGER dtcouple  ! coupling period (hrs)
        INTEGER dtatm     ! atmos time step (hrs)
        INTEGER dtocn     ! ocean time step (hrs)
@@ -15,9 +12,6 @@ C $Name:  $
        INTEGER taveDump  ! frequency of tave dumps for atm2ocn fluxes (yrs)
        INTEGER ncall_atm ! number of atm steps in a coupling period
        INTEGER ncall_ocean ! number of ocn steps in a coupling period
-#ifdef NCEPWIND
-       LOGICAL rand_newseed
-#endif
 
 
       COMMON /DRIVER_FILENAMES/
@@ -32,7 +26,7 @@ C $Name:  $
        REAL*8 aocuav, ch4ann, ch4mn, xco2ann
 #endif
 
-#ifdef DATA4TEM
+#if ( defined DATA4TEM || defined DATA4CLM )
       COMMON /DRIVER_VAR_DATATEM/nfile
        INTEGER nfile
 #endif
