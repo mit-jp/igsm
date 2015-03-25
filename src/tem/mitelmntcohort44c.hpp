@@ -21,6 +21,7 @@ MITELMNTCOHORT44C.HPP - Container class to hold land cover
 20110705 - DWK added long prevchrtarea
 20110707 - DWK changed include from nemconsts44a.hpp to
            nemconsts44c.hpp
+20140519 - DWK added "yr" variables
                       
 ************************************************************* */
 
@@ -162,9 +163,9 @@ struct MITElmntCohort44
 
   double NEMnsolc;
 
-  double NEMtopdens;
-  double NEMtopksat;
-  double NEMtoppor;
+//  double NEMtopdens;
+//  double NEMtopksat;
+//  double NEMtoppor;
   
   double newleafmx;
 
@@ -184,7 +185,7 @@ struct MITElmntCohort44
   double prev2tair;
   
   // Area covered by cohort (square kilometers)
-  //   during the previous year 
+  //   during previous year 
   long prevchrtarea;
   
   // Atmospheric CO2 concentration during the previous month
@@ -197,7 +198,7 @@ struct MITElmntCohort44
   Biomass prevPROD100;
 
   // Snowpack during the previous month
-  double prevspack;
+//  double prevspack;
 
   // Air temperature of the previous month
   double prevtair;
@@ -208,15 +209,11 @@ struct MITElmntCohort44
   // Value of y[] during previous time step
   double prevy[MAXSTATE];
 
-  double prod10par;
+//  double prod10par;
 
-  double prod100par;
+//  double prod100par;
 
   int productYear;
-
-  // Area covered by cohort (square kilometers)
-  //   during previous year 
-  long prvchrtarea;
 
   // Crop net primary production during the previous month
   double prvcropnpp;
@@ -237,13 +234,13 @@ struct MITElmntCohort44
   int qc;
 
 
-  double sconvert;
+//  double sconvert;
 
   Biomass sconvrtflx;
 
   Biomass slash;
 
-  double slashpar;
+//  double slashpar;
 
   // Source cohort for current cohort
   int srcCohort;
@@ -259,18 +256,212 @@ struct MITElmntCohort44
 
   int tqc;
 
-  double vconvert;
+//  double vconvert;
 
   Biomass vconvrtflx;
 
-  double vrespar;
+//  double vrespar;
 
   double y[MAXSTATE];
+ 
+  double yragstubC;
+  
+  double yragstubN;
 
-  double yrltrc;
+  double yrcflux;
+  
+  double yrCH4csmp;
+  
+  double yrCH4ems;
+  
+  double yrCH4flx;
+  
+  double yrCO2dnflx;
+  
+  double yrCO2nflx;
+  
+  double yrconvrtC;
+  
+  double yrconvrtN;
+  
+  double yrdecayPROD1C;
+  
+  double yrdecayPROD10C;
+  
+  double yrdecayPROD100C;
 
-  double yrltrn;
+  double yrdecayPROD1N;
+  
+  double yrdecayPROD10N;
+  
+  double yrdecayPROD100N;
+  
+  double yrdecayTOTPRODC;
 
+  double yrdecayTOTPRODN;
+
+  double yreet;
+  
+  double yrfertn;
+  
+  double yrfluxResidueC;
+  
+  double yrfluxResidueN;
+
+  double yrformPROD1C;
+  
+  double yrformPROD10C;
+  
+  double yrformPROD100C;
+
+  double yrformPROD1N;
+  
+  double yrformPROD10N;
+  
+  double yrformPROD100N;
+  
+  double yrformResidueC;
+  
+  double yrformResidueN;
+
+  double yrformTOTPRODC;
+
+  double yrformTOTPRODN;
+
+  double yrfpc;
+
+  double yrgpp;
+  
+  double yrgpr;
+  
+//  double yrH2Oyld;  determined by CLM
+
+  double yrimmob;
+  
+//  double yrineet;
+  
+  double yringpp;
+  
+  double yrinnpp;
+    
+//  double yrirrig; determined by CLM
+    
+  double yrlai;
+
+  double yrleaf;
+
+  double yrltrfalC;
+
+  double yrltrfalN;
+  
+  double yrN2flx;
+  
+  double yrN2Odnflx;
+  
+  double yrN2Oflx;
+  
+  double yrN2Onflx;
+  
+  double yrnce;
+  
+  double yrnep;
+  
+  double yrninput;
+  
+  double yrnlost;
+  
+  double yrnmin;
+   
+  double yrnpp;
+  
+  double yrnrent;
+    
+  double yrnsrent;
+
+  double yrnvrent;
+  
+  double yrpet;
+  
+//  double yrrgrndH2O; determined by CLM 
+  
+  double yrrh;
+  
+//  double yrrain; determined by CLM
+  
+//  double yrrperc; determined by CLM
+  
+//  double yrrrun; determined by CLM
+  
+  double yrsconvrtC;
+
+  double yrsconvrtN;
+  
+//  double yrsgrndH2O; determined by CLM
+
+  double yrslashC;
+
+  double yrslashN;
+
+//  double yrsnowfall; determined by CLM
+
+//  double yrsnowinf; determined by CLM
+
+//  double yrsnowpack; determined by CLM
+  
+//  double yrsoilavlH2O; determined by CLM
+
+  double yrsoilavlN;
+
+//  double yrsoilC2N;
+    
+//  double yrsoilmoist; determined by CLM
+
+  double yrsoilorgC;
+  
+  double yrsoilorgN;
+
+//  double yrsoilpctp; determined by CLM
+
+//  double yrsoilvsm; determined by CLM
+
+//  double yrsperc; determined by CLM
+  
+//  double yrsrun; determined by CLM
+    
+  double yrtotalC;
+  
+  double yrunleaf;
+
+  double yrvconvrtC;
+  
+  double yrvconvrtN;
+
+  double yrvegC;
+    
+//  double yrvegC2N;
+
+  double yrveginnup;
+
+  double yrveglup;
+  
+  double yrvegN;
+  
+  double yrvegnmobil;
+
+  double yrvegnrsorb;
+
+  double yrvegnup;
+
+  double yrvegrgrowth;
+
+  double yrvegrmaint;
+
+  double yrvegSTON;
+  
+  double yrvegSTRN;
+
+  double yrvegsup;
+  
 };
 
 #endif

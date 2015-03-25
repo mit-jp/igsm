@@ -26,6 +26,8 @@ Modifications:
            tigsmprocessXML44c.h
 20110707 - DWK changed include from nem44a.h to nem44c.h
 20110707 - DWK changed include from mdmigsm44a.h to mdmigsm44c.h
+20140604 - DWK changed access to "yr" variables from public to
+           private
                                                        
 *****************************************************************
 ************************************************************** */
@@ -115,6 +117,10 @@ class Tmicrobe44: public ProcessXML44
      
      inline double getDECAY( void ) { return decay; }
 
+
+     // dq10 **************************************************
+     
+     inline double getDQ10( void ) { return dq10; }
 
      // kd *****************************************************
      
@@ -327,6 +333,47 @@ class Tmicrobe44: public ProcessXML44
        rhq10[pcmnt] = prhq10; 
      }
 
+     // yrnmin *************************************************
+     
+     inline double getYRNMIN( void ) { return yrnmin; }
+
+     inline void setYRNMIN( const double& pyrnmin ) 
+     { 
+       yrnmin = pyrnmin; 
+     }
+
+     inline void updateYRNMIN( const double& pnmin ) 
+     { 
+       yrnmin += pnmin; 
+     }
+
+    // yrnuptake ***********************************************
+     
+     inline double getYRNUPTAKE( void ) { return yrnuptake; }
+
+     inline void setYRNUPTAKE( const double& pyrnup ) 
+     { 
+       yrnuptake = pyrnup; 
+     }
+
+     inline void updateYRNUPTAKE( const double& pnup ) 
+     { 
+       yrnuptake += pnup; 
+     }
+
+    // yrrh **********************************************
+     
+     inline double getYRRH( void ) { return yrrh; }
+
+     inline void setYRRH( const double& pyrrh ) 
+     { 
+       yrrh = pyrrh; 
+     }
+
+     inline void updateYRRH( const double& prh ) 
+     { 
+       yrrh += prh; 
+     }
 
 /* **************************************************************
 		 Public Variables
@@ -335,16 +382,6 @@ class Tmicrobe44: public ProcessXML44
      MDM44 mdm;
      
      NEM nem;
-
-     // Annual sum of netnmin
-     double yrnmin;         // (g N / (sq. meter * year))
-
-     // Annual sum of nuptake
-     double yrnuptake;      // (g N / (sq. meter * year))
-     
-     // Annual sum of rh
-     double yrrh;       // (g C / (sq. meter * year))
-
 
 
    private:
@@ -380,6 +417,15 @@ class Tmicrobe44: public ProcessXML44
 
      // Heterotrophic respiration
      double rh;  // (g C / (sq. meter * month))
+
+     // Annual sum of netnmin
+     double yrnmin;         // (g N / (sq. meter * year))
+
+     // Annual sum of nuptake
+     double yrnuptake;      // (g N / (sq. meter * year))
+     
+     // Annual sum of rh
+     double yrrh;       // (g C / (sq. meter * year))
 
 
 /* *************************************************************

@@ -465,7 +465,7 @@ void Tsoil44::resetYrFluxes( void )
 
   // Annual water fluxes
 
-  yrineet = ZERO;
+//  yrineet = ZERO;
 
   yreet = ZERO;
 
@@ -656,23 +656,33 @@ void Tsoil44::updateHydrology( const double& elev,
 
   // Determine initial eet (ineet)
   
-  ineet = xeet( rain, pet, avlh2o, pdm );
+//  ineet = xeet( rain, pet, avlh2o, pdm );
+  eet = xeet( rain, pet, avlh2o, pdm );
 
 
-  if( ineet > (rain + snowinf + avlh2o) )
+//  if( ineet > (rain + snowinf + avlh2o) )
+//  {
+//    ineet = rain + snowinf + avlh2o;
+//  }
+
+  if( eet < ZERO ) { eet = ZERO; }
+
+  if( eet > (rain + snowinf + avlh2o) )
   {
-    ineet = rain + snowinf + avlh2o;
+    eet = rain + snowinf + avlh2o;
   }
 
-  if( ineet < ZERO ) { ineet = ZERO; }
+//  if( ineet < ZERO ) { ineet = ZERO; }
+  if( eet < ZERO ) { eet = ZERO; }
 
-
-  if( 1 == irrgflag && ineet < pet )
-  {
+//  if( 1 == irrgflag && ineet < pet )
+  if( 1 == irrgflag && eet < pet )
+   {
     // If irrigated, add just enough water to overcome 
     //   moisture limitations
 
-    irrigate = pet - ineet;
+//    irrigate = pet - ineet;
+    irrigate = pet - eet;
     
     xrain = rain + irrigate;
 
@@ -687,7 +697,7 @@ void Tsoil44::updateHydrology( const double& elev,
 
     xrain = rain;
 
-    eet = ineet;
+//    eet = ineet;
   }
 
 

@@ -15,6 +15,8 @@ Modifications:
 20080130 - DWK changed class Atmosphere43 to class Atmosphere44
 20110707 - DWK changed include from temigsmconst44a.hpp to 
            temigsmconst44c.hpp
+20140604 - DWK changed access of "yr" variables from public to
+           private
                                                                                                                                                       
 *****************************************************************
 ************************************************************** */
@@ -260,6 +262,63 @@ class Atmosphere44
      }
 
   
+     // yrpet ***************************************************
+     
+     inline double getYRPET( void ) { return yrpet; }
+        
+     inline void setYRPET( const double& pyrpet ) 
+     { 
+       yrpet = pyrpet; 
+     }
+
+     inline void updateYRPET( const double& ppet ) 
+     { 
+       yrpet += ppet; 
+     }
+
+     // yrprec ***************************************************
+     
+     inline double getYRPREC( void ) { return yrprec; }
+        
+     inline void setYRPREC( const double& pyrprec ) 
+     { 
+       yrprec = pyrprec; 
+     }
+
+     inline void updateYRPREC( const double& pprec ) 
+     { 
+       yrprec += pprec; 
+     }
+  
+
+     // yrrain ***************************************************
+     
+     inline double getYRRAIN( void ) { return yrrain; }
+        
+     inline void setYRRAIN( const double& pyrrain ) 
+     { 
+       yrrain = pyrrain; 
+     }
+
+     inline void updateYRRAIN( const double& prain ) 
+     { 
+       yrrain += prain; 
+     }
+
+
+     // yrsnowfall *********************************************
+     
+     inline double getYRSNOWFALL( void ) { return yrsnowfall; }
+        
+     inline void setYRSNOWFALL( const double& pyrsnowfall ) 
+     { 
+       yrsnowfall = pyrsnowfall; 
+     }
+
+     inline void updateYRSNOWFALL( const double& psnowfall ) 
+     { 
+       yrsnowfall += psnowfall; 
+     }
 
 
 
@@ -269,18 +328,6 @@ class Atmosphere44
 
      // Number of days per month     
      double ndays[CYCLE];   
-
-     // Annual potential evapotranspiration (mm / year)
-     double yrpet;
-
-     // Annual total precipitation (mm / year)
-     double yrprec;
-
-     // Annual sum of rainfall (mm / year)
-     double yrrain;
-
-     // Annual snow ( mm / year)    
-     double yrsnowfall;         
   
    
    private:
@@ -351,6 +398,18 @@ class Atmosphere44
 
      // Surface Air Temperature (degrees C)
      double tair;
+
+     // Annual potential evapotranspiration (mm / year)
+     double yrpet;
+
+     // Annual total precipitation (mm / year)
+     double yrprec;
+
+     // Annual sum of rainfall (mm / year)
+     double yrrain;
+
+     // Annual snow ( mm / year)    
+     double yrsnowfall;         
 
 };
 
