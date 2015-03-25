@@ -76,6 +76,7 @@ PROGRAM program_off
   implicit none
   logical,save :: first !First step logical
   data first/.true./
+  integer :: i
   integer :: yr, mon, day, mcsec
   integer :: pyr, pmon, pday, pmcsec
   include 'IGSM2.inc'
@@ -112,6 +113,7 @@ PROGRAM program_off
   if (first) then
 #endif
 
+  print *,'PROG FROM USR.SRC'
   call clmmpi_initialized (clmmpi_running, ier)
   if (.not. clmmpi_running) call clmmpi_init(ier)
   clmmpicom_glob = CLMMPI_COMM_WORLD
@@ -142,9 +144,21 @@ PROGRAM program_off
   ! -----------------------------------------------------------------
 
   call clm_init0()
+! call get_curr_date (pyr, mon, day, mcsec)
+!      write (6,*) 'PR0 nstep= ',get_nstep(), ' year= ',pyr,' month= ',mon,&
+!           ' day= ',day,' seconds= ',mcsec
+!      write (6,*)
+!      write (6,'(72a1)') ("*",i=1,60)
+!      write (6,*)
+
   call clm_init1()
 
   call get_curr_date (pyr, mon, day, mcsec)
+!      write (6,*) 'PR1 nstep= ',get_nstep(), ' year= ',pyr,' month= ',mon,&
+!           ' day= ',day,' seconds= ',mcsec
+!      write (6,*)
+!      write (6,'(72a1)') ("*",i=1,60)
+!      write (6,*)
 
 !CAS: THE ORBITAL PARAMETER CALL IS NOW BEFORE CLM_INIT2() FOR IGSM
 !CAS:   the default CLM code has the call just before ALL clm_init's
@@ -176,6 +190,13 @@ endif
 !CAS: END ORBITAL PARAMETER CALL 
 
   call clm_init2()
+  call get_curr_date (pyr, mon, day, mcsec)
+!      write (6,*) 'PR2 nstep= ',get_nstep(), ' year= ',pyr,' month= ',mon,&
+!           ' day= ',day,' seconds= ',mcsec
+!      write (6,*)
+!      write (6,'(72a1)') ("*",i=1,60)
+!      write (6,*)
+
 
 #else
 
@@ -238,6 +259,13 @@ endif
 
   first=.false.
  else
+  call get_curr_date (pyr, mon, day, mcsec)
+!      write (6,*) 'PR3 nstep= ',get_nstep(), ' year= ',pyr,' month= ',mon,&
+!           ' day= ',day,' seconds= ',mcsec
+!      write (6,*)
+!      write (6,'(72a1)') ("*",i=1,60)
+!      write (6,*)
+
   if (.not.orbitfix) then
     call get_curr_date (yr, mon, day, mcsec)
     call get_prev_date (pyr, pmon, pday, pmcsec)
@@ -309,7 +337,21 @@ endif
 
      ! Increment time step
 
+  call get_curr_date (pyr, mon, day, mcsec)
+!      write (6,*) 'PR3a nstep= ',get_nstep(), ' year= ',pyr,' month= ',mon,&
+!           ' day= ',day,' seconds= ',mcsec
+!      write (6,*)
+!      write (6,'(72a1)') ("*",i=1,60)
+!      write (6,*)
+
      call advance_timestep()
+  call get_curr_date (pyr, mon, day, mcsec)
+!      write (6,*) 'PR3b nstep= ',get_nstep(), ' year= ',pyr,' month= ',mon,&
+!           ' day= ',day,' seconds= ',mcsec
+!      write (6,*)
+!      write (6,'(72a1)') ("*",i=1,60)
+!      write (6,*)
+
 
 #if (!defined COUP_MIT2D)
   end do
@@ -340,6 +382,13 @@ endif
 
 #if (defined COUP_MIT2D)
   endif
+  call get_curr_date (pyr, mon, day, mcsec)
+!      write (6,*) 'PR4 nstep= ',get_nstep(), ' year= ',pyr,' month= ',mon,&
+!           ' day= ',day,' seconds= ',mcsec
+!      write (6,*)
+!      write (6,'(72a1)') ("*",i=1,60)
+!      write (6,*)
+
   return
   end subroutine clm4mit2d
 #else

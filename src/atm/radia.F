@@ -21,8 +21,8 @@ C****                                                                   5004.
       real ODATA2(JM0,2),GDATA2(JM0,14),BDATA2(JM0,2),FDATA2(JM0,2),
      *     RQT2(JM0,3)
       common/SURRAD/TRSURF(JM0,4),SRSURF(JM0,4)
-      common/FORAERSOL/FORSULF,FORBC,FORVOL,FORGHG
-      logical FORSULF,FORBC,FORVOL,FORGHG
+      common/FORAERSOL/FORSULF,FORBC,FORVOL,FORGHG,FORO3
+      logical FORSULF,FORBC,FORVOL,FORGHG,FORO3
 C     COMMON/WORK4/ IS BEING USED BY THE RADIATION ROUTINES             5013.   
 C                                                                       5014.   
 C                   RADCOM:      CONTROL/INPUT PARAMETERS               5015.   
@@ -53,8 +53,9 @@ C                                                                       5035.
      Q             ,SRTVIS,SRRVIS,SRAVIS,SRTNIR,SRRNIR,SRANIR,FTRUFG(4) 5040.   
      R             ,TRDFGW,TRUFGW,TRUFTW,BTEMPW,TRDFSL,TRUFSL,DTRUFG(4) 5041.   
      S             ,TRSLTS,TRSLTG,TRSLWV,TRSLBS,TTRUFG,LBOTCL,LTOPCL    5042.   
+      COMMON/RADFO3/JYEARO3
       DIMENSION COE(39)                                                 5043.   
-      LOGICAL POLE,DC25,HPRNT,WRCLD,CLDFEED                             5044.
+      LOGICAL POLE,DC25,HPRNT,WRCLD,CLDFEED,HPRNT1                      5044.
 #if ( defined OCEAN_3D )
 #include "AGRID.h"
 #endif
@@ -66,7 +67,7 @@ C                                                                       5035.
 c
 
       common /ATCO2/atm_co2(jm0)
-      common/conprn/HPRNT
+      common/conprn/HPRNT 
       common/COMCLD/READGHG,PCLOUD,WRCLD,NWRCLD,NWRCL,INYEAR,JNDAY
      &,CFAEROSOL,ALFA,CFBC,cfvolaer
       dimension STAERMN(JM0,12,2000),STAERGL(2000),SAYEARS(2000)
@@ -89,7 +90,7 @@ c
      &,BSO4LAND(JM0),BSO4OCEAN(JM0),BSO4TOTAL(JM0)
      &,bcodmn(JM0,LM0,12)
       dimension DSWSRF(jm0),DLWSRF(jm0),DSWVIS(jm0),DSWNIR(jm0)
-     &   ,ULWSRF(jm0)
+     &   ,ULWSRF(jm0),cosz1clm35(jm0)
       integer PCLOUD
 !     common/TSUR/TSURFC(JM0,0:13),TSURFT(JM0),TSURFD(JM0),DTSURF(JM0)
 !    *,cfcld(JM0,3)
@@ -145,9 +146,21 @@ C**** VDATA  1-8  EARTH RATIOS FOR THE 8 VEGETATION TYPES (1)           5067.
 C****        9  WATER FIELD CAPACITY OF FIRST LAYER (KG/M**2)           5068.   
 C****                                                                   5069.   
        dimension GHGBGR0(5)
+#ifdef WR_RADMN
+!       RAD MONTHLY
+       common /RADMN/ nradmn,radmonthly(JM0,LM0+3,9)
+#endif
 
+
+!          print *,'FROM RADIA IFIRST=',IFIRST
       IF(MODRD.EQ.0) IDACC(2)=IDACC(2)+1                                5070.   
       IF (IFIRST.NE.1) GO TO 50                                         5071.   
+#ifdef WR_RADMN
+       radmonthly = 0.0
+       nradmn=0
+#endif
+!     For ALEXEEV
+!     CFS0X=CFS0X/100.
            print *,'FROM RADIA HPRNT=',HPRNT
 #ifdef ADJUSTED_CO2
         print *,' ADJUSTED_CO2'
@@ -323,6 +336,10 @@ C
         print *,'VOL AEROSOL FORCING ',
      *   'is calculated in stead of cloud forcing'
        endif
+      if(FORO3) then
+        print *,'O3 FORCING ',
+     *   'is calculated in stead of cloud forcing'
+       endif
       if(FORGHG) then
         print *,'GHG FORCING ',
      *   'is calculated in stead of cloud forcing'
@@ -380,8 +397,11 @@ C**** RADIATION AVERAGING IN I AND J       4       2       2            5110.
       JRA=(IJRA+2)/3                                                    5111.   
       IRA=IJRA/JRA                                                      5112.   
    50 JALTER=MOD(NSTEP,NRAD*JRA)/NRAD                                   5113.   
+      HPRNT1=.false.
       JDAYR=JDAY
       JYEARR=JYEAR
+      JYEARO3=JYEARR
+      JYEARO3=YEARGT
       IALTER=MOD(NSTEP,NRAD*IJRA)/(NRAD*JRA)                            5114.   
       TNOW=JYEAR+(JDAY-.5)/365.                                         5127.1  
 !     print *,'RADIA JDAY=',JDAY
@@ -405,7 +425,7 @@ c          print *,'S0X=',S0X,' TNOW=',TNOW
       ENDIF
       S0=S0X*1367./RSDIST                                               5115.   
       S0R=S0
-!        print *,'S0=',S0
+!        print *,'S0R=',S0R,'S0X=',S0X*1367.
 #if ( defined VOL_AER )
           do MNAER=1,12
            if (JDAY.le.JDY(MNAER)) go to 458
@@ -413,18 +433,30 @@ c          print *,'S0X=',S0X,' TNOW=',TNOW
  458      continue
 c         print *,' MNAER=', MNAER,' MONTH=',JMONTH
 #endif
+#if ( defined CLM35 )
+C
+        do j=1,jm
+         COSZ1(1,J)=cosz1clm35(j)
+       enddo
+      IF(MODRD.NE.0) GO TO 840                                          5121.   
+#ifdef WR_RADMN
+       nradmn=nradmn+1
+#endif
+C
+#endif
 !
 C**** CALCULATE AVERAGE COSINE OF ZENITH ANGLE FOR CURRENT COMP3 STEP   5116.   
 C****   AND RADIATION PERIOD                                            5117.   
       ROT1=TWOPI*TOFDAY/24.                                             5118.   
       if(DC25)then
+!        print *,'BEFORE COSZT'
          ROT2=ROT1+TWOPI*DTCNDS/SDAY                                    5119.
          CALL COSZT (IO,JM,SIND,COSD,ROT1,ROT2,COSZ1)                   5120.
       else
          ROT2=ROT1+TWOPI
          CALL COSZR (IO,JM,SIND,COSD,ROT1,ROT2,COSZ1)
       end if
-      if(HPRNT)then
+      if(HPRNT1)then
        print *,' radia TAU=',TAU
        print *,' CLDSS'
        print *,(CLDSS(1,7,L),L=1,LM)
@@ -435,8 +467,33 @@ C****   AND RADIATION PERIOD                                            5117.
 C
       IF(MODRD.NE.0) GO TO 840                                          5121.   
 C
+
       ROT2=ROT1+TWOPI*NRAD*DT/SDAY                                      5122.   
       CALL COSZS (IO,JM,SIND,COSD,ROT1,ROT2,COSZ2,COSZA)                5123.   
+
+#if ( defined CLM35 )
+        COSZ2 = COSZ1
+        COSZA = COSZ1
+        do j=1,jm
+         cosz1clm35(j)=COSZ1(1,J)
+       enddo
+#endif
+!     IF (IFIRST.EQ.1) THEN
+      if(HPRNT)then
+      if(JMONTH.ne.JMLAST) then
+         print *,' FROM radia TAU=',TAU
+         print *,'COSZ1, COSZ2, COSZA'
+         do j=1,jm
+         print *,COSZ1(1,j), COSZ2(1,j), COSZA(1,j)
+         enddo
+         i=1
+         print *,'ALBEDO'
+         do j=1,jm
+         print *,aldirclm(i,j),aldifclm(i,j),asdirclm(i,j),asdifclm(i,j)
+         enddo
+      ENDIF
+      endif
+         
 C****                                                                   5124.   
 C**** COMPUTE EARTH ALBEDOS AND OTHER PARAMETERS FOR BEGINNING OF DAY   5125.   
 
@@ -477,15 +534,22 @@ C
         endif
        ELSE
          FULGAS(2)=CO2
-#ifdef ADJUSTED_CO2
+!#ifdef ADJUSTED_CO2
+#if ( defined ADJUSTED_CO2 || defined IPCC_FORCING)
           XNOW(1)=GHGBGR(1)*CO2
           KFOR(1)=1
 !         print *,'CO2 adjustnemt  ',XNOW(1),GHGBGR(1),KFOR(1)
 !         increasing CO2 forcing
           CALL DTDX1D(XNOW,GHGBGR,XDT0,SDT0,KFOR,1)   
+!         print *,'CO2 IPCC forcing  ',XNOW(1),GHGBGR(1),XDT0(1)
           CALL DXDT3D(XNOW,GHGBGR,XDT0,SDT0,KFOR,1) 
           FULGAS(2)=XNOW(1)/GHGBGR(1)
 !         print *,'CO2 adjustnemt  ',XNOW(1),GHGBGR(1)
+#else
+          XNOW(1)=GHGBGR(1)*CO2
+          KFOR(1)=1
+          CALL DTDX3D(XNOW,GHGBGR,XDT0,SDT0,KFOR,1)   
+          print *,'CO2 GISS forcing  ',XNOW(1),GHGBGR(1),XDT0(1)
 #endif
        ENDIF
          if(FORGHG.or.CO2FOR) then
@@ -656,6 +720,9 @@ C****                                                                   5131.
 C**** MAIN J LOOP                                                       5132.   
 C****                                                                   5133.   
       DO 600 J=1,JM                                                     5134.   
+#if ( defined CLM35 )
+       STBOLAND(j)=STBO
+#endif
       IF ((J-1)*(JM-J).NE.0) GO TO 140                                  5135.   
 C**** CONDITIONS AT THE POLES                                           5136.   
       POLE=.TRUE.                                                       5137.   
@@ -667,6 +734,9 @@ C**** CONDITIONS AT NON-POLAR POINTS                                    5141.
       MODRJ=MOD(J+JALTER,JRA)                                           5143.   
       IMAX=IM                                                           5144.   
   160 XFRADJ=.2+1.2*COSP(J)*COSP(J)                                     5145.   
+!     HPRNT1=J.eq.2.and.abs(TOFDAY-7.0).lt.1e-3
+!     HPRNT1=abs(TOFDAY-0.0).lt.1e-3
+!     print *,'HPRNT1=',HPRNT1
 #if ( defined VOL_AER )
       RVOL=0.012
       iYAER=SAYEARS(1)
@@ -707,6 +777,9 @@ C**** DETERMINE FRACTIONS FOR SURFACE TYPES AND COLUMN PRESSURE         5155.
          POICE=PWATER
       endif
       PLICE=FDATA(I,J,3)*PLAND                                          5159.   
+#if ( defined CLM35 )
+        PLICE=0.0
+#endif
       PEARTH=PLAND-PLICE                                                5160.   
       SP=P(I,J)                                                         5161.   
 C****                                                                   5162.   
@@ -717,7 +790,19 @@ c     RANDSS=RANDU(X)                                                   5165.
 c     RANDMC=RANDU(X)                                                   5166.   
       CALL RANDUU(RANDSS,X)
       CALL RANDUU(RANDMC,X)
-      if(HPRNT)then
+!      print *,' rnd4cld ',j,RANDSS,RANDMC
+#if ( defined CLM35 )
+      CALL RANDUU(RANCLM1,X)
+      CALL RANDUU(RANCLM2,X)
+!     rnd14clm(1,j)=max(RANCLM1,RANCLM2)
+!     rnd24clm(1,j)=min(RANCLM1,RANCLM2)
+      rnd14clm(1,j)=RANCLM1
+      rnd24clm(1,j)=RANCLM2
+!     if (PLAND.gt.0.0) then
+!      print *,' rnd4clm ',j,rnd14clm(1,j),rnd24clm(1,j)
+!     endif
+#endif
+      if(HPRNT1)then
        print *,' radia TAU=',TAU
        print *,' RANDSS=',RANDSS
        print *,' RANDMC=',RANDMC
@@ -783,7 +868,7 @@ C**** clear sky condinion
          CLEAR(J)=0
       endif
        if(STRARFOR.or.CO2FOR.or.S0FOR.or.FORBC.
-     &    or.FORVOL.or.FORGHG)then
+     &    or.FORVOL.or.FORGHG.or.FORO3)then
          CLEAR(J)=0
        endif
 C****                                                                   5247.   
@@ -813,8 +898,8 @@ C****                                                                   5260.
       SNOWLI=GDATA(I,J,12)                                              5270.   
       SNOWE=GDATA(I,J,2)                                                5271.   
 #if ( defined CLM35 )
-!     SNOWLI=1.e-5
-!     SNOWE=1.e-5
+      SNOWLI=1.e-5
+      SNOWE=1.e-5
 #endif
       AGESN=GDATA(I,J,11)                                               5272.   
       if( J.eq.-46) then
@@ -824,8 +909,22 @@ C****                                                                   5260.
 !     print *,SNOWOI,SNOWLI,SNOWE,AGESN
       endif
       WEARTH=(GDATA(I,J,5)+GDATA(I,J,6))/(VDATA(I,J,9)+1.E-20)          5273.   
+#if ( defined CLM35 )
+      WEARTH=1.0
+#endif
       DO 430 K=1,8                                                      5274.   
   430 PVT(K)=VDATA(I,J,K)                                               5275.   
+      if( J.eq.129) then
+      print *,'From radia J=',J,' TAU=',TAU
+      print *,'WEARTH=',WEARTH
+      print *,GDATA(I,J,5)+GDATA(I,J,6),VDATA(I,J,9)
+      PVTT=0.0
+      do k=1,8
+       PVTT=PVTT+PVT(k)
+      enddo
+      print *,'PVT(1)=',PVT(1)
+      print *,'PVTT=',PVTT
+      endif
       WS=BLDATA(I,J,1)                                                  5276.   
       do 439 L=1,LM+1
        SRHR(I,J,L)=0.
@@ -870,6 +969,9 @@ C****                                                                   5260.
          POICE=PWATER
       endif
       PLICE=FDATA(I,J,3)*PLAND            
+#if ( defined CLM35 )
+        PLICE=0.0
+#endif
       PEARTH=PLAND-PLICE
       if(ii.eq.1)then
        BSO4BC=BSO4OCEAN(J)/BSO4TOTAL(J)
@@ -896,6 +998,9 @@ C****                                                                   5260.
        POICE=0.
        PWATER=0.   
        PLICE=FDATA(I,J,3)
+#if ( defined CLM35 )
+        PLICE=0.0
+#endif
        PEARTH=1.-PLICE
        TGAL=TGE*PEARTH+TGLI*PLICE
        PLAND=1.
@@ -931,6 +1036,12 @@ c     FGOLDU(3)=XFRADJ*PEARTH                                           5278.
       endif
       if(FORVOL)then
         FGOLDU(1)=FGOLDU1
+      endif
+      if(FORO3)then
+        JYEARO3=JYEARR
+!       call gettropozone(jyearo3,jday)
+!       call getstratozone(jyearo3,jday)
+        call getforcedozone(jyearo3,jday)
       endif
 !
 #if ( defined IPCC_EMI )
@@ -1001,14 +1112,27 @@ c     if(J.eq.1)then
 c      print *,ii,PTYPE,PWATER,POCEAN,POICE,PLAND,PEARTH,PLICE
 c      print *,(FGOLDU(if),if=1,5)
 c     endif
-c         print *,'S0 for real calculation=',S0
+!         if(JDAY.eq.1.and.MODRD.EQ.0) then
+!         if(J.eq.24)then
+!         print *,'S0 for real calculation=',S0*RSDIST
+!         endif
+!         endif
+!     print '(a20,3e14.6)','BEFORE RCOMPX',COSZ-COSZ2(1,j),
+!    &   COSZ-COSZA(1,j)
+      if(COSZ.ne.COSZA(1,j)) print *,'COSZ.ne.COSZA'
       CALL RCOMPX                                                       5279.   
+            if (HPRNT1) then
+             print *,' PRINT FROM RADIA AFTER RCOMPX',TODAY,J,ii
+             print '(3e14.6)',SRDFLB(1),TRUFLB(1),TRUFLB(LM)
+             print '(2e14.6)',SRDVIS,SRDNIR
+            endif
           if (IRFIRST.eq.1.and.READGHG.eq.1)then
             CALL WRITER(12)
             if(ii.ge.2)IRFIRST=0
           endif
       IF(DMOD(TAU,365.*24.).EQ.0..and.J.eq.JM/2) then
 !     IF(DMOD(TAU,30.*24.).EQ.0..and.J.eq.1) then
+!     IF(J.eq.14) then
        print *,' tau=',TAU,' J=',J
        CALL WRITER (1,0)
        print *,-TRNFLB(1),TRNFLB(LM+4),TRNFLB(LM+1),TRDFLB(1)
@@ -1066,6 +1190,15 @@ C *****
          TRSURF(J,ii)=TRSURF(J,ii)+ghostf(1,J)
       endif
       SRSURF(J,ii)=SRNFLB(1)
+      if(HPRNT1)then
+       print *,' radia TAU=',TAU
+       print *,' before  440 j=',J
+       print *,'PTYPE',PTYPE
+       print *,'SRHR'
+       print *,(SRHR(1,1,L+1),L=1,LM)
+       print *,'SRFHRL'
+       print *,(SRFHRL(L),L=1,LM)
+      endif
       DO 440 L=1,LM                                                     5284.   
 #if ( defined CPL_CHEM )
 !
@@ -1081,6 +1214,12 @@ c     &                   + srnflb(l+1)*ptype
 #endif
       SRHR(I,J,L+1)=SRHR(I,J,L+1)+SRFHRL(L)*PTYPE
   440 TRHR(I,J,L+1)=TRHR(I,J,L+1)-TRFCRL(L)*PTYPE
+      if(HPRNT1)then
+       print *,' radia TAU=',TAU
+       print *,' after  440'
+       print *,'SRHR'
+       print *,(SRHR(1,1,L+1),L=1,LM)
+      endif
       DO 450 LR=1,3                                                     5287.   
       SRHRS(I,J,LR)=SRHRS(I,J,LR)+SRFHRL(LM+LR)*PTYPE
   450 TRHRS(I,J,LR)=TRHRS(I,J,LR)-TRFCRL(LM+LR)*PTYPE
@@ -1125,8 +1264,15 @@ C        for TEM CLM
             DSWSRF(j)=SRDFLB(1)
             DLWSRF(j)=TRSURF(J,2)
             ULWSRF(j)=TRUFLB(1)
+            STBOLAND(j)=TRUFLB(1)/(TGAL**4)
             DSWVIS(j)=SRDVIS
             DSWNIR(j)=SRDNIR
+            if (HPRNT1) then
+             print *, 'EXTRA PRINT FROM RADIA',TODAY,J
+             print '(3e14.6)',DSWSRF(j),DLWSRF(j),ULWSRF(j)
+             print '(2e14.6)',DSWVIS(j),DSWNIR(j)
+            endif
+             
 C        for TEM CLM
 #endif
           PLAND=PTYPE
@@ -1200,6 +1346,9 @@ C
           POICE=PWATER
        endif
        PLICE=FDATA(I,J,3)*PLAND            
+#if ( defined CLM35 )
+        PLICE=0.0
+#endif
        PEARTH=PLAND-PLICE
        if(ii.eq.1)then
         PTYPE=POCEAN
@@ -1230,7 +1379,8 @@ C
        elseif(CO2FOR)then
          FULGAS(2)=CO2F
        elseif(S0FOR)then
-          S0=S0X0/CFS0X*1367./RSDIST
+!         S0=S0X0/CFS0X*1367./RSDIST
+          S0=S0R/CFS0X
           if(JDAY.eq.1.and.MODRD.EQ.0) then
           if(J.eq.24)then
           print *,'For S0FOR ',S0X0,CFS0X,S0X
@@ -1241,9 +1391,17 @@ C
        elseif(FORBC)then
         FBC=0.0
        elseif(FORGHG)then
-        CALL FORGET(YEARGT,KTREND,0)
+!       CALL FORGET(YEARGT,KTREND,0)
+        FULGAS(2)=1.0
+        FULGAS(6)=1.0
+        FULGAS(7)=1.0
+        FULGAS(8)=1.0
+        FULGAS(9)=1.0
        elseif(FORVOL)then
         FGOLDU(1)=FGOLDU0
+       elseif(FORO3)then
+         JYEARO3=YEARGT
+        call getforcedozone(jyearo3,jday)
        else
         CSS=0.
         CMC=0.
@@ -1255,6 +1413,7 @@ C
  1210   continue
        endif
   568  continue
+      if(COSZ.ne.COSZA(1,j)) print *,'COSZ.ne.COSZA'
         CALL RCOMPX
        if(FORGHG.or.CO2FOR)then
         IF(DMOD(TAU,365.*24.).EQ.0..and.J.eq.JM/2) then
@@ -1323,6 +1482,14 @@ C *******
           endif
 C *********
   499 continue
+#ifdef WR_RADMN
+      do k=1,9
+      do l=1,lm+3
+       radmonthly(j,l,k)=radmonthly(j,l,k)+ULGAS(L,k)
+     &  /(PLE(L)-PLE(L+1))
+      enddo
+      enddo
+#endif
         ALB(I,J,1)=SRNAN/(SRDAN+1.E-20)
   500 IM1=I                                                             5304.   
 C****                                                                   5305.   
@@ -1390,6 +1557,8 @@ C****                                                                   5506.
      *  +TRHRS(I,J,LR))*COE(LR+LM)                                      5513.   
 !     JDLAST=JDAY 
   840 DO 860 J=1,JM                                                     5514.   
+!     HPRNT1=J.eq.2.and.abs(TOFDAY-7.0).lt.1e-3
+!     HPRNT1=abs(TOFDAY-0.0).lt.1e-3
 #if ( defined HR_DATA )
           dswhr(j)=DSWSRF(j)*COSZ1(1,j)
           dlwhr(j)=DLWSRF(j)
@@ -1400,13 +1569,19 @@ C****                                                                   5506.
           dlw4clm(i,j)=DLWSRF(j)
           swinr4clm(i,j)=DSWNIR(j)*COSZ1(1,j)
           swvis4clm(i,j)=DSWVIS(j)*COSZ1(1,j)
+          albinrclm(j)=0.7*aldirclm(i,j)+0.3*aldifclm(i,j)
+          albvisclm(j)=0.7*asdirclm(i,j)+0.3*asdifclm(i,j)
 !         if(TAU.gt.3633.0.and.TAU.lt.3744.0.and.J.eq.29) then
-          if(J.eq.-29) then
+!         if(J.eq.-29) then
 !          print *,TAU,j
-!          print *,'DLWSRF(j)=',DLWSRF(j), 
-!    &     'dlw4clm(i,j)=',dlw4clm(i,j) 
-            write (229,*)TAU,TOFAY,dsw4clm(i,j),dlw4clm(i,j)
-          endif
+            if (HPRNT1) then
+           print *,'DLWSRF(j)=',DLWSRF(j), 
+     &     'dlw4clm(i,j)=',dlw4clm(i,j) 
+           print *,'DSWSRF(j)=',DSWSRF(j), 
+     &     'dsw4clm(i,j)=',dsw4clm(i,j) 
+            endif
+!           write (229,*)TAU,TOFAY,dsw4clm(i,j),dlw4clm(i,j)
+!         endif
           if(J.eq.-30) then
             write (230,*)TAU,TOFAY,dsw4clm(i,j),dlw4clm(i,j)
           endif
@@ -1414,6 +1589,12 @@ c    For TEM
           swtd4tem(j)=swtd4tem(j)+S0*COSZ1(1,j)
           swsd4tem(j)=swsd4tem(j)+DSWSRF(j)*COSZ1(1,j)
           nradd4tem(j)=nradd4tem(j)+1
+            if (HPRNT1) then
+         print *,'FROM RADIA=',TOFDAY,J,COSZ1(1,j)
+         print  '(5E12.4)',dsw4clm(i,j),asdirclm(i,j)
+     &    ,asdifclm(i,j),
+     &    aldirclm(i,j),aldifclm(i,j)
+            endif
 #endif
 #if ( defined OCEAN_3D )
           solarinc_ocean(J)=solarinc_ocean(J)+SWIN(j,1)*COSZ1(1,j)
@@ -1425,11 +1606,17 @@ c    For TEM
 #endif
       IMAX=IM                                                           5515.   
       IF(J.EQ.1.OR.J.EQ.JM) IMAX=1                                      5516.   
-      if(HPRNT)then
+      if(HPRNT1)then
        if(J.eq.1)then
        print *,' radia TAU=',TAU
        print *,' Before 860'
        print *,(T(1,1,L),L=1,LM)
+       print *,(SRHR(1,1,L+1),L=1,LM)
+       print *,(TRHR(1,1,L+1),L=1,LM)
+       print *,(PK(1,1,L),L=1,LM)
+       print *,(COE(L),L=1,LM)
+       print *,'COSZ1=',COSZ1(I,J)
+       print *,'P=',P(I,J)
       endif
       endif
       DO 860 L=1,LM                                                     5517.   
@@ -1442,7 +1629,7 @@ c    For TEM
 
   860 T(I,J,L)=T(I,J,L)+(SRHR(I,J,L+1)*COSZ1(I,J)+TRHR(I,J,L+1))        5519.   
      *  *COE(L)/(P(I,J)*PK(I,J,L))                                      5520.   
-      if(HPRNT)then
+      if(HPRNT1)then
        print *,' radia TAU=',TAU
        print *,' after 860'
        print *,'B66',T(1,1,1)

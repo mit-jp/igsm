@@ -48,6 +48,8 @@ Modifications:
            temigsmconsts44c.hpp
 20110707 - DWK changed include from tigsmprocessXML44a.h to
            tigsmprocessXML44c.h
+20140604 - DWK changed access of "yr" variables from public to
+           private
                                                         
 ****************************************************************
 ************************************************************* */
@@ -1177,7 +1179,344 @@ class Tveg44 : public ProcessXML44
        plant.nitrogen = pvegn;
      };
 
+     // yrc2n **************************************************
+     
+     inline double getYRC2N( void ) { return yrc2n; };
 
+     inline void setYRC2N( const double& pyrc2n ) 
+     { 
+       yrc2n = pyrc2n; 
+     };
+
+     inline void updateYRC2N( const double& pc2n ) 
+     { 
+       yrc2n += pc2n; 
+     };
+ 
+     // yrcarbon ***********************************************
+      
+     inline double getYRVEGC( void ) { return yrcarbon; };
+
+     inline void setYRVEGC( const double& pyrcarbon ) 
+     { 
+       yrcarbon = pyrcarbon; 
+     };
+ 
+    inline void updateYRVEGC( const double& pvegc ) 
+     { 
+       yrcarbon += pvegc; 
+     };
+
+     // yrfpc ***********************************************
+      
+     inline double getYRFPC( void ) { return yrfpc; };
+
+     inline void setYRFPC( const double& pyrfpc ) 
+     { 
+       yrfpc = pyrfpc; 
+     };
+ 
+    inline void updateYRFPC( const double& pfpc ) 
+     { 
+       yrfpc += pfpc; 
+     };
+
+     // yrgpp ***********************************************
+      
+     inline double getYRGPP( void ) { return yrgpp; };
+
+     inline void setYRGPP( const double& pyrgpp ) 
+     { 
+       yrgpp = pyrgpp; 
+     };
+ 
+    inline void updateYRGPP( const double& pgpp ) 
+     { 
+       yrgpp += pgpp; 
+     };
+
+     // yrgpr ***********************************************
+      
+     inline double getYRGPR( void ) { return yrgpr; };
+
+     inline void setYRGPR( const double& pyrgpr ) 
+     { 
+       yrgpr = pyrgpr; 
+     };
+ 
+    inline void updateYRGPR( const double& pgpr ) 
+     { 
+       yrgpr += pgpr; 
+     };
+
+     // yringpp ***********************************************
+      
+     inline double getYRINGPP( void ) { return yringpp; };
+
+     inline void setYRINGPP( const double& pyringpp ) 
+     { 
+       yringpp = pyringpp; 
+     };
+ 
+    inline void updateYRINGPP( const double& pingpp ) 
+     { 
+       yringpp += pingpp; 
+     };
+
+     // yrinnpp ***********************************************
+      
+     inline double getYRINNPP( void ) { return yrinnpp; };
+
+     inline void setYRINNPP( const double& pyrinnpp ) 
+     { 
+       yrinnpp = pyrinnpp; 
+     };
+ 
+    inline void updateYRINNPP( const double& pinnpp ) 
+     { 
+       yrinnpp += pinnpp; 
+     };
+
+     // yrinnup.total ******************************************
+     
+     inline double getYRINNUP( void ) { return yrinnup; };
+
+     inline void setYRINNUP( const double& pyrinnup ) 
+     { 
+       yrinnup = pyrinnup; 
+     };
+
+     inline void updateYRINNUP( const double& pinnup ) 
+     { 
+       yrinnup += pinnup; 
+     };
+     
+
+     // yrlai *************************************************
+      
+     inline double getYRLAI( void ) { return yrlai; };
+
+     inline void setYRLAI( const double& pyrlai ) 
+     { 
+       yrlai = pyrlai; 
+     };
+ 
+    inline void updateYRLAI( const double& plai ) 
+     { 
+       yrlai += plai; 
+     };
+
+
+     // yrleaf *************************************************
+      
+     inline double getYRLEAF( void ) { return yrleaf; };
+
+     inline void setYRLEAF( const double& pyrleaf ) 
+     { 
+       yrleaf = pyrleaf; 
+     };
+ 
+    inline void updateYRLEAF( const double& pleaf ) 
+     { 
+       yrleaf += pleaf; 
+     };
+
+     // yrltrfalc *********************************************
+      
+     inline double getYRLTRFALC( void ) { return yrltrfalc; };
+
+     inline void setYRLTRFALC( const double& pyrltrfalc ) 
+     { 
+       yrltrfalc = pyrltrfalc; 
+     };
+ 
+    inline void updateYRLTRFALC( const double& pltrfalc ) 
+     { 
+       yrltrfalc += pltrfalc; 
+     };
+
+     // yrltrfaln *********************************************
+      
+     inline double getYRLTRFALN( void ) { return yrltrfaln; };
+
+     inline void setYRLTRFALN( const double& pyrltrfaln ) 
+     { 
+       yrltrfaln = pyrltrfaln; 
+     };
+ 
+    inline void updateYRLTRFALN( const double& pltrfaln ) 
+     { 
+       yrltrfaln += pltrfaln; 
+     };
+
+     // yrlup **************************************************
+      
+     inline double getYRLUP( void ) { return yrlup; };
+
+     inline void setYRLUP( const double& pyrlup ) 
+     { 
+       yrlup = pyrlup; 
+     };
+ 
+    inline void updateYRLUP( const double& plup ) 
+     { 
+       yrlup += plup; 
+     };
+
+     // yrnitrogen *********************************************
+      
+     inline double getYRVEGN( void ) { return yrnitrogen; };
+
+     inline void setYRVEGN( const double& pyrnitrogen ) 
+     { 
+       yrnitrogen = pyrnitrogen; 
+     };
+ 
+    inline void updateYRVEGN( const double& pvegn ) 
+     { 
+       yrnitrogen += pvegn; 
+     };
+
+     // yrnmobil *********************************************
+      
+     inline double getYRNMOBIL( void ) { return yrnmobil; };
+
+     inline void setYRNMOBIL( const double& pyrnmobil ) 
+     { 
+       yrnmobil = pyrnmobil; 
+     };
+ 
+    inline void updateYRNMOBIL( const double& pnmobil ) 
+     { 
+       yrnmobil += pnmobil; 
+     };
+
+     // yrnpp **************************************************
+      
+     inline double getYRNPP( void ) { return yrnpp; };
+
+     inline void setYRNPP( const double& pyrnpp ) 
+     { 
+       yrnpp = pyrnpp; 
+     };
+ 
+    inline void updateYRNPP( const double& pnpp ) 
+     { 
+       yrnpp += pnpp; 
+     };
+
+     // yrnrsorb ***********************************************
+      
+     inline double getYRNRSORB( void ) { return yrnrsorb; };
+
+     inline void setYRNRSORB( const double& pyrnrsorb ) 
+     { 
+       yrnrsorb = pyrnrsorb; 
+     };
+ 
+    inline void updateYRNRSORB( const double& pnrsorb ) 
+     { 
+       yrnrsorb += pnrsorb; 
+     };
+
+     // yrnup **************************************************
+     
+     inline double getYRNUPTAKE( void ) { return yrnup; };
+
+     inline void setYRNUPTAKE( const double& pyrnup ) 
+     { 
+       yrnup = pyrnup; 
+     };
+
+     inline void updateYRNUPTAKE( const double& pnup ) 
+     { 
+       yrnup += pnup; 
+     };
+     
+
+     // yrrgrowth **********************************************
+      
+     inline double getYRRGROWTH( void ) { return yrrgrowth; };
+
+     inline void setYRRGROWTH( const double& pyrrgrowth ) 
+     { 
+       yrrgrowth = pyrrgrowth; 
+     };
+ 
+    inline void updateYRRGROWTH( const double& prgrowth ) 
+     { 
+       yrrgrowth += prgrowth; 
+     };
+
+     // yrrmaint ***********************************************
+      
+     inline double getYRRMAINT( void ) { return yrrmaint; };
+
+     inline void setYRRMAINT( const double& pyrrmaint ) 
+     { 
+       yrrmaint = pyrrmaint; 
+     };
+ 
+    inline void updateYRRMAINT( const double& prmaint ) 
+     { 
+       yrrmaint += prmaint; 
+     };
+
+     // yrstoren ************************************************
+      
+     inline double getYRSTOREN( void ) { return yrstoren; };
+
+     inline void setYRSTOREN( const double& pyrstoren ) 
+     { 
+       yrstoren = pyrstoren; 
+     };
+ 
+    inline void updateYRSTOREN( const double& pstoren ) 
+     { 
+       yrstoren += pstoren; 
+     };
+ 
+     // yrstructn **********************************************
+      
+     inline double getYRSTRUCTN( void ) { return yrstructn; };
+
+     inline void setYRSTRUCTN( const double& pyrstructn ) 
+     { 
+       yrstructn = pyrstructn; 
+     };
+ 
+    inline void updateYRSTRUCTN( const double& pstructn ) 
+     { 
+       yrstructn += pstructn; 
+     };
+ 
+     // yrsup **************************************************
+      
+     inline double getYRSUP( void ) { return yrsup; };
+
+     inline void setYRSUP( const double& pyrsup ) 
+     { 
+       yrsup = pyrsup; 
+     };
+ 
+    inline void updateYRSUP( const double& psup ) 
+     { 
+       yrsup += psup; 
+     };
+
+     // yrunleaf ***********************************************
+      
+     inline double getYRUNLEAF( void ) { return yrunleaf; };
+
+     inline void setYRUNLEAF( const double& pyrunleaf ) 
+     { 
+       yrunleaf = pyrunleaf; 
+     };
+ 
+    inline void updateYRUNLEAF( const double& punleaf ) 
+     { 
+       yrunleaf += punleaf; 
+     };    
 
 
 /* *************************************************************
@@ -1188,82 +1527,7 @@ class Tveg44 : public ProcessXML44
      // Index for community type
      int cmnt;
 
-
-     // ratio of yrcarbon to yrnitrogen
-     double yrc2n;            
-
-     // Annual sum of plant.carbon
-     double yrcarbon;          
-
-     // Sum of monthly FPC
-     double yrfpc;        
-
-     // annual sum of monthly GPP
-     double yrgpp;             
-
-      // Annual GPR
-     double yrgpr;            
-
-     // Annual sum of ingpp
-     double yringpp;           
-
-     // Annual sum of innpp
-     double yrinnpp;           
-
-     // Annual sum of innup
-     double yrinnup;           
-
-     double yrinpr;
-
-      // Sum of monthly LAI
-     double yrlai;            
-
-     // mean annual normalized leaf phenology
-     double yrleaf;      
-
-     // Annual sum of ltrfal.carbon
-     double yrltrc;      
-     
-     // Annual sum of ltrfal.nitrogen      
-     double yrltrn;            
-
-     // Annual sum of luptake
-     double yrlup;             
-
-     // Annual sum of plant.nitrogen
-     double yrnitrogen;        
-
-     // Annual sum of nmobil
-     double yrnmobil;          
-
-     // Annual sum of npp
-     double yrnpp;             
-
-     // Annual sum of nresorb
-     double yrnrsorb;          
-
-     // Annual sum of nuptake
-     double yrnup;             
-
-     double yrprod;
-
-     // Annual sum of rg
-     double yrrgrowth;
-
-     // Annual sum of rm
-     double yrrmaint;
-
-     // Annual sum of labile.nitrogen
-     double yrstoren;          
-     
-      // Annual sum of strctrl.nitrogen
-     double yrstructn;       
-     
-     // Annual sum of suptake
-     double yrsup;             
-
-     // Annual sum of unnormleaf
-     double yrunleaf;          
+     int dbug;
 
 
   private:
@@ -1419,6 +1683,79 @@ class Tveg44 : public ProcessXML44
 
      // Monthly unnormalized leaf phenology
      double unnormleaf; 
+
+     // ratio of yrcarbon to yrnitrogen
+     double yrc2n;            
+
+     // Annual sum of plant.carbon
+     double yrcarbon;          
+
+     // Sum of monthly FPC
+     double yrfpc;        
+
+     // annual sum of monthly GPP
+     double yrgpp;             
+
+      // Annual GPR
+     double yrgpr;            
+
+     // Annual sum of ingpp
+     double yringpp;           
+
+     // Annual sum of innpp
+     double yrinnpp;           
+
+     // Annual sum of innup
+     double yrinnup;           
+
+      // Sum of monthly LAI
+     double yrlai;            
+
+     // mean annual normalized leaf phenology
+     double yrleaf;      
+
+     // Annual sum of ltrfal.carbon
+     double yrltrfalc;      
+     
+     // Annual sum of ltrfal.nitrogen      
+     double yrltrfaln;            
+
+     // Annual sum of luptake
+     double yrlup;             
+
+     // Annual sum of plant.nitrogen
+     double yrnitrogen;        
+
+     // Annual sum of nmobil
+     double yrnmobil;          
+
+     // Annual sum of npp
+     double yrnpp;             
+
+     // Annual sum of nresorb
+     double yrnrsorb;          
+
+     // Annual sum of nuptake
+     double yrnup;             
+
+     // Annual sum of rg
+     double yrrgrowth;
+
+     // Annual sum of rm
+     double yrrmaint;
+
+     // Annual sum of labile.nitrogen
+     double yrstoren;          
+     
+      // Annual sum of strctrl.nitrogen
+     double yrstructn;       
+     
+     // Annual sum of suptake
+     double yrsup;             
+
+     // Annual sum of unnormleaf
+     double yrunleaf;          
+
 
 
 /* *************************************************************

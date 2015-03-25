@@ -193,9 +193,9 @@ c     print *,'From gr_clm J=',j,' TAU=',TAU
 c     print *,tsoiclm(i,j,1),tsoiclm(i,j,nlevsoi)
 c     print *,TG1,TG2,TG11
 c     print *,WTR1,WTR2,SNOW
-      albinr=0.7*aldirclm(i,j)+0.3*aldifclm(i,j)
-      albvis=0.7*asdirclm(i,j)+0.3*asdifclm(i,j)
-      swuclm=albinr*swinr4clm(i,j)+albvis*swvis4clm(i,j)
+!     albinr=0.7*aldirclm(i,j)+0.3*aldifclm(i,j)
+!     albvis=0.7*asdirclm(i,j)+0.3*asdifclm(i,j)
+      swuclm=albinrclm(j)*swinr4clm(i,j)+albvisclm(j)*swvis4clm(i,j)
 !        if(J.eq.29)then
 !          if(TAU.ge.3644.0.and.TAU.le.3743.0) then
 !         print *,'Form gr_clm J=',j,' TAU=',TAU

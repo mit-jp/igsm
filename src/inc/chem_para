@@ -67,6 +67,7 @@
 !
 !    dx_df11:	Mass conversion in radiative forcing of 
 !		species x
+!            all gases in ppbm
 !
 	real, parameter :: dhfc134a_df11   = 1.04
 	real, parameter :: dhfc143a_df11   = 1.03

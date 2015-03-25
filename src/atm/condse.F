@@ -146,8 +146,9 @@ c    * ,48*0./
       integer PCLOUD
       DIMENSION DSG0(36)                                                3016.
       LOGICAL POLE,SKIPDI,SKIPIF,HPRNT,CONDL                            3017.
-     &  ,INIRINST,BARINST,PRNT
-      common/conprn/HPRNT,JPR,LPR
+     &  ,INIRINST,BARINST,PRNT,HPRNT1
+!     common/conprn/HPRNT,JPR,LPR
+      common/conprn/HPRNT1,JPR,LPR
       DATA QUP,DSIGUP,CLH/3*0./                                         3018.
       DATA RVAP/461.5/                                                  3019.
       DATA TF/273.16/,TI/233.16/,IFIRST/1/                              3020.
@@ -199,7 +200,7 @@ c     LMDIFT=LM
       EDLET=1.
       EDLEQ=1.
       TWOPI=6.283185
-c     HPRNT=.FALSE.
+      HPRNT=.FALSE.
       print *,' convection before condensation'
       print *,' PCLOUD=',PCLOUD
       print *,' RHNEW is a function of latitude'
@@ -235,9 +236,15 @@ c     RH0OLD=.65
       RH0=0.925	! 2359
 !     RH0=0.9 !   630.11
       RH45=0.875	! 2359
-!     RH45=0.9	! 470.10 ! 620.11 ! 630.11
+!     RH45=0.925	! 470.10 ! 620.11 ! 630.11
 #if ( defined CLM35 )
-      RH45=0.925 ! 640.11 1003.11
+!     RH45=0.925 ! 640.11 1003.11
+      RH0=0.875	! 590.14
+!     RH0=0.925	! 240.13
+!     RH0=0.90	! 240.13
+!     RH45=0.875 ! 580.14
+!     RH45=0.85 ! 600.14
+      RH45=0.825 ! 600.14
 !     RH45=0.9	! 470.10 ! 620.11 ! 630.11
 #endif
 !     RH45=0.85	! 480.10
@@ -249,14 +256,15 @@ c     RH0OLD=.65
 
         rhrad = 3.14159*(-90.+4.*(j-1))/180.
         RHNEW(j) =  RHAV+DRH*cos(4.*rhrad)
+!       rhrad = 3.14159*(-90.+4.*(j-1)-15.)/180.
+!       RHNEW(j) =  RHAV+DRH*sin(6.*rhrad)
 
         do l=1,3	! Low clouds
-         RHKP(l,j)=0.8*RHNEW(j)  ! 2352
-         RHKP(l,j)=0.825*RHNEW(j)  ! 2353
-         RHKP(l,j)=0.85*RHNEW(j)  ! 2354
+#if ( defined CLM35 )
          RHKP(l,j)=0.875*RHNEW(j)  ! 2357
-         RHKP(l,j)=0.9*RHNEW(j)  ! 2358
+#else
          RHKP(l,j)=0.925*RHNEW(j)  ! 2367
+#endif
 #if ( !defined CLM )
          RHKP(l,j)=0.95*RHNEW(j)  ! 2905.06
          RHKP(l,j)=0.9375*RHNEW(j)  ! 2906.06
@@ -265,19 +273,15 @@ c     RH0OLD=.65
         enddo
         do l=4,6	! Middle clouds
 !       do l=4,5	! Middle clouds 460.10
-         RHKP(l,j)=0.9*RHNEW(j) ! 2352
-         RHKP(l,j)=0.875*RHNEW(j) ! 2358
-         RHKP(l,j)=0.925*RHNEW(j) ! 2366
          RHKP(l,j)=0.95*RHNEW(j) ! 2367
         enddo
         do l=7,9	! High clouds
 !       do l=6,9	! High clouds 460.10
-         RHKP(l,j)=0.9*RHNEW(j) ! 2352
-         RHKP(l,j)=0.925*RHNEW(j) ! 2353
-         RHKP(l,j)=0.95*RHNEW(j) ! 2354
-         RHKP(l,j)=0.975*RHNEW(j) ! 2357
+#if ( defined CLM35 )
+         RHKP(l,j)=0.995*RHNEW(j) ! 490
+#else
          RHKP(l,j)=0.985*RHNEW(j) ! 2358
-!        RHKP(l,j)=0.995*RHNEW(j) ! 490
+#endif
 #if ( !defined CLM )
          RHKP(l,j)=0.99*RHNEW(j)  ! 2905.06
          RHKP(l,j)=0.995*RHNEW(j)  ! 2906.06 2907.06

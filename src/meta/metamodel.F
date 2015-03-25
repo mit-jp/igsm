@@ -1,4 +1,3 @@
-
 #include "ctrparam.h"
 
 !	============================================================
@@ -62,14 +61,18 @@ C --- local variable declarations
       REAL*8 aqiozo, aqiozo1, aqiozo2, aqiozo3
       REAL*8 aqisox, aqisox1, aqisox2, aqisox3
 
-#if ( defined CPL_CHEM ) && ( defined CPL_META )
+!     print *,'J_DATE FROM META=',j_date
+!#if ( defined CPL_CHEM ) && ( defined CPL_META )
 
 C --- generate transformations for NORMAL and BETA
 
 c	--- use predicted temperature to calculate 
 c	 temperature deviation === 120799
 c      temp = (rtemp - 0.000000e+00) / 4.000000e+00
-	x     = sin(lati*0.0174533)
+! APS
+!x     = sin(lati*0.0174533)
+	x     = sin(rlati*0.0174533)
+! APS
 	temp  = 14.9 - 15.5*x*cos(0.0172615*(j_date - 22.))
      &		- 28.*(1.5*(x**2) - 0.5) 
      &		+ 273.15			
@@ -17476,7 +17479,8 @@ c	raqivoc ~ caqi*(1./8)*(hcho +ald2 + mek + alka + ethe + alke + tolu + arom)
 	if (raqivoc.le.0.) raqivoc = 0.0
 	if (raqivoc.ge.1.) raqivoc = 1.0
 
-#endif
+
+!#endif
 
       RETURN
       END

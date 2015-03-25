@@ -36,20 +36,18 @@ module stochrdMod
   real,allocatable :: exp_tstorm(:,:,:)
   real,allocatable :: exp_tdry(:,:,:)
   real,allocatable :: trnd_tdry(:,:,:)
-  real,allocatable :: t_dry(:,:)
-  real,allocatable :: t_storm(:,:)
-  real,allocatable :: pcpc_resid(:,:)
-  real,allocatable :: pcpl_resid(:,:)
   real,allocatable :: prc_poiss(:,:)
   real,allocatable :: prl_poiss(:,:)
   integer,allocatable :: storms(:,:)
   integer,allocatable :: storm_dur(:,:)
-  integer,allocatable :: dtcumu(:,:)
+! integer,allocatable :: dtcumu(:,:)
+!APS
+  integer,allocatable :: dtcumu(:)
   integer :: ist,jst
 
 !
 ! !PUBLIC MEMBER FUNCTIONS:
-  public :: surfrd_get_stoch  ! Read surface dataset and determine subgrid weights
+  public :: surfrd_get_stoch  ! Read surface dataset
 
 !
 ! !REVISION HISTORY:
@@ -103,26 +101,29 @@ contains
     integer :: ret, time_index
     integer  :: strt1, cnt1        ! Start and count to read in for scalar
     character(len=32) :: subname = 'surfrd_get_stoch'     ! subroutine name
+    type(gridcell_type), pointer :: gptr  ! pointer to gridcell derived subtype
+
 !-----------------------------------------------------------------------
 
     if (masterproc) then
 
+    ! Set pointers into derived type
+
+       gptr => clm3%g
+
        allocate (exp_tdry(lsmlon,lsmlat,mthsperyr))
        allocate (exp_tstorm(lsmlon,lsmlat,mthsperyr))
        allocate (trnd_tdry(lsmlon,lsmlat,mthsperyr))
-       allocate (t_dry(lsmlon,lsmlat))
-       allocate (t_storm(lsmlon,lsmlat))
-       allocate (pcpc_resid(lsmlon,lsmlat))
-       allocate (pcpl_resid(lsmlon,lsmlat))
        allocate (prc_poiss(lsmlon,lsmlat))
        allocate (prl_poiss(lsmlon,lsmlat))
        allocate (storms(lsmlon,lsmlat))
        allocate (storm_dur(lsmlon,lsmlat))
-       allocate (dtcumu(lsmlon,lsmlat))
-       t_dry = ival1
-       t_storm = ival1
-       pcpc_resid = ival
-       pcpl_resid = ival
+
+
+       gptr%t_dry = ival1
+       gptr%t_storm = ival1
+       gptr%pcpc_resid = ival
+       gptr%pcpl_resid = ival
        prc_poiss = ival
        prl_poiss = ival
        storms = int(ival)

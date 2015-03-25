@@ -49,6 +49,9 @@ subroutine iniTimeConst
 !
 ! !ARGUMENTS:
   implicit none
+#if (defined COUP_TEM)
+  include 'TEM.inc'
+#endif
 !
 ! !CALLED FROM:
 ! subroutine initialize in module initializeMod.
@@ -109,12 +112,17 @@ subroutine iniTimeConst
   integer  :: ncid             ! netCDF file id 
   integer  :: n,i,j,ib,lev,bottom      ! indices
   integer  :: g,l,c,p          ! indices
+!APS
+  integer  :: g2i              ! indices
   integer  :: m                ! vegetation type index
   real(r8) :: bd               ! bulk density of dry soil material [kg/m^3]
   real(r8) :: tkm              ! mineral conductivity
   real(r8) :: xksat            ! maximum hydraulic conductivity of soil [mm/s]
   real(r8) :: scalez = 0.025_r8   ! Soil layer thickness discretization (m)
   real(r8) :: clay,sand        ! temporaries
+!** Xiang 2013/10/29
+  real(r8) :: aggclay, aggsand !** aggregated top-1m soil texture 
+!** Xiang
   real(r8) :: slope,intercept        ! temporary, for rooting distribution
   integer  :: begp, endp       ! per-proc beginning and ending pft indices
   integer  :: begc, endc       ! per-proc beginning and ending column indices
@@ -139,6 +147,11 @@ subroutine iniTimeConst
   character(len=256) :: locfn                    ! local filename
   character(len= 32) :: subname = 'iniTimeConst' ! subroutine name
   integer :: mxsoil_color                        ! maximum number of soil color classes
+
+!CAS
+  real(r8) :: AKSat(46)
+!CAS
+
 
   integer :: closelatidx,closelonidx
   real(r8):: closelat,closelon
@@ -490,6 +503,17 @@ subroutine iniTimeConst
    ! --------------------------------------------------------------------
 
    ! Column level initialization
+!
+! CAS: Set up a latitude dependence of the leading coefficient of xksat
+!
+     AKSat(1:46) = (/1.75,1.68,1.64,1.6,1.55,1.51,1.47,1.44,1.41,&
+                     1.38,1.36,1.33,1.31,1.3,1.28,1.27,1.26,1.25,&
+                     1.25,1.25,1.25,1.25,1.25,&
+                     1.25,1.25,1.25,1.25,1.25,&
+                     1.25,1.26,1.27,1.28,1.3,1.31,1.33,1.36,1.38,&
+                     1.41,1.44,1.47,1.51,1.55,1.6,1.64,1.68,1.75/)
+
+
 !dir$ concurrent
 !cdir nodep
    do c = begc, endc
@@ -497,12 +521,19 @@ subroutine iniTimeConst
       ! Set gridcell and landunit indices
       g = cgridcell(c)
       l = clandunit(c)
+!APS
+!APS    Account for offset required for latitudes north of Antarctica
+       g2i = g
+       if ( g >= 8 ) g2i = g2i + 2
+!APS
 
       ! Initialize restriction for min of soil potential (mm)
       smpmin(c) = -1.e8_r8
 
+!CAS
       ! Decay factor (m)
-      hkdepth(c) = 1._r8/2.5_r8
+      !hkdepth(c) = 1._r8/2.5_r8
+      hkdepth(c) = 1._r8/2.0_r8
 
       ! Maximum saturated fraction
       wtfact(c) = gti(g)
@@ -529,14 +560,38 @@ subroutine iniTimeConst
             watopt(c,lev) = spval 
          end do
       else
+         aggclay = 0.0
+         aggsand = 0.0
          do lev = 1,nlevsoi
             clay = clay3d(g,lev)
             sand = sand3d(g,lev)
+!** Xiang: 2013/10/29 Add common block arrays for TEM
+!** create the aggregated top-1m soil texture data (sand,clay, and silt) based
+!** CLM soil layer depth (weighted average) and assign it to TEM arrays
+            IF(lev <= (nlevsoi - 2)) THEN
+              IF(lev /= (nlevsoi-2)) THEN
+                aggclay = aggclay + clay3d(g,lev)*dzsoi(lev)
+                aggsand = aggsand + sand3d(g,lev)*dzsoi(lev)  
+              ELSE
+!APS
+                aggclay = aggclay + clay3d(g,lev)*(1.0-zisoi(lev-1))
+                aggsand = aggsand + sand3d(g,lev)*(1.0-zisoi(lev-1))
+!APS
+!               aggclay = aggclay + clay3d(g,lev)*(1.0-zisoi(lev))
+!               aggsand = aggsand + sand3d(g,lev)*(1.0-zisoi(lev))
+             ENDIF
+!             write(6,*) 'Check for new soil properties'
+!             write(6,'(2I4,I3,6F8.2)') g,g2i,lev,clay3d(g,lev),sand3d(g,lev),dzsoi(lev),zisoi(lev),aggclay,aggsand
+            ENDIF
+!** Xiang
             watsat(c,lev) = 0.489_r8 - 0.00126_r8*sand
             bd = (1._r8-watsat(c,lev))*2.7e3_r8
-            xksat = 0.0070556_r8 *( 10._r8**(-0.884_r8+0.0153_r8*sand) ) ! mm/s
-            tkm = (8.80_r8*sand+2.92_r8*clay)/(sand+clay)          ! W/(m K)
+!
+!CAS: Adjusting saturated hydraulic conductivity (Hortonian runoff too low)
+!
+            xksat = 0.00125_r8 *( 10._r8**(-0.884_r8+0.0153_r8*sand) ) ! mm/s
 
+            tkm = (8.80_r8*sand+2.92_r8*clay)/(sand+clay)          ! W/(m K)
             bsw(c,lev) = 2.91_r8 + 0.159_r8*clay
             bsw2(c,lev) = -(3.10_r8 + 0.157_r8*clay - 0.003_r8*sand)
             psisat(c,lev) = -(exp((1.54_r8 - 0.0095_r8*sand + 0.0063_r8*(100.0_r8-sand-clay))*log(10.0_r8))*9.8e-5_r8)
@@ -549,7 +604,25 @@ subroutine iniTimeConst
             csol(c,lev) = (2.128_r8*sand+2.385_r8*clay) / (sand+clay)*1.e6_r8  ! J/(m3 K)
             watdry(c,lev) = watsat(c,lev) * (316230._r8/sucsat(c,lev)) ** (-1._r8/bsw(c,lev)) 
             watopt(c,lev) = watsat(c,lev) * (158490._r8/sucsat(c,lev)) ** (-1._r8/bsw(c,lev)) 
+#if (defined COUP_TEM)
+!** Xiang: 2013/10/29 Add common block arrays for TEM
+!           ksat4tem(lev,g) = hksat(c,lev)
+!           por4tem(lev,g)  = watsat(c,lev)
+!APS
+!           ksat4tem(lev,g2i) = hksat(c,lev)
+!           ksat in TEM is in  cm/min, but CLM uses mm/s. 
+            ksat4tem(lev,g2i) = 6.0*hksat(c,lev)
+            por4tem(lev,g2i)  = watsat(c,lev)
+!** Xiang
+#endif
          end do
+#if (defined COUP_TEM)
+         pctclay4tem(g2i) = aggclay
+         pctsand4tem(g2i) = aggsand
+         pctsilt4tem(g2i) = 100.0 - aggclay - aggsand 
+!        write(6,*) 'Check for new soil properties 2'
+!        write(6,'(2I4,3F8.2)') g,g2i,aggclay,aggsand,pctsilt4tem(g2i)
+#endif
       endif
 
       ! Define lake or non-lake levels layers
@@ -561,12 +634,17 @@ subroutine iniTimeConst
          zi(c,0:nlevsoi) = zisoi(0:nlevsoi)
          dz(c,1:nlevsoi) = dzsoi(1:nlevsoi)
       end if
-
+#if (defined COUP_TEM)
+!** Xiang: 2013/10/29 Add common block arrays for TEM
+!     zthick4tem(1:nlevsoi,g) = dzsoi(1:nlevsoi)
+! APS
+      zthick4tem(1:nlevsoi,g2i) = 100.0*dzsoi(1:nlevsoi)
+!** Xiang     
+#endif
       ! Initialize terms needed for dust model
       clay = clay3d(g,1)
       gwc_thr(c) = 0.17_r8 + 0.14_r8*clay*0.01_r8
       mss_frc_cly_vld(c) = min(clay*0.01_r8, 0.20_r8)
-
    end do
 
    ! pft level initialization

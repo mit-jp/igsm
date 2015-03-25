@@ -37,6 +37,8 @@ TIGSMHUMNACT44B.H - describes human disturbances to natural
 20110819 - DWK changed prod100par to prod100par[MAXCMNT]
 20110819 - DWK changed sconvert to sconvert[MAXCMNT]
 20110819 - DWK changed vrespar to vrespar[MAXCMNT]
+20140604 - DWK changed access of "yr" variables from public to
+           private
 
 ****************************************************************
 ************************************************************* */
@@ -1320,6 +1322,546 @@ class Humanact44 : public ProcessXML44
      }
 
 
+     // yrcflux ************************************************
+     
+     inline double getYRCFLUX( void ) { return yrcflux; }
+
+     inline void setYRCFLUX( const double& pyrcflux ) 
+     { 
+       yrcflux = pyrcflux; 
+     }
+
+     inline void updateYRCFLUX( const double& pcflux ) 
+     { 
+       yrcflux += pcflux; 
+     }
+
+
+     // yrconvrtC ************************************************
+     
+     inline double getYRCONVRTC( void ) { return yrconvrtC; }
+
+     inline void setYRCONVRTC( const double& pyrconvrtC ) 
+     { 
+       yrconvrtC = pyrconvrtC; 
+     }
+
+     inline void updateYRCONVRTC( const double& pconvrtC ) 
+     { 
+       yrconvrtC += pconvrtC; 
+     }
+
+
+     // yrconvrtN **********************************************
+     
+     inline double getYRCONVRTN( void ) { return yrconvrtN; }
+
+     inline void setYRCONVRTN( const double& pyrconvrtN ) 
+     { 
+       yrconvrtN = pyrconvrtN; 
+     }
+
+     inline void updateYRCONVRTN( const double& pconvrtN ) 
+     { 
+       yrconvrtN += pconvrtN; 
+     }
+
+
+     // yrdecayPROD1C ******************************************
+     
+     inline double getYRDECAYPROD1C( void ) { return yrdecayPROD1C; }
+
+     inline void setYRDECAYPROD1C( const double& pyrdecayPROD1C ) 
+     { 
+       yrdecayPROD1C = pyrdecayPROD1C; 
+     }
+
+     inline void updateYRDECAYPROD1C( const double& pdecayPROD1C ) 
+     { 
+       yrdecayPROD1C += pdecayPROD1C; 
+     }
+
+
+     // yrdecayPROD10C ******************************************
+     
+     inline double getYRDECAYPROD10C( void ) { return yrdecayPROD10C; }
+
+     inline void setYRDECAYPROD10C( const double& pyrdecayPROD10C ) 
+     { 
+       yrdecayPROD10C = pyrdecayPROD10C; 
+     }
+
+     inline void updateYRDECAYPROD10C( const double& pdecayPROD10C ) 
+     { 
+       yrdecayPROD10C += pdecayPROD10C; 
+     }
+
+
+     // yrdecayPROD100C ******************************************
+     
+     inline double getYRDECAYPROD100C( void ) { return yrdecayPROD100C; }
+
+     inline void setYRDECAYPROD100C( const double& pyrdecayPROD100C ) 
+     { 
+       yrdecayPROD100C = pyrdecayPROD100C; 
+     }
+
+     inline void updateYRDECAYPROD100C( const double& pdecayPROD100C ) 
+     { 
+       yrdecayPROD100C += pdecayPROD100C; 
+     }
+
+
+     // yrdecayPROD1N ******************************************
+     
+     inline double getYRDECAYPROD1N( void ) { return yrdecayPROD1N; }
+
+     inline void setYRDECAYPROD1N( const double& pyrdecayPROD1N ) 
+     { 
+       yrdecayPROD1N = pyrdecayPROD1N; 
+     }
+
+     inline void updateYRDECAYPROD1N( const double& pdecayPROD1N ) 
+     { 
+       yrdecayPROD1N += pdecayPROD1N; 
+     }
+
+
+     // yrdecayPROD10N ******************************************
+     
+     inline double getYRDECAYPROD10N( void ) { return yrdecayPROD10N; }
+
+     inline void setYRDECAYPROD10N( const double& pyrdecayPROD10N ) 
+     { 
+       yrdecayPROD10N = pyrdecayPROD10N; 
+     }
+
+     inline void updateYRDECAYPROD10N( const double& pdecayPROD10N ) 
+     { 
+       yrdecayPROD10N += pdecayPROD10N; 
+     }
+
+
+     // yrdecayPROD100N ******************************************
+     
+     inline double getYRDECAYPROD100N( void ) { return yrdecayPROD100N; }
+
+     inline void setYRDECAYPROD100N( const double& pyrdecayPROD100N ) 
+     { 
+       yrdecayPROD100N = pyrdecayPROD100N; 
+     }
+
+     inline void updateYRDECAYPROD100N( const double& pdecayPROD100N ) 
+     { 
+       yrdecayPROD100N += pdecayPROD100N; 
+     }
+
+
+     // yrdecayTOTPRODC ******************************************
+     
+     inline double getYRDECAYTOTPRODC( void ) { return yrdecayTOTPRODC; }
+
+     inline void setYRDECAYTOTPRODC( const double& pyrdecayTOTPRODC ) 
+     { 
+       yrdecayTOTPRODC = pyrdecayTOTPRODC; 
+     }
+
+     inline void updateYRDECAYTOTPRODC( const double& pdecayTOTPRODC ) 
+     { 
+       yrdecayTOTPRODC += pdecayTOTPRODC; 
+     }
+
+
+     // yrdecayTOTPRODN ******************************************
+     
+     inline double getYRDECAYTOTPRODN( void ) { return yrdecayTOTPRODN; }
+
+     inline void setYRDECAYTOTPRODN( const double& pyrdecayTOTPRODN ) 
+     { 
+       yrdecayTOTPRODN = pyrdecayTOTPRODN; 
+     }
+
+     inline void updateYRDECAYTOTPRODN( const double& pdecayTOTPRODN ) 
+     { 
+       yrdecayTOTPRODN += pdecayTOTPRODN; 
+     }
+
+
+     // yrfertn ************************************************
+     
+     inline double getYRFERTN( void ) { return yrfertn; }
+
+     inline void setYRFERTN( const double& pyrfertn ) 
+     { 
+       yrfertn += pyrfertn; 
+     }
+
+     inline void updateYRFERTN( const double& pfertn ) 
+     { 
+       yrfertn += pfertn; 
+     }
+
+
+     // yrfluxResidueC *****************************************
+     
+     inline double getYRFLUXRESIDUEC( void ) { return yrfluxResidueC; }
+
+     inline void setYRFLUXRESIDUEC( const double& pyrfluxResidueC ) 
+     { 
+       yrfluxResidueC += pyrfluxResidueC; 
+     }
+
+     inline void updateYRFLUXRESIDUEC( const double& pfluxResidueC ) 
+     { 
+       yrfluxResidueC += pfluxResidueC; 
+     }
+
+
+     // yrfluxResidueN *****************************************
+     
+     inline double getYRFLUXRESIDUEN( void ) { return yrfluxResidueN; }
+
+     inline void setYRFLUXRESIDUEN( const double& pyrfluxResidueN ) 
+     { 
+       yrfluxResidueN += pyrfluxResidueN; 
+     }
+
+     inline void updateYRFLUXRESIDUEN( const double& pfluxResidueN ) 
+     { 
+       yrfluxResidueN += pfluxResidueN; 
+     }
+
+
+     // yrformPROD1C *******************************************
+     
+     inline double getYRFORMPROD1C( void ) { return yrformPROD1C; }
+
+     inline void setYRFORMPROD1C( const double& pyrformPROD1C ) 
+     { 
+       yrformPROD1C += pyrformPROD1C; 
+     }
+
+     inline void updateYRFORMPROD1C( const double& pformPROD1C ) 
+     { 
+       yrformPROD1C += pformPROD1C; 
+     }
+
+
+     // yrformPROD10C *******************************************
+     
+     inline double getYRFORMPROD10C( void ) { return yrformPROD10C; }
+
+     inline void setYRFORMPROD10C( const double& pyrformPROD10C ) 
+     { 
+       yrformPROD10C += pyrformPROD10C; 
+     }
+
+     inline void updateYRFORMPROD10C( const double& pformPROD10C ) 
+     { 
+       yrformPROD10C += pformPROD10C; 
+     }
+
+
+     // yrformPROD100C *******************************************
+     
+     inline double getYRFORMPROD100C( void ) { return yrformPROD100C; }
+
+     inline void setYRFORMPROD100C( const double& pyrformPROD100C ) 
+     { 
+       yrformPROD100C += pyrformPROD100C; 
+     }
+
+     inline void updateYRFORMPROD100C( const double& pformPROD100C ) 
+     { 
+       yrformPROD100C += pformPROD100C; 
+     }
+
+
+     // yrformPROD1N *******************************************
+     
+     inline double getYRFORMPROD1N( void ) { return yrformPROD1N; }
+
+     inline void setYRFORMPROD1N( const double& pyrformPROD1N ) 
+     { 
+       yrformPROD1N += pyrformPROD1N; 
+     }
+
+     inline void updateYRFORMPROD1N( const double& pformPROD1N ) 
+     { 
+       yrformPROD1N += pformPROD1N; 
+     }
+
+
+     // yrformPROD10N *******************************************
+     
+     inline double getYRFORMPROD10N( void ) { return yrformPROD10N; }
+
+     inline void setYRFORMPROD10N( const double& pyrformPROD10N ) 
+     { 
+       yrformPROD10N += pyrformPROD10N; 
+     }
+
+     inline void updateYRFORMPROD10N( const double& pformPROD10N ) 
+     { 
+       yrformPROD10N += pformPROD10N; 
+     }
+
+
+     // yrformPROD100N *******************************************
+     
+     inline double getYRFORMPROD100N( void ) { return yrformPROD100N; }
+
+     inline void setYRFORMPROD100N( const double& pyrformPROD100N ) 
+     { 
+       yrformPROD100N += pyrformPROD100N; 
+     }
+
+     inline void updateYRFORMPROD100N( const double& pformPROD100N ) 
+     { 
+       yrformPROD100N += pformPROD100N; 
+     }
+
+
+     // yrformResidueC *****************************************
+     
+     inline double getYRFORMRESIDUEC( void ) { return yrformResidueC; }
+
+     inline void setYRFORMRESIDUEC( const double& pyrformResidueC ) 
+     { 
+       yrformResidueC += pyrformResidueC; 
+     }
+
+     inline void updateYRFORMRESIDUEC( const double& pformResidueC ) 
+     { 
+       yrformResidueC += pformResidueC; 
+     }
+
+
+     // yrformResidueN *****************************************
+     
+     inline double getYRFORMRESIDUEN( void ) { return yrformResidueN; }
+
+     inline void setYRFORMRESIDUEN( const double& pyrformResidueN ) 
+     { 
+       yrformResidueN += pyrformResidueN; 
+     }
+
+     inline void updateYRFORMRESIDUEN( const double& pformResidueN ) 
+     { 
+       yrformResidueN += pformResidueN; 
+     }
+
+
+     // yrformTOTPRODC *******************************************
+     
+     inline double getYRFORMTOTPRODC( void ) { return yrformTOTPRODC; }
+
+     inline void setYRFORMTOTPRODC( const double& pyrformTOTPRODC ) 
+     { 
+       yrformTOTPRODC += pyrformTOTPRODC; 
+     }
+
+     inline void updateYRFORMTOTPRODC( const double& pformTOTPRODC ) 
+     { 
+       yrformTOTPRODC += pformTOTPRODC; 
+     }
+
+
+     // yrformTOTPRODN *******************************************
+     
+     inline double getYRFORMTOTPRODN( void ) { return yrformTOTPRODN; }
+
+     inline void setYRFORMTOTPRODN( const double& pyrformTOTPRODN ) 
+     { 
+       yrformTOTPRODN += pyrformTOTPRODN; 
+     }
+
+     inline void updateYRFORMTOTPRODN( const double& pformTOTPRODN ) 
+     { 
+       yrformTOTPRODN += pformTOTPRODN; 
+     }
+
+
+     // yrirrig *******************************************
+     
+     inline double getYRIRRIG( void ) { return yrirrig; }
+
+     inline void setYRIRRIG( const double& pyrirrig ) 
+     { 
+       yrirrig += pyrirrig; 
+     }
+
+     inline void updateYRIRRIG( const double& pirrig ) 
+     { 
+       yrirrig += pirrig; 
+     }
+
+
+     // yrnrent *******************************************
+     
+     inline double getYRNRENT( void ) { return yrnrent; }
+
+     inline void setYRNRENT( const double& pyrnrent ) 
+     { 
+       yrnrent += pyrnrent; 
+     }
+
+     inline void updateYRNRENT( const double& pnrent ) 
+     { 
+       yrnrent += pnrent; 
+     }
+
+ 
+     // yrnsrent *******************************************
+     
+     inline double getYRNSRENT( void ) { return yrnsrent; }
+
+     inline void setYRNSRENT( const double& pyrnsrent ) 
+     { 
+       yrnsrent += pyrnsrent; 
+     }
+
+     inline void updateYRNSRENT( const double& psnrent ) 
+     { 
+       yrnsrent += psnrent; 
+     }
+
+
+     // yrnvrent *******************************************
+     
+     inline double getYRNVRENT( void ) { return yrnvrent; }
+
+     inline void setYRNVRENT( const double& pyrnvrent ) 
+     { 
+       yrnvrent += pyrnvrent; 
+     }
+
+     inline void updateYRNVRENT( const double& pnvrent ) 
+     { 
+       yrnvrent += pnvrent; 
+     }
+
+
+     // yrsconvrtC *********************************************
+     
+     inline double getYRSCONVRTC( void ) { return yrsconvrtC; }
+
+     inline void setYRSCONVRTC( const double& pyrsconvrtC ) 
+     { 
+       yrsconvrtC += pyrsconvrtC; 
+     }
+
+     inline void updateYRSCONVRTC( const double& psconvrtC ) 
+     { 
+       yrsconvrtC += psconvrtC; 
+     }
+
+
+     // yrsconvrtN *********************************************
+     
+     inline double getYRSCONVRTN( void ) { return yrsconvrtN; }
+
+     inline void setYRSCONVRTN( const double& pyrsconvrtN ) 
+     { 
+       yrsconvrtN += pyrsconvrtN; 
+     }
+
+     inline void updateYRSCONVRTN( const double& psconvrtN ) 
+     { 
+       yrsconvrtN += psconvrtN; 
+     }
+
+
+     // yrslashC ***********************************************
+     
+     inline double getYRSLASHC( void ) { return yrslashC; }
+
+     inline void setYRSLASHC( const double& pyrslashC ) 
+     { 
+       yrslashC += pyrslashC; 
+     }
+
+     inline void updateYRSLASHC( const double& pslashC ) 
+     { 
+       yrslashC += pslashC; 
+     }
+
+
+     // yrslashN ***********************************************
+     
+     inline double getYRSLASHN( void ) { return yrslashN; }
+
+     inline void setYRSLASHN( const double& pyrslashN ) 
+     { 
+       yrslashN += pyrslashN; 
+     }
+
+     inline void updateYRSLASHN( const double& pslashN ) 
+     { 
+       yrslashN += pslashN; 
+     }
+
+
+     // yrstubC ************************************************
+     
+     inline double getYRSTUBC( void ) { return yrstubC; }
+
+     inline void setYRSTUBC( const double& pyrstubC ) 
+     { 
+       yrstubC += pyrstubC; 
+     }
+
+     inline void updateYRSTUBC( const double& pstubC ) 
+     { 
+       yrstubC += pstubC; 
+     }
+
+
+     // yrstubN ************************************************
+     
+     inline double getYRSTUBN( void ) { return yrstubN; }
+
+     inline void setYRSTUBN( const double& pyrstubN ) 
+     { 
+       yrstubN += pyrstubN; 
+     }
+
+     inline void updateYRSTUBN( const double& pstubN ) 
+     { 
+       yrstubN += pstubN; 
+     }
+
+
+     // yrvconvrtC *********************************************
+     
+     inline double getYRVCONVRTC( void ) { return yrvconvrtC; }
+
+     inline void setYRVCONVRTC( const double& pyrvconvrtC ) 
+     { 
+       yrvconvrtC += pyrvconvrtC; 
+     }
+
+     inline void updateYRVCONVRTC( const double& pvconvrtC ) 
+     { 
+       yrvconvrtC += pvconvrtC; 
+     }
+
+
+     // yrvconvrtN *********************************************
+     
+     inline double getYRVCONVRTN( void ) { return yrvconvrtN; }
+
+     inline void setYRVCONVRTN( const double& pyrvconvrtN ) 
+     { 
+       yrvconvrtN += pyrvconvrtN; 
+     }
+
+     inline void updateYRVCONVRTN( const double& pvconvrtN ) 
+     { 
+       yrvconvrtN += pvconvrtN; 
+     }
+
+
 /* *************************************************************
 		 Public Variables
 ************************************************************* */
@@ -1370,113 +1912,6 @@ class Humanact44 : public ProcessXML44
      //   with transient land use data 
     int tlulcflag;
 
-    // Annual sum of cflux
-    double yrcflux;
-
-    // Annual sum of convrtflx.carbon
-    double yrconvrtC;
-
-    // Annual sum of convrtflx.nitrogen
-    double yrconvrtN;
-
-    // Annual sum of PROD1decay.carbon
-    double yrdecayPROD1C;
-
-    // Annual sum of PROD10decay.carbon
-    double yrdecayPROD10C;
-
-    // Annual sum of PROD100decay.carbon
-    double yrdecayPROD100C;
-
-    // Annual sum of PROD1decay.nitrogen
-    double yrdecayPROD1N;
-
-    // Annual sum of PROD10decay.nitrogen
-    double yrdecayPROD10N;
-
-    // Annual sum of PROD100decay.nitrogen
-    double yrdecayPROD100N;
-
-    // Annual sum of TOTPRODdecay.carbon
-    double yrdecayTOTPRODC;
-
-    // Annual sum of TOTPRODdecay.nitrogen
-    double yrdecayTOTPRODN;
-
-    // Annual sum of fertn
-    double yrfertn;
-
-    // Annual sum of cropResidueFlux.carbon
-    double yrfluxResidueC;
-
-    // Annual sum of cropResidueFlux.nitrogen
-    double yrfluxResidueN;
-
-    // Annual sum of cropprod.carbon
-    double yrformPROD1C;
-
-    // Annual sum of formPROD10.carbon
-    double yrformPROD10C;
-
-    // Annual sum of formPROD100.carbon
-    double yrformPROD100C;
-
-    // Annual sum of cropprod.nitrogen
-    double yrformPROD1N;
-
-    // Annual sum of formPROD10.nitrogen
-    double yrformPROD10N;
-
-    // Annual sum of formPROD100.nitrogen
-    double yrformPROD100N;
-
-    // Annual sum of formCropResidue.carbon
-    double yrformResidueC;
-
-    // Annual sum of formCropResidue.nitrogen
-    double yrformResidueN;
-
-    // Annual sum of formTOTPROD.carbon
-    double yrformTOTPRODC;
-
-    // Annual sum of formTOTPROD.nitrogen
-    double yrformTOTPRODN;
-
-    // Annual sum of irrigate
-    double yrirrig;
-
-    // Annual sum of nretent
-    double yrnrent;
-
-    // Annual sum of nsretent
-    double yrnsrent;
-
-    // Annual sum of nvretent
-    double yrnvrent;
-
-    // Annual sum of sconvrtflx.carbon
-    double yrsconvrtC;
-
-    // Annual sum of sconvrtflx.nitrogen
-    double yrsconvrtN;
-
-    // Annual sum of slash.carbon
-    double yrslashC;
-
-    // Annual sum of slash.nitrogen
-    double yrslashN;
-
-    // Annual sum of stubble.carbon
-    double yrstubC;
-
-    // Annual sum of stubble.nitrogen
-    double yrstubN;
-
-    // Annual sum of vconvrtflx.carbon
-    double yrvconvrtC;
-
-    // Annual sum of vconvrtflx.nitrogen
-    double yrvconvrtN;
     
 
    private:
@@ -1671,6 +2106,114 @@ class Humanact44 : public ProcessXML44
 
     // Vegetation biomass lost during conversion to agriculture
     Biomass vconvrtflx;
+
+    // Annual sum of cflux
+    double yrcflux;
+
+    // Annual sum of convrtflx.carbon
+    double yrconvrtC;
+
+    // Annual sum of convrtflx.nitrogen
+    double yrconvrtN;
+
+    // Annual sum of PROD1decay.carbon
+    double yrdecayPROD1C;
+
+    // Annual sum of PROD10decay.carbon
+    double yrdecayPROD10C;
+
+    // Annual sum of PROD100decay.carbon
+    double yrdecayPROD100C;
+
+    // Annual sum of PROD1decay.nitrogen
+    double yrdecayPROD1N;
+
+    // Annual sum of PROD10decay.nitrogen
+    double yrdecayPROD10N;
+
+    // Annual sum of PROD100decay.nitrogen
+    double yrdecayPROD100N;
+
+    // Annual sum of TOTPRODdecay.carbon
+    double yrdecayTOTPRODC;
+
+    // Annual sum of TOTPRODdecay.nitrogen
+    double yrdecayTOTPRODN;
+
+    // Annual sum of fertn
+    double yrfertn;
+
+    // Annual sum of cropResidueFlux.carbon
+    double yrfluxResidueC;
+
+    // Annual sum of cropResidueFlux.nitrogen
+    double yrfluxResidueN;
+
+    // Annual sum of cropprod.carbon
+    double yrformPROD1C;
+
+    // Annual sum of formPROD10.carbon
+    double yrformPROD10C;
+
+    // Annual sum of formPROD100.carbon
+    double yrformPROD100C;
+
+    // Annual sum of cropprod.nitrogen
+    double yrformPROD1N;
+
+    // Annual sum of formPROD10.nitrogen
+    double yrformPROD10N;
+
+    // Annual sum of formPROD100.nitrogen
+    double yrformPROD100N;
+
+    // Annual sum of formCropResidue.carbon
+    double yrformResidueC;
+
+    // Annual sum of formCropResidue.nitrogen
+    double yrformResidueN;
+
+    // Annual sum of formTOTPROD.carbon
+    double yrformTOTPRODC;
+
+    // Annual sum of formTOTPROD.nitrogen
+    double yrformTOTPRODN;
+
+    // Annual sum of irrigate
+    double yrirrig;
+
+    // Annual sum of nretent
+    double yrnrent;
+
+    // Annual sum of nsretent
+    double yrnsrent;
+
+    // Annual sum of nvretent
+    double yrnvrent;
+
+    // Annual sum of sconvrtflx.carbon
+    double yrsconvrtC;
+
+    // Annual sum of sconvrtflx.nitrogen
+    double yrsconvrtN;
+
+    // Annual sum of slash.carbon
+    double yrslashC;
+
+    // Annual sum of slash.nitrogen
+    double yrslashN;
+
+    // Annual sum of stubble.carbon
+    double yrstubC;
+
+    // Annual sum of stubble.nitrogen
+    double yrstubN;
+
+    // Annual sum of vconvrtflx.carbon
+    double yrvconvrtC;
+
+    // Annual sum of vconvrtflx.nitrogen
+    double yrvconvrtN;
 
 
 /* *************************************************************

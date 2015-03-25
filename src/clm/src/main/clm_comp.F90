@@ -149,6 +149,8 @@ contains
           call shr_orb_decl( caldaym1, eccen, mvelpp, lambm0, obliqr, declinm1, eccf )
           
           call initSurfAlb( calday, declin, declinm1 )
+          print *,'Declin from clm_comp.F90'
+          print *,declin, declinm1
        end if
 
        ! Determine gridcell averaged properties to send to atm

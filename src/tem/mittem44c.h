@@ -57,6 +57,8 @@ Modifications:
            mitatms44c.h
 20110707 - DWK changed include from mitsoil44a.h to mitsoil44c.h
 20110707 - DWK changed include from mitmcrb44a.h to mitmcrb44c.h
+20140604 - DWK changed access to "yr" variables from public to
+           private
                                                                    
 ****************************************************************
 
@@ -568,6 +570,57 @@ class MITTEM44
        y[i] = py;  
      }
 
+     // yrnce ************************************************
+     
+     inline double getYRNCE( void )
+     {
+       return yrnce;
+     }
+
+     inline void setYRNCE( const double& pyrnce )
+     {
+       yrnce = pyrnce;
+     }
+
+     inline void updateYRNCE( const double& pnce )
+     {
+       yrnce += pnce;
+     }
+
+    // yrnep ************************************************
+     
+     inline double getYRNEP( void )
+     {
+       return yrnep;
+     }
+
+     inline void setYRNEP( const double& pyrnep )
+     {
+       yrnep = pyrnep;
+     }
+
+     inline void updateYRNEP( const double& pnep )
+     {
+       yrnep += pnep;
+     }
+
+    // yrtotalc ************************************************
+     
+     inline double getYRTOTALC( void )
+     {
+       return yrtotalc;
+     }
+
+     inline void setYRTOTALC( const double& pyrtotalc )
+     {
+       yrtotalc = pyrtotalc;
+     }
+
+     inline void updateYRTOTALC( const double& ptotalc )
+     {
+       yrtotalc += ptotalc;
+     }
+
                           
 /* **************************************************************
 			 Public Variables
@@ -726,11 +779,6 @@ class MITTEM44
 
      static double wtol;
 
-     double yrnce;
-
-     double yrnep;    // (g C / (sq. meter * year))
-    
-     double yrtotalc;
 
      // Site ECD variables
 
@@ -835,6 +883,12 @@ class MITTEM44
 
      // Values of ODE state variables for current month
      double y[NUMEQ];
+
+     double yrnce;
+
+     double yrnep;    // (g C / (sq. meter * year))
+    
+     double yrtotalc;
 
     
      // Adaptive integrator variables

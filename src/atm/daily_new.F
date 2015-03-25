@@ -67,8 +67,13 @@ C**** ORBITAL PARAMETERS FOR EARTH FOR YEAR 2000 A.D.                   1014.
 #if ( defined ORBITAL_FOR )
       DATA SOLS/173./,APHEL/186./
 #else
+#if ( defined CLM35 )
+      DATA SOLS/173./,APHEL/186./,OBLIQ/23.43977/,ECCN/.01670366/ 
+      DATA OMEGT/282.8955/
+#else
       DATA SOLS/173./,APHEL/186./,OBLIQ/23.44/,ECCN/.0167/              1015.
       DATA OMEGT/282.9/
+#endif
 #endif
 C****                                                                   1016.
 C**** THE GLOBAL MEAN PRESSURE IS KEPT CONSTANT AT PSF MILLIBARS        1017.
@@ -285,10 +290,16 @@ C****                                                                   8233.
       IMPLICIT REAL*8 (A-H,O-Z)                                         8234.
       REAL*8 MA                                                         8235.
 C     REAL*4 SIND,COSD,SDIST,LAMBDA,OBLIQ,ECCN,OMEGT,DAY                8236.
+#if ( defined CLM )
+#include "CLM.h"
+#endif
 C****                                                                   8237.
       PI = 3.14159265358979D0                                           8238.
       EDAYPY = 365.                                                     8239.
       VERQNX = 79.                                                      8240.
+#if ( defined CLM35 )
+      VERQNX = 80.5
+#endif
       OMEGA=OMEGT*(PI/180.D0)                                           8241.
       DOBLIQ=OBLIQ*(PI/180.D0)                                          8242.
       ECCEN=ECCN                                                        8243.
@@ -333,6 +344,14 @@ C****                                                                   8281.
       SINDD = SIN(TA+OMEGA)*SIN(DOBLIQ)                                 8282.
       COSD = DSQRT(1.-SINDD*SINDD)                                      8283.
       SIND = SINDD                                                      8284.
+    
+#if ( defined CLM35 )
+      SINDD = sin(declin_clm)
+      COSD = DSQRT(1.-SINDD*SINDD)                                      8283.
+      SIND = SINDD                                                      8284.
+#endif
+!     print *,'FROM ORBIT'
+!     print '(2e14.6)',SIN(TA+OMEGA),SIN(DOBLIQ)  
 C     GREENW = 2.*PI*(DAY-VERQNX)*(EDAYPY+1.)/EDAYPY                    8285.
 C     SUNX = -COS(TA+OMEGA)                                             8286.
 C     SUNY = -SIN(TA+OMEGA)*COS(DOBLIQ)                                 8287.

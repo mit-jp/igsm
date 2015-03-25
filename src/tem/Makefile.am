@@ -4,9 +4,9 @@ libtem_a_CXXFLAGS = -O2
 
 libtem_a_SOURCES = elmnt437.cpp \
 	kclimate2tem44c.cxx \
-	landareadat44c.cpp \
+	landareadat44c1.cpp \
 	latdat437.cpp \
-	lulcchrtdat44c.cpp \
+	lulcchrtdat44c1.cpp \
 	lulcdat44a.cpp \
 	mdmigsm44c.cpp \
 	mdmsoiligsm44c.cpp \
@@ -27,7 +27,7 @@ libtem_a_SOURCES = elmnt437.cpp \
 	mittem44c.cpp \
 	nem44c.cpp \
 	o3data44c.cpp \
-	regmittem44c.cpp \
+	regmittem44c1.cpp \
 	telvdat437.cpp \
 	tigsmatms44c.cpp \
 	tigsmbiome44c.cpp \

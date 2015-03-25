@@ -37,9 +37,21 @@
                        mitdaytsoil,mitdaysh2o,&
                        mithrsh2o
 
-    common/landcover4tem/ cellarea, vegfrac, landfrac
-    real*8 cellarea(igsmlat)
-    real*8 landfrac(igsmlat)
-    real*8 vegfrac(mxmsaics,igsmlat)
-    real*8 croptotal(igsmlat)
+    common/vegcoverclm/ vegfrac
+    real*8 :: vegfrac(mxmsaics,igsmlat)
+    common/landcover4tem/ cellarea4tem, cohortarea4tem, landfrac4tem, Incohortarea, &
+                          pctclay4tem, pctsand4tem, pctsilt4tem, &
+                          soilph4tem, ksat4tem, por4tem, zthick4tem  
+    real*8 :: cellarea4tem(igsmlat)
+    integer*8 :: cohortarea4tem(mxmsaics,igsmlat)
+    integer*8 :: landfrac4tem(igsmlat)
+    integer*8 :: Incohortarea(mxmsaics,igsmlat)
+    real*8 :: pctclay4tem(igsmlat)
+    real*8 :: pctsand4tem(igsmlat)
+    real*8 :: pctsilt4tem(igsmlat)
+    real*8 :: soilph4tem(igsmlat)
+    real*8 :: ksat4tem(totlayers,igsmlat)
+    real*8 :: por4tem(totlayers,igsmlat)
+    real*8 :: zthick4tem(totlayers,igsmlat)
+    real*8 :: croptotal(igsmlat)
 

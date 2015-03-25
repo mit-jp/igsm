@@ -163,7 +163,11 @@ contains
        s1        = max(0.01_r8,vol_liq(c,1)/max(wimp,eff_porosity(c,1)))
        su        = max(0._r8,(s1-fcov(c)*1._r8) / (1._r8-fcov(c)))
        v         = -bsw(c,1)*sucsat(c,1)/(0.5_r8*dz(c,1)*1000._r8)
-       qinmax    = (1._r8+v*(su-1._r8))*hksat(c,1)
+!
+!CAS: Disable enhancement of dry soil (suction) to infiltration rate
+!
+       !qinmax    = (1._r8+v*(su-1._r8))*hksat(c,1)
+       qinmax    = hksat(c,1)
 
        ! Surface runoff
        qflx_surf(c) =  fcov(c) * qflx_top_soil(c) + &

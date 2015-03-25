@@ -153,6 +153,7 @@ c     print *,'surface TAU=',TAU
 !     WMGMIN=25.	! 2363.05 2366.05
       WMGM0=8.0
       WMGM45=25.
+!     WMGM45=16.
       print *,'  WMGM0=', WMGM0,' WMGM45=',WMGM45
       WMGMAV=0.5*( WMGM0+WMGM45)
       DWGM=0.5*( WMGM0-WMGM45)

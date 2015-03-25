@@ -70,6 +70,8 @@ Modifications:
 20110826 - DWK added public double initPET[MAXCHRTS][CYCLE]
 20110911 - DWK added private functions createCohortProducts() 
            and updateChangedCohort() 
+20140609 - DWK added public readBinaryTEMCohortState() and
+           writeBinaryTEMCohortState()
              
 *****************************************************************
 ************************************************************** */
@@ -137,6 +139,9 @@ class MITelmnt44
 
      void outputTEMmonth( const int& pchrt,
                           const int& pdm );
+                          
+     void readBinaryCohortState( ifstream& ifstate,
+                                 const int& pichrt );
 
      void readCohortState( ifstream& ifstate,
                            const int& pichrt );
@@ -173,6 +178,9 @@ class MITelmnt44
                           const int& outyr,
                           const int& pdm,
                           const int& pichrt );
+
+     void writeBinaryCohortState( ofstream& ofstate,
+                                  const int& pichrt );
 
      void writeCohortState( ofstream& ofstate,
                             const int& pichrt );

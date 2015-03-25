@@ -36,7 +36,8 @@ Modifications:
            temigsmconsts44c.hpp
 20110707 - DWK changed include from tigsmprocessXML44a.h to
            tigsmprocessXML44c.h
-                       
+20140604 - DWK made all "yr" variables private
+                      
 ****************************************************************
 ************************************************************* */
 
@@ -210,14 +211,14 @@ class Tsoil44 : public ProcessXML44
      
      // ineet **************************************************
      
-     inline double getINEET( void ) { return ineet; }
+/*     inline double getINEET( void ) { return ineet; }
 
      inline void setINEET( const double& pineet ) 
      { 
        ineet = pineet; 
      }
 
-
+*/
      // kh2o ***************************************************
      
      inline double getKH2O( void ) { return kh2o; }
@@ -460,7 +461,7 @@ class Tsoil44 : public ProcessXML44
      
      inline double getRRUN( void ) { return rrun; }
  
- 
+  
      // snowinf ************************************************
      
      inline double getSNOWINF( void ) { return snowinf; }
@@ -469,7 +470,6 @@ class Tsoil44 : public ProcessXML44
      { 
        snowinf = psnwinf; 
      }
-
 
      // snowpack ***********************************************
      
@@ -484,7 +484,6 @@ class Tsoil44 : public ProcessXML44
      // sperc **************************************************
      
      inline double getSPERC( void ) { return sperc; }
-
 
      // srun ***************************************************
      
@@ -519,6 +518,7 @@ class Tsoil44 : public ProcessXML44
      { 
        vsm = pvsm; 
      }
+
 
      // wiltpt *************************************************
      
@@ -557,82 +557,328 @@ class Tsoil44 : public ProcessXML44
      inline void setWSOIL( const int& pwsoil ) 
      { 
        wsoil = pwsoil; 
+     }    
+
+
+     // yravlh2o ************************************************
+/*     
+     inline double getYRAVLH2O( void ) { return yravlh2o; }
+
+     inline void setYRAVLH2O( const double& pyravlh2o ) 
+     { 
+       yravlh2o = pyravlh2o; 
      }
+
+     inline void updateYRAVLH2O( const double& pavlh2o ) 
+     { 
+       yravlh2o += pavlh2o; 
+     }
+*/
+
+     // yravln ************************************************
      
-/* *************************************************************
-		 Public Variables
-************************************************************* */
+     inline double getYRAVLN( void ) { return yravln; }
 
-     // Annual sum of avlh2o
-     double yravlh2o;
+     inline void setYRAVLN( const double& pyravln ) 
+     { 
+       yravln = pyravln; 
+     }
 
-     // Annual sum of availn
-     double yravln;
+     inline void updateYRAVLN( const double& pavln ) 
+     { 
+       yravln += pavln; 
+     }
 
-     // Ratio of soil reactive organic carbon to 
-     //   soil reactive organic nitrogen
-     double yrc2n;
 
-     // Annual estimated actual evapotranspiration (mm / year)
-     double yreet;
-
-     // Annual sum of h2oyld (mm / year)
-     double yrh2oyld;
-
-     // Annual initial estimated actual evapotranspiration
-     //   (mm / year)
-     double yrineet;
-
-     // Annual sum of ninput
-     double yrnin;     // (g N / (sq. meter * year))
-
-     // Annual sum of nlost
-     double yrnlost;   // (g N / (sq. meter * year))
-
-     // Annual sum of org.carbon 
-     double yrorgc;
+     // yrc2n ************************************************
      
-     // Annual sum of org.nitrogen 
-     double yrorgn;
+     inline double getYRC2N( void ) { return yrc2n; }
 
-     // Annual sum of pctp
-     double yrpctp;
+     inline void setYRC2N( const double& pyrc2n ) 
+     { 
+       yrc2n = pyrc2n; 
+     }
 
-     // Annual sum of rgrdnh2o
-     double yrrgrndh2o;
+     inline void updateYRC2N( const double& pc2n ) 
+     { 
+       yrc2n += pc2n; 
+     }
 
-     // Annual sum of rperc
-     double yrrperc;   // (mm / year)
 
-     // Annual sum of rrun
-     double yrrrun;  // (mm / year)
+     // yreet **********************************************
+     
+     inline double getYREET( void ) { return yreet; }
 
-     // Annual sum of sgrndh2o
-     double yrsgrndh2o;
+     inline void setYREET( const double& pyreet ) 
+     { 
+       yreet = pyreet; 
+     }
 
-     // Annual sum of moist
-     double yrsmoist;
+     inline void updateYREET( const double& peet ) 
+     { 
+       yreet += peet; 
+     }
 
-     // Annual sum of snowinf
-     double yrsnowinf;      // (mm / year)
 
-     // Annual sum of snowpack
-     double yrsnowpack;
+     // yrh2oyld **********************************************
+/*     
+     inline double getYRH2OYIELD( void ) { return yrh2oyld; }
 
-     // Annual sum of sperc
-     double yrsperc; // (mm / year)
+     inline void setYRH2OYIELD( const double& pyrh2oyld ) 
+     { 
+       yrh2oyld = pyrh2oyld; 
+     }
 
-     // Annual sum of srun
-     double yrsrun;  // (mm / year)
+     inline void updateYRH2OYIELD( const double& ph2oyld ) 
+     { 
+       yrh2oyld += ph2oyld; 
+     }
+*/
 
-     // Annual sum of vsm
-     double yrvsm;
-   
+     // yrineet **********************************************
+/*     
+     inline double getYRINEET( void ) { return yrineet; }
+
+     inline void setYRINEET( const double& pyrineet ) 
+     { 
+       yrineet = pyrineet; 
+     }
+
+     inline void updateYRINEET( const double& pineet ) 
+     { 
+       yrineet += pineet; 
+     }
+*/
+
+     // yrnin **************************************************
+     
+     inline double getYRNINPUT( void ) { return yrnin; }
+
+     inline void setYRNINPUT( const double& pyrnin ) 
+     { 
+       yrnin = pyrnin; 
+     }
+
+     inline void updateYRNINPUT( const double& pnin ) 
+     { 
+       yrnin += pnin; 
+     }
+
+
+     // yrnlost **************************************************
+     
+     inline double getYRNLOST( void ) { return yrnlost; }
+
+     inline void setYRNLOST( const double& pyrnlost ) 
+     { 
+       yrnlost = pyrnlost; 
+     }
+
+     inline void updateYRNLOST( const double& pnlost ) 
+     { 
+       yrnlost += pnlost; 
+     }
+ 
+
+     // yrorgc **********************************************
+     
+     inline double getYRORGC( void ) { return yrorgc; }
+
+     inline void setYRORGC( const double& pyrorgc ) 
+     { 
+       yrorgc = pyrorgc; 
+     }
+
+     inline void updateYRORGC( const double& porgc ) 
+     { 
+       yrorgc += porgc; 
+     }
+
+
+     // yrorgn **********************************************
+     
+     inline double getYRORGN( void ) { return yrorgn; }
+
+     inline void setYRORGN( const double& pyrorgn ) 
+     { 
+       yrorgn = pyrorgn; 
+     }
+
+     inline void updateYRORGN( const double& porgn ) 
+     { 
+       yrorgn += porgn; 
+     }
+
+
+     // yrpctp **********************************************
+ /*    
+     inline double getYRPCTP( void ) { return yrpctp; }
+
+     inline void setYRPCTP( const double& pyrpctp ) 
+     { 
+       yrpctp = pyrpctp; 
+     }
+
+     inline void updateYRPCTP( const double& ppctp ) 
+     { 
+       yrpctp += ppctp; 
+     }
+*/
+
+     // yrrgrndh2o **********************************************
+ /*    
+     inline double getYRRGRNDH2O( void ) { return yrrgrndh2o; }
+
+     inline void setYRRGRNDH2O( const double& pyrrgrndh2o ) 
+     { 
+       yrrgrndh2o = pyrrgrndh2o; 
+     }
+
+     inline void updateYRRGRNDH2O( const double& prgrndh2o ) 
+     { 
+       yrrgrndh2o += prgrndh2o; 
+     }
+*/
+
+     // yrrperc **********************************************
+ /*    
+     inline double getYRRPERC( void ) { return yrrperc; }
+
+     inline void setYRRPERC( const double& pyrrperc ) 
+     { 
+       yrrperc = pyrrperc; 
+     }
+
+     inline void updateYRRPERC( const double& prperc ) 
+     { 
+       yrrperc += prperc; 
+     }
+*/
+
+     // yrrrun **********************************************
+/*     
+     inline double getYRRRUN( void ) { return yrrrun; }
+
+     inline void setYRRRUN( const double& pyrrrun ) 
+     { 
+       yrrrun = pyrrrun; 
+     }
+
+     inline void updateYRRRUN( const double& prrun ) 
+     { 
+       yrrrun += prrun; 
+     }
+*/
+
+     // yrsgrndh2o **********************************************
+/*     
+     inline double getYRSGRNDH2O( void ) { return yrsgrndh2o; }
+
+     inline void setYRSGRNDH2O( const double& pyrsgrndh2o ) 
+     { 
+       yrsgrndh2o = pyrsgrndh2o; 
+     }
+
+     inline void updateYRSGRNDH2O( const double& psgrndh2o ) 
+     { 
+       yrsgrndh2o += psgrndh2o; 
+     }
+*/
+
+     // yrsmoist **********************************************
+/*     
+     inline double getYRSMOIST( void ) { return yrsmoist; }
+
+     inline void setYRSMOIST( const double& pyrsmoist ) 
+     { 
+       yrsmoist = pyrsmoist; 
+     }
+
+     inline void updateYRSMOIST( const double& psmoist ) 
+     { 
+       yrsmoist += psmoist; 
+     }
+*/
+
+     // yrsnowinf **********************************************
+/*     
+     inline double getYRSNOWINF( void ) { return yrsnowinf; }
+
+     inline void setYRSNOWINF( const double& pyrsnowinf ) 
+     { 
+       yrsnowinf = pyrsnowinf; 
+     }
+
+     inline void updateYRSNOWINF( const double& psnowinf ) 
+     { 
+       yrsnowinf += psnowinf; 
+     }
+*/
+
+     // yrsnowpack **********************************************
+/*     
+     inline double getYRSNOWPACK( void ) { return yrsnowpack; }
+
+     inline void setYRSNOWPACK( const double& pyrsnowpack ) 
+     { 
+       yrsnowpack = pyrsnowpack; 
+     }
+
+     inline void updateYRSNOWPACK( const double& psnowpack ) 
+     { 
+       yrsnowpack += psnowpack; 
+     }
+*/
+
+     // yrsperc **********************************************
+/*     
+     inline double getYRSPERC( void ) { return yrsperc; }
+
+     inline void setYRSPERC( const double& pyrsperc ) 
+     { 
+       yrsperc = pyrsperc; 
+     }
+
+     inline void updateYRSPERC( const double& psperc ) 
+     { 
+       yrsperc += psperc; 
+     }
+*/
+
+     // yrsrun **********************************************
+/*     
+     inline double getYRSRUN( void ) { return yrsrun; }
+
+     inline void setYRSRUN( const double& pyrsrun ) 
+     { 
+       yrsrun = pyrsrun; 
+     }
+
+     inline void updateYRSRUN( const double& psrun ) 
+     { 
+       yrsrun += psrun; 
+     }
+*/
+
+     // yrvsm **********************************************
+/*     
+     inline double getYRVSM( void ) { return yrvsm; }
+
+     inline void setYRVSM( const double& pyrvsm ) 
+     { 
+       yrvsm = pyrvsm; 
+     }
+
+     inline void updateYRVSM( const double& pvsm ) 
+     { 
+       yrvsm += pvsm; 
+     }
+*/   
    
    private:
    
 /* *************************************************************
-		 Private Functions
+		                   Private Functions
 ************************************************************* */
 
      void percol( const double& rain,                  
@@ -685,7 +931,7 @@ class Tsoil44 : public ProcessXML44
      double h2oyld;  
 
      // Initial Estimated Actual Evapotranspiration (mm / month)
-     double ineet;
+//     double ineet;
 
      // Relative hydraulic conductivity through soil profile
      double kh2o;
@@ -772,6 +1018,71 @@ class Tsoil44 : public ProcessXML44
 
      // wetland soil type designation (categorical data)
      int wsoil;
+
+     // Annual sum of avlh2o
+     double yravlh2o;
+
+     // Annual sum of availn
+     double yravln;
+
+     // Ratio of soil reactive organic carbon to 
+     //   soil reactive organic nitrogen
+     double yrc2n;
+
+     // Annual estimated actual evapotranspiration (mm / year)
+     double yreet;
+
+     // Annual sum of h2oyld (mm / year)
+     double yrh2oyld;
+
+     // Annual initial estimated actual evapotranspiration
+     //   (mm / year)
+ //    double yrineet;
+
+     // Annual sum of ninput
+     double yrnin;     // (g N / (sq. meter * year))
+
+     // Annual sum of nlost
+     double yrnlost;   // (g N / (sq. meter * year))
+
+     // Annual sum of org.carbon 
+     double yrorgc;
+     
+     // Annual sum of org.nitrogen 
+     double yrorgn;
+
+     // Annual sum of pctp
+     double yrpctp;
+
+     // Annual sum of rgrdnh2o
+     double yrrgrndh2o;
+
+     // Annual sum of rperc
+     double yrrperc;   // (mm / year)
+
+     // Annual sum of rrun
+     double yrrrun;  // (mm / year)
+
+     // Annual sum of sgrndh2o
+     double yrsgrndh2o;
+
+     // Annual sum of moist
+     double yrsmoist;
+
+     // Annual sum of snowinf
+     double yrsnowinf;      // (mm / year)
+
+     // Annual sum of snowpack
+     double yrsnowpack;
+
+     // Annual sum of sperc
+     double yrsperc; // (mm / year)
+
+     // Annual sum of srun
+     double yrsrun;  // (mm / year)
+
+     // Annual sum of vsm
+     double yrvsm;
 
 
 /* *************************************************************

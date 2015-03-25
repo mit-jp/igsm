@@ -963,10 +963,17 @@ void MITTEM44::cropDynamics( double pstate[] )
   ag.fertn = ZERO;
   soil.setNINPUT( ag.getNRETENT() ); 
 
-  soil.setEET( soil.getINEET() );
+//  soil.setEET( soil.getINEET() );
 
-  soil.setVSM( (soil.getMOIST() / (soil.getROOTZ() * 1000.0)) );
-  
+  if( soil.getROOTZ() > 0.0001 )
+  {
+    soil.setVSM( (soil.getMOIST() / (soil.getROOTZ() * 1000.0)) );
+  }
+  else
+  {
+    soil.setVSM( ZERO );
+  }
+
   soil.setKH2O( soil.getVSM(), moistlim );
 
 
@@ -1810,9 +1817,9 @@ void MITTEM44::getenviron( const int& pdm )
 //  atms.petjh( atms.getNIRR(), atms.getTAIR(), pdm );
 
 
-  if( atms.getPET() < soil.getINEET() )
+  if( atms.getPET() < soil.getEET() )
   {
-    atms.setPET( soil.getINEET() );
+    atms.setPET( soil.getEET() );
   }
 
 
@@ -2962,9 +2969,16 @@ void MITTEM44::natvegDynamics( const int& pdm, double pstate[] )
   }
   else { soil.setNINPUT( ZERO ); } 
 
-  soil.setEET( soil.getINEET() );
+//  soil.setEET( soil.getINEET() );
 
-  soil.setVSM( (soil.getMOIST() / (soil.getROOTZ() * 1000.0)) );
+  if( soil.getROOTZ() > 0.0001 )
+  {
+    soil.setVSM( (soil.getMOIST() / (soil.getROOTZ() * 1000.0)) );
+  }
+  else
+  {
+    soil.setVSM( ZERO );
+  }
 
   soil.setKH2O( soil.getVSM(), moistlim );
 
@@ -3082,9 +3096,16 @@ void MITTEM44::pastureDynamics( const int& pdm, double pstate[] )
   }
   else { soil.setNINPUT( ag.getNRETENT()  ); } 
 
-  soil.setEET( soil.getINEET() );
+//  soil.setEET( soil.getEET() );
 
-  soil.setVSM( (soil.getMOIST() / (soil.getROOTZ() * 1000.0)) );
+  if( soil.getROOTZ() > 0.0001 )
+  {
+    soil.setVSM( (soil.getMOIST() / (soil.getROOTZ() * 1000.0)) );
+  }
+  else
+  {
+    soil.setVSM( ZERO );
+  }
 
   soil.setKH2O( soil.getVSM(), moistlim );
 
@@ -3714,17 +3735,17 @@ void MITTEM44::setEquilC2N( const int& pdcmnt,
                             const double& co2 )
 {
 
-  atms.yrpet = 1.0;
+  double inityreet = 1.0;
 
-  soil.yreet = 1.0;
+  double inityrpet = 1.0;
 
   // Determine vegetation C/N parameter as a function of
   //   vegetation type, annual PET, and annual EET (annual EET
   //   initially equal to yrpet)
 
   veg.updateC2N( pdcmnt,
-                 soil.yreet,
-                 atms.yrpet,
+                 inityreet,
+                 inityrpet,
                  co2,
                  atms.getINITCO2() );
 
@@ -3900,8 +3921,8 @@ int MITTEM44::stepmonth( const int& pdyr,
       if( 0 == ag.state && 0 == ag.prvstate )
       {
         microbe.setKD( microbe.yrkd( nfeed,
-                                     veg.yrltrc,
-                                     veg.yrltrn,
+                                     veg.getYRLTRFALC(),
+                                     veg.getYRLTRFALN(),
                                      veg.cmnt ) );
 
         ag.setKD( microbe.getKD() );
@@ -4609,9 +4630,9 @@ int MITTEM44::stepmonth( const int& pdyr,
       
     // Update adaptive parameters
 
-      ag.setNATYRPET( atms.yrpet );
+      ag.setNATYRPET( atms.getYRPET() );
 
-      ag.setNATYREET( soil.yreet );
+      ag.setNATYREET( soil.getYREET() );
 
       ag.setNATPRVPETMX( atms.getPRVPETMX() );
 
@@ -4626,12 +4647,10 @@ int MITTEM44::stepmonth( const int& pdyr,
       // CO2 concentration
 
       veg.updateC2N( veg.cmnt,
-                     soil.yreet,
-                     atms.yrpet,
+                     soil.getYREET(),
+                     atms.getYRPET(),
                      atms.getPREVCO2(),
                      atms.getINITCO2() );
-
-
     }
     else
     {
@@ -4650,8 +4669,8 @@ int MITTEM44::stepmonth( const int& pdyr,
      //   concentration
 
       veg.updateC2N( ag.cmnt,
-                     soil.yreet,
-                     atms.yrpet,
+                     soil.getYREET(),
+                     atms.getYRPET(),
                      atms.getPREVCO2(),
                      atms.getINITCO2() );
 
@@ -4661,71 +4680,63 @@ int MITTEM44::stepmonth( const int& pdyr,
 
     ag.prvstate = ag.state;
 
-    veg.yrcarbon  /= 12.0;
+    veg.setYRVEGC( veg.getYRVEGC() / 12.0 );
 
-    soil.yrorgc /= 12.0;
+    soil.setYRORGC( soil.getYRORGC() / 12.0 );
 
     yrtotalc /= 12.0;
 
-    veg.yrnitrogen  /= 12.0;
+    veg.setYRVEGN( veg.getYRVEGN() / 12.0 );
 
-    veg.yrstructn /= 12.0;
+    veg.setYRSTRUCTN( veg.getYRSTRUCTN() / 12.0 );
 
-    if( veg.yrstructn != ZERO )
+    if( veg.getYRSTRUCTN() != ZERO )
     {
-      veg.yrc2n  = veg.yrcarbon / veg.yrstructn;
+      veg.setYRC2N( veg.getYRVEGC() / veg.getYRSTRUCTN() );
     }
 
-    veg.yrstoren /= 12.0;
+    veg.setYRSTOREN( veg.getYRSTOREN() / 12.0 );
 
-    soil.yrorgn /= 12.0;
+    soil.setYRORGN( soil.getYRORGN() / 12.0 );
 
-    if( soil.yrorgn != ZERO )
+    if( soil.getYRORGN() != ZERO )
     {
-      soil.yrc2n = soil.yrorgc / soil.yrorgn;
+      soil.setYRC2N( soil.getYRORGC() / soil.getYRORGN() );
     }
 
-    soil.yravln  /= 12.0;
+    soil.setYRAVLN( soil.getYRAVLN() / 12.0 );
 
-    soil.yravlh2o /= 12.0;
+//    soil.setYRAVLH2O( soil.getYRAVLH2O() / 12.0 );
+//    soil.setYRSMOIST( soil.getYRSMOIST() / 12.0 );
+//    soil.setYRVSM( soil.getYRVSM() / 12.0 );
+//    soil.setYRPCTP( soil.getYRPCTP() / 12.0 );
+//    soil.setYRSNOWPACK( soil.getYRSNOWPACK() / 12.0 );
+//    soil.setYRRGRNDH2O( soil.getYRRGRNDH2O() / 12.0 );
+//    soil.setYRSGRNDH2O( soil.getYRSGRNDH2O() / 12.0 );
 
-    soil.yrsmoist /= 12.0;
+    veg.setYRUNLEAF( veg.getYRUNLEAF() / 12.0 );
+    veg.setYRLEAF( veg.getYRLEAF() / 12.0 );
+    veg.setYRLAI( veg.getYRLAI() / 12.0 );
+    veg.setYRFPC( veg.getYRFPC() / 12.0 );
 
-    soil.yrvsm /= 12.0;
-
-    soil.yrpctp /= 12.0;
-
-    soil.yrsnowpack /= 12.0;
-
-    soil.yrrgrndh2o /= 12.0;
-
-    soil.yrsgrndh2o /= 12.0;
-
-    veg.yrunleaf /= 12.0;
-
-    veg.yrleaf /= 12.0;
-
-    veg.yrlai /= 12.0;
-
-    veg.yrfpc /= 12.0;
 
     if( 1 == baseline )
     {
-      soil.yrnin = ZERO;
+      soil.setYRNINPUT( ZERO );
 
-      soil.yrnlost = ZERO;
+      soil.setYRNLOST( ZERO );
       
       if( y[I_SOLC]/microbe.getCNSOIL( veg.cmnt ) >= y[I_SOLN] )
       {
-        soil.yrnin = (y[I_SOLC] 
-                     / microbe.getCNSOIL( veg.cmnt )) 
-                     - y[I_SOLN];
+        soil.setYRNINPUT( (y[I_SOLC] 
+                          / microbe.getCNSOIL( veg.cmnt )) 
+                          - y[I_SOLN] );
       }
       else
       {
-        soil.yrnlost = y[I_SOLN] 
-                       - (y[I_SOLC]
-                       / microbe.getCNSOIL( veg.cmnt ));
+        soil.setYRNLOST( y[I_SOLN] 
+                         - (y[I_SOLC]
+                         / microbe.getCNSOIL( veg.cmnt )) );
       }
 
       y[I_SOLN] = y[I_SOLC] / microbe.getCNSOIL( veg.cmnt );
@@ -4752,28 +4763,28 @@ int MITTEM44::testEquilibrium( void )
 {
 
   if( 0 == nfeed && 0 == rheqflag
-      && (ctol >= fabs( veg.yrnpp - veg.yrltrc )) )
+      && (ctol >= fabs( veg.getYRNPP() - veg.getYRLTRFALC() )) )
   {
     return 1;
   }
 
   if( 0 == nfeed && 1 == rheqflag
       && (ctol >= fabs( yrnep ))
-      && (ctol >= fabs( veg.yrnpp - veg.yrltrc ))
-      && (ctol >= fabs( veg.yrltrc - microbe.yrrh )) )
+      && (ctol >= fabs( veg.getYRNPP() - veg.getYRLTRFALC() ))
+      && (ctol >= fabs( veg.getYRLTRFALC() - microbe.getYRRH() )) )
   {
     return 1;
   }
 
   if( 1 == nfeed && 1 == rheqflag
-      && (ntol >= fabs( soil.yrnin - soil.yrnlost ))
-      && (ntol >= fabs( veg.yrnup - veg.yrltrn ))                         
-      && (ntol >= fabs( veg.yrnup - microbe.yrnmin ))
-      && (ntol >= fabs( veg.yrltrn - microbe.yrnmin ))
+      && (ntol >= fabs( soil.getYRNINPUT() - soil.getYRNLOST() ))
+      && (ntol >= fabs( veg.getYRNUPTAKE() - veg.getYRLTRFALN() ))                         
+      && (ntol >= fabs( veg.getYRNUPTAKE() - microbe.getYRNMIN() ))
+      && (ntol >= fabs( veg.getYRLTRFALN() - microbe.getYRNMIN() ))
        
       && (ctol >= fabs( yrnep ))
-      && (ctol >= fabs( veg.yrnpp - veg.yrltrc ))
-      && (ctol >= fabs( veg.yrltrc - microbe.yrrh )) )
+      && (ctol >= fabs( veg.getYRNPP() - veg.getYRLTRFALC() ))
+      && (ctol >= fabs( veg.getYRLTRFALC() - microbe.getYRRH() )) )
   {
       return 1;
   }
@@ -4785,7 +4796,6 @@ int MITTEM44::testEquilibrium( void )
 /* *************************************************************
 ************************************************************** */
 
-
 /* *************************************************************
 ************************************************************** */
 
@@ -4794,179 +4804,190 @@ void MITTEM44::updateYearSummary( void )
 
   // Update sum of annual carbon storage in ecosystems
 
-  veg.yrcarbon  += y[I_VEGC];
+  veg.updateYRVEGC( y[I_VEGC] );
 
-  soil.yrorgc += y[I_SOLC];
+  soil.updateYRORGC( y[I_SOLC] );
 
   yrtotalc += totalc;
 
   // Update sum of annual nitrogen storage in ecosystems
 
-  veg.yrstructn += y[I_STRN];
+  veg.updateYRSTRUCTN( y[I_STRN] );
 
-  veg.yrstoren += y[I_STON];
+  veg.updateYRSTOREN( y[I_STON] );
 
-  soil.yrorgn += y[I_SOLN];
+  soil.updateYRORGN( y[I_SOLN] );
 
-  soil.yravln  += y[I_AVLN];
+  soil.updateYRAVLN( y[I_AVLN] );
 
-  veg.yrnitrogen  += veg.getVEGN();
+  veg.updateYRVEGN( veg.getVEGN() );
+
 
   // Update sum of annual phenology in natural ecosystems
 
-  veg.yrunleaf += y[I_UNRMLF];
+  veg.updateYRUNLEAF( y[I_UNRMLF] );
 
-  veg.yrleaf += y[I_LEAF];
+  veg.updateYRLEAF( y[I_LEAF] );
 
-  veg.yrlai += y[I_LAI];
+  veg.updateYRLAI( y[I_LAI] );
 
-  veg.yrfpc += y[I_FPC];
+  veg.updateYRFPC( y[I_FPC] );
+
 
   // Update sum of annual carbon fluxes in ecosystems
 
-  veg.yringpp += y[I_INGPP];
+  veg.updateYRINGPP( y[I_INGPP] );
 
-  veg.yrgpp   += y[I_GPP];
+  veg.updateYRGPP( y[I_GPP] );
 
-  veg.yrinnpp += y[I_INNPP];
+  veg.updateYRINNPP( y[I_INNPP] );
 
-  veg.yrnpp   += y[I_NPP];
+  veg.updateYRNPP( y[I_NPP] );
 
-  veg.yrgpr   += y[I_GPR];
+  veg.updateYRGPR( y[I_GPR] );
 
-  veg.yrrmaint += y[I_RVMNT];
+  veg.updateYRRMAINT( y[I_RVMNT] );
 
-  veg.yrrgrowth += y[I_RVGRW];
+  veg.updateYRRGROWTH( y[I_RVGRW] );
 
-  veg.yrltrc  += y[I_LTRC];
+  veg.updateYRLTRFALC( y[I_LTRC] );
 
-  microbe.yrrh += y[I_RH];
+  microbe.updateYRRH( y[I_RH] );
 
-  yrnep += nep;
+  updateYRNEP( nep );
+  
+  updateYRNCE( nce );
 
-  yrnce += nce;
+  soil.updateYRCH4CSMP( soil.getCH4CONSUMP() );
 
-  soil.yrch4csmp += soil.getCH4CONSUMP();
+  soil.updateYRCH4EMISSION( soil.getCH4EMISS() );
 
-  soil.yrch4ems += soil.getCH4EMISS();
+  soil.updateYRCH4FLUX( soil.getCH4FLUX() );
 
-  soil.yrch4flx += soil.getCH4FLUX();
+  soil.updateYRCO2DENTRFLUX( soil.getCO2DNFLUX() );
 
-  soil.yrco2dnflx += soil.getCO2DNFLUX();
-
-  soil.yrco2nflx += soil.getCO2NFLUX();
+  soil.updateYRCO2NTRFLUX( soil.getCO2NFLUX() );
   
   
   // Update sum of annual nitrogen fluxes in ecosystems
 
-  soil.yrnin   += y[I_NINP];
+  soil.updateYRNINPUT( y[I_NINP] );
 
-  ag.yrfertn += y[I_AGFRTN];
+  ag.updateYRFERTN( y[I_AGFRTN] );
 
-  veg.yrinnup += y[I_INNUP];
+  veg.updateYRINNUP( y[I_INNUP] );
 
-  veg.yrnup   += y[I_VNUP];
+  veg.updateYRNUPTAKE( y[I_VNUP] );
 
-  veg.yrsup    += y[I_VSUP];
+  veg.updateYRSUP( y[I_VSUP] );
 
-  veg.yrlup    += y[I_VLUP];
+  veg.updateYRLUP( y[I_VLUP] );
 
-  veg.yrnmobil += y[I_VNMBL];
+  veg.updateYRNMOBIL( y[I_VNMBL] );
 
-  veg.yrnrsorb += y[I_VNRSRB];
+  veg.updateYRNRSORB( y[I_VNRSRB] );
 
-  veg.yrltrn  += y[I_LTRN];
+  veg.updateYRLTRFALN( y[I_LTRN] );
 
-  microbe.yrnuptake += y[I_MNUP];
+  microbe.updateYRNUPTAKE( y[I_MNUP] );
 
-  microbe.yrnmin  += y[I_NMIN];
+  microbe.updateYRNMIN( y[I_NMIN] );
 
-  soil.yrnlost += y[I_NLST];
+  soil.updateYRNLOST( y[I_NLST] );
 
-  soil.yrn2odnflx += soil.getN2ODNFLUX();
+  soil.updateYRN2ODENTRFLUX( soil.getN2ODNFLUX() );
 
-  soil.yrn2onflx += soil.getN2ONFLUX();
+  soil.updateYRN2ONTRFLUX( soil.getN2ONFLUX() );
 
-  soil.yrn2oflx += soil.getN2OFLUX();
+  soil.updateYRN2OFLUX( soil.getN2OFLUX() );
 
-  soil.yrn2flx += soil.getN2FLUX();
+  soil.updateYRN2FLUX( soil.getN2FLUX() );
 
 
    // Update sum of annual water fluxes in ecosystems
 
-//  ag.yrirrig += ag.getIRRIG();
+//  ag.updateYRIRRIG( ag.getIRRIG() );
 
-  soil.yrineet += soil.getINEET();
+//  soil.updateYRINEET( soil.getINEET() );
 
-  soil.yreet += soil.getEET();
+  soil.updateYREET( soil.getEET() );
 
-  atms.yrpet += atms.getPET();
+//  soil.updateYRRPERC( y[I_RPERC] );
+
+//  soil.updateYRSPERC( y[I_SPERC] );
+
+//  soil.updateYRRRUN( y[I_RRUN] );
+
+//  soil.updateYRSRUN( y[I_SRUN] );
+
+//  atms.updateYRRAIN( atms.getRAIN() );
+
+//  atms.updateYRSNOWFALL( atms.getSNOWFALL() );
+
+  atms.updateYRPET( atms.getPET() );
+
+//  soil.updateYRSNOWINF( soil.getSNOWINF() );
+
+//  soil.updateYRH2OYIELD( soil.getH2OYLD() );
 
 
-  ag.yrstubC += ag.getSTUBBLEC();
+  ag.updateYRSTUBC( ag.getSTUBBLEC() );
+  ag.updateYRSTUBN( ag.getSTUBBLEN() );
 
-  ag.yrstubN += ag.getSTUBBLEN();
 
  // Update sum of annual carbon and nitrogen fluxes from
  //   agricultural conversion
 
-  ag.yrconvrtC += ag.getCONVRTFLXC();
+  ag.updateYRCONVRTC( ag.getCONVRTFLXC() );
+  ag.updateYRVCONVRTC( ag.getVCONVRTFLXC() );
+  ag.updateYRSCONVRTC( ag.getSCONVRTFLXC() );
 
-  ag.yrvconvrtC += ag.getVCONVRTFLXC();
+  ag.updateYRSLASHC( ag.getSLASHC() );
 
-  ag.yrsconvrtC += ag.getSCONVRTFLXC();
+  ag.updateYRCFLUX( ag.getCFLUX() );
 
-  ag.yrslashC += ag.getSLASHC();
+  ag.updateYRCONVRTN( ag.getCONVRTFLXN() );
+  ag.updateYRVCONVRTN( ag.getVCONVRTFLXN() );
+  ag.updateYRSCONVRTN( ag.getSCONVRTFLXN() );
 
-  ag.yrcflux += ag.getCFLUX();
+  ag.updateYRSLASHN( ag.getSLASHN() );
   
-  ag.yrconvrtN += ag.getCONVRTFLXN();
+  ag.updateYRNRENT( ag.getNRETENT() );
+  ag.updateYRNVRENT( ag.getNVRETENT() );
+  ag.updateYRNSRENT( ag.getNSRETENT() );
 
-  ag.yrvconvrtN += ag.getVCONVRTFLXN();
+  ag.updateYRFORMRESIDUEC( ag.getFORMCROPRESIDUEC() );
+  ag.updateYRFORMRESIDUEN( ag.getFORMCROPRESIDUEN() );
 
-  ag.yrsconvrtN += ag.getSCONVRTFLXN();
-
-  ag.yrslashN += ag.getSLASHN();
-
-  ag.yrnrent += ag.getNRETENT();
-
-  ag.yrnvrent += ag.getNVRETENT();
-
-  ag.yrnsrent += ag.getNSRETENT();
-  
-  ag.yrformResidueC += ag.getFORMCROPRESIDUEC();
-  ag.yrformResidueN += ag.getFORMCROPRESIDUEN();
-
-  ag.yrfluxResidueC += ag.getCROPRESIDUEFLXC();
-  ag.yrfluxResidueN += ag.getCROPRESIDUEFLXN();
-
+  ag.updateYRFLUXRESIDUEC( ag.getCROPRESIDUEFLXC() );
+  ag.updateYRFLUXRESIDUEN( ag.getCROPRESIDUEFLXN() );
 
  // Update sum of annual carbon and nitrogen fluxes from
  //   products
 
-  ag.yrformPROD1C += ag.getCROPPRODC();
-  ag.yrformPROD1N += ag.getCROPPRODN();
+  ag.updateYRFORMPROD1C( ag.getCROPPRODC() );
+  ag.updateYRFORMPROD1N( ag.getCROPPRODN() );
 
-  ag.yrdecayPROD1C += ag.getPROD1DECAYC();
-  ag.yrdecayPROD1N += ag.getPROD1DECAYN();
+  ag.updateYRDECAYPROD1C( ag.getPROD1DECAYC() );
+  ag.updateYRDECAYPROD1N( ag.getPROD1DECAYN() );
 
-  ag.yrformPROD10C += ag.getFORMPROD10C();
-  ag.yrformPROD10N += ag.getFORMPROD10N();
+  ag.updateYRFORMPROD10C( ag.getFORMPROD10C() );
+  ag.updateYRFORMPROD10N( ag.getFORMPROD10N() );
 
-  ag.yrdecayPROD10C += ag.getPROD10DECAYC();
-  ag.yrdecayPROD10N += ag.getPROD10DECAYN();
+  ag.updateYRDECAYPROD10C( ag.getPROD10DECAYC() );
+  ag.updateYRDECAYPROD10N( ag.getPROD10DECAYN() );
 
-  ag.yrformPROD100C += ag.getFORMPROD100C();
-  ag.yrformPROD100N += ag.getFORMPROD100N();
+  ag.updateYRFORMPROD100C( ag.getFORMPROD100C() );
+  ag.updateYRFORMPROD100N( ag.getFORMPROD100N() );
 
-  ag.yrdecayPROD100C += ag.getPROD100DECAYC();
-  ag.yrdecayPROD100N += ag.getPROD100DECAYN();
+  ag.updateYRDECAYPROD100C( ag.getPROD100DECAYC() );
+  ag.updateYRDECAYPROD100N( ag.getPROD100DECAYN() );
 
-  ag.yrformTOTPRODC += ag.getFORMTOTPRODC();
-  ag.yrformTOTPRODN += ag.getFORMTOTPRODN();
+  ag.updateYRFORMTOTPRODC( ag.getFORMTOTPRODC() );
+  ag.updateYRFORMTOTPRODN( ag.getFORMTOTPRODN() );
 
-  ag.yrdecayTOTPRODC += ag.getTOTPRODDECAYC();
-  ag.yrdecayTOTPRODN += ag.getTOTPRODDECAYN();
+  ag.updateYRDECAYTOTPRODC( ag.getTOTPRODDECAYC() );
+  ag.updateYRDECAYTOTPRODN( ag.getTOTPRODDECAYN() );
 
 };
 
@@ -5001,9 +5022,16 @@ void MITTEM44::urbanDynamics( const int& pdm, double pstate[] )
   }
   else { soil.setNINPUT( ZERO ); } 
 
-  soil.setEET( soil.getINEET() );
+//  soil.setEET( soil.getINEET() );
 
-  soil.setVSM( (soil.getMOIST() / (soil.getROOTZ() * 1000.0)) );
+  if( soil.getROOTZ() > 0.0001 )
+  {
+    soil.setVSM( (soil.getMOIST() / (soil.getROOTZ() * 1000.0)) );
+  }
+  else
+  {
+    soil.setVSM( ZERO );
+  }
 
   soil.setKH2O( soil.getVSM(), moistlim );
 

@@ -121,15 +121,27 @@ C                                                                       9109.4
       IF(KTREN.EQ.4) CALL BMTRND(XNOW,TNOW,NGAS)
       IF(KTREN.EQ.6) CALL BMTRNDMG(XNOW,TNOW,NGAS)
       IF(KTREN.EQ.7) CALL BMTRNDMG(XNOW,TNOW,NGAS)
+      DO I=1,NGAS 
+      IF(XNOW(I).LT.1.E-06) XNOW(I)=1.E-06  
+      ENDDO
         XNOWO = XNOW
+       IF(KWRITE.EQ.1) then
+         print '(a20,5e12.4)','From forset XREF=',(XREF(i),i=1,ngas)
+         print '(a20,5e12.4)','From forset XNOW=',(XNOW(i),i=1,ngas)
+       ENDIF
 c     IF(KTREN.GE.21.and.KTREN.LE.29) 
 c    &    CALL STBTRND(XNOW,TNOW,NGAS,KTREN)
-c     if(KTREN.LE.5)then
       CALL DTDX1D(XNOW,XREF,XDT0,SDT0,KFOR,NGAS)                        9109.8  
-#if ( !defined ADJUSTED_CO2 )
+#if ( !defined IPCC_FORCING)
       CALL DTDX3D(XNOW,XREF,XDT0,SDT0,KFOR,1)                           9109.9  
 #endif
+       IF(KWRITE.EQ.1) then
+       print '(a20,5e12.4)',' XDT0=',(4.3/1.22*XDT0(i),i=1,ngas)
+       ENDIF
       CALL DXDT3D(XNOW,XREF,XDT0,SDT0,KFOR,NGAS)                        9110.   
+       IF(KWRITE.EQ.1) then
+         print '(a20,5e12.4)','After adjust XNOW=',(XNOW(i),i=1,ngas)
+       ENDIF
 c     endif
       FULGAS(2)=XNOW(1)/XREF(1)                                         9110.1  
       FULGAS(6)=XNOW(2)/XREF(2)                                         9110.2  
@@ -151,7 +163,7 @@ c     endif
       if(.not.OBSFOR)then
        IF(KWRITE.EQ.1) then
 !        print *,'From forset XNOW(1)=',XNOW(1)
-         print '(a20,5F10.2)','From forset XNOW=',(XNOW(i),i=1,ngas)
+         print '(a20,5e12.4)','From forset XNOW=',(XNOW(i),i=1,ngas)
          print '(a10,5F10.2)','FULGAS =',FULGAS(2),(FULGAS(i),i=6,9)
        ENDIF
 #if ( !defined IPCC_EMI && !defined FIXED_PCO2)

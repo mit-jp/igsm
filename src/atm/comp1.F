@@ -68,6 +68,7 @@ c     REAL*4 KAPAP1                                                     2010.
       LOGICAL SKIPSI,HPRNT,EDDFLX,FIRST,HPRNT1                          2014.5  
       common/PRNT1/NCOMP
       common/conprn/HPRNT1,JPR,LPR
+!     common/conprn/HPRNT,JPR,LPR
       data FIRST /.true./
 C                                                                       2015.   
       HPRNT=TAU.gt.115.0.and.TAU.lt.125.0

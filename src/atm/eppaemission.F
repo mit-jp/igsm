@@ -8,14 +8,15 @@
 #include "BD2G04.COM"
 #include "chem_meta"
       parameter (neppa=124,naccri=110)
+!     parameter (neppa=324,naccri=110)
 #endif
 
+      logical FORMSO2
       character * 120 emiss_data,SO2ERATIO
-
 #if ( defined ACCRI )
      &  ,accri_data,accri_scaling
 #endif
-      namelist /EPPA/ LYEAREM,emiss_data,SO2ERATIO
+      namelist /EPPA/ LYEAREM,emiss_data,SO2ERATIO,FORMSO2
 #if ( defined ACCRI )
      &  ,accri_data,accri_scaling
 #endif
@@ -51,20 +52,28 @@
 #endif
 
       if (ifirst.eq.0) then
+      FORMSO2=.TRUE.
       open(535,file='eppaemis.dat')
        print *,' CALL EPPAEMISSION'
       read (535,NML=EPPA)
+      print *,' FORMSO2=',FORMSO2
       close (535)
 #if ( defined CPL_CHEM )
       open(164,file=emiss_data,
      &        form='unformatted',
      &        status='old')
 #endif
+      if(FORMSO2) then
       open(664,file=SO2ERATIO,
      &        form='formatted',
      &        status='old')
-
-      read(664,'(f10.6)')SO2EM
+       read(664,'(f10.6)')SO2EM
+      else
+      open(664,file=SO2ERATIO,
+     &        form='unformatted',
+     &        status='old')
+       read(664)SO2EM
+      endif
        print *,' SO2EM=from eppaemissions ',SO2EM
 
 #if ( defined CPL_CHEM )

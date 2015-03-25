@@ -160,7 +160,8 @@ contains
        l = clandunit(c)
        j = ldecomp%gdc2j(cgridcell(c))
        if (ltype(l) == istice) then
-          if ( j >= 7 .and. j <= 41) then
+          if ( j >= 8 .and. j <= 41) then
+!         if ( j >= 7 .and. j <= 41) then
             h2osno(c) = 1000._r8
           else 
             h2osno(c) = 4000000._r8  !CAS high initial glacial SWE for Antarctica and Greenland

@@ -101,7 +101,7 @@ c	3	CH4
 c	4	F11
 c	5	F12
 c
-	common /glbgas/glbgas(nlev,5)
+	common /glbgas/glbgas(nlev,5),totgas(5),adjfactor(5)
 
 c----------------------------------------------------------
 c    airmass:  air mass 

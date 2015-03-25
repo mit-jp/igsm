@@ -72,6 +72,11 @@ real(SHR_KIND_R8) FUNCTION shr_orb_cosz(jday,lat,lon,declin)
    shr_orb_cosz = sin(lat)*sin(declin) - &
    &              cos(lat)*cos(declin)*cos(jday*2.0_SHR_KIND_R8*pi + lon)
 
+!     print *,'From shr_orb_cosz delcin=',declin
+!     print '(4e14.6)',sin(lat),sin(declin),cos(lat),cos(declin)
+!     print '(2e14.6)',asin(sin(lat)),180./pi*asin(sin(lat))
+!     print '(4e14.6)',declin,jday,lon,cos(jday*2.0_SHR_KIND_R8*pi + lon)
+
 END FUNCTION shr_orb_cosz
 
 !===============================================================================
@@ -603,6 +608,8 @@ SUBROUTINE shr_orb_decl(calday ,eccen ,mvelpp ,lambm0 ,obliqr ,delta ,eccf)
  
    ! Set solar declination and eccentricity factor
  
+!  print *,'From orbit clm'
+!  print '(2e14.6)',sin(lamb),sin(obliqr)
    delta  = asin(sin(obliqr)*sin(lamb))
    eccf   = invrho*invrho
  

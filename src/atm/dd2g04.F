@@ -1347,11 +1347,11 @@ c      43 is SWUP at Z0 from CLM
        SCALE(43)=1.0
 c      45 is LWUP at Z0 from CLM
        SCALE(45)=1.0
-c      16 is vetclm  from CLM
+c      16 is cevclm  from CLM
        SCALE(16)=SDAY
-c      41 is sevclm  from CLM
+c      41 is vetclm  from CLM
        SCALE(41)=SDAY
-c      42 is cevclm  from CLM
+c      42 is sevclm  from CLM
        SCALE(42)=SDAY
       endif
       SCALE(46)=SDAY/DTSRCE 

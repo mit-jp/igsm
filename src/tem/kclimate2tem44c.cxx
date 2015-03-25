@@ -63,7 +63,7 @@
 
 #include"nemconsts44c.hpp"
 
-#include "regmittem44c.h"
+#include "regmittem44c1.h"
 
 extern "C" {
 
@@ -309,6 +309,8 @@ RegMITTEM xtem;
     // Close files and free up memory used by TEM
     
     //  xtem.cleanup();
+      cout << " Tem clean_up is called " << endl ;
+      xtem.~RegMITTEM();
 
   }
 

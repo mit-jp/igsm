@@ -1819,6 +1819,15 @@ type, public :: gridcell_type
    real(r8), pointer :: latdeg_a(:)     !"atm" latitude (degrees) for albedo
    real(r8), pointer :: londeg_a(:)     !"atm" longitude (degrees) for albedo
 
+#if (defined STOCHASTIC)
+   ! Restart information for stochastic treatment of precipitation in IGSM
+   integer, pointer :: dtcumu(:)      !Accumulated time between storms
+   real(r8), pointer :: t_dry(:)      !Inter-storm period
+   real(r8), pointer :: t_storm(:)    !Storm Duration
+   real(r8), pointer :: pcpc_resid(:) !Accumulated convective precip
+   real(r8), pointer :: pcpl_resid(:) !Accumulated large-scale precip
+#endif
+
    ! conservation check structures for the gridcell level
    type(energy_balance_type)   :: gebal !energy balance structure
    type(water_balance_type)    :: gwbal !water balance structure

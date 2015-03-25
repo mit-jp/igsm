@@ -120,8 +120,8 @@ Tveg44::Tveg44() : ProcessXML44()
 
   yrstoren = MISSING;
 
-  yrltrc = MISSING;
-  yrltrn = MISSING;
+  yrltrfalc = MISSING;
+  yrltrfaln = MISSING;
 
   yringpp = MISSING;
   yrgpp = MISSING;
@@ -144,10 +144,6 @@ Tveg44::Tveg44() : ProcessXML44()
 
   yrnmobil = MISSING;
   yrnrsorb = MISSING;
-
-
-  yrinpr = MISSING;
-  yrprod = MISSING;
 
   yrunleaf = MISSING;
   yrleaf = MISSING;
@@ -978,7 +974,7 @@ void Tveg44::resetYrFluxes( void )
 
   yrrgrowth = ZERO;
 
-  yrltrc = ZERO;
+  yrltrfalc = ZERO;
 
   // Nitrogen fluxes
   
@@ -994,7 +990,7 @@ void Tveg44::resetYrFluxes( void )
 
   yrnrsorb = ZERO;
 
-  yrltrn = ZERO;
+  yrltrfaln = ZERO;
 
 };
 /* *************************************************************
@@ -1335,7 +1331,6 @@ void Tveg44::updateDynamics( const int& pdcmnt,
   // Determine Gross Primary Production if nitrogen is not
   //   limiting (veg.ingpp)
 
-
   ingpp = gppxclm( pdcmnt,
                    co2,
                    par,
@@ -1507,7 +1502,7 @@ void Tveg44::updateDynamics( const int& pdcmnt,
       inprodcn = innpp / (nuptake + labilen);
     }
     
-    
+ 
     // If primary production is nitrogen-limited, 
     //   (i.e., veg.inprodcn > veg.cneven) revaluate NPP, RG and 
     //   GPP based on nitrogen availability
@@ -1558,13 +1553,14 @@ void Tveg44::updateDynamics( const int& pdcmnt,
                  * (inprodcn - 2 * cneven + cnmin[pdcmnt]))
                  - pow( inprodcn - cneven, 2.0 );
 
+
       if( nuptake < ZERO )
       {
         nuptake = ZERO;
       }
 
 
-      // Drawdown N from labile N pool first to satisfy N
+   // Drawdown N from labile N pool first to satisfy N
       //   requirement before taking up any nitrogen from the 
       //   soil
       
@@ -1596,6 +1592,7 @@ void Tveg44::updateDynamics( const int& pdcmnt,
         }
       }
 
+
       // Determine vegetation nitrogen uptake for the labile
       //   N pool
       
@@ -1618,6 +1615,7 @@ void Tveg44::updateDynamics( const int& pdcmnt,
       }
     }
   }
+
 
   // Determine Gross Plant Respiration (GPR)
 

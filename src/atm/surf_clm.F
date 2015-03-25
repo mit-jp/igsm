@@ -60,7 +60,7 @@ C****                                                                   5807.
       COMMON/RDATA/ROUGHL(IO0,JM0)                                      5815.   
       DIMENSION SINI(72),COSI(72)                                       5816.   
       LOGICAL POLE,PRNT,HPRNT
-      common/conprn/HPRNT          
+      common/conprn/HPRNT,JPR
 !     common/TSUR/TSURFC(JM0,0:13),TSURFT(JM0),TSURFD(JM0),DTEMSR(JM0)
 #include "TSRF.COM"
       common/SURRAD/TRSURF(JM0,4),SRSURF(JM0,4)
@@ -162,6 +162,7 @@ C**** ZERO OUT LAYER 1 WIND INCREMENTS                                  5922.
 C****                                                                   5927.   
 C**** OUTSIDE LOOP OVER J AND I, EXECUTED ONCE FOR EACH GRID POINT      5928.   
 C****                                                                   5929.   
+!     print *,'From surf_clm TAU=',TAU,' HPRNT=',HPRNT,JPR
       DO 7000 J=1,JM                                                    5930.   
       if(PRNT)then
        if(ns.eq.1)then
@@ -222,7 +223,13 @@ C**** CALCULATE FLUXES OF SENSIBLE HEAT, LATENT HEAT, THERMAL           6478.
 C****   RADIATION, AND CONDUCTION HEAT (WATTS/M**2)                     6479.   
       SHEAT=shfclm(i,j)
       EVHEAT=lhfclm(i,j)
+#if ( defined CLM35 )
+      TG=(abs(lwuclm(i,j))/STBOLAND(J))**(1./4.)
+#else
       TG=(abs(lwuclm(i,j))/STBO)**(1./4.)
+#endif
+      TG=(abs(lwuclm(i,j))/STBO)**(1./4.)
+
       TG1=TG-TF
 c     print *,'From surf_clm TAU=',TAU,' J=',j
 c     print *,LHS,LHE,LHM,ELHX
@@ -233,25 +240,30 @@ c     TRHEAT=TRHT0-STBO*(TG*TG)*(TG*TG)
       EVHDT=DTSURF*EVHEAT                                               6506.
       TRHDT=DTSURF*TRHEAT
 !      if(TAU.gt.3623.0.and.TAU.lt.3744.0) then
-         if(J.eq.-29)then
+       if(HPRNT)then
+         if(J.eq.jpr)then
+          print *,'Form surf_clm J=',j,' TAU=',TAU
+          print *,'TG1=',TG1,' lwuclm(i,j)=',lwuclm(i,j)
+          print '(A5,3F9.2)',' TGL ',TAU,TOFDAY,TG1
+          print *,'TRHT0=',TRHT0,' TRHEAT=',TRHEAT
 !         print *,'Form surf_clm J=',j,' TAU=',TAU
-!         print *,'TG1=',TG1,' lwuclm(i,j)=',lwuclm(i,j)
-!         print 'A5,3F7.2',' TGL ',TAU,TOFDAY,TG1
-!         print *,'TRHT0=',TRHT0,' TRHEAT=',TRHEAT
-!         print *,'Form surf_clm J=',j,' TAU=',TAU
-!          print *,'shfclm(i,j)=',shfclm(i,j),
-!    &     'lhfclm(i,j)=',lhfclm(i,j)
-!          print *,'tref2mclm(i,j)=',tref2mclm(i,j),
-!    &     'tgndclm(i,j)=',tgndclm(i,j)
-!         print *,'TG1=',TG1,' lwuclm(i,j)=',lwuclm(i,j)
-          write (329) ,TAU,TOFDAY,TG1,TRHT0,lwuclm(i,j),
-     &      shfclm(i,j),lhfclm(i,j)
+           print *,'shfclm(i,j)=',shfclm(i,j),
+     &     'lhfclm(i,j)=',lhfclm(i,j)
+           print *,'tref2mclm(i,j)=',tref2mclm(i,j),
+     &     'tgndclm(i,j)=',tgndclm(i,j)
+           print *,'tauxclm(i,j)=',tauxclm(i,j),
+     &     'tauyclm(i,j)=',tauyclm(i,j)
+          print *,'TG1=',TG1,' lwuclm(i,j)=',lwuclm(i,j)
+      print *,SHEAT,EVHEAT
+      print *,TRHEAT,SRHEAT
+!         write (329) ,TAU,TOFDAY,TG1,TRHT0,lwuclm(i,j),
+!    &      shfclm(i,j),lhfclm(i,j)
          endif
          if(J.eq.-30)then
           write (330) ,TAU,TOFDAY,TG1,TRHT0,lwuclm(i,j),
      &      shfclm(i,j),lhfclm(i,j)
          endif
-!       endif
+        endif
 
 c     DQ1=EVHDT/(ELHX*RMBYA)
 c     EVAP=-EVHDT/ELHX

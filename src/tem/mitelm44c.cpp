@@ -21,7 +21,13 @@ Modifications:
 20110705 - DWK changed include from mitelm44b.h to mitelm44c.h
 20110911 - DWK added functions createCohortProducts() and 
            updateChangedCohort() 
-                                                      
+20140519 - DWK added "yr" variables to getCohortTEMstate(),
+           initializeCohortTEMState(), readCohortState(), 
+           saveTEMCohortState(), setCohortTEMState(), and 
+           writeCohortState()
+20140609 - DWK added  readBinaryTEMCohortState() and
+           writeBinaryCohortState()
+                                                                 
 ****************************************************************
 ************************************************************* */
 
@@ -281,6 +287,17 @@ int MITelmnt44::equilibrateTEM( const int& pchrt,
   int dyr = 0;
   int dm;
 
+/*  if( 14 == (pchrt+1) )
+  {
+    tem.dbug = 1;
+    tem.veg.dbug = 1;
+  }
+  else
+  {
+    tem.dbug = 0;
+    tem.veg.dbug = 0;
+  }
+*/ 
 
   // Initialize standing stocks of carbon and nitrogen from 
   //   calibration ("ECD") data and fluxes for integrator
@@ -341,25 +358,47 @@ int MITelmnt44::equilibrateTEM( const int& pchrt,
 
       tem.atms.setNIRR( climate[mitclm.I_NIRR][dm] );
 
+//      cout << climate[mitclm.I_NIRR][dm] << endl;
+
       tem.atms.setPAR( climate[mitclm.I_PAR][dm] );
+
+//      cout << climate[mitclm._NIRR][dm] << endl;
 
       tem.atms.setTAIR( climate[mitclm.I_TAIR][dm] );
 
+//      cout << climate[mitclm.I_NIRR][dm] << endl;
+
       tem.atms.setPET( initPET[pchrt][dm] );
 
-      tem.soil.setINEET( initAET[pchrt][dm] );
+//      cout << climate[mitclm.I_NIRR][dm] << endl;
+
+      tem.soil.setEET( initAET[pchrt][dm] );
+
+//      cout << climate[mitclm.I_NIRR][dm] << endl;
 
       tem.soil.setMOIST( initSH2O[pchrt][dm] );
 
+//      cout << climate[mitclm.I_NIRR][dm] << endl;
+
       tem.soil.setSNOWPACK( initSNOWPACK[pchrt][dm] );
+
+//      cout << climate[mitclm.I_NIRR][dm] << endl;
 
       tem.soil.setSURFRUN( initSURFRUN[pchrt][dm] );
 
+//      cout << climate[mitclm.I_NIRR][dm] << endl;
+
       tem.soil.setDRAINAGE( initDRAINAGE[pchrt][dm] );
+
+//      cout << climate[mitclm.I_NIRR][dm] << endl;
 
       tem.atms.setCO2( climate[mitclm.I_CO2][dm] );
 
+//      cout << climate[mitclm.I_NIRR][dm] << endl;
+
       tem.atms.setAOT40( climate[mitclm.I_AOT40][dm] );
+
+//      cout << climate[mitclm.I_AOT40][dm] << endl;
 
 
       tem.endeq = tem.stepmonth( dyr, 
@@ -372,6 +411,8 @@ int MITelmnt44::equilibrateTEM( const int& pchrt,
       
       outputTEMmonth( pchrt, dm );
     }
+
+//    exit( -1 );
 
     ++dyr;
 
@@ -414,6 +455,14 @@ void MITelmnt44::getTEMCohortState( const int& pichrt )
   int dm;
   int i;
   
+// cohort[pichrt].srcCohort = cohort[pichrt].srcCohort
+
+// cohort[pichrt].standage = cohort[pichrt].standage
+
+// cohort[pichrt].chrtarea = cohort[pichrt].chrtarea
+
+// cohort[pichrt].prevchrtarea = cohort[pichrt].prevchrtarea
+
   tem.veg.setPOTVEG( cohort[pichrt].potveg );
 
   tem.veg.setCURRENTVEG( cohort[pichrt].currentveg );
@@ -492,19 +541,27 @@ void MITelmnt44::getTEMCohortState( const int& pichrt )
   
   for( i = 0; i < 10; ++i )
   {
-    tem.ag.setINITPROD10C( cohort[pichrt].initPROD10[i].carbon, i );
-    tem.ag.setINITPROD10N( cohort[pichrt].initPROD10[i].nitrogen, i );
+    tem.ag.setINITPROD10C( cohort[pichrt].initPROD10[i].carbon, 
+                           i );
+
+    tem.ag.setINITPROD10N( cohort[pichrt].initPROD10[i].nitrogen, 
+                           i );
   }
     
   for( i = 0; i < 100; ++i )
   {
-    tem.ag.setINITPROD100C( cohort[pichrt].initPROD100[i].carbon, i );
-    tem.ag.setINITPROD100N( cohort[pichrt].initPROD100[i].nitrogen, i );
+    tem.ag.setINITPROD100C( cohort[pichrt].initPROD100[i].carbon, 
+                            i );
+
+    tem.ag.setINITPROD100N( cohort[pichrt].initPROD100[i].nitrogen, 
+                            i );
   }
 
   tem.ag.irrgflag = cohort[pichrt].irrgflag;                              
   
   tem.microbe.setKD( cohort[pichrt].kd );
+
+// cohort[pichrt].MDMnpp = cohort[pichrt].MDMnpp
 
   tem.ag.setNATPRVEETMX( cohort[pichrt].natprveetmx );
 
@@ -592,7 +649,7 @@ void MITelmnt44::getTEMCohortState( const int& pichrt )
   tem.ag.setPREVPROD100C( cohort[pichrt].prevPROD100.carbon );
   tem.ag.setPREVPROD100N( cohort[pichrt].prevPROD100.nitrogen );
 
-  tem.soil.setPREVSPACK( cohort[pichrt].prevspack );
+//  tem.soil.setPREVSPACK( cohort[pichrt].prevspack );
 
   tem.atms.setPREVTAIR( cohort[pichrt].prevtair );
 
@@ -612,6 +669,8 @@ void MITelmnt44::getTEMCohortState( const int& pichrt )
 
   tem.atms.setPRVPETMX( cohort[pichrt].prvpetmx );
 
+// cohort[pichrt].qc = cohort[pichrt].qc
+
 //  tem.ag.setSCONVERT( cohort[pichrt].sconvert ); 
   
   tem.ag.setSCONVRTFLXC( cohort[pichrt].sconvrtflx.carbon );
@@ -626,6 +685,8 @@ void MITelmnt44::getTEMCohortState( const int& pichrt )
 
   tem.veg.setTOPT( cohort[pichrt].topt );
 
+// cohort[pichrt].tqc = cohort[pichrt].tqc 
+
 //  tem.ag.setVCONVERT( cohort[pichrt].vconvert ); 
 
   tem.ag.setVCONVRTFLXC( cohort[pichrt].vconvrtflx.carbon );
@@ -633,8 +694,204 @@ void MITelmnt44::getTEMCohortState( const int& pichrt )
 
 //  tem.ag.setVRESPAR( cohort[pichrt].vrespar ); 
 
-  tem.veg.yrltrc = cohort[pichrt].yrltrc;
-  tem.veg.yrltrn = cohort[pichrt].yrltrn;  	
+
+  tem.ag.setYRSTUBC( cohort[pichrt].yragstubC );
+  
+  tem.ag.setYRSTUBN( cohort[pichrt].yragstubN );
+
+  tem.ag.setYRCFLUX( cohort[pichrt].yrcflux );
+  
+  tem.soil.setYRCH4CSMP( cohort[pichrt].yrCH4csmp );
+  
+  tem.soil.setYRCH4EMISSION( cohort[pichrt].yrCH4ems );
+  
+  tem.soil.setYRCH4FLUX( cohort[pichrt].yrCH4flx );
+  
+  tem.soil.setYRCO2DENTRFLUX( cohort[pichrt].yrCO2dnflx );
+  
+  tem.soil.setYRCO2NTRFLUX( cohort[pichrt].yrCO2nflx );
+  
+  tem.ag.setYRCONVRTC( cohort[pichrt].yrconvrtC );
+  
+  tem.ag.setYRCONVRTN( cohort[pichrt].yrconvrtN );
+
+  tem.ag.setYRDECAYPROD1C( cohort[pichrt].yrdecayPROD1C );
+  
+  tem.ag.setYRDECAYPROD10C( cohort[pichrt].yrdecayPROD10C );
+  
+  tem.ag.setYRDECAYPROD100C( cohort[pichrt].yrdecayPROD100C );
+
+  tem.ag.setYRDECAYPROD1N( cohort[pichrt].yrdecayPROD1N );
+  
+  tem.ag.setYRDECAYPROD10N( cohort[pichrt].yrdecayPROD10N );
+  
+  tem.ag.setYRDECAYPROD100N( cohort[pichrt].yrdecayPROD100N );
+  
+  tem.ag.setYRDECAYTOTPRODC( cohort[pichrt].yrdecayTOTPRODC );
+
+  tem.ag.setYRDECAYTOTPRODN( cohort[pichrt].yrdecayTOTPRODN );
+ 
+  tem.soil.setYREET( cohort[pichrt].yreet );
+  
+  tem.ag.setYRFERTN( cohort[pichrt].yrfertn );
+
+  tem.ag.setYRFLUXRESIDUEC( cohort[pichrt].yrfluxResidueC );
+  
+  tem.ag.setYRFLUXRESIDUEN( cohort[pichrt].yrfluxResidueN );
+  
+  tem.ag.setYRFORMPROD1C( cohort[pichrt].yrformPROD1C );
+  
+  tem.ag.setYRFORMPROD10C( cohort[pichrt].yrformPROD10C );
+  
+  tem.ag.setYRFORMPROD100C( cohort[pichrt].yrformPROD100C );
+
+  tem.ag.setYRFORMPROD1N( cohort[pichrt].yrformPROD1N );
+  
+  tem.ag.setYRFORMPROD10N( cohort[pichrt].yrformPROD10N );
+  
+  tem.ag.setYRFORMPROD100N( cohort[pichrt].yrformPROD100N );
+  
+  tem.ag.setYRFORMRESIDUEC( cohort[pichrt].yrformResidueC );
+  
+  tem.ag.setYRFORMRESIDUEN( cohort[pichrt].yrformResidueN );
+
+  tem.ag.setYRFORMTOTPRODC( cohort[pichrt].yrformTOTPRODC );
+
+  tem.ag.setYRFORMTOTPRODN( cohort[pichrt].yrformTOTPRODN );
+
+  tem.veg.setYRFPC( cohort[pichrt].yrfpc );
+  
+  tem.veg.setYRGPP( cohort[pichrt].yrgpp );
+  
+  tem.veg.setYRGPR( cohort[pichrt].yrgpr );
+  
+//  tem.soil.setYRH2OYIELD( cohort[pichrt].yrH2Oyld );
+  
+  tem.microbe.setYRNUPTAKE( cohort[pichrt].yrimmob );
+  
+//  tem.soil.setYRINEET( cohort[pichrt].yrineet );
+
+  tem.veg.setYRINGPP( cohort[pichrt].yringpp );
+  
+  tem.veg.setYRINNPP( cohort[pichrt].yrinnpp );
+  
+//  tem.ag.setYRIRRIG( cohort[pichrt].yrirrig );
+  
+  tem.veg.setYRLAI( cohort[pichrt].yrlai );
+    
+  tem.veg.setYRLEAF( cohort[pichrt].yrleaf );
+
+  tem.veg.setYRLTRFALC( cohort[pichrt].yrltrfalC );
+
+  tem.veg.setYRLTRFALN( cohort[pichrt].yrltrfalN );  	
+ 
+  tem.soil.setYRN2FLUX( cohort[pichrt].yrN2flx );
+  
+  tem.soil.setYRN2ODENTRFLUX( cohort[pichrt].yrN2Odnflx );
+  
+  tem.soil.setYRN2OFLUX( cohort[pichrt].yrN2Oflx );
+  
+  tem.soil.setYRN2ONTRFLUX( cohort[pichrt].yrN2Onflx );
+  
+  tem.setYRNCE( cohort[pichrt].yrnce );
+
+  tem.setYRNEP( cohort[pichrt].yrnep );
+
+  tem.soil.setYRNINPUT( cohort[pichrt].yrninput );
+
+  tem.soil.setYRNLOST( cohort[pichrt].yrnlost );
+  
+  tem.microbe.setYRNMIN( cohort[pichrt].yrnmin );
+
+  tem.veg.setYRNPP( cohort[pichrt].yrnpp );
+  
+  tem.ag.setYRNRENT( cohort[pichrt].yrnrent ); 
+  
+  tem.ag.setYRNSRENT( cohort[pichrt].yrnsrent );
+  
+  tem.ag.setYRNVRENT( cohort[pichrt].yrnvrent );
+  
+  tem.atms.setYRPET( cohort[pichrt].yrpet );
+  
+//  tem.atms.setYRRGRNDH2)( cohort[pichrt].yrrgrndH2O );
+
+  tem.microbe.setYRRH( cohort[pichrt].yrrh );
+   
+//  tem.atms.setYRRAIN( cohort[pichrt].yrrain );
+  
+//  tem.soil.setYRRPERC( cohort[pichrt].yrrperc );
+  
+//  tem.soil.setYRRRUN( cohort[pichrt].yrrrun );
+
+  tem.ag.setYRSCONVRTC( cohort[pichrt].yrsconvrtC );
+
+  tem.ag.setYRCONVRTN( cohort[pichrt].yrsconvrtN );
+  
+//  tem.soil.setYRSGRNDH2O( cohort[pichrt].yrsgrndH2O );
+
+  tem.ag.setYRSLASHC( cohort[pichrt].yrslashC );
+
+  tem.ag.setYRSLASHN( cohort[pichrt].yrslashN );
+  
+//  tem.atms.setYRSNOWFALL( cohort[pichrt].yrsnowfall );
+
+//  tem.soil.setYRSNOWINF( cohort[pichrt].yrsnowinf );
+
+//  tem.soil.setYRSNOWPACK( cohort[pichrt].yrsnowpack );
+
+//  tem.soil.setYRAVLH2O( cohort[pichrt].yrsoilavlH2O );
+  
+  tem.soil.setYRAVLN( cohort[pichrt].yrsoilavlN );
+
+//  tem.soil.setYRC2N( cohort[pichrt].yrsoilC2N );
+   
+//  tem.soil.setYRSMOIST( cohort[pichrt].yrsoilmoist );
+  
+  tem.soil.setYRORGC( cohort[pichrt].yrsoilorgC );
+  
+  tem.soil.setYRORGN( cohort[pichrt].yrsoilorgN );
+
+//  tem.soil.setYRPCTP( cohort[pichrt].yrsoilpctp );
+  
+//  tem.soil.setYRVSM( cohort[pichrt].yrsoilvsm );
+
+//  tem.soil.setYRSPERC( cohort[pichrt].yrsperc );
+  
+//  tem.soil.setSRUN( cohort[pichrt].yrsrun );
+
+  tem.setYRTOTALC( cohort[pichrt].yrtotalC );
+  
+  tem.veg.setYRUNLEAF( cohort[pichrt].yrunleaf );
+
+  tem.ag.setYRVCONVRTC( cohort[pichrt].yrvconvrtC );
+  
+  tem.ag.setYRCONVRTN( cohort[pichrt].yrvconvrtN );
+ 
+  tem.veg.setYRVEGC( cohort[pichrt].yrvegC );
+
+//  tem.veg.setYRVEGC2N( cohort[pichrt].yrvegC2N );
+    
+  tem.veg.setYRINNUP( cohort[pichrt].yrveginnup );
+
+ tem.veg.setYRLUP( cohort[pichrt].yrveglup );
+
+  tem.veg.setYRVEGN( cohort[pichrt].yrvegN );
+
+  tem.veg.setYRNMOBIL( cohort[pichrt].yrvegnmobil );
+
+  tem.veg.setYRNRSORB( cohort[pichrt].yrvegnrsorb );
+
+  tem.veg.setYRNUPTAKE( cohort[pichrt].yrvegnup );
+
+  tem.veg.setYRRGROWTH( cohort[pichrt].yrvegrgrowth );
+
+  tem.veg.setYRRMAINT( cohort[pichrt].yrvegrmaint );
+
+  tem.veg.setYRSTOREN( cohort[pichrt].yrvegSTON );
+  
+  tem.veg.setYRSTRUCTN( cohort[pichrt].yrvegSTRN );
+
+  tem.veg.setYRSUP( cohort[pichrt].yrvegsup );
 	
 };
 
@@ -651,54 +908,82 @@ void MITelmnt44::initializeCohortTEMState( const int& pichrt )
   int dm;
   int i;
 
+// cohort[pichrt].srcCohort initialized by LCLUC
+
+// cohort[pichrt].standage initialized by LCLUC
+
+// cohort[pichrt].chrtarea initialized by LCLUC
+
+  cohort[pichrt].prevchrtarea = cohort[pichrt].chrtarea;
+
+//  cohort[pichrt].potveg initialized by LCLUC
+
+//  cohort[pichrt].currentveg initialized by LCLUC
+
+//  cohort[pichrt].subtype initialized by LCLUC
+
+// cohort[pichrt].cmnt initialized by LCLUC
+
   for( i = 0; i < MAXSTATE; ++i )
   {
-    cohort[pichrt].y[i] = MISSING;
-    cohort[pichrt].prevy[i] = MISSING;
+    cohort[pichrt].y[i]  = ZERO;
+    cohort[pichrt].prevy[i]  = ZERO;
   }
 
-  cohort[pichrt].aggrowdd = MISSING;
+//  cohort[pichrt].agcmnt initialized by LCLUC
 
-  cohort[pichrt].agkd = MISSING;
+  cohort[pichrt].aggrowdd  = ZERO;
 
-  cohort[pichrt].c2n = MISSING;
+  cohort[pichrt].agkd  = ZERO;
+
+//  cohort[pichrt].agprvstate initialized by LCLUC
+
+//  cohort[pichrt].agstate initialized by LCLUC
+
+  cohort[pichrt].c2n  = ZERO;
   
-  cohort[pichrt].cneven = MISSING;
+  cohort[pichrt].cneven  = ZERO;
   
-  cohort[pichrt].convrtflx.carbon = MISSING;
-  cohort[pichrt].convrtflx.nitrogen = MISSING;
+  cohort[pichrt].convrtflx.carbon  = ZERO;
+  cohort[pichrt].convrtflx.nitrogen  = ZERO;
 
-  cohort[pichrt].cropprveetmx = MISSING;
+  cohort[pichrt].cropprveetmx  = ZERO;
 
-  cohort[pichrt].cropprvleafmx = MISSING;
+  cohort[pichrt].cropprvleafmx  = ZERO;
 
-  cohort[pichrt].cropprvpetmx = MISSING;
+  cohort[pichrt].cropprvpetmx  = ZERO;
 
-  cohort[pichrt].cropResidue.carbon = MISSING;
-  cohort[pichrt].cropResidue.nitrogen = MISSING;
+  cohort[pichrt].cropResidue.carbon  = ZERO;
+  cohort[pichrt].cropResidue.nitrogen  = ZERO;
 
-  cohort[pichrt].croptopt = MISSING;
+  cohort[pichrt].croptopt  = ZERO;
 
   cohort[pichrt].distmnthcnt = 0;
 
+//  cohort[pichrt].disturbflag initialized by LCLUC
   cohort[pichrt].disturbflag = 0;
   
+//  cohort[pichrt].disturbmonth initialized by LCLUC 
   cohort[pichrt].disturbmonth = 0;
   
-  cohort[pichrt].eetmx = MISSING;
+  cohort[pichrt].eetmx  = ZERO;
+
+//  cohort[pichrt].fertflag initialized by LCLUC
 
   cohort[pichrt].firemnthcnt = 0;
   
-  cohort[pichrt].firendep = MISSING;
+  cohort[pichrt].firendep  = ZERO;
                                                       
-  cohort[pichrt].formPROD10.carbon = MISSING;
-  cohort[pichrt].formPROD10.nitrogen = MISSING;
+  cohort[pichrt].formPROD10.carbon  = ZERO;
+  cohort[pichrt].formPROD10.nitrogen  = ZERO;
   
-  cohort[pichrt].formPROD100.carbon = MISSING;
-  cohort[pichrt].formPROD100.nitrogen = MISSING;
+  cohort[pichrt].formPROD100.carbon  = ZERO;
+  cohort[pichrt].formPROD100.nitrogen  = ZERO;
 
-  cohort[pichrt].fprevozone = MISSING;
+  cohort[pichrt].fprevozone  = ZERO;
      
+//  cohort[pichrt].FRI initialized by LCLUC
+
   for( dm = 0; dm < CYCLE; ++dm )
   {
     cohort[pichrt].initPROD1[dm].carbon = ZERO;
@@ -716,52 +1001,54 @@ void MITelmnt44::initializeCohortTEMState( const int& pichrt )
     cohort[pichrt].initPROD100[i].carbon = ZERO;
     cohort[pichrt].initPROD100[i].nitrogen = ZERO;
   }                            
+
+//  cohort[pichrt].irrgflag initialized by LCLUC
   
-  cohort[pichrt].kd = MISSING;
+  cohort[pichrt].kd  = ZERO;
 
-  cohort[pichrt].MDMnpp = MISSING;     // MDM
+  cohort[pichrt].MDMnpp  = ZERO;     // MDM
 
-  cohort[pichrt].natprveetmx = MISSING;
+  cohort[pichrt].natprveetmx  = ZERO;
 
-  cohort[pichrt].natprvleafmx = MISSING;
+  cohort[pichrt].natprvleafmx  = ZERO;
 
-  cohort[pichrt].natprvpetmx = MISSING;
+  cohort[pichrt].natprvpetmx  = ZERO;
 
-  cohort[pichrt].natseedC = MISSING;
+  cohort[pichrt].natseedC  = ZERO;
 
-  cohort[pichrt].natseedSTRN = MISSING;
+  cohort[pichrt].natseedSTRN  = ZERO;
 
-  cohort[pichrt].natseedSTON = MISSING;
+  cohort[pichrt].natseedSTON  = ZERO;
 
-  cohort[pichrt].natsoil = MISSING;
+  cohort[pichrt].natsoil  = ZERO;
 
-  cohort[pichrt].nattopt = MISSING;
+  cohort[pichrt].nattopt  = ZERO;
 
-  cohort[pichrt].natyreet = MISSING;
+  cohort[pichrt].natyreet  = ZERO;
 
-  cohort[pichrt].natyrpet= MISSING;
+  cohort[pichrt].natyrpet  = ZERO;
 
 
   // ********************* NEM *********************************
   
   for( dlyr = 0; dlyr < NLVL; ++dlyr )
   {
-    cohort[pichrt].NEManh4in[dlyr] = MISSING; 
+    cohort[pichrt].NEManh4in[dlyr]  = ZERO; 
   
-    cohort[pichrt].NEMano3in[dlyr] = MISSING;
+    cohort[pichrt].NEMano3in[dlyr]  = ZERO;
 
-    cohort[pichrt].NEMdphumin[dlyr] = MISSING; 
+    cohort[pichrt].NEMdphumin[dlyr]  = ZERO; 
 
-    cohort[pichrt].NEMocin[dlyr] = MISSING;
+    cohort[pichrt].NEMocin[dlyr]  = ZERO;
 
-    cohort[pichrt].NEMrclin[dlyr] = MISSING; 
+    cohort[pichrt].NEMrclin[dlyr]  = ZERO; 
   
-    cohort[pichrt].NEMrcrin[dlyr] = MISSING;
+    cohort[pichrt].NEMrcrin[dlyr]  = ZERO;
   
-    cohort[pichrt].NEMrcvlin[dlyr] = MISSING;
+    cohort[pichrt].NEMrcvlin[dlyr]  = ZERO;
   }
   
-  cohort[pichrt].NEMnsolc = MISSING;
+  cohort[pichrt].NEMnsolc  = ZERO;
 
   // cohort[pichrt].NEMtopdens prescribed from soil layer file
   
@@ -772,67 +1059,276 @@ void MITelmnt44::initializeCohortTEMState( const int& pichrt )
   // ***********************************************************
 
 
-  cohort[pichrt].newleafmx = MISSING;
+  cohort[pichrt].newleafmx  = ZERO;
 
-  cohort[pichrt].newtopt = MISSING;
+  cohort[pichrt].newtopt  = ZERO;
 
-  cohort[pichrt].nretent = MISSING;
+  cohort[pichrt].nretent  = ZERO;
 
-  cohort[pichrt].nsretent = MISSING;
+  cohort[pichrt].nsretent  = ZERO;
 
-  cohort[pichrt].nvretent = MISSING;
+  cohort[pichrt].nvretent  = ZERO;
 
-  cohort[pichrt].petmx = MISSING;
+  cohort[pichrt].petmx  = ZERO;
 
-  cohort[pichrt].prev2tair = MISSING;
+  cohort[pichrt].prev2tair  = ZERO;
 
-  cohort[pichrt].prevco2 = MISSING;
+  cohort[pichrt].prevco2  = ZERO;
 
-  cohort[pichrt].prevCropResidue.carbon = MISSING;
-  cohort[pichrt].prevCropResidue.nitrogen = MISSING;
+  cohort[pichrt].prevCropResidue.carbon  = ZERO;
+  cohort[pichrt].prevCropResidue.nitrogen  = ZERO;
   
-  cohort[pichrt].prevPROD1.carbon = MISSING; 
-  cohort[pichrt].prevPROD1.nitrogen = MISSING;
+  cohort[pichrt].prevPROD1.carbon  = ZERO; 
+  cohort[pichrt].prevPROD1.nitrogen  = ZERO;
   
-  cohort[pichrt].prevPROD10.carbon = MISSING; 
-  cohort[pichrt].prevPROD10.nitrogen = MISSING;
+  cohort[pichrt].prevPROD10.carbon  = ZERO; 
+  cohort[pichrt].prevPROD10.nitrogen  = ZERO;
   
-  cohort[pichrt].prevPROD100.carbon = MISSING;
-  cohort[pichrt].prevPROD100.nitrogen = MISSING;
+  cohort[pichrt].prevPROD100.carbon  = ZERO;
+  cohort[pichrt].prevPROD100.nitrogen  = ZERO;
 
-  cohort[pichrt].prevspack = MISSING;
+//  cohort[pichrt].prevspack  = ZERO;
 
-  cohort[pichrt].prevtair = MISSING;
+  cohort[pichrt].prevtair  = ZERO;
   
-  cohort[pichrt].prevunrmleaf = MISSING;
+  cohort[pichrt].prevunrmleaf  = ZERO;
+
+// cohort[pichrt].prod10par initialized by LCLUC
+
+// cohort[pichrt].prod100par initialized by LCLUC
 
   cohort[pichrt].productYear = -99;
   
-  cohort[pichrt].prvcropnpp = MISSING;
+  cohort[pichrt].prvcropnpp  = ZERO;
 
-  cohort[pichrt].prveetmx = MISSING;
+  cohort[pichrt].prveetmx  = ZERO;
 
-  cohort[pichrt].prvleafmx = MISSING;
+  cohort[pichrt].prvleafmx  = ZERO;
 
-  cohort[pichrt].prvpetmx = MISSING;
+  cohort[pichrt].prvpetmx  = ZERO;
 
   cohort[pichrt].qc = 0;
 
-  cohort[pichrt].sconvrtflx.carbon = MISSING;
-  cohort[pichrt].sconvrtflx.nitrogen = MISSING;
+// cohort[pichrt].sconvert initialized by LCLUC
 
-  cohort[pichrt].slash.carbon = MISSING;
-  cohort[pichrt].slash.nitrogen = MISSING;                       
+  cohort[pichrt].sconvrtflx.carbon  = ZERO;
+  cohort[pichrt].sconvrtflx.nitrogen  = ZERO;
 
-  cohort[pichrt].topt = MISSING;
+  cohort[pichrt].slash.carbon  = ZERO;
+  cohort[pichrt].slash.nitrogen  = ZERO;                       
+
+// cohort[pichrt].slashpar initialized by LCLUC
+
+// cohort[pichrt].tillflag initialized by LCLUC
+
+  cohort[pichrt].topt  = ZERO;
 
   cohort[pichrt].tqc = 0;
 
-  cohort[pichrt].vconvrtflx.carbon = MISSING;
-  cohort[pichrt].vconvrtflx.nitrogen = MISSING; 
+// cohort[pichrt].vconvert initialized by LCLUC
 
-  cohort[pichrt].yrltrc = MISSING;
-  cohort[pichrt].yrltrn = MISSING;  	
+  cohort[pichrt].vconvrtflx.carbon  = ZERO;
+  cohort[pichrt].vconvrtflx.nitrogen  = ZERO; 
+
+// cohort[pichrt].vrespar initialized by LCLUC
+
+  cohort[pichrt].yragstubC = ZERO;
+  
+  cohort[pichrt].yragstubN = ZERO;
+  
+  cohort[pichrt].yrcflux = ZERO;
+  
+  cohort[pichrt].yrCH4csmp = ZERO;
+  
+  cohort[pichrt].yrCH4ems = ZERO;
+  
+  cohort[pichrt].yrCH4flx = ZERO;
+  
+  cohort[pichrt].yrCO2dnflx = ZERO;
+  
+  cohort[pichrt].yrCO2nflx = ZERO;
+  
+  cohort[pichrt].yrconvrtC = ZERO;
+  
+  cohort[pichrt].yrconvrtN = ZERO;
+  
+  cohort[pichrt].yrdecayPROD1C = ZERO;
+  
+  cohort[pichrt].yrdecayPROD10C = ZERO;
+  
+  cohort[pichrt].yrdecayPROD100C = ZERO;
+
+  cohort[pichrt].yrdecayPROD1N = ZERO;
+  
+  cohort[pichrt].yrdecayPROD10N = ZERO;
+  
+  cohort[pichrt].yrdecayPROD100N = ZERO;
+  
+  cohort[pichrt].yrdecayTOTPRODC = ZERO;
+
+  cohort[pichrt].yrdecayTOTPRODN = ZERO;
+
+  cohort[pichrt].yreet = ZERO;
+  
+  cohort[pichrt].yrfertn = ZERO;
+  
+  cohort[pichrt].yrfluxResidueC = ZERO;
+  
+  cohort[pichrt].yrfluxResidueN = ZERO;
+
+  cohort[pichrt].yrformPROD1C = ZERO;
+  
+  cohort[pichrt].yrformPROD10C = ZERO;
+  
+  cohort[pichrt].yrformPROD100C = ZERO;
+
+  cohort[pichrt].yrformPROD1N = ZERO;
+  
+  cohort[pichrt].yrformPROD10N = ZERO;
+  
+  cohort[pichrt].yrformPROD100N = ZERO;
+  
+  cohort[pichrt].yrformResidueC = ZERO;
+  
+  cohort[pichrt].yrformResidueN = ZERO;
+
+  cohort[pichrt].yrformTOTPRODC = ZERO;
+
+  cohort[pichrt].yrformTOTPRODN = ZERO;
+
+  cohort[pichrt].yrfpc = ZERO;
+
+  cohort[pichrt].yrgpp = ZERO;
+  
+  cohort[pichrt].yrgpr = ZERO;
+
+//   cohort[pichrt].yrh2oyld = ZERO;
+  
+  cohort[pichrt].yrimmob = ZERO;
+  
+//  cohort[pichrt].yrineet = ZERO;
+  
+  cohort[pichrt].yringpp = ZERO;
+  
+  cohort[pichrt].yrinnpp = ZERO;
+    
+//  cohort[pichrt].yrirrig = ZERO;
+
+  cohort[pichrt].yrlai = ZERO;
+
+  cohort[pichrt].yrleaf = ZERO;
+
+  cohort[pichrt].yrltrfalC = ZERO;
+
+  cohort[pichrt].yrltrfalN = ZERO;  	
+  
+  cohort[pichrt].yrN2flx = ZERO;
+  
+  cohort[pichrt].yrN2Odnflx = ZERO;
+  
+  cohort[pichrt].yrN2Oflx = ZERO;
+  
+  cohort[pichrt].yrN2Onflx = ZERO;
+  
+  cohort[pichrt].yrnce = ZERO;
+  
+  cohort[pichrt].yrnep = ZERO;
+  
+  cohort[pichrt].yrninput = ZERO;
+  
+  cohort[pichrt].yrnlost = ZERO;
+  
+  cohort[pichrt].yrnmin = ZERO;
+    
+  cohort[pichrt].yrnpp = ZERO;
+  
+  cohort[pichrt].yrnrent = ZERO;
+    
+  cohort[pichrt].yrnsrent = ZERO;
+
+  cohort[pichrt].yrnvrent = ZERO;
+  
+  cohort[pichrt].yrpet = ZERO;
+    
+//  cohort[pichrt].yrrgrndH2O = ZERO; 
+
+  cohort[pichrt].yrrh = ZERO;
+
+//  cohort[pichrt].yrrain = ZERO;
+  
+//  cohort[pichrt].yrrperc = ZERO;
+  
+//  cohort[pichrt].yrrrun = ZERO;
+    
+  cohort[pichrt].yrsconvrtC = ZERO;
+
+  cohort[pichrt].yrsconvrtN = ZERO;
+
+//  cohort[pichrt].yrsgrndH2O = ZERO;
+  
+  cohort[pichrt].yrslashC = ZERO;
+
+  cohort[pichrt].yrslashN = ZERO;
+  
+//  cohort[pichrt].yrsnowfall = ZERO;
+
+//  cohort[pichrt].yrsnowinf = ZERO;
+
+//  cohort[pichrt].yrsnowpack = ZERO;
+
+//  cohort[pichrt].yrsoilavlH2O = ZERO;
+
+  cohort[pichrt].yrsoilavlN = ZERO;
+  
+//  cohort[pichrt].yrsoilC2N = ZERO;
+
+//  cohort[pichrt].yrsoilmoist = ZERO;
+
+  cohort[pichrt].yrsoilorgC = ZERO;
+  
+  cohort[pichrt].yrsoilorgN = ZERO;
+
+//  cohort[pichrt].yrsoilpctp = ZERO;
+
+//  cohort[pichrt].yrsoilvsm = ZERO;
+
+//  cohort[pichrt].yrsperc = ZERO;
+  
+//  cohort[pichrt].yrsrun = ZERO;
+  
+  cohort[pichrt].yrtotalC = ZERO;
+  
+  cohort[pichrt].yrunleaf = ZERO;
+
+  cohort[pichrt].yrvconvrtC = ZERO;
+  
+  cohort[pichrt].yrvconvrtN = ZERO;
+
+  cohort[pichrt].yrvegC = ZERO;
+
+// cohort[pichrt].yrvegC2N = ZERO;
+
+  cohort[pichrt].yrveginnup = ZERO;
+
+  cohort[pichrt].yrveglup = ZERO;
+    
+  cohort[pichrt].yrvegN = ZERO;
+  
+  cohort[pichrt].yrvegnmobil = ZERO;
+
+  cohort[pichrt].yrvegnrsorb = ZERO;
+  
+  cohort[pichrt].yrvegnup = ZERO;
+
+  cohort[pichrt].yrvegrgrowth = ZERO;
+
+  cohort[pichrt].yrvegrmaint = ZERO;
+
+  cohort[pichrt].yrvegSTON = ZERO;
+  
+  cohort[pichrt].yrvegSTRN = ZERO;
+
+  cohort[pichrt].yrvegsup = ZERO;
 	
 };
 
@@ -3111,7 +3607,7 @@ void MITelmnt44::outputTEMmonth( const int& pchrt,
 
   output[tem.I_AGIRRIG][pchrt][pdm] = ZERO;
 
-  output[tem.I_INEET][pchrt][pdm] = tem.soil.getINEET();
+//  output[tem.I_INEET][pchrt][pdm] = tem.soil.getINEET();
 
   output[tem.I_EET][pchrt][pdm] = tem.soil.getEET();
 
@@ -3439,17 +3935,74 @@ void MITelmnt44::outputTEMmonth( const int& pchrt,
 /* *************************************************************
 ************************************************************** */
 
+void MITelmnt44::readBinaryCohortState( ifstream& ifstate,
+                                        const int& pichrt )
+{
+  
+  int ichrt;
+
+  float tstcol;
+  
+  float tstrow;
+  
+  ifstate.read( (char *)(&tstcol), sizeof( tstcol ) );
+  ifstate.read( (char *)(&tstrow), sizeof( tstrow ) );
+
+  if( (tstcol != col) || (tstrow != row) )
+  {
+    cout << "TEMSTATE is not co-registered with other data sets!" << endl;
+    cout << "TEMSTATE Lon = " << tstcol << " Lat = " << tstrow << endl;
+    cout << "Other Lon = " << col << " Lat = " << row << endl;
+
+    exit( -1 );
+  }
+
+  ifstate.read( (char *)(&ichrt), sizeof( ichrt ) ); 
+  ifstate.read( (char *)(&cohort[pichrt]), sizeof( MITElmntCohort44 ) );
+
+  if( ifstate.fail() )
+  {
+  	cout << "Problem with reading in TEMSTATE at " << endl;
+    cout << "Lon = " << tstcol << " Lat = " << tstrow;
+    cout << " Cohort = " << ichrt << endl;
+  
+    exit( -1 );
+  }
+  	 	
+};
+
+/* *************************************************************
+************************************************************* */
+
+
+/* *************************************************************
+************************************************************** */
+
 void MITelmnt44::readCohortState( ifstream& ifstate, 
                                   const int& pichrt )
 {
   int i;
   int dlyr;
   int dm;
-  float dumflt;
+  double dumdouble;
   int dumint;
   
-  ifstate >> dumflt;    // Longitude of element
-  ifstate >> dumflt;    // Latitude of element
+  float tstcol;
+  float tstrow;
+
+  ifstate >> tstcol;    // Longitude of element
+  ifstate >> tstrow;    // Latitude of element
+
+  ifstate.seekg( 0, ios::cur );
+
+  if( (tstcol != col) || (tstrow != row) )
+  {
+    cout << "TEMSTATE is not co-registered with other data sets!" << endl;
+    cout << "TEMSTATE Lon = " << tstcol << " Lat = " << tstrow << endl;
+    cout << "Other Lon = " << col << " Lat = " << row << endl;
+
+    exit( -1 );
+  }
 
   ifstate >> dumint;   // ichrt+1
   
@@ -3459,6 +4012,8 @@ void MITelmnt44::readCohortState( ifstream& ifstate,
   
   ifstate >> cohort[pichrt].chrtarea;
   
+  ifstate >> cohort[pichrt].prevchrtarea;
+
   ifstate >> cohort[pichrt].potveg;
   
   ifstate >> cohort[pichrt].currentveg;
@@ -3492,11 +4047,11 @@ void MITelmnt44::readCohortState( ifstream& ifstate,
   
   ifstate >> cohort[pichrt].cneven;
 
-  ifstate >> dumflt;
+  ifstate >> dumdouble;
 
 //  ifstate >> cohort[pichrt].convrtflx.carbon;
 
-  ifstate >> dumflt;
+  ifstate >> dumdouble;
 
 //  ifstate >> cohort[pichrt].convrtflx.nitrogen;
 
@@ -3615,13 +4170,13 @@ void MITelmnt44::readCohortState( ifstream& ifstate,
 
   ifstate >> cohort[pichrt].newtopt;
 
-  ifstate >> dumflt;
+  ifstate >> dumdouble;
 //  ifstate >> cohort[pichrt].nretent;
 
-  ifstate >> dumflt;
+  ifstate >> dumdouble;
 //  ifstate >> cohort[pichrt].nsretent;
 
-  ifstate >> dumflt;
+  ifstate >> dumdouble;
 //  ifstate >> cohort[pichrt].nvretent;
 
   ifstate >> cohort[pichrt].petmx;
@@ -3642,22 +4197,20 @@ void MITelmnt44::readCohortState( ifstream& ifstate,
   ifstate >> cohort[pichrt].prevPROD100.carbon;
   ifstate >> cohort[pichrt].prevPROD100.nitrogen;
 
-  ifstate >> cohort[pichrt].prevspack;
+//  ifstate >> cohort[pichrt].prevspack;
 
   ifstate >> cohort[pichrt].prevtair;
 
   ifstate >> cohort[pichrt].prevunrmleaf;
   
-  ifstate >> dumflt;
+//  ifstate >> dumdouble;
 //  ifstate >> cohort[pichrt].prod10par; 
 
-  ifstate >> dumflt;
+//  ifstate >> dumdouble;
 //  ifstate >> cohort[pichrt].prod100par; 
 
   ifstate >> cohort[pichrt].productYear;
 
-  ifstate >> cohort[pichrt].prvchrtarea;
-  
   ifstate >> cohort[pichrt].prvcropnpp;
 
   ifstate >> cohort[pichrt].prveetmx;
@@ -3668,21 +4221,21 @@ void MITelmnt44::readCohortState( ifstream& ifstate,
 
   ifstate >> cohort[pichrt].qc;
 
-  ifstate >> dumflt;
+//  ifstate >> dumdouble;
 //  ifstate >> cohort[pichrt].sconvert; 
   
-  ifstate >> dumflt;
+  ifstate >> dumdouble;
 //  ifstate >> cohort[pichrt].sconvrtflx.carbon;
-  ifstate >> dumflt;
+  ifstate >> dumdouble;
 //  ifstate >> cohort[pichrt].sconvrtflx.nitrogen;
 
-  ifstate >> dumflt;
+  ifstate >> dumdouble;
 //  ifstate >> cohort[pichrt].slash.carbon;
 
-  ifstate >> dumflt;
+  ifstate >> dumdouble;
 //  ifstate >> cohort[pichrt].slash.nitrogen;
 
-  ifstate >> dumflt;
+//  ifstate >> dumdouble;
 //  ifstate >> cohort[pichrt].slashpar; 
 
   ifstate >> cohort[pichrt].tillflag;                           
@@ -3691,19 +4244,214 @@ void MITelmnt44::readCohortState( ifstream& ifstate,
 
   ifstate >> cohort[pichrt].tqc;
 
-  ifstate >> dumflt;
+//  ifstate >> dumdouble;
 //  ifstate >> cohort[pichrt].vconvert; 
 
-  ifstate >> dumflt;
+  ifstate >> dumdouble;
 //  ifstate >> cohort[pichrt].vconvrtflx.carbon;
-  ifstate >> dumflt;
+  ifstate >> dumdouble;
 //  ifstate >> cohort[pichrt].vconvrtflx.nitrogen;
 
-  ifstate >> dumflt;
+//  ifstate >> dumdouble;
 //  ifstate >> cohort[pichrt].vrespar; 
 
-  ifstate >> cohort[pichrt].yrltrc;
-  ifstate >> cohort[pichrt].yrltrn;
+  ifstate >> cohort[pichrt].yragstubC;
+  
+  ifstate >> cohort[pichrt].yragstubN;
+
+  ifstate >> cohort[pichrt].yrcflux;
+  
+  ifstate >> cohort[pichrt].yrCH4csmp;
+  
+  ifstate >> cohort[pichrt].yrCH4ems;
+  
+  ifstate >> cohort[pichrt].yrCH4flx;
+  
+  ifstate >> cohort[pichrt].yrCO2dnflx;
+  
+  ifstate >> cohort[pichrt].yrCO2nflx;
+  
+  ifstate >> cohort[pichrt].yrconvrtC;
+  
+  ifstate >> cohort[pichrt].yrconvrtN;
+  
+  ifstate >> cohort[pichrt].yrdecayPROD1C;
+  
+  ifstate >> cohort[pichrt].yrdecayPROD10C;
+  
+  ifstate >> cohort[pichrt].yrdecayPROD100C;
+
+  ifstate >> cohort[pichrt].yrdecayPROD1N;
+  
+  ifstate >> cohort[pichrt].yrdecayPROD10N;
+  
+  ifstate >> cohort[pichrt].yrdecayPROD100N;
+  
+  ifstate >> cohort[pichrt].yrdecayTOTPRODC;
+
+  ifstate >> cohort[pichrt].yrdecayTOTPRODN;
+
+  ifstate >> cohort[pichrt].yreet;
+  
+  ifstate >> cohort[pichrt].yrfertn;
+  
+  ifstate >> cohort[pichrt].yrfluxResidueC;
+  
+  ifstate >> cohort[pichrt].yrfluxResidueN;
+
+  ifstate >> cohort[pichrt].yrformPROD1C;
+  
+  ifstate >> cohort[pichrt].yrformPROD10C;
+  
+  ifstate >> cohort[pichrt].yrformPROD100C;
+
+  ifstate >> cohort[pichrt].yrformPROD1N;
+  
+  ifstate >> cohort[pichrt].yrformPROD10N;
+  
+  ifstate >> cohort[pichrt].yrformPROD100N;
+  
+  ifstate >> cohort[pichrt].yrformResidueC;
+  
+  ifstate >> cohort[pichrt].yrformResidueN;
+
+  ifstate >> cohort[pichrt].yrformTOTPRODC;
+
+  ifstate >> cohort[pichrt].yrformTOTPRODN;
+
+  ifstate >> cohort[pichrt].yrfpc;
+
+  ifstate >> cohort[pichrt].yrgpp;
+  
+  ifstate >> cohort[pichrt].yrgpr;
+
+//  ifstate >> cohort[pichrt].yrh2oyld;
+  
+  ifstate >> cohort[pichrt].yrimmob;
+  
+//  ifstate >> cohort[pichrt].yrineet;
+  
+  ifstate >> cohort[pichrt].yringpp;
+  
+  ifstate >> cohort[pichrt].yrinnpp;
+
+//  ifstate >> cohort[pichrt].yrirrig;
+    
+  ifstate >> cohort[pichrt].yrlai;
+
+  ifstate >> cohort[pichrt].yrleaf;
+
+  ifstate >> cohort[pichrt].yrltrfalC;
+
+  ifstate >> cohort[pichrt].yrltrfalN;  	
+  
+  ifstate >> cohort[pichrt].yrN2flx;
+  
+  ifstate >> cohort[pichrt].yrN2Odnflx;
+  
+  ifstate >> cohort[pichrt].yrN2Oflx;
+  
+  ifstate >> cohort[pichrt].yrN2Onflx;
+  
+  ifstate >> cohort[pichrt].yrnce;
+  
+  ifstate >> cohort[pichrt].yrnep;
+  
+  ifstate >> cohort[pichrt].yrninput;
+  
+  ifstate >> cohort[pichrt].yrnlost;
+  
+  ifstate >> cohort[pichrt].yrnmin;
+    
+  ifstate >> cohort[pichrt].yrnpp;
+  
+  ifstate >> cohort[pichrt].yrnrent;
+    
+  ifstate >> cohort[pichrt].yrnsrent;
+
+  ifstate >> cohort[pichrt].yrnvrent;
+  
+  ifstate >> cohort[pichrt].yrpet;
+  
+//  ifstate >> cohort[pichrt].yrrgrndH2O;  
+  
+  ifstate >> cohort[pichrt].yrrh;
+    
+//  ifstate >> cohort[pichrt].yrrain;
+  
+//  ifstate >> cohort[pichrt].yrrperc;
+  
+//  ifstate >> cohort[pichrt].yrrrun;
+
+  ifstate >> cohort[pichrt].yrsconvrtC;
+
+  ifstate >> cohort[pichrt].yrsconvrtN;
+
+//  ifstate >> cohort[pichrt].yrsgrndh2o;
+  
+  ifstate >> cohort[pichrt].yrslashC;
+
+  ifstate >> cohort[pichrt].yrslashN;
+  
+//  ifstate >> cohort[pichrt].yrsnowfall;
+
+//  ifstate >> cohort[pichrt].yrsnowinf;
+
+//  ifstate >> cohort[pichrt].yrsnowpack;
+
+//  ifstate >> cohort[pichrt].yrsoilavlH2O;
+
+  ifstate >> cohort[pichrt].yrsoilavlN;
+  
+//  ifstate >> cohort[pichrt].yrsoilC2N; 
+  
+//  ifstate >> cohort[pichrt].yrsoilmoist;
+
+  ifstate >> cohort[pichrt].yrsoilorgC;
+  
+  ifstate >> cohort[pichrt].yrsoilorgN;
+  
+//  ifstate >> cohort[pichrt].yrsoilpctp;
+
+//  ifstate >> cohort[pichrt].yrsoilvsm;
+
+//  ifstate >> cohort[pichrt].yrsperc;
+  
+//  ifstate >> cohort[pichrt].yrsrun;
+
+  ifstate >> cohort[pichrt].yrtotalC;
+  
+  ifstate >> cohort[pichrt].yrunleaf;
+
+  ifstate >> cohort[pichrt].yrvconvrtC;
+  
+  ifstate >> cohort[pichrt].yrvconvrtN;
+
+  ifstate >> cohort[pichrt].yrvegC;
+
+//  ifstate >> cohort[pichrt].yrC2N;
+
+  ifstate >> cohort[pichrt].yrveginnup;
+    
+  ifstate >> cohort[pichrt].yrveglup;
+
+  ifstate >> cohort[pichrt].yrvegN;
+  
+  ifstate >> cohort[pichrt].yrvegnmobil;
+
+  ifstate >> cohort[pichrt].yrvegnrsorb;
+
+  ifstate >> cohort[pichrt].yrvegnup;
+
+  ifstate >> cohort[pichrt].yrvegrgrowth;
+
+  ifstate >> cohort[pichrt].yrvegrmaint;
+
+  ifstate >> cohort[pichrt].yrvegSTON;
+  
+  ifstate >> cohort[pichrt].yrvegSTRN;
+
+  ifstate >> cohort[pichrt].yrvegsup;
 
   ifstate.seekg( 0, ios::cur );
     	
@@ -3721,7 +4469,14 @@ void MITelmnt44::saveTEMCohortState( const int& pichrt )
   int dlyr;   // NEM
   int dm;
   int i;
-  
+ 
+ //  cohort[pichrt].srcCohort = cohort[pichrt].srcCohort
+
+//  cohort[pichrt].standage = cohort[pichrt].standage
+
+//  cohort[pichrt].chrtarea = cohort[pichrt].chrtarea
+ 
+//  cohort[pichrt].prevchrtarea = cohort[pichrt].prevchrtarea
   
   cohort[pichrt].potveg = tem.veg.getPOTVEG();
 
@@ -3891,7 +4646,7 @@ void MITelmnt44::saveTEMCohortState( const int& pichrt )
   cohort[pichrt].prevPROD100.carbon = tem.ag.getPREVPROD100C();
   cohort[pichrt].prevPROD100.nitrogen = tem.ag.getPREVPROD100N();
 
-  cohort[pichrt].prevspack = tem.soil.getPREVSPACK();
+//  cohort[pichrt].prevspack = tem.soil.getPREVSPACK();
 
   cohort[pichrt].prevtair = tem.atms.getPREVTAIR();
 
@@ -3911,6 +4666,8 @@ void MITelmnt44::saveTEMCohortState( const int& pichrt )
 
   cohort[pichrt].prvpetmx = tem.atms.getPRVPETMX();
 
+// cohort[pichrt].qc determined in setTEMequilState() 
+
 //  cohort[pichrt].sconvert = tem.ag.getSCONVERT(); 
   
   cohort[pichrt].sconvrtflx.carbon = tem.ag.getSCONVRTFLXC();
@@ -3925,6 +4682,8 @@ void MITelmnt44::saveTEMCohortState( const int& pichrt )
 
   cohort[pichrt].topt = tem.veg.getTOPT();
 
+// cohort[pichrt].tqc determined in setTEMequilState()
+
 //  cohort[pichrt].vconvert = tem.ag.getVCONVERT(); 
 
   cohort[pichrt].vconvrtflx.carbon = tem.ag.getVCONVRTFLXC();
@@ -3932,8 +4691,203 @@ void MITelmnt44::saveTEMCohortState( const int& pichrt )
 
 //  cohort[pichrt].vrespar = tem.ag.getVRESPAR(); 
 
-  cohort[pichrt].yrltrc = tem.veg.yrltrc;
-  cohort[pichrt].yrltrn = tem.veg.yrltrn;
+  cohort[pichrt].yragstubC = tem.ag.getYRSTUBC();
+  
+  cohort[pichrt].yragstubN = tem.ag.getYRSTUBN();
+
+  cohort[pichrt].yrcflux = tem.ag.getYRCFLUX();
+  
+  cohort[pichrt].yrCH4csmp = tem.soil.getYRCH4CSMP();
+  
+  cohort[pichrt].yrCH4ems = tem.soil.getYRCH4EMISSION();
+  
+  cohort[pichrt].yrCH4flx = tem.soil.getYRCH4FLUX();
+  
+  cohort[pichrt].yrCO2dnflx = tem.soil.getYRCO2DENTRFLUX();
+  
+  cohort[pichrt].yrCO2nflx = tem.soil.getYRCO2NTRFLUX();
+  
+  cohort[pichrt].yrconvrtC = tem.ag.getYRCONVRTC();
+  
+  cohort[pichrt].yrconvrtN = tem.ag.getYRCONVRTN();
+  
+  cohort[pichrt].yrdecayPROD1C = tem.ag.getYRDECAYPROD1C();
+  
+  cohort[pichrt].yrdecayPROD10C = tem.ag.getYRDECAYPROD10C();
+  
+  cohort[pichrt].yrdecayPROD100C = tem.ag.getYRDECAYPROD100C();
+
+  cohort[pichrt].yrdecayPROD1N = tem.ag.getYRDECAYPROD1N();
+  
+  cohort[pichrt].yrdecayPROD10N = tem.ag.getYRDECAYPROD10N();
+  
+  cohort[pichrt].yrdecayPROD100N = tem.ag.getYRDECAYPROD100N();
+  
+  cohort[pichrt].yrdecayTOTPRODC = tem.ag.getYRDECAYTOTPRODC();
+
+  cohort[pichrt].yrdecayTOTPRODN = tem.ag.getYRDECAYTOTPRODN();
+
+  cohort[pichrt].yreet = tem.soil.getYREET();
+  
+  cohort[pichrt].yrfertn = tem.ag.getYRFERTN();
+  
+  cohort[pichrt].yrfluxResidueC = tem.ag.getYRFLUXRESIDUEC();
+  
+  cohort[pichrt].yrfluxResidueN = tem.ag.getYRFLUXRESIDUEN();
+
+  cohort[pichrt].yrformPROD1C = tem.ag.getYRFORMPROD1C();
+  
+  cohort[pichrt].yrformPROD10C = tem.ag.getYRFORMPROD10C();
+  
+  cohort[pichrt].yrformPROD100C = tem.ag.getYRFORMPROD100C();
+
+  cohort[pichrt].yrformPROD1N = tem.ag.getYRFORMPROD1N();
+  
+  cohort[pichrt].yrformPROD10N = tem.ag.getYRFORMPROD10N();
+  
+  cohort[pichrt].yrformPROD100N = tem.ag.getYRFORMPROD100N();
+  
+  cohort[pichrt].yrformResidueC = tem.ag.getYRFORMRESIDUEC();
+  
+  cohort[pichrt].yrformResidueN = tem.ag.getYRFORMRESIDUEN();
+
+  cohort[pichrt].yrformTOTPRODC = tem.ag.getYRFORMTOTPRODC();
+
+  cohort[pichrt].yrformTOTPRODN = tem.ag.getYRFORMTOTPRODN();
+
+  cohort[pichrt].yrfpc = tem.veg.getYRFPC();
+
+  cohort[pichrt].yrgpp = tem.veg.getYRGPP();
+  
+  cohort[pichrt].yrgpr = tem.veg.getYRGPR();
+  
+//  cohort[pichrt].yrh2oyld = tem.soil.getYRH2OYIELD();
+  
+  cohort[pichrt].yrimmob = tem.microbe.getYRNUPTAKE();
+  
+//  cohort[pichrt].yrineet = tem.soil.getYRINEET();
+  
+  cohort[pichrt].yringpp = tem.veg.getYRINGPP();
+  
+  cohort[pichrt].yrinnpp = tem.veg.getYRINNPP();
+      
+//  cohort[pichrt].yrirrig = tem.ag.getYRIRRIG();
+
+  cohort[pichrt].yrlai = tem.veg.getYRLAI();
+    
+  cohort[pichrt].yrleaf = tem.veg.getYRLEAF();
+
+  cohort[pichrt].yrltrfalC = tem.veg.getYRLTRFALC();
+
+  cohort[pichrt].yrltrfalN = tem.veg.getYRLTRFALN();  	
+  
+  cohort[pichrt].yrN2flx = tem.soil.getYRN2FLUX();
+  
+  cohort[pichrt].yrN2Odnflx = tem.soil.getYRN2ODENTRFLUX();
+  
+  cohort[pichrt].yrN2Oflx = tem.soil.getYRN2OFLUX();
+  
+  cohort[pichrt].yrN2Onflx = tem.soil.getYRN2ONTRFLUX();
+  
+  cohort[pichrt].yrnce = tem.getYRNCE();
+  
+  cohort[pichrt].yrnep = tem.getYRNEP();
+  
+  cohort[pichrt].yrninput = tem.soil.getYRNINPUT();
+  
+  cohort[pichrt].yrnlost = tem.soil.getYRNLOST();
+  
+  cohort[pichrt].yrnmin = tem.microbe.getYRNMIN();
+   
+  cohort[pichrt].yrnpp = tem.veg.getYRNPP();
+  
+  cohort[pichrt].yrnrent = tem.ag.getYRNRENT(); 
+  
+  cohort[pichrt].yrnsrent = tem.ag.getYRNSRENT();
+
+  cohort[pichrt].yrnvrent = tem.ag.getYRNVRENT();
+  
+  cohort[pichrt].yrpet = tem.atms.getYRPET();
+  
+//  cohort[pichrt].yrrgrndH2O = tem.soil.getYRRGRNDH2O(); 
+  
+  cohort[pichrt].yrrh = tem.microbe.getYRRH();
+    
+//  cohort[pichrt].yrrain = tem.atms.getYRRAIN();
+  
+//  cohort[pichrt].yrrperc = tem.soil.getYRRPERC();
+  
+//  cohort[pichrt].yrrrun = tem.soil.getYRRRUN();
+
+  cohort[pichrt].yrsconvrtC = tem.ag.getYRSCONVRTC();
+
+  cohort[pichrt].yrsconvrtN = tem.ag.getYRSCONVRTN();
+  
+//  cohort[pichrt].yrsgrndH2O = tem.soil.getYRSGRNDH2O();
+
+  cohort[pichrt].yrslashC = tem.ag.getYRSLASHC();
+
+  cohort[pichrt].yrslashN = tem.ag.getYRSLASHN();
+  
+//  cohort[pichrt].yrsnowfall = tem.atms.getYRSNOWFALL();
+
+//  cohort[pichrt].yrsnowinf = tem.soil.getYRSNOWINF();
+
+//  cohort[pichrt].yrsnowpack = tem.soil.getYRSNOWPACK();
+
+//  cohort[pichrt].yrsoilavlH2O = tem.soil.getYRAVLH2O();
+
+  cohort[pichrt].yrsoilavlN = tem.soil.getYRAVLN();
+
+//  cohort[pichrt].yrsoilC2N = tem.soil.getYRC2N();
+
+//  cohort[pichrt].yrsoilmoist = tem.soil.getYRSMOIST();
+  
+  cohort[pichrt].yrsoilorgC = tem.soil.getYRORGC();
+  
+  cohort[pichrt].yrsoilorgN = tem.soil.getYRORGN();
+  
+//  cohort[pichrt].yrsoilpctp = tem.soil.getYRPCTP();
+
+//  cohort[pichrt].yrsoilvsm = tem.soil.getYRVSM();
+
+//  cohort[pichrt].yrsperc = tem.soil.getYRSPERC();
+  
+//  cohort[pichrt].yrsrun = tem.soil.getYRSRUN();
+
+  cohort[pichrt].yrtotalC = tem.getYRTOTALC();
+  
+  cohort[pichrt].yrunleaf = tem.veg.getYRUNLEAF();
+
+  cohort[pichrt].yrvconvrtC = tem.ag.getYRVCONVRTC();
+  
+  cohort[pichrt].yrvconvrtN = tem.ag.getYRVCONVRTN();
+
+  cohort[pichrt].yrvegC = tem.veg.getYRVEGC();
+    
+//  cohort[pichrt].yrvegC2N = tem.veg.getYRC2N();
+
+  cohort[pichrt].yrveginnup = tem.veg.getYRINNUP();
+
+  cohort[pichrt].yrveglup = tem.veg.getYRLUP();
+
+  cohort[pichrt].yrvegN = tem.veg.getYRVEGN();
+
+  cohort[pichrt].yrvegnmobil = tem.veg.getYRNMOBIL();
+
+  cohort[pichrt].yrvegnrsorb = tem.veg.getYRNRSORB();
+
+  cohort[pichrt].yrvegnup = tem.veg.getYRNUPTAKE();
+  
+  cohort[pichrt].yrvegrgrowth = tem.veg.getYRRGROWTH();
+
+  cohort[pichrt].yrvegrmaint = tem.veg.getYRRMAINT();
+
+  cohort[pichrt].yrvegSTON = tem.veg.getYRSTOREN();
+  
+  cohort[pichrt].yrvegSTRN = tem.veg.getYRSTRUCTN();
+
+  cohort[pichrt].yrvegsup = tem.veg.getYRSUP();
 
 };
 
@@ -3951,6 +4905,22 @@ void MITelmnt44::setCohortTEMState( const MITElmntCohort44& firstchrt,
   int dm;
   int i;
   
+// targetchrt.srcCohort initialized elsewhere (see xtem606.updateTTEMgridcell())
+  
+// targetchrt.standage initialized by LCLUC
+  
+// targetchrt.chrtarea initialized by LCLUC
+
+// targetchrt.prevchrtarea initialized by LCLUC
+  
+// targetchrt.potveg initialized by LCLUC
+  
+// targetchrt.currentveg initialized by LCLUC
+
+// targetchrt.subtype initialized by LCLUC
+
+// targetchrt.cmnt initialized by LCLUC
+
   
   for( i = 0; i < MAXSTATE; ++i )
   {
@@ -3958,9 +4928,15 @@ void MITelmnt44::setCohortTEMState( const MITElmntCohort44& firstchrt,
     targetchrt.prevy[i] = firstchrt.prevy[i];
   }
 
+// targetchrt.agcmnt initialized by LCLUC
+
   targetchrt.aggrowdd = firstchrt.aggrowdd;
 
   targetchrt.agkd = firstchrt.agkd;
+
+// targetchrt.agprvstate initialized by LCLUC
+
+// targetchrt.agstate initialized by LCLUC
 
   targetchrt.c2n = firstchrt.c2n;
   
@@ -3982,7 +4958,13 @@ void MITelmnt44::setCohortTEMState( const MITElmntCohort44& firstchrt,
 
   targetchrt.distmnthcnt = firstchrt.distmnthcnt;
 
+// targetchrt.disturbflag initialized by LCLUC
+
+// targetchrt.disturbmonth initialized by LCLUC
+
   targetchrt.eetmx = firstchrt.eetmx;
+
+// targetchrt.fertflag initialized by LCLUC
 
   targetchrt.firemnthcnt = firstchrt.firemnthcnt;
 
@@ -3995,6 +4977,8 @@ void MITelmnt44::setCohortTEMState( const MITElmntCohort44& firstchrt,
   targetchrt.formPROD100.nitrogen = firstchrt.formPROD100.nitrogen;
 
   targetchrt.fprevozone = firstchrt.fprevozone;
+
+// targetchrt.FRI initialized by LCLUC
 
   for( dm = 0; dm < CYCLE; ++dm )
   {  
@@ -4014,6 +4998,8 @@ void MITelmnt44::setCohortTEMState( const MITElmntCohort44& firstchrt,
     targetchrt.initPROD100[i].nitrogen = firstchrt.initPROD100[i].nitrogen;
   }
  
+// targetchrt.irrgflag initialized by LCLUC
+
   targetchrt.kd = firstchrt.kd;
 
   targetchrt.MDMnpp = firstchrt.MDMnpp;     // MDM
@@ -4097,11 +5083,15 @@ void MITelmnt44::setCohortTEMState( const MITElmntCohort44& firstchrt,
   targetchrt.prevPROD100.carbon = firstchrt.prevPROD100.carbon;
   targetchrt.prevPROD100.nitrogen = firstchrt.prevPROD100.nitrogen;
 
-  targetchrt.prevspack = firstchrt.prevspack;
+//  targetchrt.prevspack = firstchrt.prevspack;
 
   targetchrt.prevtair = firstchrt.prevtair;
   
   targetchrt.prevunrmleaf = firstchrt.prevunrmleaf;
+
+// targetchrt.prod10par initialized by LCLUC
+  
+// targetchrt.prod100par initialized by LCLUC
 
   targetchrt.productYear = firstchrt.productYear;
   
@@ -4115,21 +5105,226 @@ void MITelmnt44::setCohortTEMState( const MITElmntCohort44& firstchrt,
 
   targetchrt.qc = firstchrt.qc;
 
+// targetchrt.sconvert initialized by LCLUC
+
   targetchrt.sconvrtflx.carbon = firstchrt.sconvrtflx.carbon;
   targetchrt.sconvrtflx.nitrogen = firstchrt.sconvrtflx.nitrogen;
 
   targetchrt.slash.carbon = firstchrt.slash.carbon;
   targetchrt.slash.nitrogen = firstchrt.slash.nitrogen;
 
+// targetchrt.slashpar initialized by LCLUC
+
+// targetchrt.tillflag initialized by LCLUC
+
   targetchrt.topt = firstchrt.topt;
 
   targetchrt.tqc = firstchrt.tqc;
 
+// targetchrt.vconvert initialized by LCLUC
+
   targetchrt.vconvrtflx.carbon = firstchrt.vconvrtflx.carbon;
   targetchrt.vconvrtflx.nitrogen = firstchrt.vconvrtflx.nitrogen;
 
-  targetchrt.yrltrc = firstchrt.yrltrc;
-  targetchrt.yrltrn = firstchrt.yrltrn;
+// targetchrt.vrespar initialized by LCLUC
+
+  targetchrt.yragstubC = firstchrt.yragstubC;
+  
+  targetchrt.yragstubN = firstchrt.yragstubN;
+
+  targetchrt.yrcflux = firstchrt.yrcflux;
+  
+  targetchrt.yrCH4csmp = firstchrt.yrCH4csmp;
+  
+  targetchrt.yrCH4ems = firstchrt.yrCH4ems;
+  
+  targetchrt.yrCH4flx = firstchrt.yrCH4flx;
+  
+  targetchrt.yrCO2dnflx = firstchrt.yrCO2dnflx;
+  
+  targetchrt.yrCO2nflx = firstchrt.yrCO2nflx;
+  
+  targetchrt.yrconvrtC = firstchrt.yrconvrtC;
+  
+  targetchrt.yrconvrtN = firstchrt.yrconvrtN;
+  
+  targetchrt.yrdecayPROD1C = firstchrt.yrdecayPROD1C;
+  
+  targetchrt.yrdecayPROD10C = firstchrt.yrdecayPROD10C;
+  
+  targetchrt.yrdecayPROD100C = firstchrt.yrdecayPROD100C;
+
+  targetchrt.yrdecayPROD1N = firstchrt.yrdecayPROD1N;
+  
+  targetchrt.yrdecayPROD10N = firstchrt.yrdecayPROD10N;
+  
+  targetchrt.yrdecayPROD100N = firstchrt.yrdecayPROD100N;
+  
+  targetchrt.yrdecayTOTPRODC = firstchrt.yrdecayTOTPRODC;
+
+  targetchrt.yrdecayTOTPRODN = firstchrt.yrdecayTOTPRODN;
+
+  targetchrt.yreet = firstchrt.yreet;
+  
+  targetchrt.yrfertn = firstchrt.yrfertn;
+  
+  targetchrt.yrfluxResidueC = firstchrt.yrfluxResidueC;
+  
+  targetchrt.yrfluxResidueN = firstchrt.yrfluxResidueN;
+
+  targetchrt.yrformPROD1C = firstchrt.yrformPROD1C;
+  
+  targetchrt.yrformPROD10C = firstchrt.yrformPROD10C;
+  
+  targetchrt.yrformPROD100C = firstchrt.yrformPROD100C;
+
+  targetchrt.yrformPROD1N = firstchrt.yrformPROD1N;
+  
+  targetchrt.yrformPROD10N = firstchrt.yrformPROD10N;
+  
+  targetchrt.yrformPROD100N = firstchrt.yrformPROD100N;
+  
+  targetchrt.yrformResidueC = firstchrt.yrformResidueC;
+  
+  targetchrt.yrformResidueN = firstchrt.yrformResidueN;
+
+  targetchrt.yrformTOTPRODC = firstchrt.yrformTOTPRODC;
+
+  targetchrt.yrformTOTPRODN = firstchrt.yrformTOTPRODN;
+
+  targetchrt.yrfpc = firstchrt.yrfpc;
+
+  targetchrt.yrgpp = firstchrt.yrgpp;
+  
+  targetchrt.yrgpr = firstchrt.yrgpr;
+
+//  targetchrt.yrh2oyld = firstchrt.yrh2oyld;
+  
+  targetchrt.yrimmob = firstchrt.yrimmob;
+  
+//  targetchrt.yrineet = firstchrt.yrineet;
+  
+  targetchrt.yringpp = firstchrt.yringpp;
+  
+  targetchrt.yrinnpp = firstchrt.yrinnpp;
+   
+//  targetchrt.yrirrig = firstchrt.yrirrig;
+
+  targetchrt.yrlai = firstchrt.yrlai;
+
+  targetchrt.yrleaf = firstchrt.yrleaf;
+
+  targetchrt.yrltrfalC = firstchrt.yrltrfalC;
+
+  targetchrt.yrltrfalN = firstchrt.yrltrfalN;  	
+  
+  targetchrt.yrN2flx = firstchrt.yrN2flx;
+  
+  targetchrt.yrN2Odnflx = firstchrt.yrN2Odnflx;
+  
+  targetchrt.yrN2Oflx = firstchrt.yrN2Oflx;
+  
+  targetchrt.yrN2Onflx = firstchrt.yrN2Onflx;
+  
+  targetchrt.yrnce = firstchrt.yrnce;
+  
+  targetchrt.yrnep = firstchrt.yrnep;
+  
+  targetchrt.yrninput = firstchrt.yrninput;
+  
+  targetchrt.yrnlost = firstchrt.yrnlost;
+  
+  targetchrt.yrnmin = firstchrt.yrnmin;
+   
+  targetchrt.yrnpp = firstchrt.yrnpp;
+  
+  targetchrt.yrnrent = firstchrt.yrnrent;
+    
+  targetchrt.yrnsrent = firstchrt.yrnsrent;
+
+  targetchrt.yrnvrent = firstchrt.yrnvrent;
+  
+  targetchrt.yrpet = firstchrt.yrpet;
+    
+//  targetchrt.yrrgrndh2o = firstchrt.yrrgrndH2O; 
+
+  targetchrt.yrrh = firstchrt.yrrh;
+    
+//  targetchrt.yrrain = firstchrt.yrrain;
+  
+//  targetchrt.yrrperc = firstchrt.yrrperc;
+  
+//  targetchrt.yrrrun = firstchrt.yrrrun;
+
+  targetchrt.yrsconvrtC = firstchrt.yrsconvrtC;
+
+  targetchrt.yrsconvrtN = firstchrt.yrsconvrtN;
+  
+//  targetchrt.yrsgrndh2o = firstchrt.yrsgrndH2O;
+
+  targetchrt.yrslashC = firstchrt.yrslashC;
+
+  targetchrt.yrslashN = firstchrt.yrslashN;
+  
+//  targetchrt.yrsnowfall = firstchrt.yrsnowfall;
+
+//  targetchrt.yrsnowinf = firstchrt.yrsnowinf;
+
+//  targetchrt.yrsnowpack = firstchrt.yrsnowpack;
+
+//  targetchrt.yrsoilavlH2O = firstchrt.yrsoilavlH2O;
+
+  targetchrt.yrsoilavlN = firstchrt.yrsoilavlN;
+  
+//  targetchrt.yrsoilC2N = firstchrt.yrsoilC2N;
+
+//  targetchrt.yrsoilmoist = firstchrt.yrsoilmoist;
+
+  targetchrt.yrsoilorgC = firstchrt.yrsoilorgC;
+  
+  targetchrt.yrsoilorgN = firstchrt.yrsoilorgN;
+    
+//  targetchrt.yrsoilpctp = firstchrt.yrsoilpctp;
+
+//  targetchrt.yrsoilvsm = firstchrt.yrsoilvsm;
+
+//  targetchrt.yrsperc = firstchrt.yrsperc;
+  
+//  targetchrt.yrsrun = firstchrt.yrsrun;
+
+  targetchrt.yrtotalC = firstchrt.yrtotalC;
+  
+  targetchrt.yrunleaf = firstchrt.yrunleaf;
+
+  targetchrt.yrvconvrtC = firstchrt.yrvconvrtC;
+  
+  targetchrt.yrvconvrtN = firstchrt.yrvconvrtN;
+
+  targetchrt.yrvegC = firstchrt.yrvegC;
+
+//  targetchrt.yrvegC2N = firstchrt.yrvegC2N;
+
+  targetchrt.yrveginnup = firstchrt.yrveginnup;
+    
+  targetchrt.yrveglup = firstchrt.yrveglup;
+
+  targetchrt.yrvegN = firstchrt.yrvegN;
+  
+  targetchrt.yrvegnmobil = firstchrt.yrvegnmobil;
+
+  targetchrt.yrvegnrsorb = firstchrt.yrvegnrsorb;
+
+  targetchrt.yrvegnup = firstchrt.yrvegnup;
+
+  targetchrt.yrvegrgrowth = firstchrt.yrvegrgrowth;
+
+  targetchrt.yrvegrmaint = firstchrt.yrvegrmaint;
+
+  targetchrt.yrvegSTON = firstchrt.yrvegSTON;
+  
+  targetchrt.yrvegSTRN = firstchrt.yrvegSTRN;
+
+  targetchrt.yrvegsup = firstchrt.yrvegsup;
 
 };
 
@@ -4346,7 +5541,8 @@ void MITelmnt44::setTEMequilState( ofstream& rflog1,
   
   tem.atms.setMXTAIR( mxtair );
   
-  tem.atms.yrprec = yrprec;
+  tem.atms.setYRPREC( yrprec );
+
 
   for( dm = 0; dm < CYCLE; ++dm )
   {                                
@@ -4362,7 +5558,7 @@ void MITelmnt44::setTEMequilState( ofstream& rflog1,
 
     tem.atms.setPET( initPET[pichrt][dm] );
 
-    tem.soil.setINEET( initAET[pichrt][dm] );
+    tem.soil.setEET( initAET[pichrt][dm] );
 
     tem.soil.setMOIST( initSH2O[pichrt][dm] );
 
@@ -4388,10 +5584,10 @@ void MITelmnt44::setTEMequilState( ofstream& rflog1,
                                   tem.atms.getPAR(),
                                   tem.atms.getTAIR(),
                                   tem.atms.getMXTAIR(),
-                                  tem.atms.yrprec,
+                                  tem.atms.getYRPREC(),
                                   tem.atms.getPREC(),
                                   tem.atms.getPET(),
-                                  tem.soil.getINEET(),
+                                  tem.soil.getEET(),
                                   tem.soil.getMOIST(),
                                   tem.soil.getSNOWPACK(),
                                   tem.soil.getSURFRUN(),
@@ -4403,10 +5599,11 @@ void MITelmnt44::setTEMequilState( ofstream& rflog1,
     if( cohort[pichrt].qc != ACCEPT ) 
     { 
       rflog1 << "temgisqc = " << cohort[pichrt].qc;
+      rflog1 << " for cohort " << (pichrt+1);
       rflog1 << " during month " << (dm+1) << endl;
       break; 
     }
-      
+     
     // Determine initial values for tem.atms.prvpetmx, 
     //   tem.atms.prveetmx and and tem.veg.topt based on
     //   long-term mean climate
@@ -4416,12 +5613,44 @@ void MITelmnt44::setTEMequilState( ofstream& rflog1,
                       dm );
   }
 
+//  exit( -1 );
+
    // Determine soil properties of element based on 
   //   soil texture
 
   tem.soil.xtext( tem.veg.cmnt,
                   tem.soil.getPCTSILT(),
                   tem.soil.getPCTCLAY() );
+
+
+  // Assume potential vegetation when determining 
+  //   equilibrium conditions
+
+  tem.ag.state = 0;
+  tem.ag.prvstate = 0;
+
+  tem.ag.tillflag = 0;
+  tem.ag.fertflag = 0;
+  tem.ag.irrgflag = 0;
+
+  tem.disturbflag = 0;
+  tem.distmnthcnt = 0;
+
+  // Initialize all fluxes and disturbance-related variables to zero
+
+  tem.ag.setNATSEEDC( ZERO );
+  tem.ag.setNATSEEDSTRN( ZERO );
+  tem.ag.setNATSEEDSTON( ZERO );
+  tem.ag.setCROPPRVLEAFMX( ZERO );
+  tem.ag.setCROPTOPT( ZERO );
+  tem.ag.setCROPPRVPETMX( ZERO );
+  tem.ag.setCROPPRVEETMX( ZERO );
+  tem.ag.setGROWDD( ZERO );
+  tem.ag.setPRVCROPNPP( ZERO );
+
+  tem.ag.resetMonthlyDisturbFluxes();
+  tem.resetMonthlyELMNTFluxes();
+  tem.resetYrFluxes();
 
    
   // Check TEM parameters for specific vegetation types
@@ -4491,23 +5720,6 @@ void MITelmnt44::setTEMequilState( ofstream& rflog1,
     tem.setEquilC2N( tem.veg.cmnt, 
                      tem.atms.getPREVCO2() );
 
-
-    // Assume potential vegetation when determining 
-    //   equilibrium conditions
-
-    tem.ag.state = 0;
-    tem.ag.prvstate = 0;
-
-    tem.ag.tillflag = 0;
-    tem.ag.fertflag = 0;
-    tem.ag.irrgflag = 0;
-
-    tem.disturbflag = 0;
-    tem.distmnthcnt = 0;
-
-    // Initialize agricultural growing degree days to zero
-
-    tem.ag.setGROWDD( ZERO );
           
     // "While" loop to allow adaptive integrator tolerance 
     //   (i.e. tem.tol) to be reduced if chaotic behavior 
@@ -6353,7 +7565,7 @@ void MITelmnt44::updateChangedCohort( const int& pichrt,
                                       / (double) cohort[pichrt].chrtarea;
                                     
     cohort[pichrt].NEMocin[dlyr] = ((cohort[pichrt].NEMocin[dlyr] 
-                                   * (double) pinitarea)
+                                    * (double) pinitarea)
                                    + (pconvertedOCIN[dlyr] 
                                    * ppropConvertedArea)
                                    + (pabandonedOCIN[dlyr] 
@@ -6405,12 +7617,22 @@ void MITelmnt44::updateTEMmonth( const int& equil,
 
   getTEMCohortState( pichrt );
 
-//  if( 0 == pdm && 2 == pdyr && 16 == pichrt && row > -42.0 && row < -34.0  )
-//  {
-//    tem.dbug = 1;
-//  }
-//  else { tem.dbug = 0; }
-  
+/*  if( 1 == pdyr && 30 == (pichrt+1) && -2.0 == row )
+  {
+    tem.dbug = 1;
+    tem.veg.dbug = 1;
+
+    cout << " pdyr = " << pdyr;
+    cout << " pdm = " << pdm;
+    cout << " pichrt = " << pichrt;
+    cout << endl;
+  }
+  else 
+  { 
+    tem.dbug = 0; 
+    tem.veg.dbug = 0;
+  }
+*/
 
   // Assign land cover data to cohort
 
@@ -6482,7 +7704,7 @@ void MITelmnt44::updateTEMmonth( const int& equil,
                                 tem.atms.getTAIR(),
                                 tem.atms.getPREC(),
                                 tem.atms.getPET(),
-                                tem.soil.getINEET(),
+                                tem.soil.getEET(),
                                 tem.soil.getMOIST(),
                                 tem.soil.getSNOWPACK(),
                                 tem.soil.getSURFRUN(),
@@ -6566,6 +7788,25 @@ void MITelmnt44::updateTEMmonth( const int& equil,
 /* *************************************************************
 ************************************************************** */
 
+void MITelmnt44::writeBinaryCohortState( ofstream& ofstate,
+                                         const int& pichrt )
+{
+  int ichrt = pichrt;
+  
+  ofstate.write( (char *)(&col), sizeof( col ) );
+  ofstate.write( (char *)(&row), sizeof( row ) );
+  ofstate.write( (char *)(&ichrt), sizeof( ichrt ) ); 
+  ofstate.write( (char *)(&cohort[pichrt]), sizeof( MITElmntCohort44 ) );
+  	
+};
+
+/* *************************************************************
+************************************************************* */
+
+
+/* *************************************************************
+************************************************************** */
+
 void MITelmnt44::writeCohortState( ofstream& ofstate,
                                    const int& pichrt )
 {
@@ -6584,6 +7825,8 @@ void MITelmnt44::writeCohortState( ofstream& ofstate,
   ofstate << cohort[pichrt].standage << " ";
 
   ofstate << cohort[pichrt].chrtarea << " ";
+
+  ofstate << cohort[pichrt].prevchrtarea << " ";
 
   ofstate << cohort[pichrt].potveg << " ";
 
@@ -6674,7 +7917,7 @@ void MITelmnt44::writeCohortState( ofstream& ofstate,
   
   ofstate << cohort[pichrt].kd << " ";
 
-  ofstate << cohort[pichrt].MDMnpp << " ";    // MDM
+  ofstate << cohort[pichrt].MDMnpp << " ";
 
   ofstate << cohort[pichrt].natprveetmx << " ";
 
@@ -6755,19 +7998,17 @@ void MITelmnt44::writeCohortState( ofstream& ofstate,
   ofstate << cohort[pichrt].prevPROD100.carbon << " ";
   ofstate << cohort[pichrt].prevPROD100.nitrogen << " ";
 
-  ofstate << cohort[pichrt].prevspack << " ";
+//  ofstate << cohort[pichrt].prevspack << " ";
 
   ofstate << cohort[pichrt].prevtair << " ";
 
   ofstate << cohort[pichrt].prevunrmleaf << " ";
   
-  ofstate << cohort[pichrt].prod10par << " "; 
+//  ofstate << cohort[pichrt].prod10par << " "; 
 
-  ofstate << cohort[pichrt].prod100par << " "; 
+//  ofstate << cohort[pichrt].prod100par << " "; 
 
   ofstate << cohort[pichrt].productYear << " ";
-
-  ofstate << cohort[pichrt].prvchrtarea << " ";
   
   ofstate << cohort[pichrt].prvcropnpp << " ";
 
@@ -6779,7 +8020,7 @@ void MITelmnt44::writeCohortState( ofstream& ofstate,
 
   ofstate << cohort[pichrt].qc << " ";
 
-  ofstate << cohort[pichrt].sconvert << " "; 
+//  ofstate << cohort[pichrt].sconvert << " "; 
   
   ofstate << cohort[pichrt].sconvrtflx.carbon << " ";
   ofstate << cohort[pichrt].sconvrtflx.nitrogen << " ";
@@ -6787,7 +8028,7 @@ void MITelmnt44::writeCohortState( ofstream& ofstate,
   ofstate << cohort[pichrt].slash.carbon << " ";
   ofstate << cohort[pichrt].slash.nitrogen << " ";
 
-  ofstate << cohort[pichrt].slashpar << " "; 
+//  ofstate << cohort[pichrt].slashpar << " "; 
    
   ofstate << cohort[pichrt].tillflag << " ";                           
 
@@ -6795,15 +8036,211 @@ void MITelmnt44::writeCohortState( ofstream& ofstate,
 
   ofstate << cohort[pichrt].tqc << " ";
 
-  ofstate << cohort[pichrt].vconvert << " "; 
+//  ofstate << cohort[pichrt].vconvert << " "; 
 
   ofstate << cohort[pichrt].vconvrtflx.carbon << " ";
   ofstate << cohort[pichrt].vconvrtflx.nitrogen << " ";
 
-  ofstate << cohort[pichrt].vrespar << " "; 
+//  ofstate << cohort[pichrt].vrespar << " "; 
 
-  ofstate << cohort[pichrt].yrltrc << " ";
-  ofstate << cohort[pichrt].yrltrn << " ";
+  ofstate << cohort[pichrt].yragstubC << " ";
+  
+  ofstate << cohort[pichrt].yragstubN << " ";
+    
+  ofstate << cohort[pichrt].yrcflux << " ";
+  
+  ofstate << cohort[pichrt].yrCH4csmp << " ";
+  
+  ofstate << cohort[pichrt].yrCH4ems << " ";
+  
+  ofstate << cohort[pichrt].yrCH4flx << " ";
+  
+  ofstate << cohort[pichrt].yrCO2dnflx << " ";
+  
+  ofstate << cohort[pichrt].yrCO2nflx << " ";
+  
+  ofstate << cohort[pichrt].yrconvrtC << " ";
+  
+  ofstate << cohort[pichrt].yrconvrtN << " ";
+  
+  ofstate << cohort[pichrt].yrdecayPROD1C << " ";
+  
+  ofstate << cohort[pichrt].yrdecayPROD10C << " ";
+  
+  ofstate << cohort[pichrt].yrdecayPROD100C << " ";
+
+  ofstate << cohort[pichrt].yrdecayPROD1N << " ";
+  
+  ofstate << cohort[pichrt].yrdecayPROD10N << " ";
+  
+  ofstate << cohort[pichrt].yrdecayPROD100N << " ";
+  
+  ofstate << cohort[pichrt].yrdecayTOTPRODC << " ";
+
+  ofstate << cohort[pichrt].yrdecayTOTPRODN << " ";
+
+  ofstate << cohort[pichrt].yreet << " ";
+  
+  ofstate << cohort[pichrt].yrfertn << " ";
+  
+  ofstate << cohort[pichrt].yrfluxResidueC << " ";
+  
+  ofstate << cohort[pichrt].yrfluxResidueN << " ";
+
+  ofstate << cohort[pichrt].yrformPROD1C << " ";
+  
+  ofstate << cohort[pichrt].yrformPROD10C << " ";
+  
+  ofstate << cohort[pichrt].yrformPROD100C << " ";
+
+  ofstate << cohort[pichrt].yrformPROD1N << " ";
+  
+  ofstate << cohort[pichrt].yrformPROD10N << " ";
+  
+  ofstate << cohort[pichrt].yrformPROD100N << " ";
+  
+  ofstate << cohort[pichrt].yrformResidueC << " ";
+  
+  ofstate << cohort[pichrt].yrformResidueN << " ";
+
+  ofstate << cohort[pichrt].yrformTOTPRODC << " ";
+
+  ofstate << cohort[pichrt].yrformTOTPRODN << " ";
+
+  ofstate << cohort[pichrt].yrfpc << " ";
+
+  ofstate << cohort[pichrt].yrgpp << " ";
+  
+  ofstate << cohort[pichrt].yrgpr << " ";
+  
+//  ofstate << cohort[pichrt].yrH2Oyld << " ";
+
+  ofstate << cohort[pichrt].yrimmob << " ";
+  
+//  ofstate << cohort[pichrt].yrineet << " ";
+  
+  ofstate << cohort[pichrt].yringpp << " ";
+  
+  ofstate << cohort[pichrt].yrinnpp << " ";
+  
+//  ofstate << cohort[pichrt].yrirrig << " ";
+
+  ofstate << cohort[pichrt].yrlai << " ";
+
+  ofstate << cohort[pichrt].yrleaf << " ";
+
+  ofstate << cohort[pichrt].yrltrfalC << " ";
+
+  ofstate << cohort[pichrt].yrltrfalN << " ";  	
+
+  ofstate << cohort[pichrt].yrN2flx << " ";
+  
+  ofstate << cohort[pichrt].yrN2Odnflx << " ";
+  
+  ofstate << cohort[pichrt].yrN2Oflx << " ";
+  
+  ofstate << cohort[pichrt].yrN2Onflx << " ";
+  
+  ofstate << cohort[pichrt].yrnce << " ";
+  
+  ofstate << cohort[pichrt].yrnep << " ";
+  
+  ofstate << cohort[pichrt].yrninput << " ";
+  
+  ofstate << cohort[pichrt].yrnlost << " ";
+  
+  ofstate << cohort[pichrt].yrnmin << " ";
+    
+  ofstate << cohort[pichrt].yrnpp << " ";
+
+  ofstate << cohort[pichrt].yrnrent << " ";
+  
+  ofstate << cohort[pichrt].yrnsrent << " ";
+
+  ofstate << cohort[pichrt].yrnvrent << " ";
+  
+  ofstate << cohort[pichrt].yrpet << " ";
+  
+//  ofstate << cohort[pichrt].yrrgrndh2o << " ";
+ 
+  ofstate << cohort[pichrt].yrrh << " ";
+  
+//  ofstate << cohort[pichrt].yrrain << " ";
+  
+//  ofstate << cohort[pichrt].yrrperc << " ";
+
+//  ofstate << cohort[pichrt].yrrrun << " ";
+
+  ofstate << cohort[pichrt].yrsconvrtC << " ";
+
+  ofstate << cohort[pichrt].yrsconvrtN << " ";
+  
+//  ofstate << cohort[pichrt].yrsgrndh2o << " ";
+
+  ofstate << cohort[pichrt].yrslashC << " ";
+
+  ofstate << cohort[pichrt].yrslashN << " ";
+
+//  ofstate << cohort[pichrt].yrsnowfall << " ";
+
+//  ofstate << cohort[pichrt].yrsnowinf << " ";
+
+//  ofstate << cohort[pichrt].yrsnowpack << " ";
+
+//  ofstate << cohort[pichrt].yrsoilavlH2O << " ";
+  
+  ofstate << cohort[pichrt].yrsoilavlN << " ";
+
+//  ofstate << cohort[pichrt].yrsoilC2N << " ";
+
+//  ofstate << cohort[pichrt].yrsoilmoist << " ";
+  
+  ofstate << cohort[pichrt].yrsoilorgC << " ";
+  
+  ofstate << cohort[pichrt].yrsoilorgN << " ";
+
+//  ofstate << cohort[pichrt].yrsoilpctp << " ";
+
+//  ofstate << cohort[pichrt].yrsoilvsm << " ";
+
+//  ofstate << cohort[pichrt].yrsperc << " ";
+
+//  ofstate << cohort[pichrt].yrsrun << " ";
+
+  ofstate << cohort[pichrt].yrtotalC << " ";
+  
+  ofstate << cohort[pichrt].yrunleaf << " ";
+
+  ofstate << cohort[pichrt].yrvconvrtC << " ";
+  
+  ofstate << cohort[pichrt].yrvconvrtN << " ";
+
+  ofstate << cohort[pichrt].yrvegC << " ";
+
+//  ofstate << cohort[pichrt].yrvegC2N << " ";
+    
+  ofstate << cohort[pichrt].yrveginnup << " ";
+
+  ofstate << cohort[pichrt].yrveglup << " ";
+  
+  ofstate << cohort[pichrt].yrvegN << " ";
+  
+  ofstate << cohort[pichrt].yrvegnmobil << " ";
+
+  ofstate << cohort[pichrt].yrvegnrsorb << " ";
+    
+  ofstate << cohort[pichrt].yrvegnup << " ";
+
+  ofstate << cohort[pichrt].yrvegrgrowth << " ";
+
+  ofstate << cohort[pichrt].yrvegrmaint << " ";
+
+  ofstate << cohort[pichrt].yrvegSTON << " ";
+  
+  ofstate << cohort[pichrt].yrvegSTRN << " ";
+
+  ofstate << cohort[pichrt].yrvegsup << " ";
+
   ofstate << endl;
   
 };

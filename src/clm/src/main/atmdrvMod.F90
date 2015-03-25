@@ -162,6 +162,7 @@ contains
     use clm_varctl  , only : offline_atmdir, pertlim
 #if (defined STOCHASTIC)
     use clm_varcon  , only : rair, cpair, co2_ppmv_const, o2_molar_const, tcrit, c13ratio, spval
+    use clmtype
 #else
     use clm_varcon  , only : rair, cpair, co2_ppmv_const, o2_molar_const, tcrit, c13ratio
 #endif
@@ -198,11 +199,23 @@ contains
     real(r8):: coefb        ! Slope of "Alta" expression for dependence of flfall on temp
     real(r8):: coefa        ! Offset of  of "Alta" expression for dependence of flfall on temp
     integer :: begg, endg   ! per-proc gridcell ending gridcell indices
+    logical :: prnt_stoch
+
+#if (defined STOCHASTIC)
+    type(gridcell_type), pointer :: gptr  ! pointer to gridcell derived subtype
+#endif
+
 !------------------------------------------------------------------------
 
     ! Determine necessary indices
 
     call get_proc_bounds_atm(begg, endg)
+
+#if (defined STOCHASTIC)
+    ! Set pointers into derived type
+
+    gptr => clm3%g
+#endif
 
     ! -----------------------------------------------------------------
     ! Open netcdf file and read data every [atmmin] minutes
@@ -283,20 +296,30 @@ contains
 !CAS   
 !CAS    print value of global temperature anomaly for PCP Freq. Trend
 !CAS   
-!      
-!       Check for beginning of month, if so, reset storm count
-!      
-       
-            if (kda == 1 .and. mcsec == 0) storms = 0
+!            write (6,*), 'Before call stoch j=',j
+            prnt_stoch = .false.
+!           if ( j==38 ) then
+!            prnt_stoch = .true.
+!           endif
             call stoch(aV_atm_d2a%rAttr(iprcxy,n),aV_atm_d2a%rAttr(iprlxy,n), &
                      prc_poiss(i,j),prl_poiss(i,j), &
                      storm_dur(i,j),exp_tstorm(i,j,kmo),exp_tdry(i,j,kmo), &
-                     t_storm(i,j),t_dry(i,j),dtcumu(i,j),storms(i,j),pcpc_resid(i,j),pcpl_resid(i,j))
+!                    gptr%t_storm(j),gptr%t_dry(j),gptr%dtcumu(j),storms(i,j), &
+!APS   
+                     gptr%t_storm(j1),gptr%t_dry(j1),gptr%dtcumu(j1),storms(i,j), &
+!                    gptr%pcpc_resid(j),gptr%pcpl_resid(j),rnd14clm(i,j),rnd24clm(i,j))
+                     gptr%pcpc_resid(j),gptr%pcpl_resid(j),rnd14clm(i,j),rnd24clm(i,j),prnt_stoch)
 #endif
             aV_atm_d2a%rAttr(iflwdsxy,n) = dlwmit(1,j)
         enddo
        endif
      enddo
+#if (defined STOCHASTIC)
+!      
+!       Check for beginning of month, if so, reset storm count
+!      
+     if (kda == 1 .and. mcsec == 0) storms = 0
+#endif
 #else
 
        call t_startf('atmdread')
@@ -384,7 +407,7 @@ contains
 !          else
             atm_a2l%forc_strm_dur(g) = float(storm_dur(i,j))*dtime
 !          endif      
-          atm_a2l%forc_strm_dry(g) = t_dry(i,j)
+          atm_a2l%forc_strm_dry(g) = gptr%t_dry(j)
           atm_a2l%forc_strms(g) = storms(i,j)
 #endif
 

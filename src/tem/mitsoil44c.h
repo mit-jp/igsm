@@ -15,7 +15,9 @@ Modifications:
 20110707 - DWK changed include from tigsmsoil44a.h to 
            tigsmsoil44c.h
 20110707 - DWK changed include mittemconsts44a.hpp to 
-           mittemconsts44c.hpp                                  
+           mittemconsts44c.hpp
+20140604 - DWK made all "yr" variables private
+                                  
 *****************************************************************
 ************************************************************** */
 
@@ -152,6 +154,139 @@ class MITsoil44 : public Tsoil44
      inline void setPH( const double& pph ) { pH = pph; }
 
 
+     // yrch4csmp **********************************************
+     
+     inline double getYRCH4CSMP( void ) { return yrch4csmp; }
+
+     inline void setYRCH4CSMP( const double& pyrch4csmp ) 
+     { 
+       yrch4csmp = pyrch4csmp; 
+     }
+
+     inline void updateYRCH4CSMP( const double& pch4csmp ) 
+     { 
+       yrch4csmp += pch4csmp; 
+     }
+
+
+     // yrch4ems **********************************************
+     
+     inline double getYRCH4EMISSION( void ) { return yrch4ems; }
+
+     inline void setYRCH4EMISSION( const double& pyrch4ems ) 
+     { 
+       yrch4ems = pyrch4ems; 
+     }
+
+     inline void updateYRCH4EMISSION( const double& pch4ems ) 
+     { 
+       yrch4ems += pch4ems; 
+     }
+
+     // yrch4flx **********************************************
+     
+     inline double getYRCH4FLUX( void ) { return yrch4flx; }
+
+     inline void setYRCH4FLUX( const double& pyrch4flx ) 
+     { 
+       yrch4flx = pyrch4flx; 
+     }
+
+     inline void updateYRCH4FLUX( const double& pch4flx ) 
+     { 
+       yrch4flx += pch4flx; 
+     }
+
+     // yrco2dnflx **********************************************
+     
+     inline double getYRCO2DENTRFLUX( void ) { return yrco2dnflx; }
+
+     inline void setYRCO2DENTRFLUX( const double& pyrco2dnflx ) 
+     { 
+       yrco2dnflx = pyrco2dnflx; 
+     }
+
+     inline void updateYRCO2DENTRFLUX( const double& pco2dnflx ) 
+     { 
+       yrco2dnflx += pco2dnflx; 
+     }
+
+
+     // yrco2nflx **********************************************
+     
+     inline double getYRCO2NTRFLUX( void ) { return yrco2nflx; }
+
+     inline void setYRCO2NTRFLUX( const double& pyrco2nflx ) 
+     { 
+       yrco2nflx = pyrco2nflx; 
+     }
+
+     inline void updateYRCO2NTRFLUX( const double& pco2nflx ) 
+     { 
+       yrco2nflx += pco2nflx; 
+     }
+
+
+     // yrn2flx **********************************************
+     
+     inline double getYRN2FLUX( void ) { return yrn2flx; }
+
+     inline void setYRN2FLUX( const double& pyrn2flx ) 
+     { 
+       yrn2flx = pyrn2flx; 
+     }
+
+     inline void updateYRN2FLUX( const double& pn2flx ) 
+     { 
+       yrn2flx += pn2flx; 
+     }
+
+
+     // yrn2odnflx **********************************************
+     
+     inline double getYRN2ODENTRFLUX( void ) { return yrn2odnflx; }
+
+     inline void setYRN2ODENTRFLUX( const double& pyrn2odnflx ) 
+     { 
+       yrn2odnflx = pyrn2odnflx; 
+     }
+
+     inline void updateYRN2ODENTRFLUX( const double& pn2odnflx ) 
+     { 
+       yrn2odnflx += pn2odnflx; 
+     }
+
+
+     // yrn2oflx **********************************************
+     
+     inline double getYRN2OFLUX( void ) { return yrn2oflx; }
+
+     inline void setYRN2OFLUX( const double& pyrn2oflx ) 
+     { 
+       yrn2oflx = pyrn2oflx; 
+     }
+
+     inline void updateYRN2OFLUX( const double& pn2oflx ) 
+     { 
+       yrn2oflx += pn2oflx; 
+     }
+
+
+     // yrn2onflx **********************************************
+     
+     inline double getYRN2ONTRFLUX( void ) { return yrn2onflx; }
+
+     inline void setYRN2ONTRFLUX( const double& pyrn2onflx ) 
+     { 
+       yrn2onflx = pyrn2onflx; 
+     }
+
+     inline void updateYRN2ONTRFLUX( const double& pn2onflx ) 
+     { 
+       yrn2onflx += pn2onflx; 
+     }
+
+
 /* **************************************************************
 		 Public Variables
 ************************************************************** */
@@ -182,25 +317,6 @@ class MITsoil44 : public Tsoil44
           
      // Soil porosity as fraction of total soil volume
      double porosity[CLMNLAYERS];
-
-
-     double yrch4csmp;
-
-     double yrch4ems;
-
-     double yrch4flx;
-
-     double yrco2dnflx;
-
-     double yrco2nflx;
-
-     double yrn2flx;
-
-     double yrn2odnflx;
-
-     double yrn2oflx;
-
-     double yrn2onflx;
      
  
   private:
@@ -233,6 +349,24 @@ class MITsoil44 : public Tsoil44
     
      // Soil pH
      double pH;
+
+     double yrch4csmp;
+
+     double yrch4ems;
+
+     double yrch4flx;
+
+     double yrco2dnflx;
+
+     double yrco2nflx;
+
+     double yrn2flx;
+
+     double yrn2odnflx;
+
+     double yrn2oflx;
+
+     double yrn2onflx;
 
 };
 

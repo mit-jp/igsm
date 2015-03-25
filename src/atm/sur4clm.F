@@ -59,7 +59,7 @@ C****                                                                   5807.
      *  TGRND(IO0,JM0,4)                                                5814.1  
       COMMON/RDATA/ROUGHL(IO0,JM0)                                      5815.   
       LOGICAL POLE,PRNT,HPRNT
-      common/conprn/HPRNT          
+      common/conprn/HPRNT,JPR,LPR
 !     common/TSUR/TSURFC(JM0,0:13),TSURFT(JM0),TSURFD(JM0),DTEMSR(JM0)
 #include "TSRF.COM"
       common/SURRAD/TRSURF(JM0,4),SRSURF(JM0,4)
@@ -126,7 +126,12 @@ c     print *,'sur4clm TAU=',TAU
       print *,' SURFACE FOR CLM'
 !     print *,' ZGS=30 m for LAND '
       print *,' ZGS=',ZGSL,' m for LAND '
+      WMGMIN=0.
+#if ( defined CLM35 )
+      WMGMIN=3.
+#else
       WMGMIN=8.
+#endif
       print *,'WMGMIN 4 LAND=',WMGMIN
       IFIRST=0                                                          5877.   
       print *,' WMGE'
@@ -327,13 +332,17 @@ c       print *,' '
         print *,'WS=',WS
       endif
       TS=TSV/(1.+QS*RVX)                                                6467.   
-c     QSATS=QSAT(TS,PS,ELHX)                                            6468.   
-c     IF(QS.LE.QSATS) GO TO 3500                                        6469.   
-c     DQSSDT=QSATS*ELHX/(RVAP*TS*TS)                                    6470.   
-c     X=(QS-QSATS)/(DQSSDT+(SHA/ELHX))                                  6471.   
-c     TS=TS+X                                                           6472.   
-c     QS=QS+X*(SHA/ELHX)                                                6473.   
-c3500 CONTINUE
+#if ( defined CLM35 )
+!!!   QSATS=QSAT(TS,PS,ELHX)                                            6468.   
+!!!   IF(QS.LE.QSATS) GO TO 3500                                        6469.   
+!!!   DQSSDT=QSATS*ELHX/(RVAP*TS*TS)                                    6470.   
+!!!   X=(QS-QSATS)/(DQSSDT+(SHA/ELHX))                                  6471.   
+!     print *,j,TS,QS
+!!!   TS=TS+X                                                           6472.   
+!!!   QS=QS+X*(SHA/ELHX)                                                6473.   
+!     print *,TS,QS
+ 3500 CONTINUE
+#endif
 
           if(ITYPE.EQ.4.or.ITYPE.EQ.3)then
            tsl4clm(i,j)=tsl4clm(i,j)+TS*PTYPE/PLAND
@@ -389,13 +398,14 @@ C**** QUANTITIES ACCUMULATED FOR SURFACE TYPE TABLES IN DIAG1           6663.
          BLJ(J,28)=BWMG
          BLJ(J,23)=BTS  
  7000 CONTINUE                                                          6677.   
-!     print *,' From SRF4CLM TAU=',TAU
-!          i=1
-!          j=1
+      if(HPRNT) then
+      print *,' From SRF4CLM TAU=',TAU,' JPR=',JPR
 !          print *,'TS(1),TS(2)'
-!          print *,tsl4clm(1,1),tsl4clm(1,2)
-!          print *,dsw4clm(i,j),dlw4clm(i,j)
-!          print *,swinr4clm(i,j), swvis4clm(i,j)
+           print *,tsl4clm(1,jpr),qs4clm(1,jpr),ps4clm(1,jpr)
+           print *,vs4clm(i,jpr),vs4clm(i,jpr),ws4clm(i,jpr)
+           print *,dsw4clm(i,jpr),dlw4clm(i,jpr)
+           print *,swinr4clm(i,jpr), swvis4clm(i,jpr)
+      endif
 C****                                                                   6678.   
 #endif
       RETURN                                                            6795.   

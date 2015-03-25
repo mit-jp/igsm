@@ -148,7 +148,8 @@ C                                                                        134.
 
 #if ( !defined CPL_CHEM ) && ( defined O3_FORCED )
 C--Addition by CEForest (18Mar98)
-	call getforcedozone(jyear,jday)
+!call getforcedozone(jyear,jday)
+	call getforcedozone(jyearo3,jday)
 C--End of Addition
 #endif
 
@@ -1147,9 +1148,12 @@ c         print *,'zco2=',zco2(1,jlat,l)
 c       endif
 	ULGAS(L,2)=dmax1(0.0,zco2(ILON,jyyy,l))/44.0098
      &            *pxxx*tropmass
-c       if (JLAT.eq.12) then 
-c         print *,'l=',L,' ULGAS(L,2)=',ULGAS(L,2)
-c       endif
+! --- Chem adjustmen of CO2 for IPCC forcing
+     &            *adjfactor(1)
+!       if (JLAT.eq.14) then 
+!         print *,'l=',L,' ULGAS(L,2)=',ULGAS(L,2),
+!    &              zco2(ILON,jyyy,l)
+!       endif
      
 #ifdef O3_RAD
 !
@@ -1161,14 +1165,19 @@ c       endif
      &            *pxxx*tropmass
 #endif
 
-!  
+!       if (JLAT.eq.14) then 
+!         print *,'l=',L,' ULGAS(L,3)=',ULGAS(L,3)
+!       endif
+   
 ! --- Chem adjustmen of N2O and CH4 concentrations
 !
         xxxo=dmax1(0.0,xn2o(ILON,jyyy,l))
      &      *tropmass/44.0000*1.25*P0
         yyyo=dmax1(0.0,ch4(ILON,jyyy,l))
      &      *tropmass/16.0426*1.25*P0
-        call newcon(xxxn,yyyn,xxxo,yyyo,ppmv58(6),ppmv58(7))
+!       call newcon(xxxn,yyyn,xxxo,yyyo,ppmv58(6),ppmv58(7))
+         xxxn=adjfactor(2)*xxxo
+         yyyn=adjfactor(3)*yyyo
 
         ULGAS(L,6)=xxxn*0.8*pxxx/P0
         ULGAS(L,7)=yyyn*0.8*pxxx/P0
@@ -1248,7 +1257,9 @@ C--   end of change 18Mar98
      &      *tropmass/44.0000*1.25*P0
         yyyo=dmax1(0.0,ch4(ILON,jyyy,ll))
      &      *tropmass/16.0426*1.25*P0
-        call newcon(xxxn,yyyn,xxxo,yyyo,ppmv58(6),ppmv58(7))
+!       call newcon(xxxn,yyyn,xxxo,yyyo,ppmv58(6),ppmv58(7))
+         xxxn=adjfactor(2)*xxxo
+         yyyn=adjfactor(3)*yyyo
 
         ULGAS(L,6)=xxxn*0.8*pxxx/P0
         ULGAS(L,7)=yyyn*0.8*pxxx/P0
