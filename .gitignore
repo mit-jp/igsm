@@ -8,7 +8,7 @@ config.sub
 stamp-h1
 Makefile
 Makefile.in
-src/ocn_3d/tools
+src/ocn_3d/tools/cyrus-imapd-makedepend/config.*
 /aclocal.m4
 /autom4te.cache
 /build/*
