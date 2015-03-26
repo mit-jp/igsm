@@ -12,8 +12,8 @@ CLMFLAGS = -fopt -O2 \
 	-tem $(CLM35_TEM)
 
 libclm.a: exe/program_igsm.o
-	rm exe/program_igsm.o
 	$(AR) $(ARFLAGS) $@ exe/*.o
+	$(AR) dv $@ program_igsm.o
 	$(RANLIB) $@
 
 exe/program_igsm.o: exe/preproc.h
