@@ -1,4 +1,4 @@
-# Configure script for MIT IGSM. See README.dev
+# Configure script for MIT IGSM. See DEVELOPERS.md
 
 ### Initialization
 AC_PREREQ([2.66])
@@ -13,11 +13,6 @@ if test -z "$srcdir" -o "$srcdir" = "."; then
 fi
 # generate ctrparam.h
 AC_CONFIG_HEADERS([ctrparam.h])
-# keep a comment at the bottom of ctrparam.h(.in) indicating where the user can
-# set custom symbols
-AH_BOTTOM([/* Add custom IGSM preprocessor #defines below this comment. Some known
-   symbols are: ACCRI, DATA4TEM, FIXED_FOR, FIXED_PCO2, GHS_ALB, HR_DATA, IPCC_EMI,
-   OLD_LAPGAS, and ORBITAL_FOR. */])
 
 
 ### Package options
@@ -145,43 +140,48 @@ AC_C_INLINE
 # Checks for library functions.
 AC_CHECK_FUNCS([modf pow])
 
-# Checks for NetCDF libraries.
+# Checks for NetCDF C libraries.
+AC_CHECK_PROG([HAVE_NCCONFIG], [nc-config], yes)
+if test -z $HAVE_NCCONFIG; then
+  AC_MSG_ERROR([Cannot find NetCDF configuration utility 'nc-config'.])]
+fi
 CFLAGS+=" $(nc-config --cflags)"
 CPPFLAGS+=" $(nc-config --cflags)"
 LIBS+=" $(nc-config --libs)"
 AC_CHECK_HEADER([netcdf.h], [AC_CHECK_LIB([netcdf], [nc_inq_libvers])])
-# the Fortran library
-AC_MSG_CHECKING([[for nf_inq_libvers in -lnetcdff]])
-if test `which nf-config 2>/dev/null`; then
-  FFLAGS+=" $(nf-config --fflags)"
-  FCFLAGS+=" $(nf-config --fflags)"
-  LIBS+=" $(nf-config --flibs)"
-else
-  # nf-config is not available; simply guess
-  LIBS+=" -L$LIB_NETCDF -lnetcdff -lnetcdf"
+
+# Checks for NetCDF Fortran libraries.
+AC_CHECK_PROG([HAVE_NFCONFIG], [nf-config], yes)
+if test -z $HAVE_NFCONFIG; then
+  AC_MSG_ERROR([Cannot find NetCDF configuration utility 'nf-config'.])]
 fi
+FFLAGS+=" $(nf-config --fflags)"
+FCFLAGS+=" $(nf-config --fflags)"
+LIBS+=" $(nf-config --flibs)"
 AC_LANG_PUSH([Fortran])
+AC_MSG_CHECKING([[for nf_inq_libvers in -lnetcdff]])
 AC_LINK_IFELSE(
   [AC_LANG_PROGRAM(, [
       include 'netcdf.inc'
       print *, nf_inq_libvers()])],
-  [AC_MSG_RESULT([yes])], [AC_MSG_ERROR([no])])
-AC_LANG_POP
-# the include path (for CLM)
-if test -z $INC_NETCDF; then
-  INC_NETCDF=`nf-config --includedir`
-  LIB_NETCDF=`ldconfig -p | grep -m1 libnetcdf | sed "s@.* => \(.*\)@\1@" | xargs dirname`
-  MOD_NETCDF="/home/software/netcdf-new/netcdf-4.1.2/include"
-  AC_SUBST(INC_NETCDF)
-  AC_SUBST(LIB_NETCDF)
-  AC_SUBST(MOD_NETCDF)
-fi
+  [AC_MSG_RESULT([yes])], [AC_MSG_FAILURE([no])])
+AC_MSG_CHECKING([[for nf90_inq_libvers in -lnetcdff]])
+AC_LINK_IFELSE(
+  [AC_LANG_PROGRAM(, [
+      use netcdf
+      print *, nf90_inq_libvers()])],
+  [AC_MSG_RESULT([yes])], [AC_MSG_FAILURE([cannot find netcdf.mod.])])
+AC_LANG_POP([Fortran])
 
-# Checks for OpenMPI libraries, used for 3D ocean only
+# NetCDF Fortran paths for CLM.
+AC_SUBST(INC_NETCDF, $(nf-config --includedir))
+AC_SUBST(LIB_NETCDF, $(nf-config --flibs | cut -d' ' -f1 | cut -dL -f2))
+
+# Checks for OpenMPI libraries, used for 3D ocean only.
 if test $ocean = 3D; then
   AC_CHECK_PROG([HAVE_MPI], [ompi_info], yes)
   if test -z $HAVE_MPI; then
-    AC_MSG_ERROR([Cannot find OpenMPI configuration utility 'ompi_info'.])]
+    AC_MSG_ERROR([cannot find OpenMPI configuration utility 'ompi_info'.])]
   fi
   INC_MPI=`ompi_info --parseable --path incdir | cut -d: -f 3`
   LIB_MPI=`ompi_info --parseable --path libdir | cut -d: -f 3`
@@ -197,7 +197,7 @@ if test $ocean = 3D; then
   AC_SUBST(LIB_MPI)
 fi
 
-# Common compiler flags for IGSM code
+# Common compiler flags for all IGSM code.
 FFLAGS+=" -r8 -i4"
 CXXFLAGS+=" -Mscalarsse -fpic"
 
@@ -263,7 +263,6 @@ fi
 
 # substitute the resulting variables in src/Makefile.am
 AC_SUBST(MODULE_DIRS)
-MODULE_LDADD+=" -L$LIB_NETCDF"
 AC_SUBST(MODULE_LDADD)
 
 # only build the igsm22 executable if using the 2D ocean; otherwise build igsm23
@@ -347,7 +346,7 @@ if test $model = historical -o $model = fullchem; then
   AC_DEFINE(VOL_AER, 1, [Include aerosol forcing due to volcanic activitiy])
 fi
 
-# Unusual defines. See README.dev for information on how to use these.
+# Unusual defines. See DEVELOPERS.md for information on how to use these.
 if true; then
   # always ON
   AC_DEFINE(IPCC_FORCING, 1, [Use IPCC Forcings rather than GISS])

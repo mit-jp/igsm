@@ -17,9 +17,15 @@ bin_PROGRAMS = $(BINARIES)
 
 EXTRA_PROGRAMS = igsm22 igsm23_driver igsm23_ocean
 
-LDADD = $(MODULE_LDADD) $(FCLIBS) -lhdf5_hl -lhdf5 -lpgmp -lnuma -lpthread \
-	-lpgf90 -lpgf90_rpm1 -lpgf902 -lpgf90rtl -lpgftnrtl -lnspgc -lpgc -lrt \
-	-lm -lstd -lC -lgcc -lgcc_s -lc -lstdc++
+# -L$LIB_NETCDF must be inserted *before* $(FCLIBS). pgf90 reports -L/usr/lib64
+# as a library directory, but it contains a gcc-compiled NetCDF that cannot be
+# linked against PGI-compiled object files.
+LDADD = $(MODULE_LDADD) \
+	-L$LIB_NETCDF \
+	$(FCLIBS) \
+	-lhdf5_hl -lhdf5 -lpgmp -lnuma -lpthread -lpgf90 -lpgf90_rpm1 -lpgf902 \
+	-lpgf90rtl -lpgftnrtl -lnspgc -lpgc -lrt -lm -lstd -lC -lgcc -lgcc_s -lc \
+	-lstdc++
 
 if IGSM_2D
 
