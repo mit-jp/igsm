@@ -8,6 +8,7 @@ config.sub
 stamp-h1
 Makefile
 Makefile.in
+src/ocn_3d/tools
 /aclocal.m4
 /autom4te.cache
 /build/*
@@ -20,7 +21,5 @@ Makefile.in
 /depcomp
 /install-sh
 /missing
-/src/igsm22
-/src/clm/2.1/utils/esmf/build/*/machineinfo.h
-/src/clm/3.5/exe
+/src/clm/exe
 /util/analysis/antsrf

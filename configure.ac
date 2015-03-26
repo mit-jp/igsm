@@ -165,7 +165,7 @@ AC_LINK_IFELSE(
   [AC_LANG_PROGRAM(, [
       include 'netcdf.inc'
       print *, nf_inq_libvers()])],
-  [AC_MSG_RESULT([yes])], [AC_MSG_FAILURE([no])])
+  [AC_MSG_RESULT([yes])], [AC_MSG_ERROR([no])])
 AC_LANG_POP
 # the include path (for CLM)
 if test "$INC_NETCDF" = ""; then
@@ -177,12 +177,22 @@ if test "$INC_NETCDF" = ""; then
   AC_SUBST(MOD_NETCDF)
 fi
 
-# Checks for OpenMPI libraries
-if test `which ompi_info 2>/dev/null`; then
-  INC_MPI=`ompi_info --parseable --path incdir | cut -d: -f 3`
-  LIB_MPI=`ompi_info --parseable --path libdir | cut -d: -f 3`
-  AC_SUBST(INC_MPI)
-  AC_SUBST(LIB_MPI)
+# Checks for OpenMPI libraries, used for 3D ocean only
+if test $ocean = 3D; then
+  if test `which ompi_info 2>/dev/null`; then
+    INC_MPI=`ompi_info --parseable --path incdir | cut -d: -f 3`
+    LIB_MPI=`ompi_info --parseable --path libdir | cut -d: -f 3`
+    AC_SUBST(INC_MPI)
+    AC_SUBST(LIB_MPI)
+  fi
+  FCFLAGS+=" -I$INC_MPI"
+  AC_LANG_PUSH([Fortran])
+  AC_MSG_CHECKING([for mpif.h])
+	AC_COMPILE_IFELSE(
+    [AC_LANG_PROGRAM(,[
+      include 'mpif.h'])],
+    [AC_MSG_RESULT(yes)], [AC_MSG_ERROR(no)])
+  AC_LANG_POP
 fi
 
 # Common compiler flags for IGSM code
@@ -261,7 +271,7 @@ AM_CONDITIONAL([IGSM_2D], [test $ocean = 2D])
 if test $ocean = 2D; then
   AC_SUBST([BINARIES], [igsm22])
 else
-  AC_SUBST([BINARIES], [igsm23])
+  AC_SUBST([BINARIES], ["igsm23_driver igsm23_ocean"])
 fi
 
 ### Defines.
@@ -332,7 +342,7 @@ if test $model = historical; then
     (ifsulfalb)])
 fi
 
-# Defines for historical or fullchem mode 
+# Defines for historical or fullchem mode
 if test $model = historical -o $model = fullchem; then
   AC_DEFINE(VOL_AER, 1, [Include aerosol forcing due to volcanic activitiy])
 fi
@@ -340,7 +350,7 @@ fi
 # Unusual defines. See README.dev for information on how to use these.
 if true; then
   # always ON
-  AC_DEFINE(IPCC_FORCING, 1, [Use IPCC Forcings rather than GISS]) 
+  AC_DEFINE(IPCC_FORCING, 1, [Use IPCC Forcings rather than GISS])
 else
   # always OFF
   AC_DEFINE(ORBITAL_FOR, 1, [Use radiative forcing adjusted for Earth's
