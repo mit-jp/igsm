@@ -2,3 +2,4 @@ pkg/mnc/MNC_CW_READWRITE_[RI]*
 pkg/mnc/MNC_ID_HEADER.h
 pkg/mnc/MNC_RESHAPE_R*.F
 pkg/mnc/mnc_netcdf_stubs.c
+tools/cyrus-imapd-makedepend/config.*
