@@ -24,6 +24,11 @@ C     \==========================================================/
 #  include "PARAMS.h"
 #endif
 
+#ifdef NCEPWIND
+      COMMON /SEED/JSEED,IFRST,NEXTN
+      INTEGER JSEED, IFRST, NEXTN
+#endif
+
 C     !INPUT/OUTPUT PARAMETERS:
 C     == Routine arguments ==
 C     nCouplePer - total number of coupled periods for this run
@@ -34,11 +39,18 @@ C     myThid - thread number for this instance of the routine.
       INTEGER myThid
 
       NAMELIST /COUPLE_PARM/
-     &        dtcouple, dtatm, dtocn, startYear, endYear, taveDump
-
+     &        dtcouple, dtatm, dtocn, startYear, endYear,
+     &        taveDump
+#ifdef NCEPWIND
+     &        ,rand_newseed
+#endif
+ 
 C     === Local variables ===
 #ifdef OCEAN_3D
       INTEGER nCouplePer    !not a subroutine parm for OCEAN_3D
+# ifdef ATM2D_MPI_ON
+      INTEGER msgUnit
+# endif
 #endif
 
       CALL CHECK_SETTINGS
@@ -50,7 +62,10 @@ C     set default values for these parms in couple.nml
       startYear = 1
       endYear = 100
       taveDump=100
-
+#ifdef NCEPWIND
+      rand_newseed = .TRUE.
+#endif
+ 
 C     Next lines done in stand-alone ML model, so don't use any
 C     MITGCM helper routines; hopefully no unit conflict...
       OPEN(514,file='couple.nml',status='old')
@@ -90,11 +105,24 @@ C     Perform registration with other components
 
 C     Coordinate the transfer configuration information
 C     between components
-      CALL RECEIVE_COMPONENT_CONFIGS
-      CALL SENDOUT_COMPONENT_CONFIGS
+      msgUnit = standardMessageUnit
+      CALL EXCH_COMPONENT_CONFIGS( nTimeSteps,
+     I                             msgUnit )
 #  endif
 
       CALL INIT_ATM2D(dtatm, dtocn, dtcouple, myThid)
+#endif
+
+#ifdef NCEPWIND
+      IF (rand_newseed) THEN
+        JSEED = 93063 + nIter0
+        IFRST = 0
+C        CALL SRAND(93063 + nIter0)
+      ELSE
+        OPEN(unit=334,file='rand_state.dat',status='old')
+        READ(334,*) JSEED,IFRST, NEXTN
+        CLOSE(334)      
+      ENDIF
 #endif
 
       RETURN

@@ -4,6 +4,9 @@ C $Name:  $
       COMMON /DRIVER_VARS/
      &        dtcouple, dtatm, dtocn, startYear, endYear, taveDump,
      &        ncall_atm, ncall_ocean
+#ifdef NCEPWIND
+     &        , rand_newseed
+#endif
        INTEGER dtcouple  ! coupling period (hrs)
        INTEGER dtatm     ! atmos time step (hrs)
        INTEGER dtocn     ! ocean time step (hrs)
@@ -12,6 +15,9 @@ C $Name:  $
        INTEGER taveDump  ! frequency of tave dumps for atm2ocn fluxes (yrs)
        INTEGER ncall_atm ! number of atm steps in a coupling period
        INTEGER ncall_ocean ! number of ocn steps in a coupling period
+#ifdef NCEPWIND
+       LOGICAL rand_newseed
+#endif
 
 
       COMMON /DRIVER_FILENAMES/

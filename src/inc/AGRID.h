@@ -3,7 +3,7 @@ C $Name:  $
 
       COMMON/ATM_GRID/atm_yC,atm_yG
        REAL*4 atm_yC(jm0)    ! center points of atmos grid
-       REAL*4 atm_yG(jm0)    ! southern boundary of atmos grid cells
+       REAL*4 atm_yG(jm0+1)  ! southern boundary of atmos grid cells
 
       COMMON/ATM2OCEAN/hfluxo,hfluxi,dhfodtg,dhfodtgeq,
      & dhfidtg,dhfidtgeq,precip,evao,evai,devodtg,devodtgeq,

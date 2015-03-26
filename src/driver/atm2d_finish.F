@@ -31,12 +31,15 @@ C     === Local variables ===
       INTEGER rc
 #endif
 
+      PRINT *,'Starting ATM2D_FINISH'
+
 #ifdef CLM35
-C     next line is hack to call atmos one more time step
-C     as CLM35 writes end-of-year file at start of next year
-!     CALL atmosphere(1,1)
-      print *,'FROM ATM2D_FINISH'
       CALL clm4mit2d 
+#endif
+
+#ifdef CPL_TEM
+      PRINT *,'TEM cleanup'
+      CALL TEM_CLEANUP
 #endif
 
 #ifdef ATM2D_MPI_ON

@@ -18,43 +18,42 @@ C     myThid - thread number for this instance of the routine.
       INTEGER myThid
 
 C     === Local variables ===
-      INTEGER j,nc
 #ifdef PREDICTED_AEROSOL
-        print *,' Before eppaemission'
-        CALL eppaemission (0)
+      PRINT *,' Before eppaemission'
+      CALL eppaemission (0)
 #endif
 
 #ifdef CLM
-#  if ( !defined CLM35 )
-!	CLM21
+#  ifndef CLM35 
+C     CLM21
       CALL atmosphere(0,0)   ! initialize the atmospheric model
 #  endif
       CALL clm4mit2d           ! initialize CLM
-       print *,' After clm initialization'
-       print *,'declin_clm=',declin_clm
-#  if ( defined CLM35 )
-!	CLM35
-      print *,'After clm4mit2d  initialization'
-      print *,'orbfix=',orbfix,' dyn_pft=',dyn_pft
-      print *,'orbyr=',orbyr,' rampyr_dynpft=',rampyr_dynpft
-#      if  ( !defined ORBITAL_FOR )
-!       if(orbyr.ne.2000) then
-!         print *,'Wrong orbyr for CLM3.5'
-!         stop
-!       endif
-#      endif
+      PRINT *,' After clm initialization'
+      PRINT *,'declin_clm=',declin_clm
+#  ifdef CLM35 
+C     CLM35
+      PRINT *,'After clm4mit2d  initialization'
+      PRINT *,'orbfix=',orbfix,' dyn_pft=',dyn_pft
+      PRINT *,'orbyr=',orbyr,' rampyr_dynpft=',rampyr_dynpft
+C#      ifndef ORBITAL_FOR 
+C       IF (orbyr.ne.2000) THEN
+C         PRINT *,'Wrong orbyr for CLM3.5'
+C         STOP
+C       ENDIF
+C#      endif
       CALL atmosphere(0,0)   ! initialize the atmospheric model
 #  endif
 #else
-!    NOCLM
+C     NO CLM (GISS Bucket model)
       CALL atmosphere(0,0)   ! initialize the atmospheric model
 #endif
 
 #ifdef ML_2D
 C    2D mixed layer model  initialization
-      print *,'Before ocean_ml'
+      PRINT *,'Before ocean_ml initialization'
       CALL ocean_ml(dtocn*3600.,dtatm*3600.)
-      print *,'After ocean_ml'
+      PRINT *,'After ocean_ml initialization'
 #  ifdef CPL_OCEANCO2
       CALL zerogary
 #  endif
@@ -64,14 +63,8 @@ C    2D mixed layer model  initialization
       PRINT *,' Start of tem_init'
       aocuav=0.0
       nepav=0.0
-!#  ifdef DATA4TEM
-#if ( defined DATA4TEM || defined DATA4CLM )
+#  if ( defined DATA4TEM || defined DATA4CLM )
       nfile=1
-#  endif
-#  ifdef CPL_NEM
-!     PRINT *,' Reading climate data to run NEM during '
-!     PRINT *, '  TEM iInitialization'
-!     CALL rd_rstrt_nem
 #  endif
 c      call tem_init(inyear,lyear)
       CALL climate2tem(0,0)
@@ -81,15 +74,6 @@ c      call tem_init(inyear,lyear)
       CALL tem_init
       adupt=0.0
       PRINT *,' TEM initialization finished'
-#  ifdef CPL_NEM
-!     CALL tem2climate(0,11)
-!     PRINT *,'CH4'
-!     PRINT *,(temch4(j),j=1,jm0)
-!     PRINT *,'N2O'
-!     PRINT *,(temn2o(j),j=1,jm0)
-!     PRINT *,'CO2'
-!     PRINT *,(temco2(j),j=1,jm0)
-#  endif
 #endif
 
 #ifdef OCEAN_3D
