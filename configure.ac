@@ -168,7 +168,7 @@ AC_LINK_IFELSE(
   [AC_MSG_RESULT([yes])], [AC_MSG_ERROR([no])])
 AC_LANG_POP
 # the include path (for CLM)
-if test "$INC_NETCDF" = ""; then
+if test -z $INC_NETCDF; then
   INC_NETCDF=`nf-config --includedir`
   LIB_NETCDF=`ldconfig -p | grep -m1 libnetcdf | sed "s@.* => \(.*\)@\1@" | xargs dirname`
   MOD_NETCDF="/home/software/netcdf-new/netcdf-4.1.2/include"
@@ -179,12 +179,12 @@ fi
 
 # Checks for OpenMPI libraries, used for 3D ocean only
 if test $ocean = 3D; then
-  if test `which ompi_info 2>/dev/null`; then
-    INC_MPI=`ompi_info --parseable --path incdir | cut -d: -f 3`
-    LIB_MPI=`ompi_info --parseable --path libdir | cut -d: -f 3`
-    AC_SUBST(INC_MPI)
-    AC_SUBST(LIB_MPI)
+  AC_CHECK_PROG([HAVE_MPI], [ompi_info], yes)
+  if test -z $HAVE_MPI; then
+    AC_MSG_ERROR([Cannot find OpenMPI configuration utility 'ompi_info'.])]
   fi
+  INC_MPI=`ompi_info --parseable --path incdir | cut -d: -f 3`
+  LIB_MPI=`ompi_info --parseable --path libdir | cut -d: -f 3`
   FCFLAGS+=" -I$INC_MPI"
   AC_LANG_PUSH([Fortran])
   AC_MSG_CHECKING([for mpif.h])
@@ -193,6 +193,8 @@ if test $ocean = 3D; then
       include 'mpif.h'])],
     [AC_MSG_RESULT(yes)], [AC_MSG_ERROR(no)])
   AC_LANG_POP
+  AC_SUBST(INC_MPI)
+  AC_SUBST(LIB_MPI)
 fi
 
 # Common compiler flags for IGSM code
