@@ -8,6 +8,10 @@ DEFINES="-DWORDLENGTH=4"
 CPP="cpp -traditional -P"
 LINK="mpif90"
 
+# Enable the MITgcm's 'atm2d' package, to replace the routines in the IGSM's
+# src/driver
+ENABLE=atm2d
+
 if test "x$IEEE" = x ; then
   # no need for IEEE-754
   FFLAGS='-byteswapio -r8 -Mnodclchk -Mextend'
