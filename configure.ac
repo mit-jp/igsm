@@ -360,6 +360,7 @@ else
     the file specified by co2_data in name.dat])
   AC_DEFINE(OLD_LAPGAS, 1, [Use an old way of handling greenhouse effects of
     different gases in atm/radia0.F (for backwards compatibility)])
+  AC_DEFINE(WR_RADMN, 1, [Write yz concentration used in radiation])
 fi
 
 
