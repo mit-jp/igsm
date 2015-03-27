@@ -4,6 +4,8 @@ CLMROOT = .
 CLMFLAGS = -fopt -O2 \
 	-maxpft 17 \
 	-mit2d on \
+	-nc_inc $(INC_NETCDF) \
+	-nc_lib $(LIB_NETCDF) \
 	-nospmd \
 	-nosmp \
 	-pcp2pft on \
@@ -12,8 +14,8 @@ CLMFLAGS = -fopt -O2 \
 	-tem $(CLM35_TEM)
 
 libclm.a: exe/program_igsm.o
-	rm exe/program_igsm.o
 	$(AR) $(ARFLAGS) $@ exe/*.o
+	$(AR) dv $@ program_igsm.o
 	$(RANLIB) $@
 
 exe/program_igsm.o: exe/preproc.h
@@ -27,4 +29,5 @@ exe/preproc.h:
 all-local: libclm.a
 
 clean-local:
+	cd exe && make clean
 	rm -rf libclm.a
