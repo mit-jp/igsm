@@ -8,16 +8,6 @@ DEFINES="-DWORDLENGTH=4"
 CPP="cpp -traditional -P"
 LINK="mpif90"
 
-# Packages to compile
-ENABLE=atm2d \
-  compon_communic
-  debug \
-  mdsio \
-  monitor \
-  rw \
-  thsice \
-  timeave
-
 if test "x$IEEE" = x ; then
   # no need for IEEE-754
   FFLAGS='-byteswapio -r8 -Mnodclchk -Mextend'
