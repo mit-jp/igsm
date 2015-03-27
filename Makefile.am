@@ -1,4 +1,5 @@
-SUBDIRS = src util
+SUBDIRS = src
+DIST_SUBDIRS = src util
 
 all-local: $(BINARIES)
 
