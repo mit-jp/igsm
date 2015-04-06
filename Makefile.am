@@ -1,9 +1,10 @@
-SUBDIRS = src util
+SUBDIRS = src
+DIST_SUBDIRS = src util
 
 all-local: $(BINARIES)
 
-igsm22 igsm23:
+$(BINARIES):
 	ln -s src/$@ .
 
 clean-local:
-	rm -f igsm22 igsm23
+	rm -f $(BINARIES)
