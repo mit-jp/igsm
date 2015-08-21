@@ -1,4 +1,4 @@
-AM_CPPFLAGS = -I$(top_srcdir)/src/inc
+AM_CPPFLAGS = -I../inc -I$(top_srcdir)/src/inc
 
 noinst_LIBRARIES = libml.a
 
@@ -14,4 +14,4 @@ libml_a_SOURCES = daily_for_ocean.F \
 	ostruc_2d.F \
 	qflux.F \
 	qflux_rel.F \
-	wrrstrt_ocean.F 
+	wrrstrt_ocean.F

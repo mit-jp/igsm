@@ -1,4 +1,4 @@
-AM_CPPFLAGS = -I$(top_srcdir)/src/inc
+AM_CPPFLAGS = -I../inc -I$(top_srcdir)/src/inc
 
 noinst_LIBRARIES = libchem.a
 
@@ -24,4 +24,4 @@ libchem_a_SOURCES = chemadv.F \
 	chemstrat.F \
 	chemtmp.F \
 	chemtrop0.F \
-	chemtrop.F 
+	chemtrop.F

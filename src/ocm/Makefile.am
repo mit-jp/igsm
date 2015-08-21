@@ -1,4 +1,4 @@
-AM_CPPFLAGS = -I$(top_srcdir)/src/inc
+AM_CPPFLAGS = -I../inc -I$(top_srcdir)/src/inc
 
 noinst_LIBRARIES = libocm.a
 
@@ -9,5 +9,4 @@ libocm_a_SOURCES = calc_pco2_follows.F \
 	carb_flx_3d.F \
 	hdocean.F \
 	oceanco2_func.F \
-	verdif.F 
-
+	verdif.F

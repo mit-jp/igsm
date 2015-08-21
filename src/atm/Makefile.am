@@ -1,4 +1,4 @@
-AM_CPPFLAGS = -I$(top_srcdir)/src/inc
+AM_CPPFLAGS = -I../inc -I$(top_srcdir)/src/inc
 
 noinst_LIBRARIES = libatm.a
 

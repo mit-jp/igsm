@@ -378,6 +378,7 @@ AC_CONFIG_FILES([Makefile
 	src/Makefile
 	src/atm/Makefile
 	src/chem/Makefile
+  src/inc/AGRID.h
 	src/inc/Makefile
 	src/meta/Makefile
 	src/ocm/Makefile
