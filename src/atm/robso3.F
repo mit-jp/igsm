@@ -5,7 +5,7 @@
 #include "BD2G04.COM" 
 #include "chem_para"
 #include "TEM.h"
-      character * 120 flo3,o3datadir
+      character * 256 flo3,o3datadir
       character * 4 year
       character * 6 name
       data ifirst /1/

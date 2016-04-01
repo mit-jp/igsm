@@ -7,8 +7,13 @@
 #include "chem_com"
 #include "BD2G04.COM"
 #include "chem_meta"
+#if ( defined OLD_EMISS )
       parameter (neppa=124,naccri=110)
 !     parameter (neppa=324,naccri=110)
+!     parameter (neppa=524,naccri=110)
+#else
+      parameter (neppa=1,naccri=110)
+#endif
 #endif
 
       logical FORMSO2
@@ -52,9 +57,9 @@
 #endif
 
       if (ifirst.eq.0) then
-      FORMSO2=.TRUE.
+!     FORMSO2=.TRUE.
       open(535,file='eppaemis.dat')
-       print *,' CALL EPPAEMISSION'
+       print *,' CALL EPPAEMISSION iyr=',iyr
       read (535,NML=EPPA)
       print *,' FORMSO2=',FORMSO2
       close (535)
@@ -75,8 +80,23 @@
        read(664)SO2EM
       endif
        print *,' SO2EM=from eppaemissions ',SO2EM
+        close (664)
+      read(164)iyemif,iyemil
+      print *,'EPPA emissions for years ',iyemif,iyemil
+      if (iyemif.gt.iyr) then
+       print *,'Wrong iyemif and iyr'
+       print *,'iyemif=',iyemif,' iyr=',iyr
+       stop
+      else
+       do iy=iyemif,iyr-1
+        read(164)iyemi
+        read(164)
+        print *,'iyemi=',iyemi
+       enddo
+      endif
 
 #if ( defined CPL_CHEM )
+#if ( defined OLD_EMISS )
       read(164)edailyf11eppa,
      &         edailyf12eppa,
      &         edailyn2oeppa,
@@ -102,8 +122,8 @@
      &         n_urbaneppa
 
         close (164)
-        close (664)
         print *,'Emissioms for ',neppa,' years'
+#endif
 #if ( defined ACCRI )
       print *,' Run with ACCRI emissions with H2O'
       print *,accri_data
@@ -125,6 +145,7 @@
 	return
 	endif 	! first
 #if ( defined CPL_CHEM )
+#if ( defined OLD_EMISS )
         iyremi  = iyr-1976       !year from starting point
         myyearlast  = min(LYEAREM-1976,neppa)  !last year of emission
         print *,' EPPAEMISION myyearlast=',myyearlast
@@ -132,6 +153,37 @@
         print *,' EPPAEMISION iyr=',iyr,' iyremi=',iyremi
         print *,' EPPAEMISION nlat=',nlat
          print *,'CO2 emissions for ',iyremi
+         print *,(edailyco2eppa(1,j,iyremi),j=1,nlat)
+#endif
+        iyremi  = 1
+      if(iyemi.lt.iyemil.and.iyemi.lt.LYEAREM) then
+        read(164)iyemi
+      read(164)edailyf11eppa,
+     &         edailyf12eppa,
+     &         edailyn2oeppa,
+     &         edailycoeppa,
+     &         edailynoxeppa,
+     &         edailych4eppa,
+     &         edailyso2eppa,
+     &         edailyco2eppa,
+     &         edailyhfc134aeppa,
+     &         edailypfceppa,
+     &         edailysf6eppa,
+     &         edailyucoeppa,
+     &         edailyunmveppa,
+     &         edailyunoxeppa,
+     &         edailyusoxeppa,
+     &         edailybceppa,
+     &         edailynh3eppa,
+     &         edailyoceppa,
+     &         edailyubceppa,
+     &         edailyunh3eppa,
+     &         edailyuoceppa,
+     &         n_total_urbaneppa,
+     &         n_urbaneppa
+         endif
+
+         print *,'CO2 emissions for ',iyemi
          print *,(edailyco2eppa(1,j,iyremi),j=1,nlat)
         do j=1,nlat
          edailyf11(1,j,1)=edailyf11eppa(1,j,iyremi)

@@ -6,6 +6,7 @@
 #include "TEM.h"        
 #include "CLM.h"        
         logical first,fixedLC,wr88,fixedLC4TEM
+        logical tem44c
 !
         real wetlands(35,jm0),wetlat(jm0)
 !
@@ -13,6 +14,7 @@
         data first /.true./
         wr88=.true.
         wr88=.false.
+        tem44c=.false.
         fixedLC4TEM=.true.
         if (first) then
          if(.not.dyn_pft.or.rampyr_dynpft.ne.0) then
@@ -20,6 +22,25 @@
          else
           fixedLC=.false.
          endif
+!TEST
+       if(tem44c) then
+       print *,' use data from TEMDATA for TEM44d'
+       flsotem='/home/sokolov/IGSM2/TEMDATA/igsmsoilchar4x360b1.mit'
+       fllatem='/home/sokolov/IGSM2/TEMDATA/igsmslayerchar4x360b1.mit'
+       open(394,file=flsotem,status='old')
+       open(395,file=fllatem,status='old')
+       do j=1,jm0
+        read(394,*),lontem(j),lattem(j),xx,areatem(j),sandtem(j),
+     &  silttem(j),claytem(j),wsoiltem(j),phtem(j),yy,zz
+        do k=1,mnlay1
+        read(395,*),lontem(j),lattem(j),xx,nk,zthicktem(k,j),
+     &  portem(k,j),ksattem(k,j),yy,zz
+      enddo
+      enddo
+      close(394)
+      close(395)
+      endif
+!TEST
 #if ( defined CLM35 )
         print *,'climate4tem for CLM35'
         if(fixedLC) then
@@ -54,6 +75,22 @@
      &      ,nint(cellarea(j)*landfrac(j))
            enddo
           endif
+!TEST
+       if(tem44c) then
+! use data from TEMDATA
+          do j=1,jm0
+            pctsand4tem(j)=sandtem(j)
+            pctsilt4te(j)=silttem(j)
+            pctclay4tem(j)=claytem(j)
+            soilph4tem(j)=phtem(j)
+           do k=1,mnlay1
+            zthick4tem(k,j)=zthicktem(k,j)
+            por4tem(k,j)=portem(k,j)
+            ksat4tem(k,j)=ksattem(k,j)
+           enddo
+          enddo
+       endif
+!TEST
 !         print *,'TEXTURE'
 !         do j=1,jm0
 !          print '(F5.0,f13.3,3f6.2)'
@@ -72,7 +109,9 @@
 #if ( defined DATA4TEM )
           open (931,
      &      file='lndfrac4tem',status='new',form='unformatted')
-          write(931),cellarea,landfrac
+          write(931),cellarea,landarea
+     & , pctclay4tem, pctsand4tem, pctsilt4te
+     & ,soilph4tem, ksat4tem, por4tem, zthick4tem
           close (931)
 #endif
 #else
@@ -197,7 +236,9 @@ c       print *,(o34tem(n,23),n=1,no3)
 #if ( defined CLM35 )
         write(938),month,ndays,strmdur,qstrm,pet,aet,sh2o1m,sh2o2m,
      &  swe,sfr,drn,vegfrac
+#if ( defined DATA4NEM )
         write(939),month,ndays,daytsoil,daysho,rsh2o
+#endif
         jpr=-10
         ncpr=12
 !       do j=1,jm0

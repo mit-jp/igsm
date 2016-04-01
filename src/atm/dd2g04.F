@@ -1141,8 +1141,8 @@ C**31  35  STRATO TEMPERATURE CHANGE PER DEGREE LATITUDE (10**-2 K)     1552.
 C****  36  TROPO TEMPERATURE CHANGE PER DEGREE LATITUDE (10**-2 K)      1553.   
 C****  24  STRATOSPHERIC STATIC STABILITY (10**-3 K/M)                  1554.   
 C****  25  TROPOSPHERIC STATIC STABILITY (10**-3 K/M)                   1555.   
-C****  26  STRATOSPHERIC RICHARDSON NUMBER (1)                          1556.   
-C****  27  TROPOSPHERIC RICHARDSON NUMBER (1)                           1557.   
+C****  26  TEMPERATURE at 2 M hight                                     1556.   
+C****  27  Difference T2m from control run                              1557.   
 C****  28  STRATOSPHERIC ROSSBY NUMBER (1)                              1558.   
 C****  29  TROPOSPHERIC ROSSBY NUMBER (1)                               1559.   
 C****  37  L IN THE STRATOSPHERE (10**5 M)                              1560.   
@@ -1331,9 +1331,13 @@ c     For T2m
       SCALE(26)=SCALE(23)                                               1685.   
       IA(26)=IA(23)
 c     For T2m
+c     For dT2m
+      SCALE(27)=SCALE(26)                                               1685.   
+      IA(27)=IA(26)
+c     For dT2m
 c     For RIGS
-      SCALE(27)=SCALE(37)                                               1685.   
-      IA(27)=IA(37)
+!     SCALE(27)=SCALE(37)                                               1685.   
+!     IA(27)=IA(37)
 c     For RIGS
       SCALE(39)=1./DTSRCE                                               1686.   
       SCALE(40)=1./DTSRCE                                               1687.   
@@ -1347,11 +1351,11 @@ c      43 is SWUP at Z0 from CLM
        SCALE(43)=1.0
 c      45 is LWUP at Z0 from CLM
        SCALE(45)=1.0
-c      16 is cevclm  from CLM
+c      16 is vetclm  from CLM
        SCALE(16)=SDAY
-c      41 is vetclm  from CLM
+c      41 is sevclm  from CLM
        SCALE(41)=SDAY
-c      42 is sevclm  from CLM
+c      42 is cevclm  from CLM
        SCALE(42)=SDAY
       endif
       SCALE(46)=SDAY/DTSRCE 

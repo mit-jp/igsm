@@ -20,8 +20,8 @@ C     myThid - thread number for this instance of the routine.
 C     === Local variables ===
       INTEGER j,nc
 #ifdef PREDICTED_AEROSOL
-        print *,' Before eppaemission'
-        CALL eppaemission (0)
+!       print *,' Before eppaemission'
+!       CALL eppaemission (0)
 #endif
 
 #ifdef CLM

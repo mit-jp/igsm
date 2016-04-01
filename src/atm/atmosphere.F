@@ -98,7 +98,7 @@ C     COMMON/KEYS/KEYNR(42,50)                                             8.
       common/surps/srps(JM0+3),nsrps
 c     character *19 buf
 c     character *8 buf1
-      character *120 file1,file2,plotfl,nwrfl,qffile,clfile
+      character *256 file1,file2,plotfl,nwrfl,qffile,clfile
       CHARACTER*4 AMONTH(12),JMONTHPR
       common/files/file1,file2,flotfl,nwrfl,qffile,clfile
       common/PRNT1/NCOMP
@@ -1265,6 +1265,7 @@ c     if(JYEAR.gt.20)then
      &  dsw4clm,
      &  dlw4clm,pco24clm
      &  ,swinr4clm,swvis4clm
+     &  ,rnd14clm, rnd24clm
 c      endif
 #endif
 

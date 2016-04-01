@@ -31,7 +31,7 @@ c     land and ocean fraction respectively
       dimension BSO4LAND(JM0),BSO4OCEAN(JM0),
      & BSO4LD86(JM0),BSO4ON86(JM0),
      & IYSULF(2000),CF86(2000),YSULF(2000)
-      character * 120 sulf1986,sulf2050,sulfamp,SO2_EM
+      character * 256 sulf1986,sulf2050,sulfamp,SO2_EM
       character * 80 title
       common /sulfdata/sulf1986,sulf2050,sulfamp,SO2_EM
        logical first

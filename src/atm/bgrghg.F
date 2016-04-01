@@ -4,7 +4,7 @@
       SUBROUTINE bgrghg(YEART)
       common /bghgdata/bgrghg_data
       common/ BACKGRGHG/GHGBGR(5)
-      character * 120 bgrghg_data
+      character * 256 bgrghg_data
       iyeart=yeart
       nyd=300
       open (unit=561,file=bgrghg_data,

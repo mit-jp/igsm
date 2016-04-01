@@ -291,8 +291,8 @@ C**** ZERO OUT SURFACE DIAGNOSTICS WHICH WILL BE SUMMED OVER LONGITUDE  5956.
          CTS=0.                                                         5968.   
          AT2=0.                                                         5966.   
          CT2=0.                                                         5968.   
-         ARIGS=0.                                                         5966.   
-         CRIGS=0.                                                         5968.   
+         ADT2=0.                                                         5966.   
+         CDT2=0.                                                         5968.   
          ATAUL=0.
          ATAUF=0.
          CTAUL=0.
@@ -617,6 +617,7 @@ c     print *,'J=',J,' ITYPE=',ITYPE
 c     print *,'POCEAN=',POCEAN,' PTYPE=',PTYPE
 c     print *,'TS=',TS,' TG=',TG
 c     print *,' T2M=',T2M,' TH2M=',TH2M
+      DT2M= DT2MGL(j)
       F0DT=CORSR*SRHDT+TRHDT+SHDT+EVHDT                                 6510. 
       if(J.eq.JPR)then
         print *,'TAU=',TAU,' NS=',NS,' ITYPE=',ITYPE
@@ -743,7 +744,7 @@ C****                                                                   6554.
          ATS=ATS+(TS-TF)*POCEAN                                         6558.   
 c        AT2=AT2+(TH2M-TF)*POCEAN 
          AT2=AT2+(T2M-TF)*POCEAN 
-         ARIGS=ARIGS+RIGS*POCEAN 
+         ADT2=ADT2+DT2M*POCEAN 
          BLDATA(I,J,5)=CDM*WS*W1
          BLDATA(I,J,5)=CDM*WS*WS	! 2373
          ATAUL=ATAUL+RCDMWS*US*POCEAN
@@ -761,7 +762,7 @@ C****                                                                   6562.
          CTS=CTS+(TS-TF)*POICE                                          6566.   
 c        CT2=CT2+(TH2M-TF)*POICE                                        6566.   
          CT2=CT2+(T2M-TF)*POICE            
-         CRIGS=CRIGS+RIGS*POICE            
+         CDT2=CDT2+DT2M*POICE            
          CTAUL=CTAUL+RCDMWS*US*POICE
          CTAUF=CTAUF+RCDMWS*VS*POICE
          CWS=CWS+WS*POICE 
@@ -847,8 +848,9 @@ C**** QUANTITIES ACCUMULATED FOR SURFACE TYPE TABLES IN DIAG1           6663.
          AJ(J,26)=AJ(J,26)+AT2                                          6674.   
          BJ(J,26)=BJ(J,26)+BLJ(J,26)
          CJ(J,26)=CJ(J,26)+CT2                                          6676.   
-         AJ(J,27)=AJ(J,27)+ARIGS                                        6674.   
-         CJ(J,27)=CJ(J,27)+CRIGS                                        6676.   
+         AJ(J,27)=AJ(J,27)+ADT2                                         6674.   
+         CJ(J,27)=CJ(J,27)+CDT2                                         6676.   
+         BJ(J,27)=BJ(J,27)+BLJ(J,27)
          
 c        print *,j,'CTS=',CTS,' CT2=',CT2
 c     print *,'BLDATA'

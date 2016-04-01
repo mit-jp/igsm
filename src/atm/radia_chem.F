@@ -839,8 +839,8 @@ C *****
 ! --- Chemistry Model Patch 120497
 !  get solar flux in w/m^2
 !
-        solarflux(i,j,l) = solarflux(i,j,l)
-     &                   + srdflb(l+1)*ptype
+!!!     solarflux(i,j,l) = solarflux(i,j,l)
+!!!  &                   + srdflb(l+1)*ptype
 
 c        solarflux(i,j,l) = solarflux(i,j,l)
 c     &                   + srnflb(l+1)*ptype
@@ -882,6 +882,11 @@ C **********
          ALBJ(J,1)=SRNFLB(1)/(SRDFLB(1)+1.E-20)
 C *********
          COSZ=COSZ2(I,J)
+         do L=LM,1,-1
+           AJL(J,L,43)=AJL(J,L,43)-TRNFLB(L+1)*PTYPE
+           AJL(J,L,42)=AJL(J,L,42)+(SRNFLB(L+1)*COSZ)*PTYPE
+!          AJL(J,L,42)=AJL(J,L,42)+(SRDFLB(L+1)*COSZ)*PTYPE
+         enddo
          if(ii.eq.2)then
 #if ( defined CLM )
 C        for TEM CLM
@@ -953,7 +958,33 @@ C
            CJ(J,K+70)=CJ(J,K+70)+(S0*COSZ)*ALBJ(J,K)*POICE
           END DO
           endif
+
+#if ( defined CPL_CHEM )
+       do l=1,lm
+!
+! --- Chemistry Model Patch 120497
+!  get solar flux in w/m^2
+!
+        solarflux(i,j,l) = solarflux(i,j,l)
+     &                   + srdflb(l+1)*ptype
+     &                   + sruflb(l)*ptype
+
+c        solarflux(i,j,l) = solarflux(i,j,l)
+c     &                   + srnflb(l+1)*ptype
+        enddo
+!
+#endif
+         COSZ=COSZ2(I,J)
+!      do L=LM,1,-1
+!       AJL(J,L,46)=AJL(J,L,46)-TRNFLB(L+1)*PTYPE
+!       AJL(J,L,45)=AJL(J,L,45)+(SRNFLB(L+1)*COSZ)*PTYPE
+!       AJL(J,L,45)=AJL(J,L,45)+(SRDFLB(L+1)*COSZ)*PTYPE
+!      enddo
+
   499 continue
+!      do L=LM,1,-1
+!       AJL(J,L,45)=AJL(J,L,45)+(solarflux(i,j,l)*COSZ)
+!      enddo
         ALB(I,J,1)=SRNAN/(SRDAN+1.E-20)
   500 IM1=I                                                             5304.   
 
@@ -1059,6 +1090,10 @@ C
       TRP1CL(J)=TRNFLB(LM+1)
 C *********
          COSZ=COSZ2(I,J)
+       do L=LM,1,-1
+        AJL(J,L,46)=AJL(J,L,46)-TRNFLB(L+1)*PTYPE
+        AJL(J,L,45)=AJL(J,L,45)+(SRNFLB(L+1)*COSZ)*PTYPE
+       enddo
          if(ii.eq.2)then
           PLAND=PTYPE
             BJCLR(J,1)=BJCLR(J,1)+(S0*COSZ)*PLAND  

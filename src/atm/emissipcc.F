@@ -27,7 +27,7 @@ C
       common/boxmod/YEAR0
       common /emisdata/emiss_data
       common/ BACKGRGHG/GHGBGR(5)
-      character * 120 emiss_data
+      character * 256 emiss_data
       character * 10 name,scen(5)
       logical first
       data first /.true./
@@ -154,7 +154,7 @@ c     common /Garyflux/pC_atm(jm0),wind_amp,fluxco2(jm0)
       common /emisdata/emiss_data
       common /ipccdata/init_co2
       common/ BACKGRGHG/GHGBGR(5)
-      character * 120 emiss_data
+      character * 256 emiss_data
       character * 30 name
       logical first
       data first /.true./

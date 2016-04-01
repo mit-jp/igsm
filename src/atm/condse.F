@@ -238,14 +238,13 @@ c     RH0OLD=.65
       RH45=0.875	! 2359
 !     RH45=0.925	! 470.10 ! 620.11 ! 630.11
 #if ( defined CLM35 )
-!     RH45=0.925 ! 640.11 1003.11
-      RH0=0.875	! 590.14
-!     RH0=0.925	! 240.13
-!     RH0=0.90	! 240.13
-!     RH45=0.875 ! 580.14
-!     RH45=0.85 ! 600.14
-      RH45=0.825 ! 600.14
-!     RH45=0.9	! 470.10 ! 620.11 ! 630.11
+      RH0=0.875	! 360.14
+!     RH0=0.90	! 460.15
+!     RH0=0.925	! 560.15
+
+      RH45=0.825 ! 360.14
+!     RH45=0.85 ! 460.15
+!     RH45=0.875 ! 560.15
 #endif
 !     RH45=0.85	! 480.10
 !     RH45=0.80	! 490.10
@@ -261,7 +260,13 @@ c     RH0OLD=.65
 
         do l=1,3	! Low clouds
 #if ( defined CLM35 )
-         RHKP(l,j)=0.875*RHNEW(j)  ! 2357
+         RHKP(l,j)=0.875*RHNEW(j)  ! 360.14
+!        RHKP(l,j)=0.90*RHNEW(j)  ! 660.15 260.15
+!        RHKP(l,j)=0.925*RHNEW(j)  ! 960.15
+!        RHKP(l,j)=0.912*RHNEW(j)  ! 160.15
+!        RHKP(l,j)=0.885*RHNEW(j)  ! 1060.15
+!        RHKP(l,j)=0.890*RHNEW(j)  ! 1160.15, 1360.15, 1460.15
+!        RHKP(l,j)=0.895*RHNEW(j)  ! 1260.15
 #else
          RHKP(l,j)=0.925*RHNEW(j)  ! 2367
 #endif
@@ -278,7 +283,12 @@ c     RH0OLD=.65
         do l=7,9	! High clouds
 !       do l=6,9	! High clouds 460.10
 #if ( defined CLM35 )
-         RHKP(l,j)=0.995*RHNEW(j) ! 490
+         RHKP(l,j)=0.995*RHNEW(j) ! 360.14
+!        RHKP(l,j)=0.990*RHNEW(j) ! 660.15
+!        RHKP(l,j)=0.985*RHNEW(j) ! 760.15
+!        RHKP(l,j)=0.975*RHNEW(j) ! 860.15 960.15 260.15 
+!        RHKP(l,j)=0.965*RHNEW(j) ! 1360.15
+!        RHKP(l,j)=0.955*RHNEW(j) ! 1460.15
 #else
          RHKP(l,j)=0.985*RHNEW(j) ! 2358
 #endif
@@ -1791,6 +1801,7 @@ C**** TOTAL HEATING AND MOISTURE ADJUSTMENT                             3494.
 !
 	beta = 3600.0*0.15		! dt*correction
 !beta = 1.0
+        beta = 3600.0*0.05
 	t_cnv = max(0.0, prec_cnv(nlev))
 	t_str = max(0.0, prec_str(nlev))
 	do k=nlev-1,1,-1

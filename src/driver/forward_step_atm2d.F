@@ -121,7 +121,9 @@ C    &             idyear,iyr,inyr,monid,inday,dayid
           CLOSE(937)
 #if ( defined CLM35 )
           CLOSE(938)
+#ifdef DATA4NEM
           CLOSE(939)
+#endif
 #endif
         ENDIF
         IF(iyr.gt.1000) THEN
@@ -138,7 +140,9 @@ C    &             idyear,iyr,inyr,monid,inday,dayid
         OPEN(937,file=f4tem,form='unformatted',status='new')
 #if ( defined CLM35 )
         OPEN(938,file=f24tem,form='unformatted',status='new')
+#ifdef DATA4NEM
         OPEN(939,file=f34tem,form='unformatted',status='new')
+#endif
 #endif
         nfile=nfile+1
 #endif
@@ -288,11 +292,15 @@ c        PRINT *,'From driver before call tem',' idyear=',idyear
 #    ifdef CPL_NEM
         PRINT *,'Month=',monid
         PRINT *,'CH4=',ch4mn/1.e9,' N2O=',n2omn/1.e9
+#if ( defined OCEAN_3D)
         OPEN(277,ACCESS='APPEND',FILE=fnememiss,form='unformatted'
      &     ,STATUS='old')
+#    endif
         WRITE (277) iyr,monid,ch4mn,n2omn,nepmn,
      &          temch4,temn2o,temco2
+#if ( defined OCEAN_3D)
         CLOSE(277)
+#    endif
 #    endif
         DO j=1,jm0
           temnep(monid,j)=temco2(j)
@@ -365,11 +373,11 @@ c   12.e-15 from moles to Gt carbon
           ENDIF
         ENDIF
 
-        IF (iyr.eq.endYear) THEN
+!       IF (iyr.eq.endYear) THEN
 C         NEM emissions and NEP for start of climate-chemistry run
           adupt=aduptt
            CALL wr_rstrt_nem
-        ENDIF
+!       ENDIF
 
 #endif
 

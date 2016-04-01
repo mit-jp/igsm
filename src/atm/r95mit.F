@@ -146,7 +146,8 @@ C                                                                        134.
       CALL  ALBDAY                                                       137.   
       CALL  O3DDAY                                                       138.   
 
-#if ( !defined CPL_CHEM ) && ( defined O3_FORCED )
+!#if ( !defined CPL_CHEM ) && ( defined O3_FORCED )
+#if ( defined CPL_CHEM && defined O3_TOP_SPARC ) || ( defined O3_FORCED )
 C--Addition by CEForest (18Mar98)
 !call getforcedozone(jyear,jday)
 	call getforcedozone(jyearo3,jday)
@@ -1160,9 +1161,15 @@ c       endif
 !	=== Chien Wang 121797 then 062498 ===
 !	===  add to use predicted ozone   ===
 !	===  in troposphere only          ===
-	if(l.le.n_tropopause)
-     &	ULGAS(L,3)=dmax1(0.0,o3(ILON,jyyy,l))/48.0
+	if(l.le.n_tropopause) then
+         ULGAS(L,3)=dmax1(0.0,o3(ILON,jyyy,l))/48.0
      &            *pxxx*tropmass
+        else
+#ifdef O3_TOP_SPARC
+             ULGAS(L,3)= o3dev(ILON,jlat,l)/48.0
+     &       *pxxx*tropmass
+#endif
+       endif
 #endif
 
 !       if (JLAT.eq.14) then 
@@ -1295,7 +1302,8 @@ C--   end of change 18Mar98
       ULGAS(L,9)=U0GAS(L,9)*FULGAS(9)*PART
 #endif
 
-#if ( !defined CPL_CHEM ) && ( defined O3_FORCED )
+!#if ( !defined CPL_CHEM ) && ( defined O3_FORCED )
+#if ( defined CPL_CHEM && defined O3_TOP_SPARC ) || ( defined O3_FORCED )
 C-- Added ozone forcing from external source. 
 C--   changed 18Mar98 CEForest
 C     NB. ozone is updated daily

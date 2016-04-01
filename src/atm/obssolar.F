@@ -29,7 +29,7 @@ C
 C
       dimension  solar(nyd),solarav(nyd),yearS0(nyd)
       common /solardata/S0C_data
-      character * 120 S0C_data
+      character * 256 S0C_data
       logical first
       data first /.true./
       if(first)then

@@ -77,29 +77,26 @@ c     CHARACTER*8 RECORD,ANDEND,NLREC*80                                1510.
       DIMENSION XA(1,JM0),XB(1,JM0),XLABL1(33)                          1512.5  
       DIMENSION JDOFM(13),VMASK(JM0)
      & ,DSIGF(LM0),DSIGH(LM0)
-      character *120 file1,file2,plotfl,nwrfl
-      character * 120  t3file,tsfile,zmfile,qffile,clfile,wrcldf
+      character *256 file1,file2,plotfl,nwrfl
+      character * 256  t3file,tsfile,zmfile,qffile,clfile,wrcldf
      &	  ,ochemfile,deepco2in
-cjrs DRIVER.h caruptfile  & ,oco2file,co2rfile,caruptfile,flrco2av
      &	  ,oco2file,co2rfile,flrco2av
      &    ,ghg_monthly,ghg_monthly2,ghg_monthly3,co2_data,o3_data
      &    ,bgrghg_data
-      character * 120 sulf1986,sulf2050,sulfamp,SO2_EM,
+      character * 256 sulf1986,sulf2050,sulfamp,SO2_EM,
      &  S0C_data,
      &  dirdat1,dirdat2
      &  ,bc_data
-      character * 120 chemdata,chemout,init_4nem,pov_deepo
-cjrs DRIVER.h last_nep character * 120 chemdata,chemout,last_nep,init_4nem,pov_deepo
+      character * 256 chemdata,chemout,init_4nem,pov_deepo
      & ,flin_nep,last_clm,SEN_dat
-cjrs DRIVER.h fnememiss &  ,fl_init_alkt,fl_init_salt,fl_dic_eq,fnememiss,
      &  ,fl_init_alkt,fl_init_salt,fl_dic_eq,
      & chem_init,chem_init2,chem_init4pfc,chemrstfl
       common/files/file1,file2,plotfl,nwrfl,qffile,clfile,wrcldf
      *,t3file,tsfile,zmfile,ochemfile,deepco2in
-      character * 120 ghostfile
+      character * 256 ghostfile
 c==== 012201
       common/nemdata/nemdatdir
-      character *120 nemdatdir
+      character *256 nemdatdir
 
       common /bmtrdata/co2_data
       common /bghgdata/bgrghg_data
@@ -154,11 +151,11 @@ c==== 012201
 Cjrs     &  ,dtatm,dtocn
 #if ( defined IPCC_EMI )
      &  ,init_co2,emiss_data
-      character * 120 init_co2,emiss_data
+      character * 256 init_co2,emiss_data
       common /emisdata/emiss_data
 #endif
-      character * 120 ocngmfile,ocndata4atm,fl_volaer,fl_orbital
-      character * 120 vegfile
+      character * 256 ocngmfile,ocndata4atm,fl_volaer,fl_orbital
+      character * 256 vegfile
      &  ,fclmlice,fbaresoil,fwmax,fprratio,o3datadir
       common/wrcom/wr25,TRANSR,CONTRR,OBSFOR
 c jrs      common/TIMESTEPS/dtatm,dtocn
@@ -194,7 +191,7 @@ c jrs      common/TIMESTEPS/dtatm,dtocn
 cjrs alreadyin DRIVER.h#include "CLM.COM"
       dimension clmlice(jm0),baresoil(jm0),
      &  w1maxclm(jm0),w2maxclm(jm0),vmaskclm(jm0)
-      character * 120 lineclm
+      character * 256 lineclm
 #endif
 #if ( defined CPL_OCEANCO2 && defined ML_2D )
       common/Garyclim/tggary(jm0),wsgary(jm0),areaml(jm0),arsrf(jm0)
@@ -477,7 +474,7 @@ c  50 SIGE(L)=SIGE0(L)                                                  1593.
       open(514,file='name.tmp')
       DO 51 I=1,33                                                      1596.1  
    51 XLABL1(I)=XLABEL(I)                                               1596.2  
-      XLABEL(33)=DISK                                                   1597.   
+!     XLABEL(33)=DISK                                                   1597.   
       WRITE (6,903) XLABEL                                              1598.   
 C**** COPY INPUTZ NAMELIST ONTO CORE TAPE AND TITLE PAGE                1599.   
    60 CONTINUE
@@ -862,6 +859,11 @@ Cold  CFAEROSOL=(-AERFOR/AFBYCF)**1.035/(SO2ER**0.7248)
 
 
       SO2EREF=147.375
+!#if ( defined CPL_CHEM )
+        print *,' Before eppaemission'
+      print *,' INYEAR= ',INYEAR
+        CALL eppaemission (INYEAR)
+!#endif
 !     open(664,file=SO2ERATIO,
 !    &        form='formatted',
 !    &        status='old')
@@ -968,7 +970,9 @@ c         this file is writen at the end of the run
 c         file init_4nem contains data for the restart of NEM
 c         from the results of a previous run
           open (277,file=fnememiss,form='unformatted',status='replace')
+#if ( defined OCEAN_3D)
           close(277)
+#endif
 #endif
 #endif
 #if ( defined CPL_OCEANCO2 && defined ML_2D )
@@ -987,8 +991,14 @@ C      For restart of the run
 !         open (368,file=init_4nem,form='unformatted',status='old')
 c         file init_4nem contains data for the restart of NEM
 c         from the results of a previous run
+          print *,'fnememiss'
+          do ii=1,200
+          print *,fnememiss
+          enddo
           open (277,file=fnememiss,form='unformatted',status='old')
+#if ( defined OCEAN_3D)
           close(277)
+#endif
 #endif
 #endif
 #if ( defined CPL_OCEANCO2 && defined ML_2D )
@@ -1894,6 +1904,7 @@ C     information for main program
       LYEARA=LYEAR
       IYEARA=JYEAR
       IRESTART=ISTRT1
+      print *,'INYEAR from INPUT=',inyear
       RETURN                                                            1868.   
 C****                                                                   1869.   
 C**** TERMINATE BECAUSE OF IMPROPER PICK-UP                             1870.   

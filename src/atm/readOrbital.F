@@ -5,7 +5,7 @@
 #include "ORB.h"
 	character * 40 title
 	character * 80 title1
-	character * 120 fl_orbital
+	character * 256 fl_orbital
         character *5 xxx
         character *41 fordir
         common/orbitalfl/fl_orbital

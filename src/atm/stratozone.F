@@ -36,7 +36,7 @@
 #include "chem_com"
 
       common /o3data/o3_data
-      character * 120 o3_data
+      character * 256 o3_data
 C      
 c     Routine to get ozone deviations from specified file and interpolate
 c       to the appropriate date.

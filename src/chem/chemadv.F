@@ -970,6 +970,13 @@ c       do 66 j=2,nlat1
        c(1)     =0.0
        do 67 k=2,nlev1
          c(k)   =-pww(i,j,k)/dsig(k)*dta
+#ifdef O3_TOP_SPARC
+         if (k.ge.n_tropopause) then
+           c(k)   = c(k)*0.25
+!          c(k)   = c(k)*0.5
+!          c(k)   = 0.0
+         endif 
+#endif
 67     continue
        c(nlev)  =-pww(i,j,nlev1)/dsig(nlev1)*dta
        c(nlev+1)=0.0

@@ -282,6 +282,9 @@ c      open(120,file='INCLUDE/chem.nml',status='old')
 C  open statment moved to assign.inc
         read(120,nml=chem_name_list)
         close(120)
+#ifdef O3_TOP_SPARC
+         print *,'Chemistry with stratospheric ozone from observation'
+#endif
 
 c--------------------------------------------------
 c   Pressure at each vertical layer in hPa for
@@ -538,6 +541,14 @@ c
      &              sviod  ,sviodm
      
 	close(279)
+
+c 311012
+c
+        print *,'Reading data for o3top '
+        read(162)o3top
+        close(162)
+
+
 
 c	mymonth = mymonth + 1
 c	if(mymonth.gt.12)then

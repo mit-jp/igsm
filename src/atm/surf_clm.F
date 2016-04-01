@@ -176,6 +176,7 @@ C****                                                                   5929.
          BSHDT=0.                                                       5961.   
          BEVHDT=0.                                                      5964.   
          BT2=0.                                                         5967.   
+         BDT2=0.                                                         5967.   
          BTAUL=0.
          BTAUF=0.
       IMAX=IM                                                            5969.   
@@ -297,6 +298,7 @@ c     t2md4tem(j)=t2md4tem(j)+TH2M
       T2M=tref2mclm(i,j)
       t2md4tem(j)=t2md4tem(j)+T2M
       nt2md4tem(j)=nt2md4tem(j)+1
+      DT2M=DT2MLD(j)
       F0DT=CORSR*SRHDT+TRHDT+SHDT+EVHDT                                 6510. 
       if (J.eq.-23) then
       print *,' From surf_clm TAU=',TAU
@@ -326,6 +328,7 @@ C**** ACCUMULATE SURFACE FLUXES AND PROGNOSTIC AND DIAGNOSTIC QUANTITIES6517.
       BTRHDT=BTRHDT+TRHDT*PLAND
 c     BT2=BT2+(TH2M-TF)*PLAND
       BT2=BT2+(T2M-TF)*PLAND
+      BDT2=BDT2+DT2M*PLAND
       BTAUL=BTAUL+TAUL*PLAND
       BTAUF=BTAUF+TAUF*PLAND
 
@@ -348,6 +351,7 @@ C**** QUANTITIES ACCUMULATED FOR SURFACE TYPE TABLES IN DIAG1           6663.
          BLJ(J,33)=BTAUF
          BLJ(J,38)=BTAUL
          BLJ(J,26)=BT2 
+         BLJ(J,27)=BDT2 
          BJ(J,41)=BJ(J,41)+EVAPV*PLAND
          BJ(J,42)=BJ(J,42)+EVAPS*PLAND
          BJ(J,16)=BJ(J,16)+EVAPC*PLAND
