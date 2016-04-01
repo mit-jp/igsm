@@ -90,6 +90,6 @@ C      cohortarea  are initialCohortArea from temstate file
 
       COMMON/ozon4tem/ obso3, o3datadir, CLIMO3
       REAL*8 obso3(no3,jm0,12)
-      CHARACTER*120 o3datadir
+      CHARACTER *256 o3datadir
       LOGICAL CLIMO3
 C
