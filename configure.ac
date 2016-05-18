@@ -201,8 +201,10 @@ fi
 FFLAGS+=" -r8 -i4"
 CXXFLAGS+=" -Mscalarsse -fpic"
 
+# Conditional for use in Makefiles
+AM_CONDITIONAL([IGSM_2D], [test $ocean = 2D])
 
-### Modules to build
+### Binaries and modules to build
 # Based on the package options, this section controls whether individual modules
 # of the IGSM are built or not by populating MODULE_DIRS (see src/Makefile.am).
 # It also sets the libraries to link against (MODULE_LDADD). The order of these
@@ -210,14 +212,20 @@ CXXFLAGS+=" -Mscalarsse -fpic"
 
 # 1. Multilayer 2D ocean, atmosphere, ocean carbon
 if test $ocean = 2D; then
+  # only build the igsm22 executable if using the 2D ocean
+  BINARIES="igsm22"
   MODULE_DIRS=" ocn_ml"
   MODULE_LDADD="atm/libatm.a ocn_ml/libml.a"
   # the ocm module is only for carbon in a 2D ocean
   if test $ocncarbon = yes; then
+    # build an ocean spin-up executable
+    BINARIES+=" igsm22ocm"
     MODULE_DIRS+=" ocm"
     MODULE_LDADD+=" ocm/libocm.a"
   fi
 else
+  # only build the igsm23 executables if using the 3D ocean
+  BINARIES="igsm23_driver igsm23_ocean"
   MODULE_DIRS=" ocn_3d"
   # the 3D ocean module must be listed *before* libatm.a
   MODULE_LDADD="ocn_3d/libocn_3d.a atm/libatm.a"
@@ -262,16 +270,9 @@ if test $tracers = yes; then
 fi
 
 # substitute the resulting variables in src/Makefile.am
+AC_SUBST(BINARIES)
 AC_SUBST(MODULE_DIRS)
 AC_SUBST(MODULE_LDADD)
-
-# only build the igsm22 executable if using the 2D ocean; otherwise build igsm23
-AM_CONDITIONAL([IGSM_2D], [test $ocean = 2D])
-if test $ocean = 2D; then
-  AC_SUBST([BINARIES], [igsm22])
-else
-  AC_SUBST([BINARIES], ["igsm23_driver igsm23_ocean"])
-fi
 
 ### Defines.
 # This section sets the C/C++/Fortran preprocessor symbols (#define) that are
