@@ -286,6 +286,7 @@ AC_DEFINE(N_LON0, 72, [Number of longitudinal grid points; unused, but must be
   must be 72 for N_LAT=46 (per atm/check_settings.F)])
 AC_DEFINE(NYR_CHEM, 1, [Number of year of chemistry model integration (124 for
   period from 1977 to 2100)]) #this need in chem common blocks, always included
+AC_DEFINE(O3_TOP_SPARC, 1, [Use sparc stratospheric ozone in radiation module])
 
 # Defines when using CLM and TEM
 if test $clm = yes; then
