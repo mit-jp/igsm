@@ -257,10 +257,6 @@ C
       ALFFOR=0.
       S0RATE=0.
       YEARGT=1958.
-       YEARGG=YEARGT
-       YEARS0=YEARGT
-       YEARSA=YEARGT
-       YEARVA=YEARGT
       YEARORB=2000.
       ORBTRANS=.false.
       CO2IN=280.
@@ -281,6 +277,7 @@ C
       CO2FOR=.false.
       S0FOR=.false.
       CO2F=2.0
+      OBSFOR=.false.
       GSOEQ=.false.
       KVCT=.false.
       VEGCH=.false.
@@ -379,10 +376,13 @@ cjrs      dtocn=1
       KDISK=1                                                           1538.   
       DT=900.                                                           1539.   
       DT=1200.
+      DT=600.                                                           
       XINT=120.                                                         1540.   
       XINT=24.
       NDYN=4                                                            1541.   
       NDYN=3
+      NDYN=6
+      NDYN=3600./DT
 #if ( defined CLM )
       NSURF=1
 #else
@@ -418,7 +418,7 @@ cjrs      dtocn=1
       ETA=0.                                                            1564.   
       ETA=1.
       RHMAX=100000.                                                     1565.   
-      RHMAX=150000.
+      PLCOUD=0 
       CDX=1.                                                            1566.   
       IRAND=123456789                                                   1567.   
       IJRA=1                                                            1568.   
@@ -484,6 +484,10 @@ C**** COPY INPUTZ NAMELIST ONTO CORE TAPE AND TITLE PAGE                1599.
       IF(RECORD(1).NE.ANDEND) GO TO 60                                  1603.   
       rewind 514
       read (UNIT=514,NML=INPUTZ)
+       YEARGG=YEARGT
+       YEARS0=YEARGT
+       YEARSA=YEARGT
+       YEARVA=YEARGT
       REWIND 514                                                        1606.   
 C JRS ignore name.dat values, start Jan 1. with couple.nml years  
       inyear = startYear
@@ -914,6 +918,7 @@ C**** SET DEPENDENT QUANTITIES                                          1608.
 c     LMCM=LTM+2
       NCNDS=NDYN                                                        1618.   
       NRAD=5*NDYN                                                       1619.   
+      NRAD=NDYN
       NFILTR=2*NDYN                                                     1620.   
       NFILTR=0
       NDAA=3*NDYN+2                                                     1621.   
@@ -1235,7 +1240,10 @@ c     endif
       TAUP=TAUX                                                         1746.   
 C**** UPDATE C ARRAY FROM INPUTZ                                        1747.   
   500 READ (514,INPUTZ)                                                 1748.   
-!      nrad=NDYN
+       YEARGG=YEARGT
+       YEARS0=YEARGT
+       YEARSA=YEARGT
+       YEARVA=YEARGT
        KTREND=-CO2
 #if ( defined IPCC_EMI )
        CO2=xco2init/GHGBGR(1)

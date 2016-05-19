@@ -27,8 +27,10 @@ c     common/diff/cfdiff,rkv,EDOZON(JM0)
       DATA AMONTH/'JAN','FEB','MAR','APR','MAY','JUNE','JULY'
      &  ,'AUG','SEP','OCT','NOV','DEC'/
 
+      RELAX=.false.
       WRAVER=.false.
       CTRUN=.false.
+      DFLDSST   = 300.
 c     print *,'cfdiff from init_ocean=',cfdiff
       open(614,file='name_ocean.dat',status='OLD')
       read(614,INPUTON)
