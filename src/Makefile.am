@@ -42,7 +42,7 @@ igsm22_LINK = $(FC) -fastsse -o $@
 igsm22ocm_SOURCES = driver_ocm/ocm.F \
 	driver_ocm/init_carb_data.F
 
-igsm22ocm_LINK = $(FC) -fastsee -o $@
+igsm22ocm_LINK = $(FC) -fastsse -o $@
 
 else !IGSM_2D
 
