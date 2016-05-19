@@ -15,7 +15,7 @@ AM_CPPFLAGS = -I$(top_srcdir)/src/inc
 
 bin_PROGRAMS = $(BINARIES)
 
-EXTRA_PROGRAMS = igsm22 igsm23_driver igsm23_ocean
+EXTRA_PROGRAMS = igsm22 igsm22ocm igsm23_driver igsm23_ocean
 
 # -L$LIB_NETCDF must be inserted *before* $(FCLIBS). pgf90 reports -L/usr/lib64
 # as a library directory, but it contains a gcc-compiled NetCDF that cannot be
@@ -38,6 +38,11 @@ igsm22_LINK = $(FC) -fastsse -o $@
 # Libraries to be linked.
 # FIXME: determine which libraries from the last set are redundant
 #igsm22_LDADD = $(MODULE_LDADD) $(FCLIBS) -lstd -lC -lgcc -lc -lstdc++
+
+igsm22ocm_SOURCES = driver_ocm/ocm.F \
+	driver_ocm/init_carb_data.F
+
+igsm22ocm_LINK = $(FC) -fastsse -o $@
 
 else !IGSM_2D
 
