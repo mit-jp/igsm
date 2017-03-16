@@ -10,7 +10,8 @@ Makefile
 Makefile.in
 /aclocal.m4
 /autom4te.cache
-/build/*
+build/*
+build-test*
 /config.h*
 /config.status
 /config.log

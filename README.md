@@ -36,20 +36,29 @@ Contents
 
 Build
 -----
-The following process has only been tested on svante.mit.edu — a Fedora Core 14
-x86_64 system with [GNU Make 3.82][gmake]; [PGI][PGI] 9.0.4–13.8; and
-[NetCDF][NetCDF] 3.6.2–4.2.
+The following process has only been tested on the MIT `svante` cluster:
 
-1. If building directly from version control, in the root directory type:
+* Originally, a Fedora Core 14 x86_64 system with [GNU Make 3.82][gmake];
+  [PGI][PGI] 9.0.4–13.8; and [NetCDF][NetCDF] 3.6.2–4.2.
+* Currently, a Fedora Core 24 x86_64 system with `make` 4.1, and various
+  versions of PGI and NetCDF (see "Testing the build").
+
+1. If building directly from version control:
 
         $ autoreconf --install
 
-2. Load the PGI compilers and the NetCDF libraries:
+   to regenerate the `configure` script.
+
+2. Load the PGI compilers and the NetCDF libraries. This command uses the
+   [Lmod][Lmod] module system on `svante`, but may not be required on other
+   systems.
 
         $ module load pgi netcdf
 
-3. In the root directory, type:
+3. Create a directory in which to build the model, enter it, configure, and
+   build:
 
+        $ mkdir -p build
         $ cd build
         $ ../configure
         $ make
@@ -62,11 +71,26 @@ be given when invoking configure in step 3.
 
 Multiple builds can be produced from the same source code in this way, for
 example in directories named `build1`, `build2` (or something more informative).
-These directories may even be *outside* the directory containing this README
+These directories may even be *outside* the directory containing this README.md
 file; this would require giving a relative path when invoking configure (e.g.
 `../igsm/configure` or similar). To see what options were passed to configure,
 see the file `config.log` in any build directory.
 
+### Testing the build
+
+`util/build-test.sh` contains a Slurm job script to test the building of the
+model using a variety of compilers and libraries. Invoke using:
+
+    $ sbatch util/build-test.sh ./configure
+
+This produces the log file `build-test.log` and the directory `build-test`. The
+directory has a series of numbered subdirectories; each one corresponds to a
+different combination of modules (see the script for which ones exactly).
+
+The code is `configure`'d and, if that succeeds, `make`'d in each of these
+subdirectories. Very verbose command-line output from `configure` and `make`,
+along with the output of `module list`, is sent to a file named
+`build-test.log`.
 
 Execute
 -------
@@ -95,4 +119,5 @@ TODO add remaining instructions
 [gmake]: http://www.gnu.org/software/make/
 [PGI]: http://www.pgroup.com/
 [NetCDF]: http://www.unidata.ucar.edu/software/netcdf/
+[Lmod]: http://lmod.readthedocs.io/en/latest/
 [EPPA5]: http:/github.com/mit-jp/eppa5
