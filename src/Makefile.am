@@ -24,7 +24,8 @@ LDADD = $(MODULE_LDADD) \
 	-L$(LIB_NETCDF) \
 	$(FCLIBS) \
 	-lhdf5_hl -lhdf5 -lpgmp -lnuma -lpthread -lpgf90 -lpgf90_rpm1 -lpgf902 \
-	-lpgf90rtl -lpgftnrtl -lnspgc -lpgc -lrt -lm -lgcc -lgcc_s -lc -lstdc++
+	-lpgf90rtl -lpgftnrtl -lnspgc -lpgc -lrt -lm @IGSM_LDADD_EXTRA@ -lgcc \
+	-lgcc_s -lc -lstdc++
 
 if IGSM_2D
 

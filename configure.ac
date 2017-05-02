@@ -110,6 +110,12 @@ AC_ARG_ENABLE([tracers],
 
 # C++ compiler
 AC_PROG_CXX([pgCC pgc++])
+
+# TODO ugly hack; remove as soon as possible
+if test $HOSTNAME = svante; then
+  IGSM_LDADD_EXTRA="-lstd -lC"
+fi
+
 # C compiler
 AC_PROG_CC(pgcc)
 # Fortran 77 compiler
@@ -270,6 +276,7 @@ fi
 AC_SUBST(BINARIES)
 AC_SUBST(MODULE_DIRS)
 AC_SUBST(MODULE_LDADD)
+AC_SUBST(IGSM_LDADD_EXTRA)
 
 ### Defines.
 # This section sets the C/C++/Fortran preprocessor symbols (#define) that are
