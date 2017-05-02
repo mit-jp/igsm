@@ -3,6 +3,7 @@
 *.mod
 *.o
 .deps
+compile
 config.guess
 config.sub
 stamp-h1
