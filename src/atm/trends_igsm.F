@@ -104,7 +104,7 @@ C
       common/boxmod/YEAR0
       common /bmtrdata/co2_data
       common/ BACKGRGHG/GHGBGR(5)
-      character * 64 co2_data
+      character * 256 co2_data
       logical first
       data first /.true./
       data ncall /1/
@@ -193,7 +193,7 @@ C
       common/boxmod/YEAR0
       common /bmtrdata/co2_data
       common/ BACKGRGHG/GHGBGR(5)
-      character * 64 co2_data
+      character * 256 co2_data
       logical first
       data first /.true./
       data ncall /1/

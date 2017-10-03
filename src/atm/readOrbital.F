@@ -7,7 +7,6 @@
 	character * 80 title1
 	character * 256 fl_orbital
         character *5 xxx
-        character *41 fordir
         common/orbitalfl/fl_orbital
         SS=0.0
         do j=1,jm

@@ -972,9 +972,7 @@ c       do 66 j=2,nlat1
          c(k)   =-pww(i,j,k)/dsig(k)*dta
 #ifdef O3_TOP_SPARC
          if (k.ge.n_tropopause) then
-           c(k)   = c(k)*0.25
-!          c(k)   = c(k)*0.5
-!          c(k)   = 0.0
+           c(k)   = c(k)*0.5
          endif 
 #endif
 67     continue

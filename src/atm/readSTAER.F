@@ -5,9 +5,8 @@
         parameter( naery=2000)
 	character * 40 title
 	character * 80 title1
-	character * 120 fl_volaer
+	character * 256 fl_volaer
         character *5 xxx
-        character *41 fordir
         dimension amn(jm0,12,naery),amnglav(12,naery)
      &  ,anmean(naery),vyear(naery)
         common/vaerosol/fl_volaer

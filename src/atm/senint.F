@@ -5,7 +5,7 @@
        parameter(nsen=200)
        common/cldfdb/coefcl(3),CLDFEED,SEN_dat
        logical CLDFEED
-       character * 120 SEN_dat
+       character * 256 SEN_dat
        dimension sens(nsen),cfcl(nsen)
        data ifisrt /0/
        if(ifirst.eq.0) then

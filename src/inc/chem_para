@@ -69,11 +69,17 @@
 !		species x
 !            all gases in ppbm
 !
-	real, parameter :: dhfc134a_df11   = 1.04
+!          IPCC 1995
+!real, parameter :: dhfc134a_df11   = 1.04
 	real, parameter :: dhfc143a_df11   = 1.03
-	real, parameter :: dpfmethane_df11 = 0.69
+!real, parameter :: dpfmethane_df11 = 0.69
 	real, parameter :: dpfethane_df11  = 1.36
-	real, parameter :: dsf6_df11       = 2.75
+!real, parameter :: dsf6_df11       = 2.75
+
+!          IPCC 2013
+	real, parameter :: dhfc134a_df11   = 0.84
+	real, parameter :: dpfmethane_df11 = 0.54
+	real, parameter :: dsf6_df11       = 2.06
 
 ! === Brief descriptions of parameters:
 !

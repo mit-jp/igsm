@@ -34,7 +34,7 @@
 !	----------------------------------------------
         common/ BACKGRGHG/GHGBGR(5)
 
-          print *,'From chemglobal '
+!         print *,'From chemglobal '
 !         print *,'P'
 !         print *,p
 !         print *,'dxyp'
@@ -91,24 +91,23 @@
            enddo
         enddo
         tropmass = 28.97296245*1.e-3
-        print *,'TROPMASS=',tropmass
-        print *,'TOTGAS'
-         print *,(totgas(i),i=1,5)
+!       print *,'TROPMASS=',tropmass
+!       print *,'TOTGAS'
+!        print *,(totgas(i),i=1,5)
           co2o=totgas(1)
      &      *tropmass/44.0098
           xxxo=totgas(2)
      &      *tropmass/44.0000
           yyyo=totgas(3)
      &      *tropmass/16.0426
-!         call newcon(xxxn,yyyn,xxxo,yyyo,ppmv58(6),ppmv58(7))
           call newcon(co2n,co2o,xxxn,yyyn,xxxo,yyyo,
      &         GHGBGR(1),GHGBGR(2),GHGBGR(3))
           adjfactor(1)=co2n/co2o
           adjfactor(2)=xxxn/xxxo
           adjfactor(3)=yyyn/yyyo
-          print *,'N2O ',xxxn,xxxo,GHGBGR(2)
-          print *,'CH4 ',yyyn,yyyo,GHGBGR(3)
-          print *,'CO2 ',co2n,co2o,GHGBGR(1)
+!         print *,'N2O ',xxxn,xxxo,GHGBGR(2)
+!         print *,'CH4 ',yyyn,yyyo,GHGBGR(3)
+!         print *,'CO2 ',co2n,co2o,GHGBGR(1)
 
       return
        end

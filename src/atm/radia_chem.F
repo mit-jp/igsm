@@ -349,18 +349,11 @@ c     print *,'FROM radia, JDAY=',JDAY,' JDLAST=',JDLAST
       endif
 #endif
 
-      call sulfr(BSO4LAND,BSO4OCEAN,TNOW)
-c     call sulfr_2050(BSO4LAND,BSO4OCEAN,TNOW)
+!     call sulfr(BSO4LAND,BSO4OCEAN,TNOW)
+      call sulfr(BSO4LAND,BSO4OCEAN,1986.)
       do j=1,jm
         FLAND=FDATA(1,J,2)
         BSO4TOTAL(j)=BSO4LAND(j)*FLAND+BSO4OCEAN(j)*(1.-FLAND)
-!
-c    for sulfate.4x5.1986.new.dat
-c       BSO4TOTAL(j)=BSO4LAND(j)+BSO4OCEAN(j)
-c       if(FLAND.gt.0.0)BSO4LAND(j)=BSO4LAND(j)/FLAND
-c       if(FLAND.lt.1.0)BSO4OCEAN(j)=BSO4OCEAN(j)/(1.-FLAND)
-c    for sulfate.4x5.1986.new.dat
-!
       enddo
 
        CALL RCOMPT

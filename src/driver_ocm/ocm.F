@@ -53,11 +53,8 @@ c
       logical restart
 C
       print *,'Start of run with off line OCM model'
-      print *,'N_LAT=',N_LAT
-      rkckh=0.42
-      rkckh=1.375
-      rkckh=0.275
-      kvcmin=3.00
+!     print *,'N_LAT=',N_LAT
+      kvcmin=1.00
       open (615,file='ocup.name')
       read (615,CO2UP)
       id2=index(dirdat2," ")

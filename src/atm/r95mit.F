@@ -1182,7 +1182,6 @@ c       endif
      &      *tropmass/44.0000*1.25*P0
         yyyo=dmax1(0.0,ch4(ILON,jyyy,l))
      &      *tropmass/16.0426*1.25*P0
-!       call newcon(xxxn,yyyn,xxxo,yyyo,ppmv58(6),ppmv58(7))
          xxxn=adjfactor(2)*xxxo
          yyyn=adjfactor(3)*yyyo
 
@@ -1264,7 +1263,6 @@ C--   end of change 18Mar98
      &      *tropmass/44.0000*1.25*P0
         yyyo=dmax1(0.0,ch4(ILON,jyyy,ll))
      &      *tropmass/16.0426*1.25*P0
-!       call newcon(xxxn,yyyn,xxxo,yyyo,ppmv58(6),ppmv58(7))
          xxxn=adjfactor(2)*xxxo
          yyyn=adjfactor(3)*yyyo
 
