@@ -606,3 +606,56 @@ ccc   SUMJM=SUMJM+X3(K)-X4(K)-X4(K)+X3(K)                               8614.
   160 CONTINUE                                                          8625.   
       RETURN                                                            8626.   
       END                                                               8627.   
+      SUBROUTINE DTDX1D_ETMINAN(XNOW,XREF,XDT0,SDT0,KFOR,NFOR)                  9112.4
+      DIMENSION XNOW(5),XREF(5),XDT0(5),KFOR(5)                         9112.5
+      DIMENSION XX(5),XR(5)
+#if ( defined ETMINAN_FORCING )
+!      Radiative forcing of carbon dioxide, methane, and nitrous
+!      oxide: A significant revision of the methane radiative
+!      forcing.   Etminan et al GRL 2016
+      FCO2I(C,C0,XN,XN0)=(a1*(C-C0)**2+b1*(C-C0)+c1*0.5*(XN+XN0)
+     &   +5.36)*LOG(C/C0)
+!    Adjustment for 3D CO2 fit
+     &   *1.1024*CF
+
+      FCH4I(XM,XM0,XN,XN0)=(a3*0.5*(XM+XM0)+b3*0.5*(XN+XN0)
+     &   +0.043)*(SQRT(XM)-SQRT(XM0))
+      FN2OI(XM,XM0,XN,XN0,C,C0)=(a2*0.5*(C+C0)+b2*0.5*(XN+XN0)
+     &   +c2*0.5*(XM+XM0)+0.117)*(SQRT(XN)-SQRT(XN0))
+      FF11I(X)=CF*0.25*X
+      FF12I(X)=CF*0.32*X
+!     print *,'From DTDX1D_ETMINAN'
+      a1=-2.4e-7
+      b1=7.2e-4
+      c1=-2.1e-4
+      a2=-8.e-6
+      b2=4.2e-6
+      c2=-4.9e-6
+      a3=-1.3e-6
+      b3=-8.2e-6
+      SUM=0.0                                                           9113.9
+      CF=1.22/4.3
+      DO 200 K=1,NFOR                                                   9114.
+      IF(KFOR(K).EQ.0) GO TO 200                                        9114.4
+      XDT0(K)=0.0                                                       9114.1
+      XX(K)=XNOW(K)
+      XR(K)=XREF(K)
+      if (K.eq.2.or.K.eq.3 ) then
+      XX(K)=XNOW(K)*1000
+      XR(K)=XREF(K)*1000
+      endif
+!     print *,K,XX(K),XR(K)
+ 200  CONTINUE                                                          9117.3
+
+      XDT0(1)=fco2i(XX(1),XR(1),XX(2),XR(2))
+      XDT0(2)=cf*fn2oi(XX(3),XR(3),XX(2),XR(2),XX(1),XR(1))
+      XDT0(3)=cf*fch4i(XX(3),XR(3),XX(2),XR(2))
+      XDT0(4)=FF11I(XX(4))-FF11I(XR(4))
+      XDT0(5)=FF11I(XX(5))-FF11I(XR(5))
+      DO K=1,NFOR
+         SUM=SUM+XDT0(K)
+      ENDDO
+      SDT0=SUM                                                          9117.4
+#endif
+      RETURN                                                            9117.5
+      END
