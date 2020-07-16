@@ -359,24 +359,36 @@ c         print *,'TNOW=',TNOW
         endif
        ELSE
          FULGAS(2)=CO2
-#ifdef ADJUSTED_CO2
+#if (  defined IPCC_FORCING || defined ETMINAN_FORCING)
           XNOW(1)=GHGBGR(1)*CO2
           KFOR(1)=1
-!         increasing CO2 forcing
+!         print *,'CO2 adjustnemt  ',XNOW(1),GHGBGR(1),KFOR(1)
+#if (  defined IPCC_FORCING )
           CALL DTDX1D(XNOW,GHGBGR,XDT0,SDT0,KFOR,1)
+!         print *,'CO2 IPCC forcing  ',XNOW(1),GHGBGR(1),XDT0(1)
+#else
+          CALL DTDX1D_ETMINAN(XNOW,GHGBGR,XDT0,SDT0,KFOR,1)
+#endif
           CALL DXDT3D(XNOW,GHGBGR,XDT0,SDT0,KFOR,1)
           FULGAS(2)=XNOW(1)/GHGBGR(1)
+!         print *,'CO2 adjustnemt  ',XNOW(1),GHGBGR(1)
 #endif
       ENDIF
       ENDIF
 #if ( defined IPCC_EMI )
-#ifdef ADJUSTED_CO2
+#if (  defined IPCC_FORCING || defined ETMINAN_FORCING)
           XNOW(1)=GHGBGR(1)*CO2
           KFOR(1)=1
-!         increasing CO2 forcing
+!         print *,'CO2 adjustnemt  ',XNOW(1),GHGBGR(1),KFOR(1)
+#if (  defined IPCC_FORCING )
           CALL DTDX1D(XNOW,GHGBGR,XDT0,SDT0,KFOR,1)
+!         print *,'CO2 IPCC forcing  ',XNOW(1),GHGBGR(1),XDT0(1)
+#else
+          CALL DTDX1D_ETMINAN(XNOW,GHGBGR,XDT0,SDT0,KFOR,1)
+#endif
           CALL DXDT3D(XNOW,GHGBGR,XDT0,SDT0,KFOR,1)
           FULGAS(2)=XNOW(1)/GHGBGR(1)
+!         print *,'CO2 adjustnemt  ',XNOW(1),GHGBGR(1)
 #else
         FULGAS(2)=CO2
 #endif

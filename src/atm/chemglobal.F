@@ -100,8 +100,13 @@
      &      *tropmass/44.0000
           yyyo=totgas(3)
      &      *tropmass/16.0426
+#if ( defined ETMINAN_FORCING )
+          call newcon_ETMINAN(co2n,co2o,xxxn,yyyn,xxxo,yyyo,
+     &         GHGBGR(1),GHGBGR(2),GHGBGR(3))
+#else
           call newcon(co2n,co2o,xxxn,yyyn,xxxo,yyyo,
      &         GHGBGR(1),GHGBGR(2),GHGBGR(3))
+#endif
           adjfactor(1)=co2n/co2o
           adjfactor(2)=xxxn/xxxo
           adjfactor(3)=yyyn/yyyo

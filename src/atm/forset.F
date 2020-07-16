@@ -47,6 +47,7 @@ C                                                                       9105.1
 C                                                                       9105.3  
       parameter(nlat=N_LAT)
       common /ATCO2/atm_co2(nlat)
+      common /ATCH4/atm_ch4(nlat),atm_n2o(nlat)
       LOGICAL wr25,TRANSR,CONTRR,OBSFOR
       common/wrcom/wr25,TRANSR,CONTRR,OBSFOR
       dimension XNOWO(5)
@@ -131,9 +132,13 @@ C                                                                       9109.4
        ENDIF
 c     IF(KTREN.GE.21.and.KTREN.LE.29) 
 c    &    CALL STBTRND(XNOW,TNOW,NGAS,KTREN)
+#if ( !defined ETMINAN_FORCING )
       CALL DTDX1D(XNOW,XREF,XDT0,SDT0,KFOR,NGAS)                        9109.8  
 #if ( !defined IPCC_FORCING)
       CALL DTDX3D(XNOW,XREF,XDT0,SDT0,KFOR,1)                           9109.9  
+#endif
+#else
+      CALL DTDX1D_ETMINAN(XNOW,XREF,XDT0,SDT0,KFOR,NGAS)                        9109.8  
 #endif
        IF(KWRITE.EQ.1) then
        print '(a20,5e12.4)',' XDT0=',(4.3/1.22*XDT0(i),i=1,ngas)
@@ -172,6 +177,12 @@ c     endif
        enddo
 #endif
       endif
+#if ( !defined IPCC_EMI && !defined FIXED_PCO2)
+       do j=1,nlat
+        atm_ch4(j)=XNOWO(3)
+        atm_n2o(j)=XNOWO(2)
+       enddo
+#endif
 C                                                                       9110.6  
       IF(KWRITE.NE.1) GO TO 220                                         9110.7  
       SDT0=0.0                                                          9110.8  

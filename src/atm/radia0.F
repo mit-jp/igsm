@@ -132,7 +132,11 @@ c  50 CALL RCOMP1 (21,0,60)                                             4553.75
 #if ( defined IPCC_FORCING )
       print *,'Run with IPCC FORCING'
 #else
+#if ( defined ETMINAN_FORCING )
+      print *,'Run with ETMINAN FORCING'
+#else
       print *,'Run with GISS FORCING'
+#endif
 #endif
           print *,' RADIA0 JYEAR=',JYEAR,' JDAY=',JDAY
 c     IF (KTREND.GT.0) CALL FORSET(1958.,KTREND,1)                      4553.8  

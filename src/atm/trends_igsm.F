@@ -63,7 +63,13 @@ C                                                                       9160.8
        print *,' gtrend.f',100*ALFFOR,'% per year from',CO2IN
        print *,'N2O, CH4 and CFCs '
        print '(4e10.5)',(GHGBGR(ii),ii=2,5)
-c      ifirst=1
+       do ii=1,5
+         XGAS(ii)=GHGBGR(ii)
+        enddo
+       print *,'From GTREND'
+       print '(5e12.4)',(XGAS(ii),ii=1,5)
+       ifirst=1
+       return
       endif
       YEAR=YEART
       DT=YEAR-INYRAD
@@ -76,11 +82,6 @@ c      ifirst=1
        do ii=2,5
          XGAS(ii)=GHGBGR(ii)
         enddo
-      if (ifirst.eq.0)then
-       print *,'From GTREND'
-       print '(5e12.4)',(XGAS(ii),ii=1,5)
-       ifirst=1
-      endif
       RETURN                                                            9182.5
       END                                                               9182.6
 !	----------------------------------------------------------

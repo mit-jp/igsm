@@ -45,8 +45,8 @@ C     === Local variables ===
 
       CALL ATM2D_FINISH( myThid)
 #  if ( defined CPL_TEM )
-       print *,'tem_cleanup'
-      CALL tem_cleanup
+!      print *,'tem_cleanup'
+!     CALL tem_cleanup
 #endif
 
       CALL date(buf)

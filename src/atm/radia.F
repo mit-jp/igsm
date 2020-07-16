@@ -162,9 +162,6 @@ C****                                                                   5069.
 !     For ALEXEEV
 !     CFS0X=CFS0X/100.
            print *,'FROM RADIA HPRNT=',HPRNT
-#ifdef ADJUSTED_CO2
-        print *,' ADJUSTED_CO2'
-#endif
       if(GHSF)then
        do j=1,jm
         ghflux(1,j)=ghostf(1,j)
@@ -257,7 +254,7 @@ C     S0X=1.                                                            5089.1
       S0X0=S0X
       if(S0FOR)then
          call obssolar(S0X,S0XAV,YEARS0+0.5)
-         S0X=S0X/1367.
+         S0X=S0XAV/1367.
          S0X0=S0X
         print *,' Reference value for solar constant=',S0X0*1367
       endif
@@ -534,24 +531,21 @@ C
         endif
        ELSE
          FULGAS(2)=CO2
-!#ifdef ADJUSTED_CO2
-#if ( defined ADJUSTED_CO2 || defined IPCC_FORCING)
+#if (  defined IPCC_FORCING || defined ETMINAN_FORCING)
           XNOW(1)=GHGBGR(1)*CO2
           KFOR(1)=1
 !         print *,'CO2 adjustnemt  ',XNOW(1),GHGBGR(1),KFOR(1)
-!         increasing CO2 forcing
+#if (  defined IPCC_FORCING ) 
           CALL DTDX1D(XNOW,GHGBGR,XDT0,SDT0,KFOR,1)   
 !         print *,'CO2 IPCC forcing  ',XNOW(1),GHGBGR(1),XDT0(1)
+#else
+          CALL DTDX1D_ETMINAN(XNOW,GHGBGR,XDT0,SDT0,KFOR,1)          
+#endif
           CALL DXDT3D(XNOW,GHGBGR,XDT0,SDT0,KFOR,1) 
           FULGAS(2)=XNOW(1)/GHGBGR(1)
 !         print *,'CO2 adjustnemt  ',XNOW(1),GHGBGR(1)
-#else
-          XNOW(1)=GHGBGR(1)*CO2
-          KFOR(1)=1
-          CALL DTDX3D(XNOW,GHGBGR,XDT0,SDT0,KFOR,1)   
-          print *,'CO2 GISS forcing  ',XNOW(1),GHGBGR(1),XDT0(1)
 #endif
-       ENDIF
+       ENDIF       ! KTREND
          if(FORGHG.or.CO2FOR) then
          FULCO2=FULGAS(2)
          FULN2O=FULGAS(6)
@@ -559,7 +553,7 @@ C
          FULF11=FULGAS(8)
          FULF12=FULGAS(9)
          endif
-      ENDIF
+      ENDIF       ! JDAY
       IF (JDAY.NE.JDLAST)then
 #ifdef PREDICTED_GASES
         call chemglobal(P)
@@ -1045,8 +1039,20 @@ c     FGOLDU(3)=XFRADJ*PEARTH                                           5278.
       endif
 !
 #if ( defined IPCC_EMI )
-#if ( !defined ADJUSTED_CO2 )
         FULGAS(2)=CO2
+#if (  defined IPCC_FORCING || defined ETMINAN_FORCING)
+          XNOW(1)=GHGBGR(1)*CO2
+          KFOR(1)=1
+!         print *,'CO2 adjustnemt  ',XNOW(1),GHGBGR(1),KFOR(1)
+#if (  defined IPCC_FORCING )
+          CALL DTDX1D(XNOW,GHGBGR,XDT0,SDT0,KFOR,1)
+!         print *,'CO2 IPCC forcing  ',XNOW(1),GHGBGR(1),XDT0(1)
+#else
+          CALL DTDX1D_ETMINAN(XNOW,GHGBGR,XDT0,SDT0,KFOR,1)
+#endif
+          CALL DXDT3D(XNOW,GHGBGR,XDT0,SDT0,KFOR,1)
+          FULGAS(2)=XNOW(1)/GHGBGR(1)
+!         print *,'CO2 adjustnemt  ',XNOW(1),GHGBGR(1)
 #endif
 !     IF(DMOD(TAU,365.*24.).EQ.0..and.J.eq.-JM/2) then
       IF(DMOD(TAU,365.*24.).EQ.0..and.J.eq.1) then
@@ -1136,6 +1142,7 @@ c     endif
        print *,' tau=',TAU,' J=',J
        CALL WRITER (1,0)
        print *,-TRNFLB(1),TRNFLB(LM+4),TRNFLB(LM+1),TRDFLB(1)
+       print *,SRNFLB(1),SRNFLB(LM+1),SRNFLB(LM+4)
       endif
 c     CALL WRITER (13)                                                  5280.   
       SRHR(I,J,1)=SRHR(I,J,1)+SRNFLB(1)*PTYPE
@@ -1381,6 +1388,9 @@ C
        elseif(S0FOR)then
 !         S0=S0X0/CFS0X*1367./RSDIST
           S0=S0R/CFS0X
+!!    S0 FOR from climate run
+!!!       S0=S0*1.02
+!!    S0 FOR from climate run
           if(JDAY.eq.1.and.MODRD.EQ.0) then
           if(J.eq.24)then
           print *,'For S0FOR ',S0X0,CFS0X,S0X
@@ -1415,14 +1425,16 @@ C
   568  continue
       if(COSZ.ne.COSZA(1,j)) print *,'COSZ.ne.COSZA'
         CALL RCOMPX
-       if(FORGHG.or.CO2FOR)then
+!      if(FORGHG.or.CO2FOR)then
+!      if(CLEAR(J))then
         IF(DMOD(TAU,365.*24.).EQ.0..and.J.eq.JM/2) then
 !       IF(DMOD(TAU,30.*24.).EQ.0..and.J.eq.1) then
          print *,' For CLEAR tau=',TAU,' J=',J
          CALL WRITER (1,0)
          print *,-TRNFLB(1),TRNFLB(LM+4),TRNFLB(LM+1),TRDFLB(1)
+         print *,SRNFLB(1),SRNFLB(LM+1),SRNFLB(LM+4)
         ENDIF
-        endif
+!       endif
       endif  ! CLEAR
        SRHRCL(J)=SRNFLB(1)
        TRHRCL(J)=-TRNFLB(1)

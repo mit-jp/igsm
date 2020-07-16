@@ -7,6 +7,12 @@
 
 c       Checking of consistency of model settings
 c
+#if (  defined IPCC_FORCING && defined ETMINAN_FORCING)
+       print *,'Both IPCC_FORCING and ETMINAN_FORCING 
+     &  are defined '
+        stop
+#endif
+
 #ifdef ML_2D
        LMO=N_LEVOCEAN
 #endif
