@@ -1,0 +1,268 @@
+<?xml version = "1.0"?>
+
+<agECD version = "4.3D">
+  <community type = "1"
+    description = "Ice"
+    developedBy = "David W. Kicklighter"
+    updated = "20030126">
+    <slashpar>0.50</slashpar>  
+    <vconvert>0.50</vconvert>
+    <prod10par>0.00</prod10par>
+    <prod100par>0.00</prod100par> 
+    <sconvert>0.00</sconvert>
+    <nvretconv>0.85</nvretconv>
+    <nsretconv>0.85</nsretconv>
+    <vrespar>0.01</vrespar> 
+    <tillfactor>1.0000000</tillfactor>
+    <harvstC>0.40</harvstC> 
+    <harvstN>0.40</harvstN>
+    <residueC>0.000000</residueC> 
+    <residueN>0.000000</residueN>
+    <cropseedC>3.0</cropseedC>
+    <cropseedSTRN>0.09</cropseedSTRN>
+    <cropseedSTON>0.001</cropseedSTON>
+  </community>
+
+  <community type = "2"
+    description = "Alpine Tundra/Polar Desert"
+    developedBy = "David W. Kicklighter"
+    updated = "20030126">
+    <slashpar>0.50</slashpar>  
+    <vconvert>0.50</vconvert>
+    <prod10par>0.00</prod10par>
+    <prod100par>0.00</prod100par> 
+    <sconvert>0.00</sconvert>
+    <nvretconv>0.85</nvretconv>
+    <nsretconv>0.85</nsretconv>
+    <vrespar>0.01</vrespar> 
+    <tillfactor>1.0000000</tillfactor>
+    <harvstC>0.40</harvstC> 
+    <harvstN>0.40</harvstN>
+    <residueC>0.000000</residueC> 
+    <residueN>0.000000</residueN>
+    <cropseedC>3.0</cropseedC>
+    <cropseedSTRN>0.09</cropseedSTRN>
+    <cropseedSTON>0.001</cropseedSTON>
+  </community>
+
+  <community type = "3"
+    description = "Wet Tundra"
+    developedBy = "David W. Kicklighter"
+    updated = "20030126">
+    <slashpar>0.50</slashpar>  
+    <vconvert>0.50</vconvert>
+    <prod10par>0.00</prod10par>
+    <prod100par>0.00</prod100par> 
+    <sconvert>0.00</sconvert>
+    <nvretconv>0.85</nvretconv>
+    <nsretconv>0.85</nsretconv>
+    <vrespar>0.01</vrespar> 
+    <tillfactor>1.0000000</tillfactor>
+    <harvstC>0.40</harvstC> 
+    <harvstN>0.40</harvstN>
+    <residueC>0.000000</residueC> 
+    <residueN>0.000000</residueN>
+    <cropseedC>3.0</cropseedC>
+    <cropseedSTRN>0.09</cropseedSTRN>
+    <cropseedSTON>0.001</cropseedSTON>
+  </community>
+
+  <community type = "4"
+    description = "Boreal Forest"
+    developedBy = "David W. Kicklighter"
+    updated = "20030126">
+    <slashpar>0.33</slashpar>  
+    <vconvert>0.40</vconvert>
+    <prod10par>0.20</prod10par>
+    <prod100par>0.07</prod100par> 
+    <sconvert>0.00</sconvert>
+    <nvretconv>0.85</nvretconv>
+    <nsretconv>0.85</nsretconv>
+    <vrespar>0.01</vrespar> 
+    <tillfactor>1.0000000</tillfactor>
+    <harvstC>0.40</harvstC> 
+    <harvstN>0.40</harvstN>
+    <residueC>0.000000</residueC> 
+    <residueN>0.000000</residueN>
+    <cropseedC>3.0</cropseedC>
+    <cropseedSTRN>0.09</cropseedSTRN>
+    <cropseedSTON>0.001</cropseedSTON>
+  </community>
+
+  <community type = "5"
+    description = "Temperate Coniferous Forest"
+    developedBy = "David W. Kicklighter"
+    updated = "20030126">
+    <slashpar>0.33</slashpar>  
+    <vconvert>0.40</vconvert>
+    <prod10par>0.20</prod10par>
+    <prod100par>0.07</prod100par> 
+    <sconvert>0.00</sconvert>
+    <nvretconv>0.85</nvretconv>
+    <nsretconv>0.85</nsretconv>
+    <vrespar>0.01</vrespar> 
+    <tillfactor>1.0000000</tillfactor>
+    <harvstC>0.40</harvstC> 
+    <harvstN>0.40</harvstN>
+    <residueC>0.000000</residueC> 
+    <residueN>0.000000</residueN>
+    <cropseedC>3.0</cropseedC>
+    <cropseedSTRN>0.09</cropseedSTRN>
+    <cropseedSTON>0.001</cropseedSTON>
+  </community>
+
+  <community type = "6"
+    description = "Temperate Deciduous Forest"
+    developedBy = "David W. Kicklighter"
+    updated = "20030126">
+    <slashpar>0.33</slashpar>  
+    <vconvert>0.40</vconvert>
+    <prod10par>0.20</prod10par>
+    <prod100par>0.07</prod100par> 
+    <sconvert>0.00</sconvert>
+    <nvretconv>0.85</nvretconv>
+    <nsretconv>0.85</nsretconv>
+    <vrespar>0.01</vrespar> 
+    <tillfactor>1.0000000</tillfactor>
+    <harvstC>0.40</harvstC> 
+    <harvstN>0.40</harvstN>
+    <residueC>0.000000</residueC> 
+    <residueN>0.000000</residueN>
+    <cropseedC>3.0</cropseedC>
+    <cropseedSTRN>0.09</cropseedSTRN>
+    <cropseedSTON>0.001</cropseedSTON>
+  </community>
+
+  <community type = "7"
+    description = "Grassland"
+    developedBy = "David W. Kicklighter"
+    updated = "20030126">
+    <slashpar>0.50</slashpar>  
+    <vconvert>0.50</vconvert>
+    <prod10par>0.00</prod10par>
+    <prod100par>0.00</prod100par> 
+    <sconvert>0.00</sconvert>
+    <nvretconv>0.85</nvretconv>
+    <nsretconv>0.85</nsretconv>
+    <vrespar>0.01</vrespar> 
+    <tillfactor>1.0000000</tillfactor>
+    <harvstC>0.40</harvstC> 
+    <harvstN>0.40</harvstN>
+    <residueC>0.000000</residueC> 
+    <residueN>0.000000</residueN>
+    <cropseedC>3.0</cropseedC>
+    <cropseedSTRN>0.09</cropseedSTRN>
+    <cropseedSTON>0.001</cropseedSTON>
+  </community>
+
+  <community type = "8"
+    description = "Xeric Shrubland"
+    developedBy = "David W. Kicklighter"
+    updated = "20030126">
+    <slashpar>0.50</slashpar>  
+    <vconvert>0.40</vconvert>
+    <prod10par>0.10</prod10par>
+    <prod100par>0.00</prod100par> 
+    <sconvert>0.00</sconvert>
+    <nvretconv>0.85</nvretconv>
+    <nsretconv>0.85</nsretconv>
+    <vrespar>0.01</vrespar> 
+    <tillfactor>1.0000000</tillfactor>
+    <harvstC>0.40</harvstC> 
+    <harvstN>0.40</harvstN>
+    <residueC>0.000000</residueC> 
+    <residueN>0.000000</residueN>
+    <cropseedC>3.0</cropseedC>
+    <cropseedSTRN>0.09</cropseedSTRN>
+    <cropseedSTON>0.001</cropseedSTON>
+  </community>
+
+  <community type = "9"
+    description = "Tropical Forest"
+    developedBy = "David W. Kicklighter"
+    updated = "20030126">
+    <slashpar>0.33</slashpar>  
+    <vconvert>0.40</vconvert>
+    <prod10par>0.27</prod10par>
+    <prod100par>0.00</prod100par> 
+    <sconvert>0.00</sconvert>
+    <nvretconv>0.85</nvretconv>
+    <nsretconv>0.85</nsretconv>
+    <vrespar>0.01</vrespar> 
+    <tillfactor>1.0000000</tillfactor>
+    <harvstC>0.40</harvstC> 
+    <harvstN>0.40</harvstN>
+    <residueC>0.000000</residueC> 
+    <residueN>0.000000</residueN>
+    <cropseedC>3.0</cropseedC>
+    <cropseedSTRN>0.09</cropseedSTRN>
+    <cropseedSTON>0.001</cropseedSTON>
+  </community>
+
+  <community type = "10"
+    description = "Xeric Woodland"
+    developedBy = "David W. Kicklighter"
+    updated = "20030126">
+    <slashpar>0.50</slashpar>  
+    <vconvert>0.40</vconvert>
+    <prod10par>0.10</prod10par>
+    <prod100par>0.00</prod100par> 
+    <sconvert>0.00</sconvert>
+    <nvretconv>0.85</nvretconv>
+    <nsretconv>0.85</nsretconv>
+    <vrespar>0.01</vrespar> 
+    <tillfactor>1.0000000</tillfactor>
+    <harvstC>0.40</harvstC> 
+    <harvstN>0.40</harvstN>
+    <residueC>0.000000</residueC> 
+    <residueN>0.000000</residueN>
+    <cropseedC>3.0</cropseedC>
+    <cropseedSTRN>0.09</cropseedSTRN>
+    <cropseedSTON>0.001</cropseedSTON>
+  </community>
+
+  <community type = "11"
+    description = "Temperate Broadleaved Evergreen Forest"
+    developedBy = "David W. Kicklighter"
+    updated = "20030126">
+    <slashpar>0.33</slashpar>  
+    <vconvert>0.40</vconvert>
+    <prod10par>0.20</prod10par>
+    <prod100par>0.07</prod100par> 
+    <sconvert>0.00</sconvert>
+    <nvretconv>0.85</nvretconv>
+    <nsretconv>0.85</nsretconv>
+    <vrespar>0.01</vrespar> 
+    <tillfactor>1.0000000</tillfactor>
+    <harvstC>0.40</harvstC> 
+    <harvstN>0.40</harvstN>
+    <residueC>0.000000</residueC> 
+    <residueN>0.000000</residueN>
+    <cropseedC>3.0</cropseedC>
+    <cropseedSTRN>0.09</cropseedSTRN>
+    <cropseedSTON>0.001</cropseedSTON>
+  </community>
+
+  <community type = "12"
+    description = "Mediterranean Shrubland"
+    developedBy = "David W. Kicklighter"
+    updated = "20030126">
+    <slashpar>0.50</slashpar>  
+    <vconvert>0.40</vconvert>
+    <prod10par>0.10</prod10par>
+    <prod100par>0.00</prod100par> 
+    <sconvert>0.00</sconvert>
+    <nvretconv>0.85</nvretconv>
+    <nsretconv>0.85</nsretconv>
+    <vrespar>0.01</vrespar> 
+    <tillfactor>1.0000000</tillfactor>
+    <harvstC>0.40</harvstC> 
+    <harvstN>0.40</harvstN>
+    <residueC>0.000000</residueC> 
+    <residueN>0.000000</residueN>
+    <cropseedC>3.0</cropseedC>
+    <cropseedSTRN>0.09</cropseedSTRN>
+    <cropseedSTON>0.001</cropseedSTON>
+  </community>
+</agECD>
+

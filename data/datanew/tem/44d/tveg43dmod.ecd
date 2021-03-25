@@ -1,0 +1,292 @@
+<?xml version = "1.0"?>
+
+<vegECD version = "4.2.3">
+  <community type = "1"
+    description = "Ice"
+    developedBy = "A. David McGuire"
+    updated = "19990119">
+    <kc>%kc</kc>  
+    <ki>75.00</ki>
+    <gva>55.3933</gva>
+    <tmin>-1.0</tmin>
+    <toptmin>5.5</toptmin>
+    <toptmax>20.0</toptmax>
+    <tmax>22.0</tmax>
+    <raq10a0>2.35665000</raq10a0>
+    <raq10a1>-0.05307700</raq10a1>
+    <raq10a2>0.00238420</raq10a2>
+    <raq10a3>-0.00004110</raq10a3>
+    <kn1>0.0042</kn1>
+    <labncon>0.20000</labncon>
+    <leafmxc>43.1</leafmxc>
+    <kleafc>1.6662</kleafc>
+    <sla>0.0072</sla>
+    <cov>-0.016209</cov>
+    <fpcmax>0.22375</fpcmax>
+  </community>
+
+  <community type = "2"
+    description = "Alpine Tundra/Polar Desert"
+    developedBy = "A. David McGuire"
+    updated = "19990504">
+    <kc>%kc</kc>  
+    <ki>75.00</ki>
+    <gva>55.3933</gva>
+    <tmin>-1.0</tmin>
+    <toptmin>5.5</toptmin>
+    <toptmax>20.0</toptmax>
+    <tmax>22.0</tmax>
+    <raq10a0>2.35665000</raq10a0>
+    <raq10a1>-0.05307700</raq10a1>
+    <raq10a2>0.00238420</raq10a2>
+    <raq10a3>-0.00004110</raq10a3>
+    <kn1>0.0042</kn1>
+    <labncon>0.20000</labncon>
+    <leafmxc>22.5</leafmxc>
+    <kleafc>1.6662</kleafc>
+    <sla>0.0072</sla>
+    <cov>-0.011346</cov>
+    <fpcmax>0.22375</fpcmax>
+  </community>
+
+  <community type = "3"
+    description = "Wet Tundra"
+    developedBy = "A. David McGuire"
+    updated = "19990118">
+    <kc>%kc</kc>  
+    <ki>75.00</ki>
+    <gva>55.3933</gva>
+    <tmin>-1.0</tmin>
+    <toptmin>5.5</toptmin>
+    <toptmax>20.0</toptmax>
+    <tmax>22.0</tmax>
+    <raq10a0>2.35665000</raq10a0>
+    <raq10a1>-0.05307700</raq10a1>
+    <raq10a2>0.00238420</raq10a2>
+    <raq10a3>-0.00004110</raq10a3>
+    <kn1>0.0042</kn1>
+    <labncon>0.20000</labncon>
+    <leafmxc>126.3</leafmxc>
+    <kleafc>1.6662</kleafc>
+    <sla>0.0072</sla>
+    <cov>-0.006808</cov>
+    <fpcmax>0.30660</fpcmax>
+  </community>
+
+  <community type = "4"
+    description = "Boreal Forest"
+    developedBy = "A. David McGuire"
+    updated = "20000331">
+    <kc>%kc</kc>  
+    <ki>75.00</ki>
+    <gva>55.3933</gva>
+    <tmin>-8.0</tmin>
+    <toptmin>14.2</toptmin>
+    <toptmax>22.4</toptmax>
+    <tmax>29.0</tmax>
+    <raq10a0>2.35665000</raq10a0>
+    <raq10a1>-0.05307700</raq10a1>
+    <raq10a2>0.00238420</raq10a2>
+    <raq10a3>-0.00004110</raq10a3>
+    <kn1>0.0042</kn1>
+    <labncon>0.20000</labncon>
+    <leafmxc>287.0</leafmxc>
+    <kleafc>1.6662</kleafc>
+    <sla>0.0077</sla>
+    <cov>-0.000567</cov>
+    <fpcmax>1.00000</fpcmax>
+  </community>
+
+  <community type = "5"
+    description = "Temperate Coniferous Forest"
+    developedBy = "A. David McGuire"
+    updated = "19990120">
+    <kc>%kc</kc>  
+    <ki>75.00</ki>
+    <gva>55.3933</gva>
+    <tmin>-1.0</tmin>
+    <toptmin>17.0</toptmin>
+    <toptmax>30.0</toptmax>
+    <tmax>34.0</tmax>
+    <raq10a0>2.35665000</raq10a0>
+    <raq10a1>-0.05307700</raq10a1>
+    <raq10a2>0.00238420</raq10a2>
+    <raq10a3>-0.00004110</raq10a3>
+    <kn1>0.0042</kn1>
+    <labncon>0.20000</labncon>
+    <leafmxc>482.0</leafmxc>
+    <kleafc>1.6662</kleafc>
+    <sla>0.0077</sla>
+    <cov>-0.000452</cov>
+    <fpcmax>1.00000</fpcmax>
+  </community>
+
+  <community type = "6"
+    description = "Temperate Deciduous Forest"
+    developedBy = "A. David McGuire"
+    updated = "19990120">
+    <kc>%kc</kc>  
+    <ki>75.00</ki>
+    <gva>55.3933</gva>
+    <tmin>0.0</tmin>
+    <toptmin>17.0</toptmin>
+    <toptmax>30.9</toptmax>
+    <tmax>34.0</tmax>
+    <raq10a0>2.35665000</raq10a0>
+    <raq10a1>-0.05307700</raq10a1>
+    <raq10a2>0.00238420</raq10a2>
+    <raq10a3>-0.00004110</raq10a3>
+    <kn1>0.0042</kn1>
+    <labncon>0.20000</labncon>
+    <leafmxc>222.2</leafmxc>
+    <kleafc>1.6662</kleafc>
+    <sla>0.0077</sla>
+    <cov>-0.000328</cov>
+    <fpcmax>1.00000</fpcmax>
+  </community>
+
+  <community type = "7"
+    description = "Grassland"
+    developedBy = "A. David McGuire"
+    updated = "19990119">
+    <kc>%kc</kc>  
+    <ki>75.00</ki>
+    <gva>55.3933</gva>
+    <tmin>0.0</tmin>
+    <toptmin>13.0</toptmin>
+    <toptmax>32.7</toptmax>
+    <tmax>38.0</tmax>
+    <raq10a0>2.35665000</raq10a0>
+    <raq10a1>-0.05307700</raq10a1>
+    <raq10a2>0.00238420</raq10a2>
+    <raq10a3>-0.00004110</raq10a3>
+    <kn1>0.0042</kn1>
+    <labncon>0.20000</labncon>
+    <leafmxc>43.1</leafmxc>
+    <kleafc>1.6662</kleafc>
+    <sla>0.0072</sla>
+    <cov>-0.016209</cov>
+    <fpcmax>0.17717</fpcmax>
+  </community>
+
+  <community type = "8"
+    description = "Xeric Shrubland"
+    developedBy = "A. David McGuire"
+    updated = "19990120">
+    <kc>%kc</kc>  
+    <ki>75.00</ki>
+    <gva>55.3933</gva>
+    <tmin>1.0</tmin>
+    <toptmin>15.1</toptmin>
+    <toptmax>35.1</toptmax>
+    <tmax>44.0</tmax>
+    <raq10a0>2.35665000</raq10a0>
+    <raq10a1>-0.05307700</raq10a1>
+    <raq10a2>0.00238420</raq10a2>
+    <raq10a3>-0.00004110</raq10a3>
+    <kn1>0.0042</kn1>
+    <labncon>0.20000</labncon>
+    <leafmxc>31.3</leafmxc>
+    <kleafc>1.6662</kleafc>
+    <sla>0.0077</sla>
+    <cov>-0.009455</cov>
+    <fpcmax>0.12489</fpcmax>
+  </community>
+
+  <community type = "9"
+    description = "Tropical Forest"
+    developedBy = "A. David McGuire"
+    updated = "19990119">
+    <kc>%kcn</kc>  
+    <ki>75.00</ki>
+    <gva>55.3933</gva>
+    <tmin>10.0</tmin>
+    <toptmin>21.9</toptmin>
+    <toptmax>32.7</toptmax>
+    <tmax>37.0</tmax>
+    <raq10a0>2.35665000</raq10a0>
+    <raq10a1>-0.05307700</raq10a1>
+    <raq10a2>0.00238420</raq10a2>
+    <raq10a3>-0.00004110</raq10a3>
+    <kn1>0.0042</kn1>
+    <labncon>0.20000</labncon>
+    <leafmxc>454.5</leafmxc>
+    <kleafc>1.6662</kleafc>
+    <sla>0.0077</sla>
+    <cov>-0.000227</cov>
+    <fpcmax>0.78798</fpcmax>
+  </community>
+
+  <community type = "10"
+    description = "Xeric Woodland"
+    developedBy = "A. David McGuire"
+    updated = "19990119">
+    <kc>%kcn</kc>  
+    <ki>75.00</ki>
+    <gva>55.3933</gva>
+    <tmin>0.0</tmin>
+    <toptmin>19.1</toptmin>
+    <toptmax>33.1</toptmax>
+    <tmax>38.0</tmax>
+    <raq10a0>2.35665000</raq10a0>
+    <raq10a1>-0.05307700</raq10a1>
+    <raq10a2>0.00238420</raq10a2>
+    <raq10a3>-0.00004110</raq10a3>
+    <kn1>0.0042</kn1>
+    <labncon>0.20000</labncon>
+    <leafmxc>217.2</leafmxc>
+    <kleafc>1.6662</kleafc>
+    <sla>0.0077</sla>
+    <cov>-0.001187</cov>
+    <fpcmax>0.55065</fpcmax>
+  </community>
+
+  <community type = "11"
+    description = "Temperate Broadleaved Evergreen Forest"
+    developedBy = "A. David McGuire"
+    updated = "19990119">
+    <kc>%kc</kc>  
+    <ki>75.00</ki>
+    <gva>55.3933</gva>
+    <tmin>5.0</tmin>
+    <toptmin>19.5</toptmin>
+    <toptmax>32.0</toptmax>
+    <tmax>35.0</tmax>
+    <raq10a0>2.35665000</raq10a0>
+    <raq10a1>-0.05307700</raq10a1>
+    <raq10a2>0.00238420</raq10a2>
+    <raq10a3>-0.00004110</raq10a3>
+    <kn1>0.0042</kn1>
+    <labncon>0.20000</labncon>
+    <leafmxc>151.5</leafmxc>
+    <kleafc>1.6662</kleafc>
+    <sla>0.0077</sla>
+    <cov>-0.000340</cov>
+    <fpcmax>0.77885</fpcmax>
+  </community>
+
+  <community type = "12"
+    description = "Mediterranean Shrubland"
+    developedBy = "A. David McGuire"
+    updated = "19990120">
+    <kc>%kc</kc>  
+    <ki>75.00</ki>
+    <gva>55.3933</gva>
+    <tmin>0.0</tmin>
+    <toptmin>19.1</toptmin>
+    <toptmax>33.1</toptmax>
+    <tmax>38.0</tmax>
+    <raq10a0>2.35665000</raq10a0>
+    <raq10a1>-0.05307700</raq10a1>
+    <raq10a2>0.00238420</raq10a2>
+    <raq10a3>-0.00004110</raq10a3>
+    <kn1>0.0042</kn1>
+    <labncon>0.20000</labncon>
+    <leafmxc>217.2</leafmxc>
+    <kleafc>1.6662</kleafc>
+    <sla>0.0077</sla>
+    <cov>-0.001187</cov>
+    <fpcmax>0.12489</fpcmax>
+  </community>
+</vegECD>
+

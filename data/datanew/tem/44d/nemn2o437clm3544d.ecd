@@ -1,0 +1,88 @@
+<?xml version = "1.0"?>
+
+<nemECD version = "4.3.7">
+  <community type = "1"
+    description = "Ice"
+    developedBy = "David Kicklighter"
+    updated = "20060327">
+    <initDntrf>0.39</initDntrf>  
+  </community>
+
+  <community type = "2"
+    description = "Alpine Tundra/Polar Desert"
+    developedBy = "David Kicklighter"
+    updated = "20060327">
+    <initDntrf>0.39</initDntrf>  
+  </community>
+
+  <community type = "3"
+    description = "Wet Tundra"
+    developedBy = "David Kicklighter"
+    updated = "20060327">
+    <initDntrf>0.39</initDntrf>  
+  </community>
+
+  <community type = "4"
+    description = "Boreal Forest"
+    developedBy = "David Kicklighter"
+    updated = "20060327">
+    <initDntrf>0.39</initDntrf>  
+  </community>
+
+  <community type = "5"
+    description = "Temperate Coniferous Forest"
+    developedBy = "David Kicklighter"
+    updated = "20060327">
+    <initDntrf>0.39</initDntrf>  
+  </community>
+
+  <community type = "6"
+    description = "Temperate Deciduous Forest"
+    developedBy = "David Kicklighter"
+    updated = "20060327">
+    <initDntrf>0.39</initDntrf>  
+  </community>
+
+  <community type = "7"
+    description = "Grassland"
+    developedBy = "David Kicklighter"
+    updated = "20060327">
+    <initDntrf>0.39</initDntrf>  
+  </community>
+
+  <community type = "8"
+    description = "Xeric Shrubland"
+    developedBy = "David Kicklighter"
+    updated = "20060327">
+    <initDntrf>0.39</initDntrf>  
+  </community>
+
+  <community type = "9"
+    description = "Tropical Forest"
+    developedBy = "David Kicklighter"
+    updated = "20060327">
+    <initDntrf>0.39</initDntrf>  
+  </community>
+
+  <community type = "10"
+    description = "Xeric Woodland"
+    developedBy = "David Kicklighter"
+    updated = "20060327">
+    <initDntrf>0.39</initDntrf>  
+  </community>
+
+  <community type = "11"
+    description = "Temperate Broadleaved Evergreen Forest"
+    developedBy = "David Kicklighter"
+    updated = "20060327">
+    <initDntrf>0.39</initDntrf>  
+  </community>
+
+  <community type = "12"
+    description = "Mediterranean Shrubland"
+    developedBy = "David Kicklighter"
+    updated = "20060327">
+    <initDntrf>0.39</initDntrf>  
+  </community>
+</nemECD
+>

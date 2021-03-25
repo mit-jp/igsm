@@ -1,0 +1,61 @@
+<?xml version = "1.0"?>
+
+<siteECD version = "4.3.8" 
+  site = "Harvard Forest, Petersham,MA USA"
+  longitude = "-72.5"
+  latitude = "42.5"
+  developedBy = "David W. Kicklighter"
+  updated = "20060224">
+
+  <community type = "6"
+    description = "Temperate Deciduous Forest">
+  
+    <vegca>5336.443</vegca>
+    <vegcb>13611.461</vegcb>
+    <strna>12.875</strna>
+    <strnb>33.058</strnb>
+    <solca>4260.572</solca>
+    <solcb>5942.420</solcb>
+    <solna>206.525</solna>
+    <solnb>288.046</solnb>
+    <avlna>-4.208</avlna>
+    <avlnb>3.828</avlnb>
+    <stona>0.148</stona>
+    <stonb>1.331</stonb>
+
+    <unleaf12>0.50</unleaf12>
+    <initleafmx>1.00</initleafmx>
+
+    <vegcmaxcut>0.541</vegcmaxcut>
+    <vegcmax1a>0.3104</vegcmax1a>
+    <vegcmax1b>1.7685</vegcmax1b>
+    <vegcmax2a>80.092</vegcmax2a>
+    <vegcmax2b>495.53</vegcmax2b>
+    <vegcfall>0.003483</vegcfall>
+    <vegkra>-0.0000806</vegkra>
+    <vegkrb>-5.2539</vegkrb>
+    <microbekda>-0.00345</microbekda>
+    <microbekdb>0.00590</microbekdb>
+    <microbelcclnc>81.25</microbelcclnc>
+    <microbepropftos>0.2000</microbepropftos>
+    <vegnmaxcut>0.459</vegnmaxcut>
+    <vegnmax1a>-4.700</vegnmax1a>
+    <vegnmax1b>57.115</vegnmax1b>
+    <vegnmax2a>6.525</vegnmax2a>
+    <vegnmax2b>51.968</vegnmax2b>
+    <vegnfall>0.017903</vegnfall>
+    <microbenupa>-2.300</microbenupa>
+    <microbenupb>7.824</microbenupb>
+    <soilnloss>0.00</soilnloss>
+    <microbenfixpar>0.00</microbenfixpar>
+    <veginitcneven>65.00</veginitcneven>
+    <vegcnmin>0.00</vegcnmin>
+    <vegc2na>0.0000</vegc2na>
+    <vegc2nb>420.2700</vegc2nb>
+    <vegc2nmin>420.2700</vegc2nmin>
+    <microbecnsoil>20.63</microbecnsoil>
+    <o3para>2.6</o3para>
+    <o3parb>1.0</o3parb>
+    <o3parc>0.0080782</o3parc>
+  </community>
+</siteECD>

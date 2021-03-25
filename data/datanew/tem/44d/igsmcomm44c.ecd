@@ -1,0 +1,599 @@
+<?xml version = "1.0"?>
+
+<communityECD version = "4.4">
+  <temveg type = "0"
+    description = "Bare Ground"
+    developedBy = "David W. Kicklighter"
+    updated = "20070323">
+    <numtype>1</numtype>  
+    <subtype1>1</subtype1>
+    <pcttype1>100.00</pcttype1>
+    <subtype2>-99</subtype2>
+    <pcttype2>0.00</pcttype2>
+    <subtype3>-99</subtype3>
+    <pcttype3>0.00</pcttype3>
+    <subtype4>-99</subtype4>
+    <pcttype4>0.00</pcttype4>
+    <subtype5>-99</subtype5>
+    <pcttype5>0.00</pcttype5>
+  </temveg>
+
+  <temveg type = "1"
+    description = "Needle-leaf Evergreen Tree (NET) temperate"
+    developedBy = "David W. Kicklighter"
+    updated = "20040612">
+    <numtype>1</numtype>  
+    <subtype1>5</subtype1>
+    <pcttype1>100.00</pcttype1>
+    <subtype2>-99</subtype2>
+    <pcttype2>0.00</pcttype2>
+    <subtype3>-99</subtype3>
+    <pcttype3>0.00</pcttype3>
+    <subtype4>-99</subtype4>
+    <pcttype4>0.00</pcttype4>
+    <subtype5>-99</subtype5>
+    <pcttype5>0.00</pcttype5>
+  </temveg>
+
+  <temveg type = "2"
+    description = "Needle-leaf Evergreen Tree (NET) boreal"
+    developedBy = "David W. Kicklighter"
+    updated = "20040612">
+    <numtype>1</numtype>  
+    <subtype1>4</subtype1>
+    <pcttype1>100.00</pcttype1>
+    <subtype2>-99</subtype2>
+    <pcttype2>0.00</pcttype2>
+    <subtype3>-99</subtype3>
+    <pcttype3>0.00</pcttype3>
+    <subtype4>-99</subtype4>
+    <pcttype4>0.00</pcttype4>
+    <subtype5>-99</subtype5>
+    <pcttype5>0.00</pcttype5>
+  </temveg>
+
+  <temveg type = "3"
+    description = "Needle-leaf Deciduous Tree (NDT) boreal"
+    developedBy = "David W. Kicklighter"
+    updated = "20040612">
+    <numtype>1</numtype>  
+    <subtype1>4</subtype1>
+    <pcttype1>100.00</pcttype1>
+    <subtype2>-99</subtype2>
+    <pcttype2>0.00</pcttype2>
+    <subtype3>-99</subtype3>
+    <pcttype3>0.00</pcttype3>
+    <subtype4>-99</subtype4>
+    <pcttype4>0.00</pcttype4>
+    <subtype5>-99</subtype5>
+    <pcttype5>0.00</pcttype5>
+  </temveg>
+
+  <temveg type = "4"
+    description = "Broadleaved Evergreen Tree (BET) tropical"
+    developedBy = "David W. Kicklighter"
+    updated = "20040612">
+    <numtype>1</numtype>  
+    <subtype1>9</subtype1>
+    <pcttype1>100.00</pcttype1>
+    <subtype2>-99</subtype2>
+    <pcttype2>0.00</pcttype2>
+    <subtype3>-99</subtype3>
+    <pcttype3>0.00</pcttype3>
+    <subtype4>-99</subtype4>
+    <pcttype4>0.00</pcttype4>
+    <subtype5>-99</subtype5>
+    <pcttype5>0.00</pcttype5>
+  </temveg>
+
+  <temveg type = "5"
+    description = "Broadleaved Evergreen Tree (BET) temperate"
+    developedBy = "David W. Kicklighter"
+    updated = "20040612">
+    <numtype>1</numtype>  
+    <subtype1>11</subtype1>
+    <pcttype1>100.00</pcttype1>
+    <subtype2>-99</subtype2>
+    <pcttype2>0.00</pcttype2>
+    <subtype3>-99</subtype3>
+    <pcttype3>0.00</pcttype3>
+    <subtype4>-99</subtype4>
+    <pcttype4>0.00</pcttype4>
+    <subtype5>-99</subtype5>
+    <pcttype5>0.00</pcttype5>
+  </temveg>
+
+  <temveg type = "6"
+    description = "Broadleaved Deciduous Tree (BDT) tropical"
+    developedBy = "David W. Kicklighter"
+    updated = "20040612">
+    <numtype>1</numtype>  
+    <subtype1>10</subtype1>
+    <pcttype1>100.00</pcttype1>
+    <subtype2>-99</subtype2>
+    <pcttype2>0.00</pcttype2>
+    <subtype3>-99</subtype3>
+    <pcttype3>0.00</pcttype3>
+    <subtype4>-99</subtype4>
+    <pcttype4>0.00</pcttype4>
+    <subtype5>-99</subtype5>
+    <pcttype5>0.00</pcttype5>
+  </temveg>
+
+  <temveg type = "7"
+    description = "Broadleaved Deciduous Tree (BDT) temperate"
+    developedBy = "David W. Kicklighter"
+    updated = "20040612">
+    <numtype>1</numtype>  
+    <subtype1>6</subtype1>
+    <pcttype1>100.00</pcttype1>
+    <subtype2>-99</subtype2>
+    <pcttype2>0.00</pcttype2>
+    <subtype3>-99</subtype3>
+    <pcttype3>0.00</pcttype3>
+    <subtype4>-99</subtype4>
+    <pcttype4>0.00</pcttype4>
+    <subtype5>-99</subtype5>
+    <pcttype5>0.00</pcttype5>
+  </temveg>
+
+  <temveg type = "8"
+    description = "Broadleaved Deciduous Tree (BDT) boreal"
+    developedBy = "David W. Kicklighter"
+    updated = "20040612">
+    <numtype>1</numtype>  
+    <subtype1>4</subtype1>
+    <pcttype1>100.00</pcttype1>
+    <subtype2>-99</subtype2>
+    <pcttype2>0.00</pcttype2>
+    <subtype3>-99</subtype3>
+    <pcttype3>0.00</pcttype3>
+    <subtype4>-99</subtype4>
+    <pcttype4>0.00</pcttype4>
+    <subtype5>-99</subtype5>
+    <pcttype5>0.00</pcttype5>
+  </temveg>
+
+  <temveg type = "9"
+    description = "Broadleaved Evergreen Shrub (BES) temperate"
+    developedBy = "David W. Kicklighter"
+    updated = "20040612">
+    <numtype>1</numtype>  
+    <subtype1>12</subtype1>
+    <pcttype1>100.00</pcttype1>
+    <subtype2>-99</subtype2>
+    <pcttype2>0.00</pcttype2>
+    <subtype3>-99</subtype3>
+    <pcttype3>0.00</pcttype3>
+    <subtype4>-99</subtype4>
+    <pcttype4>0.00</pcttype4>
+    <subtype5>-99</subtype5>
+    <pcttype5>0.00</pcttype5>
+  </temveg>
+
+  <temveg type = "10"
+    description = "Broadleaved Deciduous Shrub (BDS) temperate"
+    developedBy = "David W. Kicklighter"
+    updated = "20040612">
+    <numtype>1</numtype>  
+    <subtype1>8</subtype1>
+    <pcttype1>100.00</pcttype1>
+    <subtype2>-99</subtype2>
+    <pcttype2>0.00</pcttype2>
+    <subtype3>-99</subtype3>
+    <pcttype3>0.00</pcttype3>
+    <subtype4>-99</subtype4>
+    <pcttype4>0.00</pcttype4>
+    <subtype5>-99</subtype5>
+    <pcttype5>0.00</pcttype5>
+  </temveg>
+
+  <temveg type = "11"
+    description = "Broadleaved Deciduous Shrub (BDS) boreal"
+    developedBy = "David W. Kicklighter"
+    updated = "20040612">
+    <numtype>1</numtype>  
+    <subtype1>3</subtype1>
+    <pcttype1>100.00</pcttype1>
+    <subtype2>-99</subtype2>
+    <pcttype2>0.00</pcttype2>
+    <subtype3>-99</subtype3>
+    <pcttype3>0.00</pcttype3>
+    <subtype4>-99</subtype4>
+    <pcttype4>0.00</pcttype4>
+    <subtype5>-99</subtype5>
+    <pcttype5>0.00</pcttype5>
+  </temveg>
+
+  <temveg type = "12"
+    description = "C3 grass arctic"
+    developedBy = "David W. Kicklighter"
+    updated = "20040612">
+    <numtype>1</numtype>  
+    <subtype1>3</subtype1>
+    <pcttype1>100.00</pcttype1>
+    <subtype2>-99</subtype2>
+    <pcttype2>0.00</pcttype2>
+    <subtype3>-99</subtype3>
+    <pcttype3>0.00</pcttype3>
+    <subtype4>-99</subtype4>
+    <pcttype4>0.00</pcttype4>
+    <subtype5>-99</subtype5>
+    <pcttype5>0.00</pcttype5>
+  </temveg>
+
+  <temveg type = "13"
+    description = "C3 grass"
+    developedBy = "David W. Kicklighter"
+    updated = "20040612">
+    <numtype>1</numtype>  
+    <subtype1>7</subtype1>
+    <pcttype1>100.00</pcttype1>
+    <subtype2>-99</subtype2>
+    <pcttype2>0.00</pcttype2>
+    <subtype3>-99</subtype3>
+    <pcttype3>0.00</pcttype3>
+    <subtype4>-99</subtype4>
+    <pcttype4>0.00</pcttype4>
+    <subtype5>-99</subtype5>
+    <pcttype5>0.00</pcttype5>
+  </temveg>
+
+  <temveg type = "14"
+    description = "C4 grass"
+    developedBy = "David W. Kicklighter"
+    updated = "20040612">
+    <numtype>1</numtype>  
+    <subtype1>7</subtype1>
+    <pcttype1>100.00</pcttype1>
+    <subtype2>-99</subtype2>
+    <pcttype2>0.00</pcttype2>
+    <subtype3>-99</subtype3>
+    <pcttype3>0.00</pcttype3>
+    <subtype4>-99</subtype4>
+    <pcttype4>0.00</pcttype4>
+    <subtype5>-99</subtype5>
+    <pcttype5>0.00</pcttype5>
+  </temveg>
+
+  <temveg type = "15"
+    description = "Crop 1"
+    developedBy = "David W. Kicklighter"
+    updated = "20040612">
+    <numtype>1</numtype>  
+    <subtype1>7</subtype1>
+    <pcttype1>100.00</pcttype1>
+    <subtype2>-99</subtype2>
+    <pcttype2>0.00</pcttype2>
+    <subtype3>-99</subtype3>
+    <pcttype3>0.00</pcttype3>
+    <subtype4>-99</subtype4>
+    <pcttype4>0.00</pcttype4>
+    <subtype5>-99</subtype5>
+    <pcttype5>0.00</pcttype5>
+  </temveg>
+
+  <temveg type = "16"
+    description = "Crop 2 (Pasture)"
+    developedBy = "David W. Kicklighter"
+    updated = "20040612">
+    <numtype>1</numtype>  
+    <subtype1>7</subtype1>
+    <pcttype1>100.00</pcttype1>
+    <subtype2>-99</subtype2>
+    <pcttype2>0.00</pcttype2>
+    <subtype3>-99</subtype3>
+    <pcttype3>0.00</pcttype3>
+    <subtype4>-99</subtype4>
+    <pcttype4>0.00</pcttype4>
+    <subtype5>-99</subtype5>
+    <pcttype5>0.00</pcttype5>
+  </temveg>
+
+  <temveg type = "17"
+    description = "Wetlands Tree tropical"
+    developedBy = "David W. Kicklighter"
+    updated = "20040612">
+    <numtype>1</numtype>  
+    <subtype1>9</subtype1>
+    <pcttype1>100.00</pcttype1>
+    <subtype2>-99</subtype2>
+    <pcttype2>0.00</pcttype2>
+    <subtype3>-99</subtype3>
+    <pcttype3>0.00</pcttype3>
+    <subtype4>-99</subtype4>
+    <pcttype4>0.00</pcttype4>
+    <subtype5>-99</subtype5>
+    <pcttype5>0.00</pcttype5>
+  </temveg>
+
+  <temveg type = "18"
+    description = "Wetlands No-tree tropical"
+    developedBy = "David W. Kicklighter"
+    updated = "20040612">
+    <numtype>1</numtype>  
+    <subtype1>7</subtype1>
+    <pcttype1>100.00</pcttype1>
+    <subtype2>-99</subtype2>
+    <pcttype2>0.00</pcttype2>
+    <subtype3>-99</subtype3>
+    <pcttype3>0.00</pcttype3>
+    <subtype4>-99</subtype4>
+    <pcttype4>0.00</pcttype4>
+    <subtype5>-99</subtype5>
+    <pcttype5>0.00</pcttype5>
+  </temveg>
+
+  <temveg type = "19"
+    description = "Wetlands Tree temperate"
+    developedBy = "David W. Kicklighter"
+    updated = "20040612">
+    <numtype>1</numtype>  
+    <subtype1>6</subtype1>
+    <pcttype1>100.00</pcttype1>
+    <subtype2>-99</subtype2>
+    <pcttype2>0.00</pcttype2>
+    <subtype3>-99</subtype3>
+    <pcttype3>0.00</pcttype3>
+    <subtype4>-99</subtype4>
+    <pcttype4>0.00</pcttype4>
+    <subtype5>-99</subtype5>
+    <pcttype5>0.00</pcttype5>
+  </temveg>
+
+  <temveg type = "20"
+    description = "Wetlands No-tree temperate"
+    developedBy = "David W. Kicklighter"
+    updated = "20040612">
+    <numtype>1</numtype>  
+    <subtype1>7</subtype1>
+    <pcttype1>100.00</pcttype1>
+    <subtype2>-99</subtype2>
+    <pcttype2>0.00</pcttype2>
+    <subtype3>-99</subtype3>
+    <pcttype3>0.00</pcttype3>
+    <subtype4>-99</subtype4>
+    <pcttype4>0.00</pcttype4>
+    <subtype5>-99</subtype5>
+    <pcttype5>0.00</pcttype5>
+  </temveg>
+
+  <temveg type = "21"
+    description = "Wetlands Tree boreal"
+    developedBy = "David W. Kicklighter"
+    updated = "20040612">
+    <numtype>1</numtype>  
+    <subtype1>4</subtype1>
+    <pcttype1>100.00</pcttype1>
+    <subtype2>-99</subtype2>
+    <pcttype2>0.00</pcttype2>
+    <subtype3>-99</subtype3>
+    <pcttype3>0.00</pcttype3>
+    <subtype4>-99</subtype4>
+    <pcttype4>0.00</pcttype4>
+    <subtype5>-99</subtype5>
+    <pcttype5>0.00</pcttype5>
+  </temveg>
+
+  <temveg type = "22"
+    description = "Wetlands No-Tree boreal"
+    developedBy = "David W. Kicklighter"
+    updated = "20040612">
+    <numtype>1</numtype>  
+    <subtype1>3</subtype1>
+    <pcttype1>100.00</pcttype1>
+    <subtype2>-99</subtype2>
+    <pcttype2>0.00</pcttype2>
+    <subtype3>-99</subtype3>
+    <pcttype3>0.00</pcttype3>
+    <subtype4>-99</subtype4>
+    <pcttype4>0.00</pcttype4>
+    <subtype5>-99</subtype5>
+    <pcttype5>0.00</pcttype5>
+  </temveg>
+
+  <temveg type = "23"
+    description = "Mangroves"
+    developedBy = "David W. Kicklighter"
+    updated = "20040722">
+    <numtype>1</numtype>  
+    <subtype1>9</subtype1>
+    <pcttype1>100.00</pcttype1>
+    <subtype2>-99</subtype2>
+    <pcttype2>0.00</pcttype2>
+    <subtype3>-99</subtype3>
+    <pcttype3>0.00</pcttype3>
+    <subtype4>-99</subtype4>
+    <pcttype4>0.00</pcttype4>
+    <subtype5>-99</subtype5>
+    <pcttype5>0.00</pcttype5>
+  </temveg>
+
+  <temveg type = "24"
+    description = "Coastal Salt Marsh"
+    developedBy = "David W. Kicklighter"
+    updated = "20040722">
+    <numtype>1</numtype>  
+    <subtype1>7</subtype1>
+    <pcttype1>100.00</pcttype1>
+    <subtype2>-99</subtype2>
+    <pcttype2>0.00</pcttype2>
+    <subtype3>-99</subtype3>
+    <pcttype3>0.00</pcttype3>
+    <subtype4>-99</subtype4>
+    <pcttype4>0.00</pcttype4>
+    <subtype5>-99</subtype5>
+    <pcttype5>0.00</pcttype5>
+  </temveg>
+
+  <temveg type = "25"
+    description = "Inland Salt Marsh"
+    developedBy = "David W. Kicklighter"
+    updated = "20040722">
+    <numtype>1</numtype>  
+    <subtype1>7</subtype1>
+    <pcttype1>100.00</pcttype1>
+    <subtype2>-99</subtype2>
+    <pcttype2>0.00</pcttype2>
+    <subtype3>-99</subtype3>
+    <pcttype3>0.00</pcttype3>
+    <subtype4>-99</subtype4>
+    <pcttype4>0.00</pcttype4>
+    <subtype5>-99</subtype5>
+    <pcttype5>0.00</pcttype5>
+  </temveg>
+
+  <temveg type = "26"
+    description = "Floodplains Tree tropical"
+    developedBy = "David W. Kicklighter"
+    updated = "20040722">
+    <numtype>1</numtype>  
+    <subtype1>9</subtype1>
+    <pcttype1>100.00</pcttype1>
+    <subtype2>-99</subtype2>
+    <pcttype2>0.00</pcttype2>
+    <subtype3>-99</subtype3>
+    <pcttype3>0.00</pcttype3>
+    <subtype4>-99</subtype4>
+    <pcttype4>0.00</pcttype4>
+    <subtype5>-99</subtype5>
+    <pcttype5>0.00</pcttype5>
+  </temveg>
+
+  <temveg type = "27"
+    description = "Floodplains No-tree tropical"
+    developedBy = "David W. Kicklighter"
+    updated = "20040612">
+    <numtype>1</numtype>  
+    <subtype1>7</subtype1>
+    <pcttype1>100.00</pcttype1>
+    <subtype2>-99</subtype2>
+    <pcttype2>0.00</pcttype2>
+    <subtype3>-99</subtype3>
+    <pcttype3>0.00</pcttype3>
+    <subtype4>-99</subtype4>
+    <pcttype4>0.00</pcttype4>
+    <subtype5>-99</subtype5>
+    <pcttype5>0.00</pcttype5>
+  </temveg>
+
+  <temveg type = "28"
+    description = "Floodplains Tree temperate"
+    developedBy = "David W. Kicklighter"
+    updated = "20040722">
+    <numtype>1</numtype>  
+    <subtype1>6</subtype1>
+    <pcttype1>100.00</pcttype1>
+    <subtype2>-99</subtype2>
+    <pcttype2>0.00</pcttype2>
+    <subtype3>-99</subtype3>
+    <pcttype3>0.00</pcttype3>
+    <subtype4>-99</subtype4>
+    <pcttype4>0.00</pcttype4>
+    <subtype5>-99</subtype5>
+    <pcttype5>0.00</pcttype5>
+  </temveg>
+
+  <temveg type = "29"
+    description = "Floodplains No-tree temperate"
+    developedBy = "David W. Kicklighter"
+    updated = "20040722">
+    <numtype>1</numtype>  
+    <subtype1>7</subtype1>
+    <pcttype1>100.00</pcttype1>
+    <subtype2>-99</subtype2>
+    <pcttype2>0.00</pcttype2>
+    <subtype3>-99</subtype3>
+    <pcttype3>0.00</pcttype3>
+    <subtype4>-99</subtype4>
+    <pcttype4>0.00</pcttype4>
+    <subtype5>-99</subtype5>
+    <pcttype5>0.00</pcttype5>
+  </temveg>
+
+  <temveg type = "30"
+    description = "Glaciers"
+    developedBy = "David W. Kicklighter"
+    updated = "20040722">
+    <numtype>1</numtype>  
+    <subtype1>1</subtype1>
+    <pcttype1>100.00</pcttype1>
+    <subtype2>-99</subtype2>
+    <pcttype2>0.00</pcttype2>
+    <subtype3>-99</subtype3>
+    <pcttype3>0.00</pcttype3>
+    <subtype4>-99</subtype4>
+    <pcttype4>0.00</pcttype4>
+    <subtype5>-99</subtype5>
+    <pcttype5>0.00</pcttype5>
+  </temveg>
+
+  <temveg type = "31"
+    description = "Lakes"
+    developedBy = "David W. Kicklighter"
+    updated = "20040722">
+    <numtype>1</numtype>  
+    <subtype1>1</subtype1>
+    <pcttype1>100.00</pcttype1>
+    <subtype2>-99</subtype2>
+    <pcttype2>0.00</pcttype2>
+    <subtype3>-99</subtype3>
+    <pcttype3>0.00</pcttype3>
+    <subtype4>-99</subtype4>
+    <pcttype4>0.00</pcttype4>
+    <subtype5>-99</subtype5>
+    <pcttype5>0.00</pcttype5>
+  </temveg>
+
+  <temveg type = "32"
+    description = "Rice Paddies"
+    developedBy = "David W. Kicklighter"
+    updated = "20040722">
+    <numtype>1</numtype>  
+    <subtype1>7</subtype1>
+    <pcttype1>100.00</pcttype1>
+    <subtype2>-99</subtype2>
+    <pcttype2>0.00</pcttype2>
+    <subtype3>-99</subtype3>
+    <pcttype3>0.00</pcttype3>
+    <subtype4>-99</subtype4>
+    <pcttype4>0.00</pcttype4>
+    <subtype5>-99</subtype5>
+    <pcttype5>0.00</pcttype5>
+  </temveg>
+
+  <temveg type = "33"
+    description = "Pastures"
+    developedBy = "David W. Kicklighter"
+    updated = "20040722">
+    <numtype>1</numtype>  
+    <subtype1>7</subtype1>
+    <pcttype1>100.00</pcttype1>
+    <subtype2>-99</subtype2>
+    <pcttype2>0.00</pcttype2>
+    <subtype3>-99</subtype3>
+    <pcttype3>0.00</pcttype3>
+    <subtype4>-99</subtype4>
+    <pcttype4>0.00</pcttype4>
+    <subtype5>-99</subtype5>
+    <pcttype5>0.00</pcttype5>
+  </temveg>
+
+  <temveg type = "34"
+    description = "Urban"
+    developedBy = "David W. Kicklighter"
+    updated = "20040722">
+    <numtype>1</numtype>  
+    <subtype1>7</subtype1>
+    <pcttype1>100.00</pcttype1>
+    <subtype2>-99</subtype2>
+    <pcttype2>0.00</pcttype2>
+    <subtype3>-99</subtype3>
+    <pcttype3>0.00</pcttype3>
+    <subtype4>-99</subtype4>
+    <pcttype4>0.00</pcttype4>
+    <subtype5>-99</subtype5>
+    <pcttype5>0.00</pcttype5>
+  </temveg>
+</communityECD>
+

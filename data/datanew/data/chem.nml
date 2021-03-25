@@ -1,0 +1,12 @@
+
+ $chem_name_list
+	bio_uptake     = 2.1,
+	svi_intensity  = 3.0,
+	nhr_for_chem   = 3,
+ $END
+
+
+
+! bio_uptake biospheric uptake of co2, used only if chemistry is run without TEM
+! svi_intensity not used 
+!nhr_for_chem frequency of gaseous chemistry in hour

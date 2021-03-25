@@ -1,0 +1,61 @@
+<?xml version = "1.0"?>
+
+<siteECD version = "4.3.8" 
+  site = "Guanica Forest Reserve, Puerto Rico"
+  longitude = "-67.0"
+  latitude = "18.0"
+  developedBy = "David W. Kicklighter"
+  updated = "20060225">
+
+  <community type = "12"
+    description = "Mediterranean Shrublands">
+  
+    <vegca>-136.560</vegca>
+    <vegcb>4443.004</vegcb>
+    <strna>-3.470</strna>
+    <strnb>93.633</strnb>
+    <solca>2760.090</solca>
+    <solcb>2946.751</solcb>
+    <solna>275.037</solna>
+    <solnb>305.363</solnb>
+    <avlna>-2.789</avlna>
+    <avlnb>3.298</avlnb>
+    <stona>-1.978</stona>
+    <stonb>3.325</stonb>
+
+    <unleaf12>0.25</unleaf12>
+    <initleafmx>1.00</initleafmx>
+
+    <vegcmaxcut>0.55</vegcmaxcut>
+    <vegcmax1a>0.0</vegcmax1a>
+    <vegcmax1b>0.4787</vegcmax1b>
+    <vegcmax2a>0.0</vegcmax2a>
+    <vegcmax2b>132.558</vegcmax2b>
+    <vegcfall>0.010659</vegcfall>
+    <vegkra>-0.0000806</vegkra>
+    <vegkrb>-5.9968</vegkrb>
+    <microbekda>-0.00376</microbekda>
+    <microbekdb>0.00470</microbekdb>
+    <microbelcclnc>39.29</microbelcclnc>
+    <microbepropftos>0.2000</microbepropftos>
+    <vegnmaxcut>0.55</vegnmaxcut>
+    <vegnmax1a>0.0</vegnmax1a>
+    <vegnmax1b>42.0</vegnmax1b>
+    <vegnmax2a>0.0</vegnmax2a>
+    <vegnmax2b>42.0</vegnmax2b>
+    <vegnfall>0.0131</vegnfall>
+    <microbenupa>-10.407</microbenupa>
+    <microbenupb>11.723</microbenupb>
+    <soilnloss>0.00</soilnloss>
+    <microbenfixpar>0.00</microbenfixpar>
+    <veginitcneven>39.29</veginitcneven>
+    <vegcnmin>0.00</vegcnmin>
+    <vegc2na>0.0</vegc2na>
+    <vegc2nb>47.78</vegc2nb>
+    <vegc2nmin>47.78</vegc2nmin>
+    <microbecnsoil>9.79</microbecnsoil>
+    <o3para>2.6</o3para>
+    <o3parb>2.0</o3parb>
+    <o3parc>0.0402712</o3parc>
+  </community>
+</siteECD>

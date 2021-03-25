@@ -1,0 +1,61 @@
+<?xml version = "1.0"?>
+
+<siteECD version = "4.3.8" 
+  site = "Toolik_Lake LTER, Alaska USA"
+  longitude = "-150.0"
+  latitude = "68.5"
+  developedBy = "David W. Kicklighter"
+  updated = "20060224">
+
+  <community type = "3"
+    description = "Moist/wet tundra">
+  
+    <vegca>413.600</vegca>
+    <vegcb>598.436</vegcb>
+    <strna>8.272</strna>
+    <strnb>11.994</strnb>
+    <solca>4200.160</solca>
+    <solcb>10502.566</solcb>
+    <solna>256.730</solna>
+    <solnb>641.969</solnb>
+    <avlna>-0.689</avlna>
+    <avlnb>0.649</avlnb>
+    <stona>0.797</stona>
+    <stonb>1.241</stonb>
+
+    <unleaf12>0.00</unleaf12>
+    <initleafmx>1.00</initleafmx>
+
+    <vegcmaxcut>0.55</vegcmaxcut>
+    <vegcmax1a>0.3261</vegcmax1a>
+    <vegcmax1b>0.6788</vegcmax1b>
+    <vegcmax2a>84.37</vegcmax2a>
+    <vegcmax2b>175.01</vegcmax2b>
+    <vegcfall>0.013333</vegcfall>
+    <vegkra>-0.0005870</vegkra>
+    <vegkrb>-3.862000</vegkrb>
+    <microbekda>-0.000920</microbekda>
+    <microbekdb>0.00157</microbekdb>
+    <microbelcclnc>150.00</microbelcclnc>
+    <microbepropftos>0.2000</microbepropftos>
+    <vegnmaxcut>0.374</vegnmaxcut>
+    <vegnmax1a>-4.000</vegnmax1a>
+    <vegnmax1b>67.800</vegnmax1b>
+    <vegnmax2a>5.077</vegnmax2a>
+    <vegnmax2b>64.408</vegnmax2b>
+    <vegnfall>0.004438</vegnfall>
+    <microbenupa>-26.225</microbenupa>
+    <microbenupb>61.773</microbenupb>
+    <soilnloss>0.0</soilnloss>
+    <microbenfixpar>0.0</microbenfixpar>
+    <veginitcneven>30.00</veginitcneven>
+    <vegcnmin>0.00</vegcnmin>
+    <vegc2na>0.0</vegc2na>
+    <vegc2nb>50.00</vegc2nb>
+    <vegc2nmin>50.00</vegc2nmin>
+    <microbecnsoil>16.36</microbecnsoil>
+    <o3para>2.6</o3para>
+    <o3parb>2.0</o3parb>
+    <o3parc>0.0402712</o3parc>
+  </community>
+</siteECD>
