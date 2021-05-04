@@ -44,10 +44,12 @@ C        TEM and back
       COMMON/landcover4tem/ cellarea, cohortarea, landarea,
      &  Incohortarea, pctclay4tem, pctsand4tem, pctsilt4te,
      &  soilph4tem, ksat4tem, por4tem, zthick4tem
+     & ,fixedLC4TEM
 C      cellarea and landfrac are calculated by climate2tem
 C      during first call
 C      vegfrac  are calculated by clm
-C      cohortarea  are initialCohortArea from temstate file
+C      Incohortarea  are initialCohortArea from temstate file
+      logical fixedLC4TEM
       REAL*8 cellarea(jm0)
       INTEGER*8 cohortarea(ncoh,jm0)
       INTEGER*8 landarea(jm0)

@@ -148,6 +148,7 @@ c==== 012201
      &  ,OCNGEOM,ocngmfile,ocndata4atm
      &  ,bc_data
      &  ,PRTREND
+     &  ,fixedLC4TEM
 Cjrs     &  ,dtatm,dtocn
 #if ( defined IPCC_EMI )
      &  ,init_co2,emiss_data
@@ -348,6 +349,7 @@ cjrs      dtocn=1
       fbaresoil =  'undefined'
       o3datadir =  'undefined'
       CLIMO3=.false.
+      fixedLC4TEM=.true.
       fwmax =  'undefined'
       ocngmfile =  'undefined'
       ocndata4atm =  'undefined'

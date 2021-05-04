@@ -5,7 +5,9 @@
 #include "BD2G04.COM"
 #include "TEM.h"        
 #include "CLM.h"        
-        logical first,fixedLC,wr88,fixedLC4TEM
+!       logical first,fixedLC,wr88,fixedLC4TEM
+!       fixedLC4TEM move to TEM.h
+        logical first,fixedLC,wr88
         logical tem44c
 !
         real wetlands(35,jm0),wetlat(jm0)
@@ -15,7 +17,8 @@
         wr88=.true.
         wr88=.false.
         tem44c=.false.
-        fixedLC4TEM=.true.
+!       fixedLC4TEM=.true.
+!       moved to input.F
         if (first) then
          if(.not.dyn_pft.or.rampyr_dynpft.ne.0) then
           fixedLC=.true.
@@ -50,6 +53,8 @@
         endif
         if(fixedLC4TEM) then
            print *,'Run with fixed land cover for TEM'
+        else 
+          print *,'Run with changing land cover for TEM'
         endif
           open (661,
      &      file=wetfrac_data,status='old',form='unformatted')
