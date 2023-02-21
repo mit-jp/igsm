@@ -19,4 +19,4 @@ To-Do List
   - ./tests/run_fullchem: line-by-line explanation of name.dat, tem.go,
     eppaemis.dat.
 
-- Add the MITgcm 3D ocean to source control and the build system.
+- Add the MITgcm 3D-ocean to source control and the build system.
