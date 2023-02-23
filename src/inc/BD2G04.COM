@@ -64,4 +64,8 @@ c    &  cssyzhr(4,jm0),cmcyzhr(4,jm0),pyzhr(4,jm0)
 
       COMMON/NAVEVARS/naveo(jm0),navei(jm0),navrad(jm0),navrado(jm0)
        INTEGER naveo,navei,navrad,navrado
+      parameter (ndpermh=31 )
+      common/T2Mmaxmin/T2Mh(jm0),T2Mdmax(3,jm0),T2Mdmin(3,jm0),
+     & T2Mmmax(3,jm0),T2Mmmin(3,jm0)
+!   ocean, land, sea ice
 
