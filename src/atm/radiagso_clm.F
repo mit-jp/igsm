@@ -97,6 +97,7 @@ C                                                                       5035.
      & ,KTREND
       dimension CLDSSF(JM0,LM0),CLDMCF(JM0,LM0)
      &,BSO4LAND(JM0),BSO4OCEAN(JM0)
+     &,bcodmn(JM0,LM0,12),bcodn(JM0,LM0),bcodl(JM0,LM0),bcodo(JM0,LM0)
       dimension DSWSRF(jm0),DLWSRF(jm0),DSWVIS(jm0),DSWNIR(jm0)
      & ,ALBV(jm0),ALBN(jm0),ALBVC(jm0),ALBNC(jm0)
       integer PCLOUD
@@ -153,9 +154,6 @@ C****        9  WATER FIELD CAPACITY OF FIRST LAYER (KG/M**2)           5068.
 C****                                                                   5069.   
       IF(MODRD.EQ.0) IDACC(2)=IDACC(2)+1                                5070.   
       IF (IFIRST.NE.1) GO TO 50                                         5071.   
-#ifdef ADJUSTED_CO2
-        print *,' ADJUSTED_CO2'
-#endif
       BETA=0.29
       JDAYR=JNDAY
       JYEARR=INYEAR
@@ -179,6 +177,10 @@ c     print *,' CLOUDS for ',nrcldmax/nrbyyr,' years'
       print *,' HC aerosol for. ALFA=',ALFA,' BETA=',BETA
       print *,'Coefficient for volcanic aerosol=',cfvolaer
       print *,' separate caclulations for land and ocean'
+#if ( defined HISTORICAL_BC && !defined FIXED_FOR )
+       print *,'With black carbon forcing'
+       print *,' CFBC=',CFBC
+#endif
       DC25=.TRUE.
 c     DC25=.FALSE.
       if(DC25)then
@@ -308,7 +310,7 @@ C**** COMPUTE EARTH ALBEDOS AND OTHER PARAMETERS FOR BEGINNING OF DAY   5125.
 c     call sulfr(BSO4LAND,BSO4OCEAN,TNOW)
       KWRITE=0
       if(JMONTH.ne.JMLAST) then
-#if ( defined VOL_AER )
+#if ( defined VOL_AER || defined HISTORICAL_BC )
           do MNAER=1,12
            if (JDAY.le.JDY(MNAER)) go to 458
           enddo
@@ -441,6 +443,12 @@ c       if(FLAND.lt.1.0)BSO4OCEAN(j)=BSO4OCEAN(j)/(1.-FLAND)
 c     enddo
 c    for sulfate.4x5.1986.new.dat
 !
+#if ( defined HISTORICAL_BC && !defined FIXED_FOR )
+!        print *,'Before bchist '
+!        print *,TOFDAY,JDATE,JMONTH
+      call bchist(bcodl,bcodo,JYEAR,MNAER,JDATE)
+        FBC=CFBC
+#endif
        CALL RCOMPT
 c      print *,'After RCOMPT'
 c      CALL WRITER (1,0)
@@ -788,6 +796,11 @@ C****                                                                   5260.
       PEARTH=PLAND-PLICE
       if(ii.eq.1)then
        BSO4=BSO4OCEAN(J)
+#if ( defined HISTORICAL_BC && !defined FIXED_FOR )
+       do l=1,lm
+         bcod(1,j,l)=bcodo(j,l)
+       enddo
+#endif
        PTYPE=POCEAN
        POICE=0.
        POCEAN=1.
@@ -797,6 +810,11 @@ C****                                                                   5260.
        TGAL=0.
       else if(ii.eq.3)then
        BSO4=BSO4OCEAN(J)
+#if ( defined HISTORICAL_BC && !defined FIXED_FOR )
+       do l=1,lm
+         bcod(1,j,l)=bcodo(j,l)
+       enddo
+#endif
        PTYPE=POICE
        POICE=1.
        POCEAN=0.
@@ -806,6 +824,11 @@ C****                                                                   5260.
        TGAL=TGOI
       else
        BSO4=BSO4LAND(J)
+#if ( defined HISTORICAL_BC && !defined FIXED_FOR )
+       do l=1,lm
+         bcod(1,j,l)=bcodl(j,l)
+       enddo
+#endif
        PTYPE=PLAND
        POCEAN=0.            
        POICE=0.

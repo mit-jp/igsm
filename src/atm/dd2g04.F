@@ -507,51 +507,51 @@ C****                                                                    462.
 C**** NORTHWARD GRADIENT OF TEMPERATURE: TROPOSPHERIC AND STRATOSPHERIC  463.   
 C****                                                                    464.   
 C**** MEAN TROPOSPHERIC NORTHWARD TEMPERATURE GRADIENT                   465.   
-      DO 340 L=1,LTM                                                     466.   
-      ADTDL=0.                                                           467.   
-      BDTDL=0.                                                           468.   
-      CDTDL=0.                                                           469.   
-      DO 335 I=1,IMAX                                                    470.   
-      PLAND=FDATA(I,J,2)                                                 471.   
-      POICE=ODATA(I,J,2)*(1.-PLAND)                                      472.   
-      POCEAN=(1.-PLAND)-POICE                                            473.   
-      ADTDL=ADTDL+(TX(I,JP1,L)-TX(I,JM1,L))*POCEAN                       474.   
-      BDTDL=BDTDL+(TX(I,JP1,L)-TX(I,JM1,L))*PLAND                        475.   
-      CDTDL=CDTDL+(TX(I,JP1,L)-TX(I,JM1,L))*POICE                        476.   
-  335 CONTINUE                                                           477.   
-      IF(.NOT.POLE) GO TO 338                                            478.   
-      DO 336 I=2,IM                                                      479.   
-      ADTDL=ADTDL+(TX(I,JP1,L)-TX(I,JM1,L))*POCEAN                       480.   
-      BDTDL=BDTDL+(TX(I,JP1,L)-TX(I,JM1,L))*PLAND                        481.   
-      CDTDL=CDTDL+(TX(I,JP1,L)-TX(I,JM1,L))*POICE                        482.   
-  336 CONTINUE                                                           483.   
-      ADTDL=ADTDL*2./FIM                                                 484.   
-      BDTDL=BDTDL*2./FIM                                                 485.   
-      CDTDL=CDTDL*2./FIM                                                 486.   
-  338 AJ(J,36)=AJ(J,36)+ADTDL*DSIG(L)                                    487.   
-      BJ(J,36)=BJ(J,36)+BDTDL*DSIG(L)                                    488.   
-  340 CJ(J,36)=CJ(J,36)+CDTDL*DSIG(L)                                    489.   
+!     DO 340 L=1,LTM                                                     466.   
+!     ADTDL=0.                                                           467.   
+!     BDTDL=0.                                                           468.   
+!     CDTDL=0.                                                           469.   
+!     DO 335 I=1,IMAX                                                    470.   
+!     PLAND=FDATA(I,J,2)                                                 471.   
+!     POICE=ODATA(I,J,2)*(1.-PLAND)                                      472.   
+!     POCEAN=(1.-PLAND)-POICE                                            473.   
+!     ADTDL=ADTDL+(TX(I,JP1,L)-TX(I,JM1,L))*POCEAN                       474.   
+!     BDTDL=BDTDL+(TX(I,JP1,L)-TX(I,JM1,L))*PLAND                        475.   
+!     CDTDL=CDTDL+(TX(I,JP1,L)-TX(I,JM1,L))*POICE                        476.   
+! 335 CONTINUE                                                           477.   
+!     IF(.NOT.POLE) GO TO 338                                            478.   
+!     DO 336 I=2,IM                                                      479.   
+!     ADTDL=ADTDL+(TX(I,JP1,L)-TX(I,JM1,L))*POCEAN                       480.   
+!     BDTDL=BDTDL+(TX(I,JP1,L)-TX(I,JM1,L))*PLAND                        481.   
+!     CDTDL=CDTDL+(TX(I,JP1,L)-TX(I,JM1,L))*POICE                        482.   
+! 336 CONTINUE                                                           483.   
+!     ADTDL=ADTDL*2./FIM                                                 484.   
+!     BDTDL=BDTDL*2./FIM                                                 485.   
+!     CDTDL=CDTDL*2./FIM                                                 486.   
+! 338 AJ(J,36)=AJ(J,36)+ADTDL*DSIG(L)                                    487.   
+!     BJ(J,36)=BJ(J,36)+BDTDL*DSIG(L)                                    488.   
+! 340 CJ(J,36)=CJ(J,36)+CDTDL*DSIG(L)                                    489.   
 C**** MEAN STRATOSPHERIC NORTHWARD TEMPERATURE GRADIENT                  490.   
-      IF (LS1.GT.LM) GO TO 380                                           491.   
-      DO 370 L=LS1,LM                                                    492.   
-      ADTDL=0.                                                           493.   
-      BDTDL=0.                                                           494.   
-      CDTDL=0.                                                           495.   
-      DO 350 I=1,IM                                                      496.   
-      PLAND=FDATA(I,J,2)                                                 497.   
-      POICE=ODATA(I,J,2)*(1.-PLAND)                                      498.   
-      POCEAN=(1.-PLAND)-POICE                                            499.   
-      ADTDL=ADTDL+(TX(I,JP1,L)-TX(I,JM1,L))*POCEAN                       500.   
-      BDTDL=BDTDL+(TX(I,JP1,L)-TX(I,JM1,L))*PLAND                        501.   
-      CDTDL=CDTDL+(TX(I,JP1,L)-TX(I,JM1,L))*POICE                        502.   
-  350 CONTINUE                                                           503.   
-      IF(.NOT.POLE) GO TO 360                                            504.   
-      ADTDL=ADTDL*2./FIM                                                 505.   
-      BDTDL=BDTDL*2./FIM                                                 506.   
-      CDTDL=CDTDL*2./FIM                                                 507.   
-  360 AJ(J,35)=AJ(J,35)+ADTDL*DSIG(L)                                    508.   
-      BJ(J,35)=BJ(J,35)+BDTDL*DSIG(L)                                    509.   
-  370 CJ(J,35)=CJ(J,35)+CDTDL*DSIG(L)                                    510.   
+!     IF (LS1.GT.LM) GO TO 380                                           491.   
+!     DO 370 L=LS1,LM                                                    492.   
+!     ADTDL=0.                                                           493.   
+!     BDTDL=0.                                                           494.   
+!     CDTDL=0.                                                           495.   
+!     DO 350 I=1,IM                                                      496.   
+!     PLAND=FDATA(I,J,2)                                                 497.   
+!     POICE=ODATA(I,J,2)*(1.-PLAND)                                      498.   
+!     POCEAN=(1.-PLAND)-POICE                                            499.   
+!     ADTDL=ADTDL+(TX(I,JP1,L)-TX(I,JM1,L))*POCEAN                       500.   
+!     BDTDL=BDTDL+(TX(I,JP1,L)-TX(I,JM1,L))*PLAND                        501.   
+!     CDTDL=CDTDL+(TX(I,JP1,L)-TX(I,JM1,L))*POICE                        502.   
+! 350 CONTINUE                                                           503.   
+!     IF(.NOT.POLE) GO TO 360                                            504.   
+!     ADTDL=ADTDL*2./FIM                                                 505.   
+!     BDTDL=BDTDL*2./FIM                                                 506.   
+!     CDTDL=CDTDL*2./FIM                                                 507.   
+! 360 AJ(J,35)=AJ(J,35)+ADTDL*DSIG(L)                                    508.   
+!     BJ(J,35)=BJ(J,35)+BDTDL*DSIG(L)                                    509.   
+! 370 CJ(J,35)=CJ(J,35)+CDTDL*DSIG(L)                                    510.   
   380 CONTINUE                                                           511.   
 C****                                                                    512.   
 C**** STATIC STABILITIES: TROPOSPHERIC AND STRATOSPHERIC                 513.   
@@ -589,9 +589,9 @@ C**** OLD STRATOSPHERIC STATIC STABILITY                                 533.
       CSS=CSS+SS*POICE                                                   545.   
 C                                                                        546.   
   440 CONTINUE                                                           547.   
-      AJ(J,24)=AJ(J,24)+ASS                                              548.   
-      BJ(J,24)=BJ(J,24)+BSS                                              549.   
-      CJ(J,24)=CJ(J,24)+CSS                                              550.   
+!     AJ(J,24)=AJ(J,24)+ASS                                              548.   
+!     BJ(J,24)=BJ(J,24)+BSS                                              549.   
+!     CJ(J,24)=CJ(J,24)+CSS                                              550.   
 C****                                                                    551.   
 C**** NUMBERS ACCUMULATED FOR THE RADIATION EQUILIBRIUM LAYERS           552.   
 C****                                                                    553.   
@@ -1220,10 +1220,11 @@ C****                                                                   1599.
      2  ' T1 (.1 C)      ', '0T SURF (.1 C)  ',                         1612.   
 !    *  '1STAT STB(STRAT)',' STAT STB(TROPO)','0RICH NUM(STRAT)',       1613.   
 !    *  ' RICH NUM(TROPO)',' ROSS NUM(STRAT)',' ROSS NUM(TROPO)',       1614.   
-     *  '1STAT STB(STRAT)',' STAT STB(TROPO)','0TH2M (DEGREE)',         1613.   
+     *  'REL HUMID Level 1',' STAT STB(TROPO)','0TH2M (DEGREE)', 
      *  ' RICH NUM(SURF )',' ROSS NUM(STRAT)',' ROSS NUM(TROPO)',       1614.   
      *  ' OCEAN ICE COVER','0SNOW COVER',' TAU L ',' TAU F',            1615.   
-     4  ' SURF. FRICTION ', '0DT/DLAT(STRAT) ', ' DT/DLAT(TROPO) '/     1616.   
+!    4  ' SURF. FRICTION ', '0DT/DLAT(STRAT) ', ' DT/DLAT(TROPO) '/     1616.   
+     4  ' SURF. FRICTION ', ' T2m max ', ' T2m min  '/ 
                          DATA TITLE2/                                   1617.   
      7  ' L(STRAT)(10**5)', ' L(TROP) (10**5)', ' PRECIP HEAT FLX',     1618.   
      O  ' HEAT RUNOFF G1 ', ' HT WTR DIFS -Z1', '0CONDUCTN AT -Z1',     1619.   
@@ -1272,10 +1273,14 @@ c     print *,' DT=',DT,' NDYN=',NDYN
 c     print *,' INQTAB'
 c     print *,INQTAB 
       IF(IFIRST.NE.1) GO TO 100                                         1646.   
-      print *,INQTAB 
+!     print *,INQTAB 
       IA(32)=1
       IA(33)=1
       IA(34)=1
+!     Tmax Tmin RHum
+      IA(35)=1
+      IA(36)=1
+      IA(24)=1
 c     print*,'IDACC',IDACC
 c     print *,' IA'
 c     do i=1,72
@@ -1319,8 +1324,8 @@ C**** INITIALIZE CERTAIN QUANTITIES  (KD1M LE 69)                       1648.
       if(NOCLM)then
       SCALE(31)=SCALE(31)/IDACC(3)
       endif
-      SCALE(35)=.5E2*JMM1/((SIGE(LS1)-SIGE(LM+1)+1.E-12)*180.)          1682.   
-      SCALE(36)=.5E2*JMM1/((SIGE(1)-SIGE(LS1))*180.)                    1683.   
+!     SCALE(35)=.5E2*JMM1/((SIGE(LS1)-SIGE(LM+1)+1.E-12)*180.)          1682.   
+!     SCALE(36)=.5E2*JMM1/((SIGE(1)-SIGE(LS1))*180.)                    1683.   
 c     SCALE(37)=1.E-5*SQRT(RGAS)/(2.*OMEGA)                             1684.   
 c     SCALE(37)=0.5
       SCALE(37)=1.0/float(NSURF)
@@ -1335,6 +1340,15 @@ c     For dT2m
       SCALE(27)=SCALE(26)                                               1685.   
       IA(27)=IA(26)
 c     For dT2m
+!      For T2m min and max
+      SCALE(35)=SCALE(26)                                               1685.   
+      IA(35)=IA(26)
+      SCALE(36)=SCALE(26)                                               1685.   
+      IA(36)=IA(26)
+!      For Rel Humidity Level 1
+      SCALE(24)=100.
+      IA(24)=IA(26)
+!
 c     For RIGS
 !     SCALE(27)=SCALE(37)                                               1685.   
 !     IA(27)=IA(37)
@@ -1445,14 +1459,24 @@ c     WRITE (6,905)                                                     1756.
 c     print *,' do 490 K=',K
       N=INDEX(K)                                                        1758.   
       IACC=IDACC(IA(N))                                                 1759.   
-      if(K.eq.-16.and.M.eq.2) then
+      if(N.eq.36.or.N.eq.35) then
+      IACC=1
+      SCALE(N)=10.0
+      endif
+      if(N.eq.-24.and.M.eq.2) then
+        J=42
         print *,' DD2'
 	print *,' N=',N,' IACC=',IACC,' SCALE',SCALE(N)
-	print *,TITLE(n),' M=',M
+	print *,TITLE(n),' M=',M,' J=',J
         print *,' BJ(J,N)=',BJ(J,N)
       endif
       GSUM=0.                                                           1760.   
       GWT=0.                                                            1761.   
+      if(N.eq.-24) then
+        print *,' DD2'
+	print *,' N=',N,' IACC=',IACC,' SCALE',SCALE(N)
+	print *,TITLE(n),' M=',M
+      endif
       DO 320 JHEMI=1,2                                                  1762.   
 c     if(N.eq.60) then
 cprint *,' N=',N,' JHEMI=',JHEMI
@@ -1461,13 +1485,16 @@ c     endif
       HWT=0.                                                            1764.   
       DO 310 JH=1,JMHALF                                                1765.   
       J=(JHEMI-1)*JMHALF+JH                                             1766.   
-      QJ=(AJ(J,N)*WTA(M)+BJ(J,N)*WTB(M)+CJ(J,N)*WTC(M))*SCALE(N)        1767.   
-      if(N.eq.-60) then
-	print *,AJ(J,N),BJ(J,N),CJ(J,N)
-	print *,CJ(J,80),CJ(J,58)
+      if(N.eq.-24) then
+        print *,'J=',J
       endif
+      QJ=(AJ(J,N)*WTA(M)+BJ(J,N)*WTB(M)+CJ(J,N)*WTC(M))*SCALE(N)        1767.   
       WTJ=(SPOCEN (J)*WTA(M)+SPLAND(J)*WTB(M)+SPOICE(J)*WTC(M))*IACC    1768.   
       FLAT(J)=QJ/(WTJ+1.E-20)                                           1769.   
+      if(N.eq.-24) then
+	print *,FLAT(J),AJ(J,N),BJ(J,N),CJ(J,N)
+!print *,CJ(J,80),CJ(J,58)
+      endif
       MLAT(J)=INT(FLAT(J)+10000.5)-10000                                1770.   
       HSUM=HSUM+QJ*DXYP(J)                                              1771.   
   310 HWT=HWT+WTJ*DXYP(J)                                               1772.   

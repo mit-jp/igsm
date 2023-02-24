@@ -122,13 +122,18 @@ C     TO USE THE DEFAULTS EXCEPT FOR CO2 SET CO2.GT.0.                  4553.2
       IF (KTREND.EQ.0) KFORCE=26789                                     4553.45 
       FGOLDU(6)=1.                                                      4553.5  
 #if ( defined OLD_LAPGAS )
-      LAPGAS=2                                                          4553.55 
+!     LAPGAS=2                                                          4553.55 
+!     IMG(2)=9
 #endif
 C     FULGAS(8)=0.                                                      4553.6  
 C     FULGAS(9)=0.                                                      4553.65 
 C     FGOLDU(1)=.005/.012                                               4553.7  
 c  50 CALL RCOMP1 (21,0,60)                                             4553.75 
    50 continue
+#if ( defined OLD_LAPGAS )
+      LAPGAS=2                                                          4553.55 
+      IMG(2)=9
+#endif
 #if ( defined IPCC_FORCING )
       print *,'Run with IPCC FORCING'
 #else
@@ -137,6 +142,9 @@ c  50 CALL RCOMP1 (21,0,60)                                             4553.75
 #else
       print *,'Run with GISS FORCING'
 #endif
+#endif
+#ifdef ADJUSTED_CO2
+        print *,' ADJUSTED_CO2'
 #endif
           print *,' RADIA0 JYEAR=',JYEAR,' JDAY=',JDAY
 c     IF (KTREND.GT.0) CALL FORSET(1958.,KTREND,1)                      4553.8  

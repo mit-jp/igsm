@@ -287,6 +287,8 @@ C**** ZERO OUT SURFACE DIAGNOSTICS WHICH WILL BE SUMMED OVER LONGITUDE  5956.
          CSHDT=0.                                                       5962.   
          AEVHDT=0.                                                      5963.   
          CEVHDT=0.                                                      5965.   
+         ARH=0.                                                         5966.   
+         CRH=0.                                                         5968.   
          ATS=0.                                                         5966.   
          CTS=0.                                                         5968.   
          AT2=0.                                                         5966.   
@@ -303,6 +305,7 @@ C**** ZERO OUT SURFACE DIAGNOSTICS WHICH WILL BE SUMMED OVER LONGITUDE  5956.
         CWMG=0.
 	ACH=0.
 	CCH=0.
+      T2MSS=0.0
       IM1=IM                                                            5969.   
       DO 6000 I=1,IMAX                                                  5970.   
 C****                                                                   5971.   
@@ -618,6 +621,7 @@ c     print *,'POCEAN=',POCEAN,' PTYPE=',PTYPE
 c     print *,'TS=',TS,' TG=',TG
 c     print *,' T2M=',T2M,' TH2M=',TH2M
       DT2M= DT2MGL(j)
+      T2MSS=T2MSS+(T2M-TF)*PTYPE
       F0DT=CORSR*SRHDT+TRHDT+SHDT+EVHDT                                 6510. 
       if(J.eq.JPR)then
         print *,'TAU=',TAU,' NS=',NS,' ITYPE=',ITYPE
@@ -734,6 +738,7 @@ c        DGSS=DGSS+DGS*PTYPE                                            6547.
 c        EDS1S=EDS1S+EDS1*PTYPE                                         6548.   
 c        PPBLS=PPBLS+PPBL*PTYPE                                         6549.   
          EVAPS=EVAPS+EVAP*PTYPE                                         6550.   
+         RHH=min(QS/QG,1.0)
       GO TO (4000,4100,5000,5000),ITYPE                                 6551.   
 C****                                                                   6552.   
 C**** OCEAN                                                             6553.   
@@ -742,6 +747,7 @@ C****                                                                   6554.
          AEVHDT=AEVHDT+EVHDT*POCEAN                                     6556.   
          ATRHDT=ATRHDT+TRHDT*POCEAN                                     6557.   
          ATS=ATS+(TS-TF)*POCEAN                                         6558.   
+         ARH=ARH+RHH*POCEAN          
 c        AT2=AT2+(TH2M-TF)*POCEAN 
          AT2=AT2+(T2M-TF)*POCEAN 
          ADT2=ADT2+DT2M*POCEAN 
@@ -760,6 +766,7 @@ C****                                                                   6562.
          CEVHDT=CEVHDT+EVHDT*POICE                                      6564.   
          CTRHDT=CTRHDT+TRHDT*POICE                                      6565.   
          CTS=CTS+(TS-TF)*POICE                                          6566.   
+         CRH=CRH+RHH*POICE          
 c        CT2=CT2+(TH2M-TF)*POICE                                        6566.   
          CT2=CT2+(T2M-TF)*POICE            
          CDT2=CDT2+DT2M*POICE            
@@ -851,7 +858,15 @@ C**** QUANTITIES ACCUMULATED FOR SURFACE TYPE TABLES IN DIAG1           6663.
          AJ(J,27)=AJ(J,27)+ADT2                                         6674.   
          CJ(J,27)=CJ(J,27)+CDT2                                         6676.   
          BJ(J,27)=BJ(J,27)+BLJ(J,27)
+         AJ(J,24)=AJ(J,24)+ARH  
+         BJ(J,24)=BJ(J,24)+BLJ(J,24)
+         CJ(J,24)=CJ(J,24)+CRH   
          
+      if (T2Mdmax(1,j).lt.T2MSS) T2Mdmax(1,j)=T2MSS
+      if (T2Mdmin(1,j).gt.T2MSS) T2Mdmin(1,j)=T2MSS
+      if (T2Mdmax(3,j).lt.T2MSS) T2Mdmax(3,j)=T2MSS
+      if (T2Mdmin(3,j).gt.T2MSS) T2Mdmin(3,j)=T2MSS
+
 c        print *,j,'CTS=',CTS,' CT2=',CT2
 c     print *,'BLDATA'
 c     print *,(BLDATA(1,j,k),k=1,3)

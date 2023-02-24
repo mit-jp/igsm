@@ -444,9 +444,7 @@ C                                                                       9131.7
   121 TN=FFNC(XN,YR)                                                    9133.9  
       DTNR=TN-TR                                                        9134.   
 !APS
-#if ( !defined OLD_LAPGAS )
       DTNR=1.5*DTNR
-#endif
 !APS
       ITER=ITER+1                                                       9134.1  
       SLOPE=DTNR/(XN-XR)                                                9134.2  
@@ -462,9 +460,7 @@ C                                                                       9131.7
   131 TN=FFNC(XR,YN)                                                    9135.2  
       DTNR=TN-TR                                                        9135.3  
 !APS
-#if ( !defined OLD_LAPGAS )
       DTNR=1.6*DTNR
-#endif
 !APS
       ITER=ITER+1                                                       9135.4  
       SLOPE=DTNR/(YN-YR)                                                9135.5  
@@ -617,6 +613,9 @@ ccc   SUMJM=SUMJM+X3(K)-X4(K)-X4(K)+X3(K)                               8614.
      &   +5.36)*LOG(C/C0)
 !    Adjustment for 3D CO2 fit
      &   *1.1024*CF
+#ifdef ADJUSTED_CO2
+     &   *4.0/4.9
+#endif
 
       FCH4I(XM,XM0,XN,XN0)=(a3*0.5*(XM+XM0)+b3*0.5*(XN+XN0)
      &   +0.043)*(SQRT(XM)-SQRT(XM0))
@@ -651,7 +650,7 @@ ccc   SUMJM=SUMJM+X3(K)-X4(K)-X4(K)+X3(K)                               8614.
       XDT0(2)=cf*fn2oi(XX(3),XR(3),XX(2),XR(2),XX(1),XR(1))
       XDT0(3)=cf*fch4i(XX(3),XR(3),XX(2),XR(2))
       XDT0(4)=FF11I(XX(4))-FF11I(XR(4))
-      XDT0(5)=FF11I(XX(5))-FF11I(XR(5))
+      XDT0(5)=FF12I(XX(5))-FF12I(XR(5))
       DO K=1,NFOR
          SUM=SUM+XDT0(K)
       ENDDO

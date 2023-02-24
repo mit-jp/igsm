@@ -53,7 +53,7 @@ cjrs#endif
 !
 ! === Chien Wang 062904
 !
-	character(100) :: cfname
+	character(256) :: cfname
 !
       COMMON/OCN/TG3M(1,JM0,12),RTGO(1,JM0,lmo),STG3(1,JM0),DTG3(1,JM0)
       COMMON/SPEC2/KM,KINC,COEK,C3LAND(IO0,JM0),C3OICE(IO0,JM0)         1506.1  
@@ -86,7 +86,7 @@ c     CHARACTER*8 RECORD,ANDEND,NLREC*80                                1510.
       character * 256 sulf1986,sulf2050,sulfamp,SO2_EM,
      &  S0C_data,
      &  dirdat1,dirdat2
-     &  ,bc_data
+     &  ,bc_data,bc_land,bc_ocean, bc_total
       character * 256 chemdata,chemout,init_4nem,pov_deepo
      & ,flin_nep,last_clm,SEN_dat
      &  ,fl_init_alkt,fl_init_salt,fl_dic_eq,
@@ -102,6 +102,7 @@ c==== 012201
       common /bghgdata/bgrghg_data
       common /sulfdata/sulf1986,sulf2050,sulfamp,SO2_EM
       common /o3data/o3_data
+      common /bc_datah/bc_land,bc_ocean, bc_total
       common /solardata/S0C_data
       common/aexpc/AEXP,ISTRT1,ISTRTCHEM
       common/qfl/QFLUX(JM0,0:13),ZOAV(JM0),QFLUXT(JM0)
@@ -147,6 +148,7 @@ c==== 012201
 #endif
      &  ,OCNGEOM,ocngmfile,ocndata4atm
      &  ,bc_data
+     &  ,bc_land,bc_ocean, bc_total
      &  ,PRTREND
      &  ,fixedLC4TEM
 Cjrs     &  ,dtatm,dtocn
@@ -157,7 +159,8 @@ Cjrs     &  ,dtatm,dtocn
 #endif
       character * 256 ocngmfile,ocndata4atm,fl_volaer,fl_orbital
       character * 256 vegfile
-     &  ,fclmlice,fbaresoil,fwmax,fprratio,o3datadir
+     &  ,fclmlice,fbaresoil,fwmax,fprratio
+!    &  ,fclmlice,fbaresoil,fwmax,fprratio,o3datadir
       common/wrcom/wr25,TRANSR,CONTRR,OBSFOR
 c jrs      common/TIMESTEPS/dtatm,dtocn
       LOGICAL LFR,NLFR,wr25,TRANSR,WRCLD,CONTRR,CLDFEED,OBSFOR
@@ -207,7 +210,7 @@ cjrs alreadyin DRIVER.h#include "CLM.COM"
       logical odifcarbon,ocarcont,ocarindata
 #endif
 
-      common /SO2EMIN/SO2EM
+      common /SO2EMIN/IYRSO2EMI,SO2EM
 #if (!defined PREDICTED_GASES)                                               
 #if (defined CPL_TEM || defined CPL_OCEANCO2 )
       common /ATCO2/atm_co2(jm0),oco2file,co2rfile
@@ -334,6 +337,9 @@ cjrs      dtocn=1
       co2_data =  'undefined'
       bgrghg_data =  'undefined'
       bc_data =  'undefined'
+      bc_land =  'undefined'
+      bc_ocean =  'undefined'
+      bc_total =  'undefined'
       S0C_data =  'undefined'
       o3_data =  'undefined'
       ochemfile =  'undefined'
@@ -507,8 +513,15 @@ c     File which depend on resolution
 c
       open( unit=519,file=dirdat2(1:id2-1)//'FILE19',
      *    status='OLD',form='unformatted')
+      if (YEARGT.eq.1958) then
+      print *,'Using FILE15 for year 1958'
       open( unit=515,file=dirdat2(1:id2-1)//'FILE15',
      *    status='OLD',form='unformatted')
+      else 
+      print *,'Using FILE15_TD_514.14 for year 1860'
+      open( unit=515,file=dirdat2(1:id2-1)//'FILE15_TD_514.14',
+     *    status='OLD',form='unformatted')
+      endif
       open( unit=523,file=dirdat2(1:id2-1)//'FILE23',
      *    status='OLD',form='unformatted')
       open( unit=526,file=dirdat2(1:id2-1)//'FILE26',
@@ -849,38 +862,23 @@ C       OLD
       else
          print *,' Without changes in  stochastic precip'
       endif
+
 #if ( defined PREDICTED_AEROSOL )
-!#if ( defined CPL_CHEM )
-Cold  AFBYCF=0.6725
-Cold  SO2EREF=123.57
-Cigsm1AFBYCF=0.6054
-Cigsm1SO2EREF=135.272
-!     AFBYCF=1.101897
-!     SO2EREF=152.3631
-!      read(664,'(f10.6)')SO2EM
-!      SO2ER=SO2EM/SO2EREF
-!      CFAEROSOL=-AERFOR/(AFBYCF*SO2ER)
-Cold  CFAEROSOL=(-AERFOR/AFBYCF)**1.035/(SO2ER**0.7248)
-!      CFAEROSOL=(-AERFOR/AFBYCF)**1.035/(SO2ER**1.0391)
 
-
-      SO2EREF=147.375
-!#if ( defined CPL_CHEM )
         print *,' Before eppaemission'
       print *,' INYEAR= ',INYEAR
         CALL eppaemission (INYEAR)
-!#endif
-!     open(664,file=SO2ERATIO,
-!    &        form='formatted',
-!    &        status='old')
-!     read(664,'(f10.6)')SO2EM
+      if (IYRSO2EMI.eq.1997) then
+        SO2EREF=147.375
+      elseif (IYRSO2EMI.eq.2006) then
+!New SO2EM
+        SO2EREF=114.334
+      else
+        print *,'Wrong IYRSO2EMI ',IYRSO2EMI
+        stop
+      endif
        print *,' SO2EM from input ',SO2EM
       SO2ER=SO2EM/SO2EREF
-!     F90BYF80=0.948
-!     AERFOR90=AERFOR*F90BYF80
-!     AFBYCF90=1.04 
-!     print *,'AFBYCF90=',AFBYCF90
-!     12/21/2006 (from runs 265x.06)
 !     Adjustment for BC forcing
        print *,' AERF4BC=',AERF4BC
       AERFOR=AERFOR+AERF4BC

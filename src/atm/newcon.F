@@ -156,6 +156,9 @@ c        print *,x0,y0,xo,yo
      &   +5.36)*LOG(C/C0)
 !    Adjustment for 3D CO2 fit
      &   *1.1024*CF
+#ifdef ADJUSTED_CO2
+     &   *4.0/4.9
+#endif
 
       FCH4I(XM,XM0,XN,XN0)=(a3*0.5*(XM+XM0)+b3*0.5*(XN+XN0)
      &   +0.043)*(SQRT(XM)-SQRT(XM0))

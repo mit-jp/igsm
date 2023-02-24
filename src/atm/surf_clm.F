@@ -298,6 +298,9 @@ c     t2md4tem(j)=t2md4tem(j)+TH2M
       T2M=tref2mclm(i,j)
       t2md4tem(j)=t2md4tem(j)+T2M
       nt2md4tem(j)=nt2md4tem(j)+1
+      T2MSS=(T2M-TF)*PLAND
+      if (T2Mdmax(2,j).lt.T2MSS) T2Mdmax(2,j)=T2MSS
+      if (T2Mdmin(2,j).gt.T2MSS) T2Mdmin(2,j)=T2MSS
       DT2M=DT2MLD(j)
       F0DT=CORSR*SRHDT+TRHDT+SHDT+EVHDT                                 6510. 
       if (J.eq.-23) then

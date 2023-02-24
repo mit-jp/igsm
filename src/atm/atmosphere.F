@@ -571,6 +571,15 @@ CJRS removed below from ocean_3d
       NOCLM=.false.
 !     declin_clm =-0.4030116157152766
 #endif
+      do n=1,3
+      do j=1,jm
+         T2Mdmax(n,j)=-500.0
+         T2Mdmin(n,j)=500.0
+        T2Mmmax(n,j)=0.0
+        T2Mmmin(n,j)=0.0
+      enddo
+      enddo
+
       print *,' atmosphere DTATM=',DTATM
       print *,' It is running'
       print *,'End of atmospheric model initialization'
@@ -1704,6 +1713,20 @@ c
          nt2md4tem(j)=0.
       enddo
 #endif
+      do n=1,3
+      do j=1,jm
+        T2Mmmax(n,j)=T2Mmmax(n,j)+T2Mdmax(n,j)/NDAYMN(mndriver)
+        T2Mmmin(n,j)=T2Mmmin(n,j)+T2Mdmin(n,j)/NDAYMN(mndriver)
+          if(j.eq.-42.and.n.eq.2) then
+           print *,'T2Mmaxmin'
+           print *,'fland=',FDATA(1,J,2)
+           print *,mndriver,JDATE
+           print *,T2Mdmax(n,j)/FDATA(1,J,2),T2Mmmax(n,j)/FDATA(1,J,2)
+          endif
+         T2Mdmax(n,j)=-500.0
+         T2Mdmin(n,j)=500.0
+      enddo
+      enddo
 
 #if ( defined CPL_OCEANCO2 && defined ML_2D )
 C    For OCM 
@@ -1866,6 +1889,38 @@ c
 c
       enddo
 #endif
+!      print *,'BJT2Mmaxmin'
+      I=1
+      do j=1,jm
+      PLAND=FDATA(I,J,2)    
+      PWATER=1.-PLAND       
+      if(PWATER.gt.0.0)then
+        AJ(J,35)=T2Mmmax(1,j)/2.
+        AJ(J,36)=T2Mmmin(1,j)/2.
+        CJ(J,35)=T2Mmmax(3,j)/2.
+        CJ(J,36)=T2Mmmin(3,j)/2.
+      else
+        AJ(J,35)=0.0
+        AJ(J,36)=0.0
+        CJ(J,35)=0.0
+        CJ(J,36)=0.0
+      endif
+      if(PLAND.gt.0.0) then
+        BJ(J,35)=T2Mmmax(2,j)
+        BJ(J,36)=T2Mmmin(2,j)
+      else
+        BJ(J,35)=0.0
+        BJ(J,36)=0.0
+      endif
+!      print *,AJ(J,35),AJ(J,36),CJ(J,35),CJ(J,36)
+!      print *,AJ(J,35)/PWATER,AJ(J,36)/PWATER,
+!    & CJ(J,35)/PWATER,CJ(J,36)/PWATER
+
+      do n=1,3
+        T2Mmmax(n,j)=0.0
+        T2Mmmin(n,j)=0.0
+      enddo
+      enddo
 
       endif	! end of month
  550  continue

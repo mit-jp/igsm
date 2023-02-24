@@ -210,6 +210,7 @@ c     print *,'After 100'
       BTS=0.     
       BWS=0.
       BWMG=0.
+      BRH=0.
       IM1=IM                                                            5969.   
        i=1
        tsl4clm(i,j)=0.0
@@ -361,6 +362,7 @@ c       print *,' '
       WSS=WSS+WS*PTYPE                                                  6526.   
       TSS=TSS+TS*PTYPE                                                  6527.   
       QSS=QSS+QS*PTYPE                                                  6528.   
+      RHH=min(QS/QG,1.0)
       GO TO (5000,5000,4400,4600),ITYPE                                 6551.   
 C****                                                                   6552.   
 C**** LAND ICE                                                          6569.   
@@ -369,6 +371,7 @@ C****                                                                   6570.
          BTS=BTS+(TS-TF)*PLICE                                          6574.   
          BWS=BWS+WS*PLICE
          BWMG=BWMG+SQRT(WMG)*PLICE
+         BRH=BRH+RHH*PLICE  
       GO TO 2600                                                        6575.   
 C****                                                                   6576.   
 C**** EARTH                                                             6577.   
@@ -377,6 +380,7 @@ C****                                                                   6578.
          BTS=BTS+(TS-TF)*PEARTH                                         6582.   
          BWS=BWS+WS*PEARTH
          BWMG=BWMG+SQRT(WMG)*PEARTH
+         BRH=BRH+RHH*PEARTH
 
 C**** NON-OCEAN POINTS WHICH ARE NOT MELTING OR FREEZING WATER USE      6583.   
 C****   IMPLICIT TIME STEPS                                             6584.   
@@ -397,6 +401,7 @@ C**** QUANTITIES ACCUMULATED FOR SURFACE TYPE TABLES IN DIAG1           6663.
          BLJ(J,37)=BWS
          BLJ(J,28)=BWMG
          BLJ(J,23)=BTS  
+         BLJ(J,24)=BRH  
  7000 CONTINUE                                                          6677.   
       if(HPRNT) then
       print *,' From SRF4CLM TAU=',TAU,' JPR=',JPR

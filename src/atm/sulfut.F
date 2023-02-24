@@ -92,3 +92,110 @@ c     land and ocean fraction respectively
 !      print ('(6F7.4)'),(BSO4OCEAN(J)*1.e6,j=1,JM)
        return
        end
+
+      subroutine bchist(bcodland,bcodocean,iybc,nmonth,ndata)
+#if ( !defined CPL_CHEM )
+#if ( defined HISTORICAL_BC)
+
+#include "BD2G04.COM"
+
+       real *4 bclandm(JM0,LM0,0:13,0:150),
+     &   bcoceanm(JM0,LM0,0:13,0:150)
+     &   ,bctotalm(JM0,LM0,0:13,0:150)
+      real *4 bcarlann(JM,LM,0:13),bcarwann(JM,LM,0:13),
+     & bcartann(JM,LM,0:13)
+       dimension bcland(JM0,LM0),bcocean(JM0,LM0),bctotal(JM0,LM0)
+       dimension bcodland(JM0,LM0),bcodocean(JM0,LM0),bcodtotal(JM0,LM0)
+       dimension NDAYMN(12),iyears(0:150)
+      character * 256 bc_land,bc_ocean, bc_total
+      character * 80 title
+       common /bc_datah/bc_land,bc_ocean, bc_total
+       logical first
+       data NDAYMN /31,28,31,30,31,30,31,31,30,31,30,31/
+       data first /.true./
+
+       if(first) then
+       JM=JM0
+       print *,'Data for black carbon'
+       print *,bc_land
+!      qex_bc = 8.0e-6/dxyp(j) ! normal
+       qex_bc = 8.0e-6 ! normal
+       qex_bc = 8.0e-6*1.e9 ! normal
+       bcland0 =0.0
+       bcocean0=0.0
+       iyear0=1860
+       open(769,file=bc_land,
+     &  status='old',form='unformatted')
+       open(768,file=bc_ocean,
+     &  status='old',form='unformatted')
+!      read(769),iyears
+!      read(769),bclandm
+!      read(768),iyears
+!      read(768),bcoceanm
+      read (769),nyt
+      read (768),nyt
+!     print *,'nyt=',nyt
+      do ni=0,nyt
+        read (769),iyears(ni)
+        read (769),bcarlann
+        read (768),iyears(ni)
+        read (768),bcarwann
+       do imonth=0,13
+        do j=1,jm
+         do l=1,lm
+          bclandm(j,l,imonth,ni)=bcarlann(j,l,imonth)
+          bcoceanm(j,l,imonth,ni)=bcarwann(j,l,imonth)
+         enddo  ! j
+        enddo   ! l
+       enddo    ! imonth
+       enddo    ! ni
+!      print *,iyears
+        close (769)
+        close (768)
+       print *, 'from ',iyears(0),' to ', iyears(150)
+        first=.false.
+      endif
+!     print *,'From bcload ', iybc,nmonth,ndata
+      iyr=iybc-1860
+      if(ndata.le.16) then
+       x=(16-ndata)/31.
+       do l=1,LM0
+       do j=1,JM0
+         bcland(j,l)=bclandm(J,L,nmonth-1,iyr)*x
+     &   +bclandm(J,L,nmonth,iyr)*(1-x)
+         bcocean(j,l)=bcoceanm(J,L,nmonth-1,iyr)*x
+     &   +bcoceanm(J,L,nmonth,iyr)*(1-x)
+       enddo
+       enddo
+      else
+       x=1-(ndata-16)/31.
+       do l=1,LM0
+       do j=1,JM0
+         bcland(j,l)=bclandm(J,L,nmonth,iyr)*x
+     &   +bclandm(J,L,nmonth+1,iyr)*(1-x)
+         bcocean(j,l)=bcoceanm(J,L,nmonth,iyr)*x
+     &   +bcoceanm(J,L,nmonth+1,iyr)*(1-x)
+       enddo
+       enddo
+      endif
+       do j=1,JM0
+        bcodland(j,LM)=bcland(j,LM)*qex_bc
+        bcodocean(j,LM)=bcocean(j,LM)*qex_bc
+       enddo
+       do l=LM0-1,1,-1
+       do j=1,JM0
+        bcodland(j,L)=bcodland(j,L+1)+bcland(j,L)*qex_bc
+        bcodocean(j,L)=bcodocean(j,L+1)+bcocean(j,L)*qex_bc
+       enddo
+       enddo
+!      if (ndata.eq.15) then
+!     print *,'From bcload ', iybc,nmonth,ndata
+!      print *,' BCOD'
+!      do l=1,LM0
+!       print *,l,bcodland(23,L),bcodocean(23,L)
+!      enddo
+!     endif
+#endif
+#endif
+       return
+       end

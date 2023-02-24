@@ -534,16 +534,19 @@ C
 #if (  defined IPCC_FORCING || defined ETMINAN_FORCING)
           XNOW(1)=GHGBGR(1)*CO2
           KFOR(1)=1
-!         print *,'CO2 adjustnemt  ',XNOW(1),GHGBGR(1),KFOR(1)
+          print *,'CO2 adjustnemt  ',XNOW(1),GHGBGR(1),KFOR(1)
+          print *,KFOR
 #if (  defined IPCC_FORCING ) 
           CALL DTDX1D(XNOW,GHGBGR,XDT0,SDT0,KFOR,1)   
 !         print *,'CO2 IPCC forcing  ',XNOW(1),GHGBGR(1),XDT0(1)
 #else
-          CALL DTDX1D_ETMINAN(XNOW,GHGBGR,XDT0,SDT0,KFOR,1)          
+          XNOW(2)=GHGBGR(2)
+          KFOR(2)=1
+          CALL DTDX1D_ETMINAN(XNOW,GHGBGR,XDT0,SDT0,KFOR,2)          
 #endif
           CALL DXDT3D(XNOW,GHGBGR,XDT0,SDT0,KFOR,1) 
           FULGAS(2)=XNOW(1)/GHGBGR(1)
-!         print *,'CO2 adjustnemt  ',XNOW(1),GHGBGR(1)
+          print *,'CO2 adjustnemt  ',XNOW(1),GHGBGR(1)
 #endif
        ENDIF       ! KTREND
          if(FORGHG.or.CO2FOR) then

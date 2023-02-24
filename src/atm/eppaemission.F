@@ -22,10 +22,11 @@
      &  ,accri_data,accri_scaling
 #endif
       namelist /EPPA/ LYEAREM,emiss_data,SO2ERATIO,FORMSO2
+     & ,IYRSO2EMI
 #if ( defined ACCRI )
      &  ,accri_data,accri_scaling
 #endif
-      common /SO2EMIN/SO2EM
+      common /SO2EMIN/IYRSO2EMI,SO2EM
       data ifirst / 0 /
 #if ( defined CPL_CHEM )
       common /EPPAEMISS/  edailyf11eppa     (nlon,nlat,neppa),
@@ -60,6 +61,7 @@
 !     FORMSO2=.TRUE.
       open(535,file='eppaemis.dat')
        print *,' CALL EPPAEMISSION iyr=',iyr
+      IYRSO2EMI=1997
       read (535,NML=EPPA)
       print *,' FORMSO2=',FORMSO2
       close (535)

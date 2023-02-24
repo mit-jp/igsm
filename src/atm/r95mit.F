@@ -1493,7 +1493,8 @@ C                                                -------                1182.
       SCTSUM=SCTSUM+FGOLDH(J+KSR)*SRAS(L,K,J)                           1191.   
   211 COSSUM=COSSUM+FGOLDH(J+KSR)*SRAS(L,K,J)*SRAC(L,K,J)               1192.   
 
-#if ( (defined PREDICTED_BC || defined PREDICTED_AEROSOL) && !defined FIXED_FOR )
+!#if ( (defined PREDICTED_BC || defined PREDICTED_AEROSOL) && !defined FIXED_FOR )
+#if ( !defined FIXED_FOR )
 !
 ! --- Chemistry model patch, 092901
 !
@@ -1524,7 +1525,7 @@ C                                                -------                1182.
      &             *FAERSOL )
 #endif
 
-#if ( defined PREDICTED_BC  && !defined FIXED_FOR )
+#if ( (defined PREDICTED_BC || defined HISTORICAL_BC)  && !defined FIXED_FOR )
           dbcod  = max(0.0,
      &            (bcod(1,jlat,L) - bcod(1,jlat,L+1))
      &             *FBC )
@@ -1552,6 +1553,7 @@ c            print *,dbcod,SRAQEX(K,11)
 c            print *,SRAQSC(K,11),SRACOS(K,11)
              endif
             endif
+
        end if
 #endif
 
