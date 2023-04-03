@@ -41,9 +41,9 @@ C****                                                                      0.3
 C**** Dynamics and physics programs for 2-D model.                         0.4  
 C**** Like D2G04 but run on work station.                                  0.5 
  
-#include "BD2G04.COM"					     1.   
+#include "BD2G04.COM"					 
 #include "ODIFF.COM"
-#include "run.COM"					     1.   
+#include "run.COM"					
 
 #include "chem_para"
 #include "chem_com"
@@ -355,6 +355,27 @@ C***
           READ (602)
           READ (602)
          enddo
+#endif
+#if ( defined CPL_CHEM )
+       do nr=1,nwr-1
+!    globalmean
+          READ (176,*)
+          READ (180,*)
+!         READ (276,*)
+!  monthly
+          READ (169)
+          READ (179)
+          READ (189)
+!  budget
+          READ (167,*)
+          READ (167,*)
+!  meta
+          READ (181)
+!  photodiag
+         do nn=1,8
+          READ (177)
+         enddo
+       enddo
 #endif
       endif
 c     CALL FRTR0(IO)                                                      18.   

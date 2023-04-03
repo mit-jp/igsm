@@ -663,18 +663,6 @@ c     open(160,file=chemdata(1:id2-1)//'init-data2_46x11',
      &        form='unformatted',
      &        status='old')
 #endif
-c     open(164,file=chemdata(1:id2-1)//'edaily.dat',
-c    &        form='unformatted',
-c    &        status='old')
-
-!     open(164,file=emiss_data,
-!    &        form='unformatted',
-!    &        status='old')
-
-!     open(664,file=SO2ERATIO,
-!    &        form='formatted',
-!    &        status='old')
-!      moved to input.F
 
 #if ( defined OLD_CHEM )
       open(165,file=chemdata(1:id2-1)//'rktable.dat',
@@ -688,40 +676,24 @@ c    &        status='old')
 
 ! 3. Open a data file to save rawdata:
 
-c closed 032697:
-c      open(166,file='OUTPUT/cfcn2o',
-c     &        form='unformatted',
-c     &        status='new')
-c      open(171,file='OUTPUT/hox',
-c     &        form='unformatted',
-c     &        status='new')
-c      open(172,file='OUTPUT/nox',
-c     &        form='unformatted',
-c     &        status='new')
-c      open(173,file='OUTPUT/hcs',
-c     &        form='unformatted',
-c     &        status='new')
-c      open(174,file='OUTPUT/sox',
-c     &        form='unformatted',
-c     &        status='new')
 
       cfname = chemout(1:len_trim(chemout))//'/'//'globalmean'
       open(176,file=cfname,
-     &        status='new')
+     &        status='unknown')
 
       cfname = chemout(1:len_trim(chemout))//'/'//'globalmean2'
       open(180,file=cfname,
-     &         status='new')
+     &         status='unknown')
      
 !APS 11/16/2012
       cfname = chemout(1:len_trim(chemout))//'/'//'globalmean3'
       open(276,file=cfname,
-     &        status='new')
+     &        status='unknown')
 
       cfname = chemout(1:len_trim(chemout))//'/'//'meta'
       open(181,file=cfname,
      &        form='unformatted',
-     &        status='new')
+     &        status='unknown')
 
       cfname = chemout(1:len_trim(chemout))//'/'//'budget'
       open(167, file=cfname,status='unknown')
@@ -729,31 +701,27 @@ c     &        status='new')
       cfname = chemout(1:len_trim(chemout))//'/'//'monthly'
       open(169,file=cfname,
      &        form='unformatted',
-     &        status='new')
+     &        status='unknown')
 
       cfname = chemout(1:len_trim(chemout))
      &          //'/'//'monthly2'
       open(179,file=cfname,
      &         form='unformatted',
-     &         status='new')
+     &         status='unknown')
 
       cfname = chemout(1:len_trim(chemout))
      &          //'/'//'monthly3'
       open(189,file=cfname,
      &         form='unformatted',
-     &         status='new')
+     &         status='unknown')
 ! ===
 
       cfname = chemout(1:len_trim(chemout))//'/'//'photodiag'
       open(177,file=cfname,	!032697
      &        form='unformatted',
-     &        status='new')
+     &        status='unknown')
 
 c 5. Open a data file to save diagnostic output:
-
-!      open(168,file='OUTPUT/cfc11nsf_monthly',
-!     &        form='unformatted',
-!     &        status='new')
 
         cfname = chemout(1:len_trim(chemout))
      &           //'/'//'chemrenew.dat'
