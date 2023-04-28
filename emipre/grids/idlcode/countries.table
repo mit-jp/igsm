@@ -1,0 +1,252 @@
+CountryID	FIPS_CNTRY	GMI_CNTRY	ISO_2DIGIT	ISO_3DIGIT	CNTRY_NAME	LONG_NAME	SOVEREIGN	POP_CNTRY	CURR_TYPE	CURR_CODE	LANDLOCKED	SQKM	SQMI	CountryID
+0	AF	AFG	AF	AFG	Afghanistan	Afghanistan	Afghanistan	17250390	Afghani	AFA	Y	641358.44	247628.48	0
+1	AL	ALB	AL	ALB	Albania	Albania	Albania	3416945	Lek	ALL	N	28798.00	11118.91	1
+2	AG	DZA	DZ	DZA	Algeria	Algeria	Algeria	27459230	Dinar	DZD	N	2323510.25	897107.19	2
+3	AQ	ASM	AS	ASM	American Samoa	American Samoa	United States	53000	US Dollar	USD	N	84.20	32.51	3
+4	AN	AND	AD	AND	Andorra	Andorra	Andorra	55335	Euro	EUR	Y	336.24	129.82	4
+5	AO	AGO	AO	AGO	Angola	Angola	Angola	11527260	New Kwanza	AON	N	1252934.88	483758.22	5
+6	AV	AIA	AI	AIA	Anguilla	Anguilla	United Kingdom	9208	EC Dollar	XCD	N	74.48	28.76	6
+7	AY	ATA	AQ	ATA	Antarctica	Antarctica	Antarctica	-99999		NCIC	N	12277658.00	4740404.50	7
+8	AC	ATG	AG	ATG	Antigua & Barbuda	Antigua and Barbuda	Antigua & Barbuda	65212	EC Dollar	XCD	N	255.13	98.51	8
+9	AR	ARG	AR	ARG	Argentina	Argentina	Argentina	33796870	Peso	ARP	N	2776912.75	1072166.13	9
+10	AM	ARM	AM	ARM	Armenia	Armenia	Armenia	3377228	Dram	AMD	Y	30178.02	11651.73	10
+11	AA	ABW	AW	ABW	Aruba	Aruba	Netherlands	67074	Euro	EUR	N	139.93	54.03	11
+12	AS	AUS	AU	AUS	Australia	Australia	Australia	17827520	Australia Dollar	AUD	N	7694273.00	2970758.75	12
+13	AU	AUT	AT	AUT	Austria	Austria	Austria	7755406	Euro	EUR	Y	82868.58	31995.56	13
+14	AJ	AZE	AZ	AZE	Azerbaijan	Azerbaijan	Azerbaijan	5487866	Manat	AZM	Y	164056.11	63342.06	14
+15	BA	BHR	BH	BHR	Bahrain	Bahrain	Bahrain	575814	Dinar	BHD	N	236.33	91.25	15
+16	FQ	UMI	UM		Baker I.	Baker Island	United States	-99999		NCIC	N	0.42	0.16	16
+17	BG	BGD	BD	BGD	Bangladesh	Bangladesh	Bangladesh	120732200	Taka	BDT	N	135692.92	52391.03	17
+18	BB	BRB	BB	BRB	Barbados	Barbados	Barbados	260627	Dollar	BBD	N	245.43	94.76	18
+19	BO	BLR	BY	BLR	Belarus	Belarus	Belarus	10521400	Ruble	BYR	Y	205963.55	79522.51	19
+20	BE	BEL	BE	BEL	Belgium	Belgium	Belgium	10032460	Euro	EUR	N	30711.36	11857.66	20
+21	BH	BLZ	BZ	BLZ	Belize	Belize	Belize	207586	Dollar	BZD	N	22667.90	8752.08	21
+22	BN	BEN	BJ	BEN	Benin	Benin	Benin	5175394	CFA Franc	XOF	N	118508.78	45756.25	22
+23	BD	BMU	BM	BMU	Bermuda	Bermuda	United Kingdom	59973	Dollar	BMD	N	14.40	5.56	23
+24	BT	BTN	BT	BTN	Bhutan	Bhutan	Bhutan	1586631	Ngultrum	BTN	Y	39408.20	15215.51	24
+25	BL	BOL	BO	BOL	Bolivia	Bolivia	Bolivia	7648315	Boliviano	BOB	Y	1090564.00	421066.75	25
+26	BK	BIH	BA	BIH	Bosnia & Herzegovina	Bosnia and Herzegovina	Bosnia & Herzegovina	2656240	Convertible Mark	BAK	N	51366.25	19832.51	26
+27	BC	BWA	BW	BWA	Botswana	Botswana	Botswana	1446623	Pula	BWP	Y	579782.88	223854.17	27
+28	BV	NOR	BV	BVT	Bouvet I.	Bouvet Island	Norway	-99999	Norwegian Krone	NOK	N	30.27	11.69	28
+29	BR	BRA	BR	BRA	Brazil	Brazil	Brazil	151525400	Cruzeiro Real	BRL	N	8493132.00	3279198.25	29
+30	IO	IOT	IO	IOT	British Indian Ocean Territory	British Indian Ocean Territory	United Kingdom	-99999	US Dollar	USD	N	170.04	65.65	30
+31	VI	VGB	VG	VGB	British Virgin Is.	British Virgin Islands	United Kingdom	18194	US Dollar	USD	N	40.02	15.45	31
+32	BX	BRN	BN	BRN	Brunei	Brunei	Brunei	281614	Dollar	BND	N	6077.50	2346.52	32
+33	BU	BGR	BG	BGR	Bulgaria	Bulgaria	Bulgaria	8943258	Lev	BGL	N	110522.95	42672.93	33
+34	UV	BFA	BF	BFA	Burkina Faso	Burkina Faso	Burkina Faso	10164690	CFA Franc	XOF	Y	274056.25	105813.14	34
+35	BY	BDI	BI	BDI	Burundi	Burundi	Burundi	6011039	Franc	BIF	Y	27098.00	10462.54	35
+36	CB	KHM	KH	KHM	Cambodia	Cambodia	Cambodia	9129576	Riel	KHR	N	181910.77	70235.76	36
+37	CM	CMR	CM	CMR	Cameroon	Cameroon	Cameroon	13218480	CFA Franc	XAF	N	466386.53	180071.83	37
+38	CA	CAN	CA	CAN	Canada	Canada	Canada	28402320	Dollar	CAD	N	9832884.00	3796476.50	38
+39	CV	CPV	CV	CPV	Cape Verde	Cape Verde	Cape Verde	413573	Escudo	CVE	N	2167.95	837.04	39
+40	CJ	CYM	KY	CYM	Cayman Is.	Cayman Islands	United Kingdom	31777	Dollar	KYD	N	157.76	60.91	40
+41	CT	CAF	CF	CAF	Central African Republic	Central African Republic	Central African Republic	3149545	CFA Franc	XOF	Y	619932.75	239356.05	41
+42	CD	TCD	TD	TCD	Chad	Chad	Chad	6308708	CFA Franc	XOF	Y	1270759.38	490640.06	42
+43	CI	CHL	CL	CHL	Chile	Chile	Chile	13772710	Peso	CLP	N	722510.94	278961.47	43
+44	CH	CHN	CN	CHN	China	China	China	1302862775	Renminbi Yuan	CNY	N	9402886.98	3630454.70	44
+45	KT	CXR	CX	CXR	Christmas I.	Christmas Island	Australia	813	Australia Dollar	AUD	N	98.77	38.13	45
+46	CK	CCK	CC	CCK	Cocos Is.	Cocos (Keeling) Islands	Australia	609	Australia Dollar	AUD	N	10.07	3.89	46
+47	CO	COL	CO	COL	Colombia	Colombia	Colombia	34414590	Peso	COP	N	1143017.13	441318.88	47
+48	CN	COM	KM	COM	Comoros	Comoros	Comoros	634656	Franc	KMF	N	1118.58	431.88	48
+49	CF	COG	CG	COG	Congo	Congo (Republic of the)	Congo	2318276	CFA Franc	XAF	N	345447.38	133377.23	49
+50	CG	ZAR	CD	COD	"Congo, DRC"	Congo (Democratic Republic of the)	"Congo, DRC"	41025920	Zaire	ZRZ	N	2336470.50	902111.44	50
+51	CW	COK	CK	COK	Cook Is.	Cook Islands	New Zealand	17000	NZ Dollar	NZD	N	55.30	21.35	51
+52	CS	CRI	CR	CRI	Costa Rica	Costa Rica	Costa Rica	3319438	Colon	CRC	N	52894.45	20422.55	52
+53	IV	CIV	CI	CIV	Cote d'Ivory	Cote d'Ivoire	Cote d'Ivory	13498860	CFA Franc	XOF	N	321084.97	123970.92	53
+54	HR	HRV	HR	HRV	Croatia	Croatia	Croatia	5004112	Kuna	HRK	N	53541.31	20672.30	54
+55	CU	CUB	CU	CUB	Cuba	Cuba	Cuba	11102280	Peso	CUP	N	107891.05	41656.75	55
+56	CY	CYP	CY	CYP	Cyprus	Cyprus	Cyprus	739027	Pound	CYP	N	9894.22	3820.16	56
+57	EZ	CZE	CZ	CZE	Czech Republic	Czech Republic	Czech Republic	10321120	Koruna	CZK	Y	78281.99	30224.68	57
+58	DA	DNK	DK	DNK	Denmark	Denmark	Denmark	4667750	Danish Krone	DKK	N	41103.48	15870.05	58
+59	DJ	DJI	DJ	DJI	Djibouti	Djibouti	Djibouti	450751	Djibouti Franc	DJF	N	20502.80	7916.13	59
+60	DO	DMA	DM	DMA	Dominica	Dominica	Dominica	70671	EC Dollar	XCD	N	424.29	163.82	60
+61	DR	DOM	DO	DOM	Dominican Republic	Dominican Republic	Dominican Republic	7759957	Peso Oro	DOP	N	47265.95	18249.38	61
+62	EC	ECU	EC	ECU	Ecuador	Ecuador	Ecuador	10541820	Sucre	ECS	N	254766.78	98365.46	62
+63	EG	EGY	EG	EGY	Egypt	Egypt	Egypt	56133430	Pound	EGP	N	1000941.50	386463.72	63
+64	ES	SLV	SV	SLV	El Salvador	El Salvador	El Salvador	5752470	Colon	SVC	N	19916.57	7689.79	64
+65	EK	GNQ	GQ	GNQ	Equatorial Guinea	Equatorial Guinea	Equatorial Guinea	386373	CFA Franc	XOF	N	26692.88	10306.12	65
+66	ER	ERI	ER	ERI	Eritrea	Eritrea	Eritrea	3662271	Birr	ETB	N	119905.37	46295.48	66
+67	EN	EST	EE	EST	Estonia	Estonia	Estonia	1590808	Kroon	EKK	N	45514.89	17573.30	67
+68	ET	ETH	ET	ETH	Ethiopia	Ethiopia	Ethiopia	53142970	Birr	ETB	Y	1134156.00	437897.63	68
+69	FK	FLK	FK	FLK	Falkland Is.	Falkland Islands (Islas Malvinas)	United Kingdom	2136	Pound	FKP	N	10216.81	3944.71	69
+70	FO	FRO	FO	FRO	Faroe Is.	Faroe Islands	Denmark	47067	Danish Krone	DKK	N	709.82	274.06	70
+71	FJ	FJI	FJ	FJI	Fiji	Fiji	Fiji	755000	Dollar	FJD	N	17815.56	6878.59	71
+72	FI	FIN	FI	FIN	Finland	Finland	Finland	5031379	Euro	EUR	N	330957.66	127782.77	72
+73	FR	FRA	FR	FRA	France	France	France	57757060	Euro	EUR	N	546970.19	211185.19	73
+74	FG	GUF	GF	GUF	French Guiana	French Guiana	France	130219	Euro	EUR	N	83726.18	32326.68	74
+75	FP	PYF	PF	PYF	French Polynesia	French Polynesia	France	217000	Euro	EUR	N	909.84	351.29	75
+76	FS	ATF	TF	ATF	French Southern & Antarctic Lands	French Southern & Antarctic Lands	France	-99999	Euro	EUR	N	6290.30	2428.69	76
+77	GB	GAB	GA	GAB	Gabon	Gabon	Gabon	1561195	CFA Franc	XOF	N	262970.88	101533.06	77
+78	GZ	ISR	PS	PSE	Gaza Strip	Gaza Strip	Gaza Strip	728583	New Shekel	NIS	N	227.79	87.95	78
+79	GG	GEO	GE	GEO	Georgia	Georgia	Georgia	5595552	Lari	GEL	N	69676.67	26902.16	79
+80	GM	DEU	DE	DEU	Germany	Germany	Germany	81436300	Euro	EUR	N	355245.97	137160.48	80
+81	GH	GHA	GH	GHA	Ghana	Ghana	Ghana	16698090	Cedi	GHC	N	240310.20	92783.77	81
+82	GI	GIB	GI	GIB	Gibraltar	Gibraltar	United Kingdom	28743	Pound	GIP	N	5.45	2.10	82
+83	GO	REU			Glorioso Is.	Glorioso Islands	France	-99999	Euro	EUR	N	4.55	1.76	83
+84	GR	GRC	GR	GRC	Greece	Greece	Greece	10307460	Euro	EUR	N	125514.83	48461.27	84
+85	GL	GRL	GL	GRL	Greenland	Greenland	Denmark	55413	Danish Krone	DKK	N	2118139.75	817813.88	85
+86	GJ	GRD	GD	GRD	Grenada	Grenada	Grenada	95608	EC Dollar	XCD	N	178.96	69.10	86
+87	GP	GLP	GP	GLP	Guadeloupe	Guadeloupe	France	410638	Euro	EUR	N	1120.07	432.46	87
+88	GQ	GUM	GU	GUM	Guam	Guam	United States	143173	US Dollar	USD	N	329.16	127.09	88
+89	GT	GTM	GT	GTM	Guatemala	Guatemala	Guatemala	10321270	Quetzal	GTQ	N	109829.01	42404.98	89
+90	GK	XGK			Guernsey	Guernsey	United Kingdom	62920	Pound Sterling	GBP	N	45.60	17.61	90
+91	GV	GIN	GN	GIN	Guinea	Guinea	Guinea	62420070	Franc	GNF	N	245517.03	94794.12	91
+92	PU	GNB	GW	GNB	Guinea-Bissau	Guinea-Bissau	Guinea-Bissau	1085777	Peso	GWP	N	31398.49	12122.96	92
+93	GY	GUY	GY	GUY	Guyana	Guyana	Guyana	754931	Dollar	GYD	N	210335.67	81210.62	93
+94	HA	HTI	HT	HTI	Haiti	Haiti	Haiti	7044890	Gourde	HTG	N	27949.04	10791.12	94
+95	HM	HMD	HM	HMD	Heard I. & McDonald Is.	Heard Island & McDonald Islands	Australia	-99999		NCIC	N	285.62	110.28	95
+96	HO	HND	HN	HND	Honduras	Honduras	Honduras	5367067	Lempira	HNL	N	113029.05	43640.54	96
+97	HQ	UMI	UM		Howland I.	Howland Island	United States	-99999		NCIC	N	1.92	0.74	97
+98	HU	HUN	HU	HUN	Hungary	Hungary	Hungary	10310410	Forint	HUF	Y	92174.04	35588.40	98
+99	IC	ISL	IS	ISL	Iceland	Iceland	Iceland	267240	Krona	ISK	N	99899.67	38571.26	99
+100	IN	IND	IN	IND	India	India	India	894608700	Rupee	INR	N	3153009.50	1217377.13	100
+101	ID	IDN	ID	IDN	Indonesia	Indonesia	Indonesia	188474200	Rupiah	IDR	N	1847033.00	713139.44	101
+102	IR	IRN	IR	IRN	Iran	Iran	Iran	64193450	Rial	IRR	N	1680135.50	648700.50	102
+103	IZ	IRQ	IQ	IRQ	Iraq	Iraq	Iraq	20941720	Dinar	IQD	N	434753.59	167858.36	103
+104	EI	IRL	IE	IRL	Ireland	Ireland	Ireland	5015975	Euro	EUR	N	67565.41	26087.00	104
+105	IM	XIM		IMY	Isle of Man	"Man, Isle of"	United Kingdom	71296	Pound Sterling	GBP	N	289.82	111.90	105
+106	IS	ISR	IL	ISR	Israel	Israel	Israel	5694890	Shekel	ILS	N	22670.52	8753.09	106
+107	IT	ITA	IT	ITA	Italy	Italy	Italy	57908880	Euro	EUR	N	301101.38	116255.25	107
+108	JM	JAM	JM	JAM	Jamaica	Jamaica	Jamaica	2407607	Dollar	JMD	N	10991.50	4243.82	108
+109	JN	SJM	SJ	SJM	Jan Mayen	Jan Mayen	Norway	-99999	Norwegian Krone	NOK	N	469.88	181.42	109
+110	JA	JPN	JP	JPN	Japan	Japan	Japan	125746300	Yen	JPY	N	370726.88	143137.66	110
+111	DQ	UMI	UM		Jarvis I.	Jarvis Island	United States	-99999		NCIC	N	3.62	1.40	111
+112	JE	XJE			Jersey	Jersey	United Kingdom	87848	Pound Sterling	GBP	N	109.62	42.32	112
+113	JQ	UMI	UM		Johnston Atoll	Johnston Atoll	United States	-99999	US Dollar	USD	N	0.49	0.19	113
+114	JO	JOR	JO	JOR	Jordan	Jordan	Jordan	3950283	Dinar	JOD	N	87398.57	33744.59	114
+115	JU	REU			Juan De Nova I.	Juan De Nova Island	France	-99999	Euro	EUR	N	4.61	1.78	115
+116	KZ	KAZ	KZ	KAZ	Kazakhstan	Kazakhstan	Kazakhstan	17117910	Tenge	KZT	Y	2832825.50	1093754.13	116
+117	KE	KEN	KE	KEN	Kenya	Kenya	Kenya	25835250	Schilling	KES	N	584683.38	225746.27	117
+118	KR	KIR	KI	KIR	Kiribati	Kiribati	Kiribati	77000	Australia Dollar	AUD	N	266.56	102.92	118
+119	KU	KWT	KW	KWT	Kuwait	Kuwait	Kuwait	1639000	Dinar	KWD	N	16688.05	6443.26	119
+120	KG	KGZ	KG	KGZ	Kyrgyzstan	Kyrgyzstan	Kyrgyzstan	4478697	Som	KGS	Y	200634.06	77464.83	120
+121	LA	LAO	LA	LAO	Laos	Laos	Laos	4722773	Kip	LAK	Y	231035.45	89202.80	121
+122	LG	LVA	LV	LVA	Latvia	Latvia	Latvia	2690291	Lat	LVL	N	64744.68	24997.92	122
+123	LE	LBN	LB	LBN	Lebanon	Lebanon	Lebanon	2942959	Pound	LBP	N	10807.67	4172.84	123
+124	LT	LSO	LS	LSO	Lesotho	Lesotho	Lesotho	1928269	Maloti	LSL	Y	30800.45	11892.05	124
+125	LI	LBR	LR	LBR	Liberia	Liberia	Liberia	2902441	Dollar	LRD	N	95658.84	36933.88	125
+126	LY	LBY	LY	LBY	Libya	Libya	Libya	5245515	Dinar	LYD	N	1626966.25	628171.56	126
+127	LS	LIE	LI	LIE	Liechtenstein	Liechtenstein	Liechtenstein	29342	Franc	CHF	Y	111.56	43.07	127
+128	LH	LTU	LT	LTU	Lithuania	Lithuania	Lithuania	3786560	Lita	LTL	N	64438.66	24879.77	128
+129	LU	LUX	LU	LUX	Luxembourg	Luxembourg	Luxembourg	387064	Euro	EUR	Y	2578.10	995.40	129
+130	MK	MKD	MK	MKD	Macedonia	Macedonia	Macedonia	2104035	Denar	MKD	Y	25272.36	9757.66	130
+131	MA	MDG	MG	MDG	Madagascar	Madagascar	Madagascar	13046690	Franc	MGF	N	591712.50	228460.20	131
+132	MI	MWI	MW	MWI	Malawi	Malawi	Malawi	10660480	Kwacha	MWK	Y	117440.33	45343.70	132
+133	MY	MYS	MY	MYS	Malaysia	Malaysia	Malaysia	19626380	Ringgit	MYR	N	328536.47	126847.95	133
+134	MV	MDV	MV	MDV	Maldives	Maldives	Maldives	11511	Rufiyaa	MVR	N	0.25	0.10	134
+135	ML	MLI	ML	MLI	Mali	Mali	Mali	9744733	CFA Franc	XOF	Y	1258012.50	485718.81	135
+136	MT	MLT	MT	MLT	Malta	Malta	Malta	366410	Lira	MTL	N	211.50	81.66	136
+137	RM	MHL	MH	MHL	Marshall Is.	Marshall Islands	Marshall Is.	53363	US Dollar	USD	N	12.20	4.71	137
+138	MB	MTQ	MQ	MTQ	Martinique	Martinique	France	374574	Euro	EUR	N	780.33	301.28	138
+139	MR	MRT	MR	MRT	Mauritania	Mauritania	Mauritania	2204077	Ouguiya	MRO	N	1038293.31	400884.94	139
+140	MP	MUS	MU	MUS	Mauritius	Mauritius	Mauritius	1097234	Rupee	MUR	N	1413.31	545.68	140
+141	MF	MYT	YT	MYT	Mayotte	Mayotte	France	100838	Euro	EUR	N	268.00	103.48	141
+142	MX	MEX	MX	MEX	Mexico	Mexico	Mexico	92380850	New Peso	MXP	N	1953851.13	754381.88	142
+143	FM	FSM	FM	FSM	Micronesia	Federated States of Micronesia	Micronesia	111607	US Dollar	USD	N	156.10	60.27	143
+144	MQ	UMI	UM		Midway Is.	Midway Islands	United States	-99999	US Dollar	USD	N	3.81	1.47	144
+145	MD	MDA	MD	MDA	Moldova	Moldova	Moldova	4473570	Leu	MDL	Y	33548.09	12952.92	145
+146	MN	MCO	MC	MCO	Monaco	Monaco	Monaco	27409	Euro	EUR	N	5.16	1.99	146
+147	MG	MNG	MN	MNG	Mongolia	Mongolia	Mongolia	2228222	Tughrik	MNT	Y	1557318.38	601280.50	147
+148	MH	MSR	MS	MSR	Montserrat	Montserrat	United Kingdom	12771	EC Dollar	XCD	N	76.95	29.71	148
+149	MO	MAR	MA	MAR	Morocco	Morocco	Morocco	27767920	Dirham	MAD	N	406452.22	156931.19	149
+150	MZ	MOZ	MZ	MOZ	Mozambique	Mozambique	Mozambique	16604660	Metical	MZM	N	793979.56	306555.53	150
+151	BM	MMR	MM	MMR	Myanmar	Myanmar (Burma)	Myanmar	43099620	Kyat	MMK	N	659592.25	254668.59	151
+152	WA	NAM	NA	NAM	Namibia	Namibia	Namibia	1575611	Dollar	NAD	N	827896.88	319651.00	152
+153	NR	NRU	NR	NRU	Nauru	Nauru	Nauru	10000	Australia Dollar	AUD	N	19.00	7.34	153
+154	NP	NPL	NP	NPL	Nepal	Nepal	Nepal	19927280	Rupee	NPR	Y	148252.95	57240.48	154
+155	NL	NLD	NL	NLD	Netherlands	Netherlands	Netherlands	15447470	Euro	EUR	N	34690.89	13394.15	155
+156	NT	ANT	AN	ANT	Netherlands Antilles	Netherlands Antilles	Netherlands	191572	Euro	EUR	N	439.73	169.78	156
+157	NC	NCL	NC	NCL	New Caledonia	New Caledonia	France	178000	Euro	EUR	N	17946.31	6929.07	157
+158	NZ	NZL	NZ	NZL	New Zealand	New Zealand	New Zealand	3528197	NZ Dollar	NZD	N	267214.28	103171.44	158
+159	NU	NIC	NI	NIC	Nicaragua	Nicaragua	Nicaragua	4275103	Cordoba Oro	NIO	N	129795.64	50114.08	159
+160	NG	NER	NE	NER	Niger	Niger	Niger	8797739	CFA Franc	XOF	Y	1184364.38	457282.94	160
+161	NI	NGA	NG	NGA	Nigeria	Nigeria	Nigeria	97228750	Naira	NGN	N	913387.88	352659.06	161
+162	NE	NIU	NU	NIU	Niue	Niue	New Zealand	2000	NZ Dollar	NZD	N	179.81	69.42	162
+163	NF	NFK	NF	NFK	Norfolk I.	Norfolk Island	Australia	2209	Australia Dollar	AUD	N	38.97	15.04	163
+164	KN	PRK	KP	PRK	North Korea	"Korea, Democratic People's Republic of"	North Korea	22034990	Won	KPW	N	122847.42	47431.38	164
+165	CQ	MNP	MP	MNP	Northern Mariana Is.	Northern Mariana Islands	United States	60963	US Dollar	USD	N	73.46	28.36	165
+166	NO	NOR	NO	NOR	Norway	Norway	Norway	4328519	Norwegian Krone	NOK	N	305865.69	118094.75	166
+167	MU	OMN	OM	OMN	Oman	Oman	Oman	2090308	Rial	OMR	N	310328.06	119817.68	167
+168	PK	PAK	PK	PAK	Pakistan	Pakistan	Pakistan	126693000	Rupee	PKR	N	880202.69	339846.25	168
+169	PS	PLW	PW	PLW	Palau	Palau	United States	16411	US Dollar	USD	N	231.26	89.29	169
+170	PM	PAN	PA	PAN	Panama	Panama	Panama	2562045	Balboa	PAB	N	73680.19	28447.92	170
+171	PP	PNG	PG	PNG	Papua New Guinea	Papua New Guinea	Papua New Guinea	4039033	Kina	PGK	N	458665.63	177090.78	171
+172	PF	XPF			Paracel Is.	Paracel Islands	Paracel Is.	-99999		NCIC	N	0.77	0.30	172
+173	PA	PRY	PY	PRY	Paraguay	Paraguay	Paraguay	4773464	Guarani	PYG	Y	401190.78	154899.77	173
+174	PE	PER	PE	PER	Peru	Peru	Peru	24496400	Nuevo Sol	PEN	N	1296605.13	500619.19	174
+175	RP	PHL	PH	PHL	Philippines	Philippines	Philippines	65981120	Peso	PHP	N	280957.72	108477.77	175
+176	PC	PCN	PN	PCN	Pitcairn Is.	Pitcairn Islands	United Kingdom	56	NZ Dollar	NZD	N	27.70	10.69	176
+177	PL	POL	PL	POL	Poland	Poland	Poland	37911870	Zloty	PLZ	N	312136.16	120515.79	177
+178	PO	PRT	PT	PRT	Portugal	Portugal	Portugal	9625516	Euro	EUR	N	90411.11	34907.73	178
+179	RQ	PRI	PR	PRI	Puerto Rico	Puerto Rico	United States	3647931	US Dollar	USD	N	9084.03	3507.34	179
+180	QA	QAT	QA	QAT	Qatar	Qatar	Qatar	478000	Riyal	QAR	N	10621.14	4100.82	180
+181	RE	REU	RE	REU	Reunion	Reunion	France	644000	Euro	EUR	N	2230.22	861.09	181
+182	RO	ROM	RO	ROU	Romania	Romania	Romania	23540550	Leu	ROL	N	237076.48	91535.23	182
+183	RS	RUS	RU	RUS	Russia	Russia	Russia	151827600	Ruble	RUR	N	16897294.00	6524043.50	183
+184	RW	RWA	RW	RWA	Rwanda	Rwanda	Rwanda	7934396	Franc	RWF	Y	25036.19	9666.47	184
+185	WS	WSM	WS	WSM	Samoa	Samoa	Samoa	159000	Tala	WST	N	2022.66	780.95	185
+186	SM	SMR	SM	SMR	San Marino	San Marino	San Marino	23758	Euro	EUR	Y	32.78	12.65	186
+187	TP	STP	ST	STP	Sao Tome & Principe	Sao Tome and Principe	Sao Tome & Principe	128603	Dobra	STD	N	708.07	273.39	187
+188	SA	SAU	SA	SAU	Saudi Arabia	Saudi Arabia	Saudi Arabia	18099990	Riyal	SAR	N	1936712.75	747764.88	188
+189	SG	SEN	SN	SEN	Senegal	Senegal	Senegal	8116554	CFA Franc	XOF	N	197395.88	76214.55	189
+190	YI	SMN	CS	SCG	Serbia & Montenegro	Serbia and Montenegro	Serbia & Montenegro	10614558	New Dinar	YUN	N	102666.83	39639.65	190
+191	SE	SYC	SC	SYC	Seychelles	Seychelles	Seychelles	73000	Rupee	SCR	N	222.19	85.79	191
+192	SL	SLE	SL	SLE	Sierra Leone	Sierra Leone	Sierra Leone	4551746	Leone	SLL	N	73113.20	28229.01	192
+193	SN	SGP	SG	SGP	Singapore	Singapore	Singapore	2824024	Dollar	SGD	N	397.65	153.53	193
+194	LO	SVK	SK	SVK	Slovakia	Slovakia	Slovakia	5374362	Koruna	SKK	Y	48560.40	18749.17	194
+195	SI	SVN	SI	SVN	Slovenia	Slovenia	Slovenia	1951443	Tolar	SLT	N	20625.40	7963.47	195
+196	BP	SLB	SB	SLB	Solomon Is.	Solomon Islands	Solomon Is.	366000	Dollar	SBD	N	21573.21	8329.42	196
+197	SO	SOM	SO	SOM	Somalia	Somalia	Somalia	9951515	Shilling	SOS	N	637888.06	246288.59	197
+198	SF	ZAF	ZA	ZAF	South Africa	South Africa	South Africa	40634126	Rand	ZAR	N	1219930.25	471014.97	198
+199	SX	SGS	GS	SGS	South Georgia & the South Sandwich Is.	South Georgia and the South Sandwich Is	United Kingdom	-99999		NCIC	N	3415.89	1318.88	199
+200	KS	KOR	KR	KOR	South Korea	"Korea, Republic of"	South Korea	43410900	Won	KRW	N	94773.46	36592.03	200
+201	SP	ESP	ES	ESP	Spain	Spain	Spain	39267780	Euro	EUR	N	503250.28	194304.94	201
+202	PG	XPG			Spratly Is.	Spratly Islands	Spratly Is.	-99999		NCIC	N	3.14	1.21	202
+203	CE	LKA	LK	LKA	Sri Lanka	Sri Lanka	Sri Lanka	18321920	Rupee	LKR	N	64665.21	24967.24	203
+204	SH	SHN	SH	SHN	St. Helena	St. Helena	United Kingdom	6782	Pound	SHP	N	89.05	34.38	204
+205	SC	KNA	KN	KNA	St. Kitts & Nevis	St. Kitts and Nevis	St. Kitts & Nevis	42908	EC Dollar	XCD	N	164.62	63.56	205
+206	ST	LCA	LC	LCA	St. Lucia	St. Lucia	St. Lucia	141743	EC Dollar	XCD	N	321.07	123.97	206
+207	SB	SPM	PM	SPM	St. Pierre & Miquelon	St. Pierre and Miquelon	France	6809	Euro	EUR	N	285.68	110.30	207
+208	VC	VCT	VC	VCT	St. Vincent & the Grenadines	St. Vincent and the Grenadines	St. Vincent & the Grenadines	110459	EC Dollar	XCD	N	236.51	91.32	208
+209	SU	SDN	SD	SDN	Sudan	Sudan	Sudan	27713420	Dinar	SDD	N	2496340.00	963836.88	209
+210	NS	SUR	SR	SUR	Suriname	Suriname	Suriname	428026	Guilder	SRG	N	143154.78	55272.07	210
+211	SV	SJM	SJ	SJM	Svalbard	Svalbard	Norway	3148	Norwegian Krone	NOK	N	60119.17	23212.01	211
+212	WZ	SWZ	SZ	SWZ	Swaziland	Swaziland	Swaziland	842766	Lilangeni	SZL	Y	16822.51	6495.17	212
+213	SW	SWE	SE	SWE	Sweden	Sweden	Sweden	8728217	Krone	SEK	N	442245.72	170751.06	213
+214	SZ	CHE	CH	CHE	Switzerland	Switzerland	Switzerland	6713839	Franc	CHF	Y	41853.70	16159.71	214
+215	SY	SYR	SY	SYR	Syria	Syria	Syria	14045470	Pound	SYP	N	190030.31	73370.70	215
+216	TI	TJK	TJ	TJK	Tajikistan	Tajikistan	Tajikistan	5382232	Ruble	TUR	Y	143923.55	55568.86	216
+217	TZ	TZA	TZ	TZA	Tanzania	"Tanzania, United Republic of"	Tanzania	28386270	Schilling	TZS	N	942535.94	363913.13	217
+218	TH	THA	TH	THA	Thailand	Thailand	Thailand	57323780	Baht	THB	N	515356.84	198979.27	218
+219	BF	BHS	BS	BHS	The Bahamas	"Bahamas, The"	The Bahamas	272209	Dollar	BSD	N	10714.22	4136.76	219
+220	GA	GMB	GM	GMB	The Gambia	"Gambia, The"	The Gambia	936026	Dalasi	GMD	N	9969.62	3849.27	220
+221	TT	TLS	TL	TLS	Timor Leste	Timor Leste	Timor Leste	857000			N	15495.72	5982.90	221
+222	TO	TGO	TG	TGO	Togo	Togo	Togo	4048365	CFA Franc	XOF	N	56187.42	21693.96	222
+223	TL	TKL	TK	TKL	Tokelau	Tokelau	New Zealand	1600	NZ Dollar	NZD	N	4.80	1.85	223
+224	TN	TON	TO	TON	Tonga	Tonga	Tonga	98000	Pa'anga	TOP	N	255.50	98.65	224
+225	TD	TTO	TT	TTO	Trinidad & Tobago	Trinidad and Tobago	Trinidad & Tobago	1292000	Dollar	TTD	N	4421.14	1707.00	225
+226	TS	TUN	TN	TUN	Tunisia	Tunisia	Tunisia	8620181	Dinar	TND	N	156669.36	60490.05	226
+227	TU	TUR	TR	TUR	Turkey	Turkey	Turkey	61300930	Lira	TRL	N	778601.81	300618.16	227
+228	TX	TKM	TM	TKM	Turkmenistan	Turkmenistan	Turkmenistan	3714642	Manat	TMM	Y	552479.13	213312.19	228
+229	TK	TCA	TC	TCA	Turks & Caicos Is.	Turks and Caicos Islands	United Kingdom	14512	US Dollar	USD	N	163.40	63.09	229
+230	TV	TUV	TV	TUV	Tuvalu	Tuvalu	Tuvalu	13000	Australia Dollar	AUD	N	17.49	6.75	230
+231	UG	UGA	UG	UGA	Uganda	Uganda	Uganda	18144360	Schilling	UGX	Y	245630.75	94838.05	231
+232	UP	UKR	UA	UKR	Ukraine	Ukraine	Ukraine	53164920	Hryvna	UKH	N	593787.69	229261.44	232
+233	AE	ARE	AE	ARE	United Arab Emirates	United Arab Emirates	United Arab Emirates	2061800	Dirham	AED	N	68171.94	26321.19	233
+234	UK	GBR	GB	GBR	United Kingdom	United Kingdom	United Kingdom	56420180	Pound Sterling	GBP	N	238074.31	91920.48	234
+235	US	USA	US	USA	United States	United States	United States	258833000	US Dollar	USD	N	9426295.00	3639492.50	235
+236	UY	URY	UY	URY	Uruguay	Uruguay	Uruguay	3084641	Peso	UYU	N	178437.80	68894.84	236
+237	UZ	UZB	UZ	UZB	Uzbekistan	Uzbekistan	Uzbekistan	20841790	Som	UZS	Y	446632.97	172445.00	237
+238	NH	VUT	VU	VUT	Vanuatu	Vanuatu	Vanuatu	165000	Vatu	VUV	N	8456.53	3265.07	238
+239	VT	VTC			Vatican City	Vatican City	Vatican City	860	Euro	EUR	Y	0.32	0.12	239
+240	VE	VEN	VE	VEN	Venezuela	Venezuela	Venezuela	19857850	Bolivar	VEB	N	913485.19	352696.63	240
+241	VM	VNM	VN	VNM	Vietnam	Vietnam	Vietnam	71215210	Dong	VND	N	322742.56	124610.91	241
+242	VQ	VIR	VI	VIR	Virgin Is.	Virgin Islands	United States	101614	US Dollar	USD	N	177.64	68.59	242
+243	WQ	UMI	UM		Wake I.	Wake Island	United States	4000	US Dollar	USD	N	13.22	5.10	243
+244	WF	WLF	WF	WLF	Wallis & Futuna	Wallis and Futuna	France	14000	Euro	EUR	N	55.20	21.31	244
+245	WE	ISR			West Bank	West Bank	West Bank	1427741	New Shekel	NIS	Y	4860.71	1876.72	245
+246	WI	ESH	EH	ESH	Western Sahara	Western Sahara	Western Sahara	222631	Dirham	MAD	N	268178.63	103543.76	246
+247	YM	YEM	YE	YEM	Yemen	Yemen	Yemen	15351120	Riyal	YER	N	455125.97	175724.16	247
+248	ZA	ZMB	ZM	ZMB	Zambia	Zambia	Zambia	8778681	Kwacha	ZMK	Y	753941.38	291096.78	248
+249	ZI	ZWE	ZW	ZWE	Zimbabwe	Zimbabwe	Zimbabwe	11106690	Dollar	ZWD	Y	391456.09	151141.20	249
+250	TW	TWN	TW	TWN	Taiwan 

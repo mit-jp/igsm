@@ -1,0 +1,169 @@
+
+!	============================================================
+!
+!	CHEM_META:    An include file consists of COMMONs for the
+!			META sub model.
+!
+!	------------------------------------------------------------
+!	Author:		Chien Wang
+!			MIT Joint Program on Science and Policy
+!				of Global Change
+!	Created:	January 29, 1999
+!
+!	Revision:
+!		062599	Chien Wang	using timec data
+!		112800	Chien Wang	use meta_nvar
+!
+!	============================================================
+
+c----------------------------------------------------------
+c  Brief descriptions of variables:
+! --------------------------------------------
+!
+! --- functions of latitudes:
+!  rlati:	|lat| in degree				(0:65)
+!  rtemp:	deviation from normal temperature 	(-10:10)
+!  rclou:	tenth of mean cloud coverage		(0:10)
+!  rmixi:	maximum mixing layer top in meter	(200:2000)
+!  rtime:	residence time 200km/U in second	(21600:259200)
+!
+! --- functions of latitudes and pollution types:
+!  rso2:	emission of SO2 in kg/km^2/day 
+!  rco:		emission of SO2 in kg/km^2/day
+!  rnox:	emission of SO2 in kg/km^2/day
+!  rvoc:	deviation from total daily VOC emission	(-0.7:0.7)
+!  raqino
+!  raqinoo
+!  raqivoc
+!  raqiozo
+!  raqisox
+!  results(58)
+!
+! --- Order of results and others:
+! ---
+! ---   1:	NO   mass
+! ---   2:	NO   flux
+! ---   3:	NO2  mass
+! ---   4:	NO2  flux
+! ---   5:	O3   mass
+! ---   6:	O3   flux
+! ---   7:	HONO flux
+! ---   8:	HNO3 flux
+! ---   9:	N2O5 flux
+! ---  10:	CO   mass
+! ---  11:	CO   flux
+! ---  12:	HCHO mass
+! ---  13:	HCHO flux
+! ---  14:	ALD2 mass
+! ---  15:	MEK  mass
+! ---  16:	PAN  flux
+! ---  17:	ALKA mass
+! ---  18:	ETHE mass
+! ---  19:	ALKE mass
+! ---  20:	TOLU mass
+! ---  21:	AROM mass
+! ---  22:	SO2  mass
+! ---  23:	SO2  flux
+! ---  24:	SO3  mass
+! ---  25:	SO3  flux
+! ---  26:	O3   max
+! ---  27:	O3   peak hour
+! ---  Daily averaged mass
+! ---  28:	NO
+! ---  29:	NO2
+! ---  30:	O3
+! ---  31:	HONO
+! ---  32:	HNO3
+! ---  33:	HNO4
+! ---  34:	N2O5
+! ---  35:	NO3
+! ---  36:	HO2
+! ---  37:	CO
+! ---  38:	HCHO
+! ---  39:	ALD2
+! ---  40:	MEK
+! ---  41:	MGLY
+! ---  42:	PAN
+! ---  43:	RO2
+! ---  44:	MCO3
+! ---  45:	ALKN
+! ---  46:	ALKA
+! ---  47:	ETHE
+! ---  48:	ALKE
+! ---  49:	TOLU
+! ---  50:	AROM
+! ---  51:	DIAL
+! ---  52:	CRES
+! ---  53:	NPHE
+! ---  54:	H2O2
+! ---  55:	MEOH
+! ---  56:	ETOH
+! ---  57:	SO2
+! ---  58:	SO3
+! ----------------------------------------------------
+
+	real rlati  (nlat), rtemp  (nlat), rclou  (nlat),
+     &	     rmixi  (nlat), rtime  (nlat)
+     
+     	real raqino (3,nlat), raqinoo(3,nlat),
+     &	     raqivoc(3,nlat), raqiozo(3,nlat), raqisox(3,nlat)
+     
+     	real results_meta(meta_nvar,3,nlat),
+     &	     results_mon(meta_nvar,3,nlat) 
+	
+	real xc_meta(meta_nvar),w_meta(meta_nvar),
+     &	      a_meta(meta_nvar),c_meta(meta_nvar)
+	
+	real alpha_nox(nlat,nchemyr),alpha_so2 (nlat),
+     &	     alpha_co (nlat,nchemyr),alpha_vocs(nlat,nchemyr)
+     
+     	real urban_beta_1(3),
+     &	     urban_beta_2(3),
+     &       urban_beta_3(3)
+
+	integer n_total_urban (nlat,nchemyr),
+     &		n_urban       (3,nlat,nchemyr)
+     
+     	integer nstep_meta
+           
+	common /chem_meta_comm/rlati,
+     &                         rtemp,
+     &                         rclou,
+     &                         rmixi,
+     &                         rtime,
+     &                         raqino,
+     &                         raqinoo,
+     &                         raqivoc,
+     &                         raqiozo,
+     &                         raqisox,
+     &                         results_meta,
+     &			       results_mon
+
+! ----------------------------------------------
+! Misc coefficients:
+!
+	common /chem_meta_para0/nstep_meta
+	
+! ----------------------------------------------------
+! Monika's sin fitting coefficients:
+!     
+     	common /chem_meta_para1/xc_meta,
+     &                          w_meta,
+     &                          a_meta,
+     &				c_meta
+     
+! ----------------------------------------------------
+! Urban area numbers of low, midium, and high pollution
+!
+	common /chem_meta_para2/n_total_urban,
+     &				n_urban
+     
+! ----------------------------------------------------
+! Fraction of urban shares in total emissions (0-1)
+!
+	common /chem_meta_para3/alpha_nox,alpha_so2,
+     &				alpha_co,alpha_vocs,
+     &				urban_beta_1,
+     &				urban_beta_2,
+     &				urban_beta_3
+     

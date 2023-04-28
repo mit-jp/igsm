@@ -1,0 +1,20 @@
+-------------------------------------------------------
+EMISSIONS ON GRID FOR SULFUR HEXAFLUORIDE IN 2000
+
+EDGAR FT Calculation
+Calculation for H45
+(this file created on 08 August 2005)
+-------------------------------------------------------
+EDGAR Inventory 1x1 H45-SF6 USE-MG: PRIM. PROD. 
+SULFUR HEXAFLUORIDE 2000 annual   # cells: 8 (<>0) 
+Values: min: 5.80E+03  max: 4.16E+04 sum: 1.59E+05
+Units : kg SF6 (FMM)/yr       For cells <> 0: avg: 1.99E+04 
+-------------------------------------------------------
+9,59,2.98E+04
+-118,48,1.71E+04
+-72,47,4.16E+04
+-77,45,5.80E+03
+-1,45,9.96E+03
+-92,42,1.84E+04
+-122,38,2.92E+04
+-50,-26,7.47E+03

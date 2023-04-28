@@ -1,0 +1,23 @@
+#/bin/csh -f
+#
+# A shell to generate mod_11x46.sp.out
+#
+#
+
+#
+# --- put your directory name here
+#	Use absolute path!!!
+#
+if ($#argv != 1) then
+echo "Usage:  *.out"
+exit
+endif
+
+
+
+set flout = $1
+echo  $flout
+ pgf90 -r8 -o $flout eppanew_mod.F90 testeppanew.F90 eppaemission.F
+
+
+exit 

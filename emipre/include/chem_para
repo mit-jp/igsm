@@ -1,0 +1,85 @@
+
+!	============================================================
+!
+!	CHEM_PARA:	An parametr file including PARAMETERs for
+!				the MIT Global Chemistry Model
+!
+!			For version higher or equal to 2.04
+!	------------------------------------------------------------
+!	Author:		Chien Wang
+!			MIT Joint Program on Science and Policy
+!			    of Global Change
+!
+!       Revision History:
+!
+!       When    Who             What
+!       ----    ----------      -------
+!	061099	Chien Wang
+!	112800	Chien Wang	meta_nvar from 58 to 65
+!	121800	Chien Wang	nchemyr & rearranging
+!	051804	Chien Wang	rearranging
+!
+!	============================================================
+
+		 
+! === Brief descriptions of parameters:
+!
+!    nlon:	No. of zonal grid points
+!    nlat:	No. of meridional grid points
+!    nlev:	No. of vertical levels
+!    dthour:	Number of seconds of one hour
+!    dtmin:	Number of seconds of one minute
+!
+	integer, parameter :: nlon = 1 
+	integer, parameter :: nlat = N_LAT
+	integer, parameter :: nlev = N_LEV
+	integer, parameter :: nlon1= nlon-1 
+	integer, parameter :: nlat1= nlat-1
+	integer, parameter :: nlev1= nlev-1
+	integer, parameter :: nlon2= nlon-2
+	integer, parameter :: nlat2= nlat-2 
+	integer, parameter :: nlev2= nlev-2
+#if ( N_LEV == 9 )
+	integer, parameter :: n_tropopause = nlev-2 
+#endif
+#if ( N_LEV == 11 )
+	integer, parameter :: n_tropopause = nlev-4
+#endif
+	integer, parameter :: n2dh = nlon*nlat
+	integer, parameter :: n2dv = nlat*nlev
+	integer, parameter :: n3d  = n2dh*nlev
+	integer, parameter :: nchemyr = NYR_CHEM
+	real,    parameter :: dthour  = 3600.0 
+	real,    parameter :: dtmin   = 60.0
+
+
+! === Brief descriptions of parameters:
+!
+!    nreaction:	Number of reactions involved in the model
+!
+!    nvaria:	Number of variables involved in photochemistry
+!
+	integer, parameter :: nract = 100
+	integer, parameter :: nvaria=  15
+
+
+! === Brief descriptions of parameters:
+!
+!    dx_df11:	Mass conversion in radiative forcing of 
+!		species x
+!
+	real, parameter :: dhfc134a_df11   = 1.04
+	real, parameter :: dhfc143a_df11   = 1.03
+	real, parameter :: dpfmethane_df11 = 0.69
+	real, parameter :: dpfethane_df11  = 1.36
+	real, parameter :: dsf6_df11       = 2.75
+
+! === Brief descriptions of parameters:
+!
+!    meta_nvar:	Variable number for the meta model
+!
+	integer, parameter :: meta_nvar = 58	!65
+#if ( defined ACCRI || defined TRACERS)
+        integer, parameter :: nlev_accri = 33   !
+#endif
+

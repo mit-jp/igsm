@@ -1,0 +1,210 @@
+-------------------------------------------------------
+EMISSIONS ON GRID FOR CARBON DIOXIDE IN 1995
+
+Calculated by EDGAR on 03/05/02 by laeedg
+calculation name : G: EDGV32 CO2: 95 ALL (EXCL AIR)
+(this file created on 03/05/02 09:47:19)
+-------------------------------------------------------
+EDGAR Inventory 1x1 B10-INDUSTRY V3 
+CARBON DIOXIDE 1995 annual   # cells: 4624 (<>0) 
+Values: min: 1.6895e+01 max: 3.1362e+09 sum: 4.4323e+10 
+Units : kg CO2 (FMM)/yr       For cells <> 0: avg: 9.5854e+06 
+-------------------------------------------------------
+
+-------------------------------------------------------
+EMISSIONS ON GRID FOR CARBON DIOXIDE IN 1995
+
+Calculated by EDGAR on 03/05/02 by laeedg
+calculation name : G: EDGV32 CO2: 95 ALL (EXCL AIR)
+(this file created on 03/05/02 09:47:25)
+-------------------------------------------------------
+EDGAR Inventory 1x1 B20-POWER GENERATION V3 
+CARBON DIOXIDE 1995 annual   # cells: 3385 (<>0) 
+Values: min: 1.1050e+04 max: 1.6514e+09 sum: 2.8666e+10 
+Units : kg CO2 (FMM)/yr       For cells <> 0: avg: 8.4686e+06 
+-------------------------------------------------------
+
+-------------------------------------------------------
+EMISSIONS ON GRID FOR CARBON DIOXIDE IN 1995
+
+Calculated by EDGAR on 03/05/02 by laeedg
+calculation name : G: EDGV32 CO2: 95 ALL (EXCL AIR)
+(this file created on 03/05/02 09:47:33)
+-------------------------------------------------------
+EDGAR Inventory 1x1 B40-RCO: RESIDENTIAL V3 
+CARBON DIOXIDE 1995 annual   # cells: 10276 (<>0) 
+Values: min: 2.7174e+01 max: 1.9686e+09 sum: 4.5776e+11 
+Units : kg CO2 (FMM)/yr       For cells <> 0: avg: 4.4546e+07 
+-------------------------------------------------------
+
+-------------------------------------------------------
+EMISSIONS ON GRID FOR CARBON DIOXIDE IN 1995
+
+Calculated by EDGAR on 03/05/02 by laeedg
+calculation name : G: EDGV32 CO2: 95 ALL (EXCL AIR)
+(this file created on 03/05/02 09:46:19)
+-------------------------------------------------------
+EDGAR Inventory 1x1 I41-NME-CEMENT V3 
+CARBON DIOXIDE 1995 annual   # cells: 2580 (<>0) 
+Values: min: 9.1957e+03 max: 2.7994e+10 sum: 7.1588e+11 
+Units : kg CO2 (FMM)/yr       For cells <> 0: avg: 2.7747e+08 
+-------------------------------------------------------
+
+-------------------------------------------------------
+EMISSIONS ON GRID FOR CARBON DIOXIDE IN 1995
+
+Calculated by EDGAR on 03/05/02 by laeedg
+calculation name : G: EDGV32 CO2: 95 ALL (EXCL AIR)
+(this file created on 03/05/02 09:46:36)
+-------------------------------------------------------
+EDGAR Inventory 1x1 F10-INDUSTRIAL SECTOR V3+ 
+CARBON DIOXIDE 1995 annual   # cells: 7874 (<>0) 
+Values: min: 7.7601e+01 max: 1.1226e+11 sum: 4.6780e+12 
+Units : kg CO2 (FMM)/yr       For cells <> 0: avg: 5.9411e+08 
+-------------------------------------------------------
+
+-------------------------------------------------------
+EMISSIONS ON GRID FOR CARBON DIOXIDE IN 1995
+
+Calculated by EDGAR on 03/05/02 by laeedg
+calculation name : G: EDGV32 CO2: 95 ALL (EXCL AIR)
+(this file created on 03/05/02 09:45:34)
+-------------------------------------------------------
+EDGAR Inventory 1x1 F20-POWER GENERATION V3 
+CARBON DIOXIDE 1995 annual   # cells: 7982 (<>0) 
+Values: min: 3.0270e+02 max: 1.0776e+11 sum: 7.7431e+12 
+Units : kg CO2 (FMM)/yr       For cells <> 0: avg: 9.7007e+08 
+-------------------------------------------------------
+
+-------------------------------------------------------
+EMISSIONS ON GRID FOR CARBON DIOXIDE IN 1995
+
+Calculated by EDGAR on 03/05/02 by laeedg
+calculation name : G: EDGV32 CO2: 95 ALL (EXCL AIR)
+(this file created on 03/05/02 09:47:10)
+-------------------------------------------------------
+EDGAR Inventory 1x1 F30-OTS (ALL) V3 
+CARBON DIOXIDE 1995 annual   # cells: 8574 (<>0) 
+Values: min: -1.6992e+09 max: 1.9250e+10 sum: 2.0421e+12 
+Units : kg CO2 (FMM)/yr       For cells <> 0: avg: 2.3818e+08 
+-------------------------------------------------------
+
+-------------------------------------------------------
+EMISSIONS ON GRID FOR CARBON DIOXIDE IN 1995
+
+Calculated by EDGAR on 03/05/02 by laeedg
+calculation name : G: EDGV32 CO2: 95 ALL (EXCL AIR)
+(this file created on 03/05/02 09:45:42)
+-------------------------------------------------------
+EDGAR Inventory 1x1 F40-RCO SECTOR(RES+COM+OTH) V 
+CARBON DIOXIDE 1995 annual   # cells: 10301 (<>0) 
+Values: min: 2.2349e+03 max: 4.2732e+10 sum: 3.4944e+12 
+Units : kg CO2 (FMM)/yr       For cells <> 0: avg: 3.3923e+08 
+-------------------------------------------------------
+
+-------------------------------------------------------
+EMISSIONS ON GRID FOR CARBON DIOXIDE IN 1995
+
+Calculated by EDGAR on 03/05/02 by laeedg
+calculation name : G: EDGV32 CO2: 95 ALL (EXCL AIR)
+(this file created on 03/05/02 09:45:52)
+-------------------------------------------------------
+EDGAR Inventory 1x1 F51-ROAD TRANSP.(INCL. EVA) V 
+CARBON DIOXIDE 1995 annual   # cells: 10464 (<>0) 
+Values: min: 3.7881e+03 max: 8.8455e+10 sum: 3.7597e+12 
+Units : kg CO2 (FMM)/yr       For cells <> 0: avg: 3.5930e+08 
+-------------------------------------------------------
+
+-------------------------------------------------------
+EMISSIONS ON GRID FOR CARBON DIOXIDE IN 1995
+
+Calculated by EDGAR on 03/05/02 by laeedg
+calculation name : G: EDGV32 CO2: 95 ALL (EXCL AIR)
+(this file created on 03/05/02 09:46:02)
+-------------------------------------------------------
+EDGAR Inventory 1x1 F54-TRANS. LAND NON-ROAD V3 
+CARBON DIOXIDE 1995 annual   # cells: 8452 (<>0) 
+Values: min: 3.4570e+02 max: 5.5818e+09 sum: 3.8566e+11 
+Units : kg CO2 (FMM)/yr       For cells <> 0: avg: 4.5629e+07 
+-------------------------------------------------------
+
+-------------------------------------------------------
+EMISSIONS ON GRID FOR CARBON DIOXIDE IN 1995
+
+Calculated by EDGAR on 18/11/02 by laeedg
+calculation name : G: EDGV32 CO2: 95 F57 LTO
+(this file created on 19/11/02 15:24:37)
+-------------------------------------------------------
+EDGAR Inventory 1x1 F57-CO2 LTO ON GRID  V3
+CARBON DIOXIDE 1995 annual   # cells: 6246 (<>0)
+Values: min: 7.1508e+00 max: 1.9045e+09 sum: 6.4307e+10
+Units : kg CO2 (FMM)/yr       For cells <> 0: avg: 1.0296e+07
+-------------------------------------------------------
+
+-------------------------------------------------------
+EMISSIONS ON GRID FOR CARBON DIOXIDE IN 1995
+
+Calculated by EDGAR on 03/05/02 by laeedg
+calculation name : G: EDGV32 CO2: 95 F58 (SEA)
+(this file created on 03/05/02 09:49:27)
+-------------------------------------------------------
+EDGAR Inventory 1x1 F58-INTERN. SHIPPING V3 
+CARBON DIOXIDE 1995 annual   # cells: 967 (<>0) 
+Values: min: 1.0000e+08 max: 2.1388e+09 sum: 4.2922e+11 
+Units : kg CO2 (FMM)/yr       For cells <> 0: avg: 4.4387e+08 
+-------------------------------------------------------
+
+-------------------------------------------------------
+EMISSIONS ON GRID FOR CARBON DIOXIDE IN 1995
+
+Calculated by EDGAR on 03/05/02 by laeedg
+calculation name : G: EDGV32 CO2: 95 ALL (EXCL AIR)
+(this file created on 03/05/02 09:46:24)
+-------------------------------------------------------
+EDGAR Inventory 1x1 F61-NON-ENERGY USE CO2 V3 
+CARBON DIOXIDE 1995 annual   # cells: 3157 (<>0) 
+Values: min: 1.5957e+02 max: 4.1983e+09 sum: 1.2895e+11 
+Units : kg CO2 (FMM)/yr       For cells <> 0: avg: 4.0844e+07 
+------------------------------------------------------
+
+-------------------------------------------------------
+EMISSIONS ON GRID FOR CARBON DIOXIDE IN 1995
+
+Calculated by EDGAR on 03/05/02 by laeedg
+calculation name : G: EDGV32 CO2: 95 ALL (EXCL AIR)
+(this file created on 03/05/02 09:46:29)
+-------------------------------------------------------
+EDGAR Inventory 1x1 F62-CHEM. FEEDSTOCKS CO2 V3 
+CARBON DIOXIDE 1995 annual   # cells: 5734 (<>0) 
+Values: min: 2.3509e+02 max: 2.0376e+10 sum: 5.3071e+11 
+Units : kg CO2 (FMM)/yr       For cells <> 0: avg: 9.2555e+07 
+-------------------------------------------------------
+
+-------------------------------------------------------
+EMISSIONS ON GRID FOR CARBON DIOXIDE IN 1995
+
+Calculated by EDGAR on 03/05/02 by laeedg
+calculation name : G: EDGV32 CO2: 95 ALL (EXCL AIR)
+(this file created on 03/05/02 09:45:06)
+-------------------------------------------------------
+EDGAR Inventory 1x1 F80-OIL PROD/(TRANSM)/HANDL V 
+CARBON DIOXIDE 1995 annual   # cells: 872 (<>0) 
+Values: min: 2.5061e+03 max: 2.2041e+10 sum: 2.4973e+11 
+Units : kg CO2 (FMM)/yr       For cells <> 0: avg: 2.8639e+08 
+-------------------------------------------------------
+
+-------------------------------------------------------
+EMISSIONS ON GRID FOR CARBON DIOXIDE IN 1995
+
+Calculated by EDGAR on 03/05/02 by laeedg
+calculation name : G: EDGV32 CO2: 95 ALL (EXCL AIR)
+(this file created on 03/05/02 09:46:14)
+-------------------------------------------------------
+EDGAR Inventory 1x1 L41-BB-DEFORESTATION(DIR.EFF. 
+CARBON DIOXIDE 1995 annual   # cells: 1664 (<>0) 
+Values: min: 9.6595e+04 max: 2.5796e+10 sum: 1.6516e+12 
+Units : kg CO2 (FMM)/yr       For cells <> 0: avg: 9.9254e+08 
+-------------------------------------------------------
+
+
+

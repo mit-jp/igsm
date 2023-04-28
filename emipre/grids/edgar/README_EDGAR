@@ -1,0 +1,10 @@
+All the files in this folder and subfolders are from the EDGAR web site. Those files with non-standard names were converted to the format
+
+cat00spe.1x1
+
+where cat=category ('b10', etc)
+and spe=species (so2, etc)
+	**CO (carbon monoxide) referred to as CO1 for consistency in number of digits
+
+(nes, 29 april 2009)
+**revised 29 july 2009

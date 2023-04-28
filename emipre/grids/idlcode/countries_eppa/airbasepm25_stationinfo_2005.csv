@@ -1,0 +1,144 @@
+Data downloaded from EEA Airbase viewer. 
+ Data download filter: 
+ Countries: All available
+ components: Particulate matter < 2.5 µm (aerosol)
+ type of stations: All available
+ station areas: All available
+ years: 2005
+station_european_code	station_local_code	country_iso_code	country_name	station_name	station_start_date	station_end_date	type_of_station	station_type_of_area	station_subcat_rural_back	street_type	station_longitude_deg	station_latitude_deg	station_longitude_dms	station_latitude_dms	station_altitude	station_nuts_level0	station_nuts_level1	station_nuts_level2	station_nuts_level3	lau_level1_code	lau_level2_code	lau_level2_name	sabe_country_code	sabe_unit_code	sabe_unit_name	station_city	
+BA0031A		BA	BOSNIA - HERZEGOVINA	SKVER - MS1	1-1-2004		Traffic	urban		Wide street: L/H > 1.5	18.70000100	44.54999900			220											TUZLA	
+BA0032A		BA	BOSNIA - HERZEGOVINA	TUZLA1 - MS2	1-1-2004		Traffic	suburban		Wide street: L/H > 1.5	18.70000100	44.54999900			210											TUZLA	
+CZ0068A	SBER	CZ	CZECH REPUBLIC	Beroun	7-7-1993		Traffic	urban		Wide street: L/H > 1.5	14.06080000	49.95920000			216					2	531057	Beroun				BEROUN	
+CZ0097A	TBOM	CZ	CZECH REPUBLIC	Bohumin	1-5-1993		Background	suburban			11.34720000	49.90420000			200											BOHUMIN	
+CZ0042A	BBNY	CZ	CZECH REPUBLIC	Brno-Turany	1-2-1992		Background	suburban			16.69610000	49.14890000			241					2	582786	Brno				BRNO	
+CZ0059A	CCBD	CZ	CZECH REPUBLIC	Ceske Budejovice	1-2-1992		Background	urban			14.46560000	48.98440000			383					1	544256	Ceské Budejovice				CESKE BUDEJOVICE	
+CZ0086A	HHKB	CZ	CZECH REPUBLIC	Hradec Kralove-Brnen	1-1-2004		Traffic	urban		Wide street: L/H > 1.5	15.84640000	50.19530000			232					1	569810	Hradec Králové				HRADEC KRALOVE	
+CZ0088A	JJIH	CZ	CZECH REPUBLIC	Jihlava	3-10-2003		Background	urban			15.60970000	49.40280000			502					2	586846	Jihlava				JIHLAVA	
+CZ0089A	SKLM	CZ	CZECH REPUBLIC	Kladno-stred mesta	10-2-1999		Background	urban			14.10220000	50.14330000			303					3	532053	Kladno				KLADNO	
+CZ0071A	LLIM	CZ	CZECH REPUBLIC	Liberec-mesto	1-12-1992		Background	urban		Wide street: L/H > 1.5	15.05640000	50.76500000			350					3	563889	Liberec				LIBEREC	
+CZ0029A	UMOM	CZ	CZECH REPUBLIC	Most	1-2-1992		Background	urban			13.64861100	50.51055500			221					5	567027	Most				MOST	
+CZ0053A	MOLO	CZ	CZECH REPUBLIC	Olomouc	1-2-1992		Background	urban			17.24560000	49.59920000			214					2	500496	Olomouc				OLOMOUC	
+CZ0079A	TOPR	CZ	CZECH REPUBLIC	Ostrava - Privoz	31-12-1998		Industrial	urban		Wide street: L/H > 1.5	18.27166600	49.85638800			207					6	554821	Ostrava				OSTRAVA	
+CZ0038A	TOZR	CZ	CZECH REPUBLIC	Ostrava-Zabreh	1-2-1992		Background	urban			18.24720000	49.79640000			235					6	554821	Ostrava				OSTRAVA	
+CZ0073A	EPAU	CZ	CZECH REPUBLIC	Pardubice Dukla	1-2-2001		Background	urban		Wide street: L/H > 1.5	15.76222200	50.02416600			239					2	555134	Pardubice				PARDUBICE	
+CZ0020A	ALIB	CZ	CZECH REPUBLIC	Pha4-Libus	1-2-1992		Background	suburban			14.44900000	50.00800000			301					0	554782	Praha				PRAHA	
+CZ0011A	AMLY	CZ	CZECH REPUBLIC	Pha5-Mlynarka	1-2-1992		Traffic	urban		Wide street: L/H > 1.5	14.38700000	50.07200000			233					0	554782	Praha				PRAHA	
+CZ0082A	AKAL	CZ	CZECH REPUBLIC	Pha8-Karlin	1-5-2004		Traffic	urban		Wide street: L/H > 1.5	14.44220000	50.09420000			203					0	554782	Praha				PRAGUE	
+CZ0083A	AVYN	CZ	CZECH REPUBLIC	Pha9-Vysocany	1-1-2004		Traffic	urban		Wide street: L/H > 1.5	14.50280000	50.11110000			219					0	554782	Praha				PRAGUE	
+CZ0112A	PPLA	CZ	CZECH REPUBLIC	Plzen-Slovany	9-2-1996		Traffic	urban			13.40220000	49.73250000			340					3	554791	Plzen					
+CZ0034A	KSOM	CZ	CZECH REPUBLIC	Sokolov	1-1-1993		Background	suburban			12.67000000	50.17527800			476					3	560286	Sokolov				SOKOLOV	
+CZ0024A	UTEM	CZ	CZECH REPUBLIC	Teplice	1-2-1992		Background	urban			13.82750000	50.64027800			225					6	567442	Teplice				TEPLICE	
+CZ0046A	TTRO	CZ	CZECH REPUBLIC	Trinec-Kosmos	1-2-1992		Background	urban			18.68000000	49.66861300			320					2	598810	Trinec				TRINEC	
+CZ0022A	UULK	CZ	CZECH REPUBLIC	Usti n.L.-Kockov	1-2-1992		Background	suburban			14.04250000	50.68440000			367					7	568023	Chuderov				USTI NAD LABEM	
+CZ0061A	TVER	CZ	CZECH REPUBLIC	Vernovice	1-2-1992		Background	rural	near city		18.42440000	49.92500000			203					3	598968	Dolní Lutyne					
+CZ0075A	ZZLN	CZ	CZECH REPUBLIC	Zlin	21-8-2003		Background	suburban		Wide street: L/H > 1.5	17.66720000	49.23330000			258					4	585068	Zlín				ZLIN	
+DENI048	DENI048	DE	GERMANY	DENI048:Hannover Verkehr	1-7-1989		Traffic	urban	unknown		9.71500000	52.36055400			60												
+DENI054	DENI054	DE	GERMANY	DENI054:Hannover	1-1-1988		Background	urban	unknown		9.70638900	52.36333300			80												
+DEST072	DEST072	DE	GERMANY	DEST072:Halle/Ost	15-4-1993		Background	suburban	unknown		12.00583400	51.48638900			100						15202000	Halle (Saale), Stadt				HALLE/SAALE	
+DEST075	DEST075	DE	GERMANY	DEST075:Halle/Merseburger Strasse	22-2-1994		Traffic	urban	unknown		11.98500100	51.47666500			100						15202000	Halle (Saale), Stadt					
+DEST098	DEST098	DE	GERMANY	DEST098:Unterharz / Friedrichsbrunn	24-6-2003		Background	rural	regional		11.04444500	51.66250200			410					153646406	15364020	Siptenfelde					
+DEHH008	DEHH008	DE	GERMANY	DEHH008:HH Sternschanze	1-3-1984		Background	urban	unknown	Wide street: L/H > 1.5	9.96916600	53.56555600			15						02000000	Hamburg, Freie und Hansestadt				HAMBURG	
+DEHH015	DEHH015	DE	GERMANY	DEHH015:HH Veddel	1-7-1984		Background	urban	unknown		10.02250000	53.52472300			4						02000000	Hamburg, Freie und Hansestadt				HAMBURG	
+DEHH021	DEHH021	DE	GERMANY	DEHH021:HH Tatenberg	1-1-1985		Background	suburban	unknown		10.08500000	53.48916600			2						02000000	Hamburg, Freie und Hansestadt				HAMBURG	
+DEHE037	DEHE037	DE	GERMANY	DEHE037:Wiesbaden-Ringkirche	1-8-1991		Traffic	urban	unknown	Wide street: L/H > 1.5	8.23166700	50.07833100			140						06414000	Wiesbaden, Landeshauptstadt				WIESBADEN	
+DERP009	DERP009	DE	GERMANY	DERP009:Mainz-Zitadelle	1-1-1978		Traffic	urban	unknown	Wide street: L/H > 1.5	8.27527700	49.99611300			110						07315000	Mainz, Stadt				MAINZ	
+DERP017	DERP017	DE	GERMANY	DERP017:Pfälzerwald-Hortenkopf	1-1-1986		Background	rural	unknown		7.82777800	49.27138900			606					073400704	07340031	Merzalben				HORTENKOPF	
+DERP032	DERP032	DE	GERMANY	DERP032:Neuwied-Heddesdorfer Straße	1-1-1994		Traffic	urban	unknown	Wide street: L/H > 1.5	7.46638900	50.41444800			65					071370708	07137228	Weißenthurm, Stadt				NEUWIED	
+DK0034A	1103	DK	DENMARK	H.C.Andersens Boulevard - City	1-1-1987		Traffic	urban		Wide street: L/H > 1.5	12.57111100	55.66916700			5						101	København				COPENHAGEN	
+DK0045A	1259	DK	DENMARK	Copenhagen/1259	1-1-1992		Background	urban			12.56694400	55.70027900			25						101	København				COPENHAGEN	
+DK0041A	2090	DK	DENMARK	Lille Valby/2090	1-1-1990		Background	rural			12.12250000	55.70111100			10						255	Gundsø					
+ES0901A	15017002	ES	SPAIN	ES0901A-S. VICENTE DE VIGO	1-1-1980		Industrial	rural	regional	Unknown	-8.31722300	43.23500100			160						15021	Carral				CAMBRE	
+ES1747A	31201014	ES	SPAIN	ES1747A-ROTXAPEA	1-8-2002		Background	urban	unknown	Unknown	-1.64944400	42.82694600			418											PAMPLONA/IRUÑA	
+ES1749A	31010001	ES	SPAIN	ES1749A-ALSASUA	1-7-2001		Background	suburban	unknown	Unknown	-2.16583300	42.89444400			530											ALTSASU/ALSASUA	
+ES1755A	31216001	ES	SPAIN	ES1755A-SANGUESA	1-7-2001		Industrial	suburban	unknown	Unknown	-1.28250000	42.58055500			397											SANGÜESA/ZANGOZA	
+ES1400A	50059001	ES	SPAIN	ES1400A-BUJARALOZ	1-1-1995		Traffic	rural	near city	Unknown	-0.15194400	41.50555400			327						50059	Bujaraloz				BUJARALOZ	
+ES1417A	22125001	ES	SPAIN	ES1417A-HUESCA	1-6-1995		Traffic	urban	unknown	Unknown	-0.40388900	42.13611200			488						22125	Huesca				HUESCA	
+ES1418A	50008001	ES	SPAIN	ES1418A-ALAGÓN	1-6-1995		Traffic	rural	near city	Unknown	-1.14333300	41.76277800			235						50008	Alagón				ALAGÓN	
+ES1420A	22158001	ES	SPAIN	ES1420A-MONZÓN	1-6-1995		Industrial	rural	near city	Unknown	0.19694400	41.91861000			279						22158	Monzón				MONZÓN	
+ES1421A	44216001	ES	SPAIN	ES1421A-TERUEL	1-6-1995		Traffic	urban	unknown	Unknown	-1.10666700	40.33638800			915						44216	Teruel				TERUEL	
+ES1288A	37274008	ES	SPAIN	ES1288A-PLAZA DE COLÓN	1-1-1993		Traffic	urban	unknown	Unknown	-5.66833300	40.96750000			797						37274	Salamanca				SALAMANCA	
+ES1298A	34225001	ES	SPAIN	ES1298A-FACTORÍA DE PALENCIA	1-11-1994		Industrial	suburban	unknown	Unknown	-4.49444400	41.96138900			734						34904	Pernía (La)				VILLAMURIEL DE CERRATO	
+ES1443A	9059006	ES	SPAIN	ES1443A-BURGOS 4	1-5-1995		Background	suburban	unknown	Unknown	-3.63611100	42.33611300			929						09074	Cardeñajimeno				BURGOS	
+ES1631A	47186027	ES	SPAIN	ES1631A-ARCO DE LADRILLO II	1-5-2002		Traffic	urban	unknown	Unknown	-4.73027800	41.64555700			700											VALLADOLID	
+ES1601A	6015001	ES	SPAIN	ES1601A-BADAJOZ	31-5-2001		Background	suburban	unknown	Unknown	-6.97083300	38.88666700			390						06015	Badajoz				BADAJOZ	
+ES1615A	10037001	ES	SPAIN	ES1615A-CÁCERES	1-11-2001		Background	suburban	unknown	Unknown	-6.36027800	39.47277800			389						10037	Cáceres				CÁCERES	
+ES1616A	10182001	ES	SPAIN	ES1616A-MONFRAGÜE	1-11-2001		Background	rural	regional	Unknown	-5.93972200	39.84916700			376						10182	Toril				TORIL	
+ES1574A	36026002	ES	SPAIN	ES1574A-ESCUELA NAVAL	1-7-1999		Industrial	suburban	unknown	Unknown	-8.70805500	42.39472200			20						36026	Marín				MARÍN	
+ES1542A	12099001	ES	SPAIN	ES1542A-SANT JORDI	1-9-1999		Background	rural	near city	Unknown	0.37277800	40.55472200			181						12099	Sant Jordi/San Jorge				SANT JORDI/SAN JORGE	
+ES1543A	12141002	ES	SPAIN	ES1543A-ZORITA	1-9-1999		Background	rural	regional	Unknown	-0.16944400	40.73500100			619						12141	Zorita del Maestrazgo				ZORITA DEL MAESTRAZGO	
+ES1600A	12040011	ES	SPAIN	ES1600A-CASTELLÓ	31-5-2001		Traffic	urban	unknown	Canyon street: L/H < 1.5	-0.04527800	39.98305600			28						12040	Castellón de la Plana/Castelló de la Plana				CASTELLÓN DE LA PLANA/CASTELLÓ	
+ES1670A	46095001	ES	SPAIN	ES1670A-CAUDETE DE LAS FUENTES	3-2-2004		Background	rural	near city	Unknown	-1.28138900	39.55861300			804						46001	Ademuz				CAUDETE DE LAS FUENTES	
+ES1671A	46258001	ES	SPAIN	ES1671A-VILLAR DEL ARZOBISPO	1-3-2004		Background	rural	near city	Unknown	-0.83194400	39.70805700			430						46258	Villar del Arzobispo				VILLAR DEL ARZOBISPO	
+ES1676A	3089001	ES	SPAIN	ES1676A-MONOVER	1-5-2004		Industrial	suburban	unknown	Unknown	-0.83111100	38.44694500			398						03120	San Miguel de Salinas				MONÓVAR/MONÒVER	
+ES1677A	3099002	ES	SPAIN	ES1677A-ORIHUELA	1-3-2004		Background	suburban	unknown	Unknown	-0.85277800	38.08472100			32						03001	Adsubia				ORIHUELA	
+ES1685A	12005005	ES	SPAIN	ES1685A-ALCORA	1-1-2004		Background	urban	unknown	Unknown	-0.18972200	40.05194500			160						12005	Alcora (l')				ALCORA (L')	
+ES1686A	12009005	ES	SPAIN	ES1686A-ALMASSORA	1-1-2004		Background	suburban	unknown	Unknown	-0.05666700	39.93222200			56											ALMAZORA/ALMASSORA	
+ES1687A	12028001	ES	SPAIN	ES1687A-BENICASSIM	1-1-2004		Industrial	suburban	unknown	Unknown	0.07277800	40.06222200			50											BENICASIM/BENICÀSSIM	
+ES1688A	12032001	ES	SPAIN	ES1688A-BURRIANA	1-1-2004		Background	rural	near city	Unknown	-0.06500000	39.89222200			37						12032	Burriana				BURRIANA	
+ES1689A	12046001	ES	SPAIN	ES1689A-CIRAT	1-3-2004		Background	rural	near city	Unknown	-0.46833300	40.05416500			466						12046	Cirat				CIRAT	
+ES1691A	12140002	ES	SPAIN	ES1691A-VIVER	1-1-2004		Background	rural	near city	Unknown	-0.60333300	39.93055700			616						12140	Viver				VIVER	
+ES1709A	46062001	ES	SPAIN	ES1709A-BENIGANIM	5-1-2004		Background	suburban	unknown	Unknown	-0.44138900	38.93472300			195						46062	Benigánim				BENIGÁNIM	
+ES1710A	46116001	ES	SPAIN	ES1710A-L'ELIANA	1-3-2004		Background	suburban	unknown	Unknown	-0.51888900	39.57194500			101						46116	Eliana (l')				ELIANA (L')	
+ES1711A	46184002	ES	SPAIN	ES1711A-ONTINYENT	1-1-2004		Background	rural	near city	Unknown	-0.69722200	38.78805500			510						46184	Ontinyent				ONTINYENT	
+ES1746A	26066001	ES	SPAIN	ES1746A-GALILEA	1-9-2004		Industrial	rural	regional	Unknown	-2.23166700	42.34138900			570											GALILEA	
+ES1753A	26117001	ES	SPAIN	ES1753A-PRADEJÓN	1-9-2004		Industrial	rural	near city	Unknown	-2.22638900	42.34000000			380											PRADEJÓN	
+ES1779A	26019001	ES	SPAIN	ES1779A-ARRÚBAL	1-10-2004		Industrial	rural	near city	Unknown	-2.24777800	42.43388700			301											ARRÚBAL	
+ES1132A	38038011	ES	SPAIN	ES1132A-LOS GLADIOLOS	1-3-1991		Traffic	urban	unknown	Unknown	-16.26694500	28.45972300			95						38038	Santa Cruz de Tenerife				SANTA CRUZ DE TENERIFE	
+ES1573A	35016012	ES	SPAIN	ES1573A-MERCADO CENTRAL	26-10-1999		Traffic	urban	unknown	Unknown	-15.42750000	28.00000000			9						35026	Telde				PALMAS DE GRAN CANARIA (LAS)	
+ES0113A	28079001	ES	SPAIN	ES0113A-PASEO DE RECOLETOS	1-1-1978		Traffic	urban	unknown	Unknown	-3.69194400	40.42250100			648						28079	Madrid				MADRID	
+ES0116A	28079006	ES	SPAIN	ES0116A-MARAÑÓN	1-1-1978		Traffic	urban	unknown	Unknown	-3.69083300	40.43777800			669						28079	Madrid				MADRID	
+ES0123A	28079015	ES	SPAIN	ES0123A-PLAZA DE CASTILLA	1-1-1978		Traffic	urban	unknown	Unknown	-3.68861100	40.46833400			729						28079	Madrid				MADRID	
+ES1193A	28079024	ES	SPAIN	ES1193A-CASA DE CAMPO	1-1-1992		Background	suburban	unknown	Unknown	-3.74916700	40.41999800			645						28079	Madrid				MADRID	
+ES1427A	28079037	ES	SPAIN	ES1427A-PASEO PONTONES	1-1-1991		Traffic	urban	unknown	Unknown	-3.71277800	40.40638700			625						28079	Madrid				MADRID	
+ES1525A	28079038	ES	SPAIN	ES1525A-CUATRO CAMINOS	1-1-1978		Traffic	urban	unknown	Unknown	-3.70638900	40.44527800			699						28079	Madrid				MADRID	
+ES1646A	28079026	ES	SPAIN	ES1646A-BARAJAS I	31-12-2002		Traffic	urban	unknown	Unknown	-3.57888900	40.45999900			620						28079	Madrid				MADRID	
+ES1627A	30005002	ES	SPAIN	ES1627A-ALCANTARILLA-A	1-12-2001		Industrial	suburban	unknown	Unknown	-1.23222200	37.97444500			80						30001	Abanilla				ALCANTARILLA	
+ES1633A	30030007	ES	SPAIN	ES1633A-SAN BASILIO	21-5-2002		Background	suburban	unknown	Unknown	-1.14611100	37.99222200			40						30001	Abanilla				MURCIA	
+FI0009R	349	FI	FINLAND	Utö	16-1-1980		Background	rural	remote		21.37389000	59.77917000			7					021	279	Korpo					
+FI0007R	351	FI	FINLAND	Virolahti	30-6-1986		Background	rural	regional		27.67139000	60.52611000			4					082	935	Virolahti					
+FI0124A	425	FI	FINLAND	Kallio 2	1-1-1999		Background	urban		Wide street: L/H > 1.5	24.95056000	60.18750000			21					011	091	Helsinki				HELSINKI	
+FI0148A	564	FI	FINLAND	Mannerheimintie	4-1-2005		Traffic	urban		Wide street: L/H > 1.5	24.93917000	60.16972000			5					011	091	Helsinki				HELSINKI	
+FI0131A	446	FI	FINLAND	Oulun keskusta 2	10-12-1997		Traffic	urban		Canyon street: L/H < 1.5	25.47139000	65.01000200			5					171	564	Oulu				OULU	
+FI0126A	465	FI	FINLAND	Vaasan keskusta	1-9-2001		Traffic	urban		Canyon street: L/H < 1.5	21.61833000	63.09528000			15					152	905	Vaasa				VAASA	
+GB0036R	HAR	GB	UNITED KINGDOM	HARWELL	22-6-1976		Background	rural			-1.32666700	51.57111000			137					38UE	38UEHB	Hendreds					
+GB0566A	CLL2	GB	UNITED KINGDOM	LONDON BLOOMSBURY	23-1-1992		Background	urban			-0.12055600	51.51722300			20					00AG	00AGGP	Holborn and Covent Garden				LONDON	
+GB0682A	MY1	GB	UNITED KINGDOM	LONDON MARYLEBONE ROAD	17-7-1997		Traffic	urban		Unknown	-0.15472200	51.52249900			35					00BK	00BKGM	Marylebone High Street				LONDON	
+GB0617A	ROCH	GB	UNITED KINGDOM	ROCHESTER STOKE	26-1-1996		Background	rural			0.63444400	51.45528000			14					00LC	00LCNW	Peninsula					
+IS0005A	5	IS	ICELAND	Grensas	30-6-1990		Traffic	urban		Wide street: L/H > 1.5	-21.87444500	64.13028000			31											REYKJAVIK	
+IS0006A		IS	ICELAND	Husdyragardurinn	8-8-2002		Background	urban		Wide street: L/H > 1.5	-21.87361100	64.13888500			26											REYKJAVIK	
+NO0059A		NO	NORWAY	Danmarks plass	1-1-2003		Traffic	urban		Wide street: L/H > 1.5	5.34222200	60.37749900			20											BERGEN	
+NO0074A		NO	NORWAY	Bankplassen	7-10-2004		Traffic	urban		Wide street: L/H > 1.5	10.46640000	61.11330000			183											LILLEHAMMER	
+NO0075A		NO	NORWAY	Barnehagen	7-10-2004		Background	urban			10.46690000	61.12140000			210											LILLEHAMMER	
+NO0011A	4	NO	NORWAY	Kirkeveien	1-10-1992		Traffic	urban		Canyon street: L/H < 1.5	10.72600000	59.93400000			60											OSLO	
+NO0071A		NO	NORWAY	Manglerud	0-0-0		Traffic	suburban		Wide street: L/H > 1.5	10.81500000	59.89860000			130											OSLO	
+NO0068A		NO	NORWAY	Bakke Kirke	27-9-2004		Traffic	urban		Wide street: L/H > 1.5	10.41250000	63.43333000			10											TRONDHEIM	
+NO0060A		NO	NORWAY	Elgeseter	1-1-2003		Traffic	urban		Canyon street: L/H < 1.5	10.39750000	63.41944500			15											TRONDHEIM	
+NO0066A		NO	NORWAY	Teknostallen	1-10-2003		Background	urban			10.41666700	63.41666800			30											TRONDHEIM	
+PT0135A	6007	PT	PORTUGAL	Porto Santo	7-7-2003		Traffic	suburban		Unknown	-16.33194500	33.06277800			25					3201	01	Porto Santo				PORTO SANTO	
+PT0132A	6006	PT	PORTUGAL	Quinta Magnólia	7-7-2003		Background	urban			-16.92083400	32.64167000			65					3103	10	Funchal (Sé)				FUNCHAL	
+PT0133A	6005	PT	PORTUGAL	São Gonçalo	7-7-2003		Background	urban			-16.87944400	32.64222300			180											FUNCHAL	
+PT0134A	6004	PT	PORTUGAL	São João	7-7-2003		Traffic	urban		Wide street: L/H > 1.5	-16.91416500	32.64611400			46					3103	10	Funchal (Sé)				FUNCHAL	
+PT0128A	3096	PT	PORTUGAL	Chamusca	1-11-2002		Background	rural		Unknown	-8.28194400	39.21139100			43					1407	02	Chouto				CHAMUSCA, VALE DO TEJO E OESTE	
+PT0088A	3072	PT	PORTUGAL	Entrecampos	1-3-1992		Traffic	urban		Wide street: L/H > 1.5	-9.14888900	38.74861100			86					1106	09	Campo Grande				LISBOA, AML NORTE	
+PT0087A	3071	PT	PORTUGAL	Olivais	1-3-1992		Background	urban			-9.10722300	38.77000000			34					1106	33	Santa Maria dos Olivais				LISBOA, AML NORTE	
+PT0053A	4002	PT	PORTUGAL	Monte Velho	1-1-1976		Background	rural			-8.80000000	38.07500000			43					1509	07	Santo André				SANTIAGO DO CACÉM, ALENTEJO LI	
+PT0146A	4006	PT	PORTUGAL	Terena	15-2-2005		Background	rural	regional		-7.39750000	38.61500000			187					0701	05	Terena (São Pedro)				ALANDROAL	
+PT0113A	5006	PT	PORTUGAL	Afonso III	1-7-1999		Traffic	urban		Wide street: L/H > 1.5	-7.92583300	37.02055400			15					0805	05	Faro (Sé)				FARO, FARO/OLHÃO	
+PT0150A	5012	PT	PORTUGAL	Cerro	15-10-2004		Background	rural	regional		-7.67860000	37.31250000			300					0802	05	Vaqueiros				ALCOUTIM	
+PT0149A	5007	PT	PORTUGAL	Joaquim Magalhães	11-8-2004		Background	urban		Unknown	-7.92660000	37.01500000			4					0805	05	Faro (Sé)				FARO	
+PT0143A	2019	PT	PORTUGAL	Ervedeira	1-1-2003		Background	rural	regional		-8.67083400	40.58944300			32					0110	04	Ílhavo (São Salvador)				LEIRIA	
+PT0071A	2004	PT	PORTUGAL	Estarreja/Teixugueira	1-5-1990		Industrial	suburban			-8.58333300	40.75000000			20					0108	02	Beduído				ESTARREJA, ZONA DE INFLUÊNCIA	
+PT0126A	2020	PT	PORTUGAL	Fundão	1-6-2003		Background	rural		Unknown	-7.17527800	40.13528100			473					0507	10	Penamacor				FUNDÃO, CENTRO INTERIOR	
+PT0142A	1048	PT	PORTUGAL	Lamas de Olo	3-2-2004		Background	rural	regional		-7.79583300	41.37444300			1086					1714	13	Lamas de Olo				VILA REAL	
+PT0105A	1024	PT	PORTUGAL	Vermoim	1-11-1999		Traffic	urban		Wide street: L/H > 1.5	-8.61750000	41.23777800			90					1306	15	Vermoim				MAIA, PORTO LITORAL	
+SE0012R	101	SE	SWEDEN	Aspvreten	1-1-1990		Background	rural			17.38194500	58.80110900			25						0480	Nyköping					
+SE0011R	106	SE	SWEDEN	Vavihill	9-1-1984		Background	rural	regional		13.14888900	56.02805700			163						1214	Svalöv					
+SE0001A	8773	SE	SWEDEN	Rådhuset	1-1-1988		Background	urban		Canyon street: L/H < 1.5	13.00390000	55.60610000			25						1280	Malmö				MALMÖ	
+SE0003A	8780	SE	SWEDEN	Hornsgatan	1-1-1970		Traffic	urban		Canyon street: L/H < 1.5	18.05694400	59.31111100			3						0180	Stockholm				STOCKHOLM	
+SE0050A	13349	SE	SWEDEN	Norrlandsg	1-1-2002		Traffic	urban		Canyon street: L/H < 1.5	18.04999900	59.34194200			5						0180	Stockholm				STOCKHOLM	
+SE0027A	8779	SE	SWEDEN	Sveavägen	1-1-1998		Traffic	urban		Wide street: L/H > 1.5	18.07389100	59.32111000			3						0180	Stockholm				STOCKHOLM	
+SE0022A	8781	SE	SWEDEN	Södermalm	25-1-1996		Background	urban		Canyon street: L/H < 1.5	18.05750000	59.31694000			20											STOCKHOLM	
+SK0019A	99251	SK	SLOVAKIA (Slovak Republic)	ilina - Ve¾ká Okru ná	1-1-1993		Traffic	urban		Canyon street: L/H < 1.5	18.74390000	49.21970000			332					B	517402	ilina				ZILINA	
+SK0039A	99271	SK	SLOVAKIA (Slovak Republic)	Martin - Jesenského	1-1-1997		Background	urban			18.92190000	49.06690000			383					6	512036	Martin				MARTIN	
+SK0012A	99241	SK	SLOVAKIA (Slovak Republic)	Prievidza - J. Hollého	1-1-1992		Background	urban			18.62310000	48.76970000			283					7	513881	Prievidza				PRIEVIDZA	
+

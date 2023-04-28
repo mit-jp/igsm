@@ -1,0 +1,144 @@
+Data downloaded from EEA Airbase viewer. 
+ Data download filter: 
+ Countries: All available
+ components: Particulate matter < 2.5 µm (aerosol)
+ type of stations: All available
+ station areas: All available
+ years: 2005
+Component	Year	Avg.time	Country	EU-code	Station	MeasurementUnit	PercentageVal	num_Val	annual mean	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	BA	BA0031A	SKVER - MS1	ug/m3	97.489	8540	65.693	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	BA	BA0032A	TUZLA1 - MS2	ug/m3	75.228	6590	75.225	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	CZ	CZ0011A	Pha5-Mlynarka	ug/m3	96.187	8426	23.044	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	CZ	CZ0020A	Pha4-Libus	ug/m3	96.804	8480	24.506	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	CZ	CZ0022A	Usti n.L.-Kockov	ug/m3	99.441	8711	22.470	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	CZ	CZ0024A	Teplice	ug/m3	98.539	8632	26.848	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	CZ	CZ0029A	Most	ug/m3	97.728	8561	23.960	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	CZ	CZ0034A	Sokolov	ug/m3	97.306	8524	18.451	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	CZ	CZ0038A	Ostrava-Zabreh	ug/m3	99.304	8699	38.651	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	CZ	CZ0042A	Brno-Turany	ug/m3	97.511	8542	26.348	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	CZ	CZ0046A	Trinec-Kosmos	ug/m3	62.112	5441	29.352	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	CZ	CZ0053A	Olomouc	ug/m3	96.792	8479	28.021	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	CZ	CZ0059A	Ceske Budejovice	ug/m3	99.452	8712	20.340	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	CZ	CZ0061A	Vernovice	ug/m3	97.979	8583	44.932	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	CZ	CZ0068A	Beroun	ug/m3	80.217	7027	31.843	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	CZ	CZ0071A	Liberec-mesto	ug/m3	99.760	8739	24.467	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	CZ	CZ0073A	Pardubice Dukla	ug/m3	97.797	8567	22.224	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	CZ	CZ0075A	Zlin	ug/m3	99.144	8685	28.235	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	CZ	CZ0079A	Ostrava - Privoz	ug/m3	95.000	8322	43.648	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	CZ	CZ0082A	Pha8-Karlin	ug/m3	48.824	4277	21.554	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	CZ	CZ0083A	Pha9-Vysocany	ug/m3	86.313	7561	24.551	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	CZ	CZ0086A	Hradec Kralove-Brnen	ug/m3	99.349	8703	27.913	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	CZ	CZ0088A	Jihlava	ug/m3	99.909	8752	24.286	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	CZ	CZ0089A	Kladno-stred mesta	ug/m3	92.306	8086	26.461	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	CZ	CZ0097A	Bohumin	ug/m3	67.614	5923	38.895	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	CZ	CZ0112A	Plzen-Slovany	ug/m3	98.539	8632	21.430	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	DE	DEHE037	DEHE037:Wiesbaden-Ringkirche	ug/m3	99.600	8725	17.978	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	DE	DEHH008	DEHH008:HH Sternschanze	ug/m3	89.384	7830	16.837	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	DE	DEHH015	DEHH015:HH Veddel	ug/m3	88.984	7795	19.335	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	DE	DEHH021	DEHH021:HH Tatenberg	ug/m3	91.336	8001	15.928	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	DE	DENI048	DENI048:Hannover Verkehr	ug/m3	99.429	8710	18.172	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	DE	DENI054	DENI054:Hannover	ug/m3	99.669	8731	12.545	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	DE	DERP009	DERP009:Mainz-Zitadelle	ug/m3	97.922	8578	16.482	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	DE	DERP017	DERP017:Pfälzerwald-Hortenkopf	ug/m3	97.900	8576	9.919	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	DE	DERP032	DERP032:Neuwied-Heddesdorfer Straße	ug/m3	99.566	8722	15.109	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	DE	DEST072	DEST072:Halle/Ost	ug/m3	99.543	8720	16.201	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	DE	DEST075	DEST075:Halle/Merseburger Strasse	ug/m3	97.728	8561	18.571	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	DE	DEST098	DEST098:Unterharz / Friedrichsbrunn	ug/m3	98.813	8656	13.114	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	DK	DK0034A	H.C.Andersens Boulevard - City	ug/m3	88.607	7762	15.208	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	DK	DK0041A	Lille Valby/2090	ug/m3	78.002	6833	10.546	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	DK	DK0045A	Copenhagen/1259	ug/m3	92.648	8116	10.781	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	ES	ES0113A	ES0113A-PASEO DE RECOLETOS	ug/m3	98.596	8637	20.369	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	ES	ES0116A	ES0116A-MARAÑÓN	ug/m3	98.836	8658	23.678	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	ES	ES0123A	ES0123A-PLAZA DE CASTILLA	ug/m3	98.082	8592	18.380	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	ES	ES0901A	ES0901A-S. VICENTE DE VIGO	ug/m3	94.486	8277	13.644	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	ES	ES1132A	ES1132A-LOS GLADIOLOS	ug/m3	97.386	8531	21.814	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	ES	ES1193A	ES1193A-CASA DE CAMPO	ug/m3	99.178	8688	13.874	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	ES	ES1288A	ES1288A-PLAZA DE COLÓN	ug/m3	95.879	8399	28.688	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	ES	ES1298A	ES1298A-FACTORÍA DE PALENCIA	ug/m3	98.790	8654	12.619	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	ES	ES1400A	ES1400A-BUJARALOZ	ug/m3	4.874	427	13.128	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	ES	ES1417A	ES1417A-HUESCA	ug/m3	12.945	1134	11.623	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	ES	ES1418A	ES1418A-ALAGÓN	ug/m3	3.368	295	5.406	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	ES	ES1420A	ES1420A-MONZÓN	ug/m3	12.591	1103	14.739	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	ES	ES1421A	ES1421A-TERUEL	ug/m3	1.861	163	19.607	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	ES	ES1427A	ES1427A-PASEO PONTONES	ug/m3	98.447	8624	18.800	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	ES	ES1443A	ES1443A-BURGOS 4	ug/m3	77.717	6808	14.034	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	ES	ES1525A	ES1525A-CUATRO CAMINOS	ug/m3	99.098	8681	20.204	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	ES	ES1542A	ES1542A-SANT JORDI	ug/m3	83.185	7287	6.478	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	ES	ES1543A	ES1543A-ZORITA	ug/m3	72.957	6391	5.470	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	ES	ES1573A	ES1573A-MERCADO CENTRAL	ug/m3	98.265	8608	17.766	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	ES	ES1574A	ES1574A-ESCUELA NAVAL	ug/m3	81.518	7141	20.373	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	ES	ES1600A	ES1600A-CASTELLÓ	ug/m3	29.886	2618	24.509	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	ES	ES1601A	ES1601A-BADAJOZ	ug/m3	95.320	8350	6.243	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	ES	ES1615A	ES1615A-CÁCERES	ug/m3	90.263	7907	11.648	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	ES	ES1616A	ES1616A-MONFRAGÜE	ug/m3	95.388	8356	10.965	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	ES	ES1627A	ES1627A-ALCANTARILLA-A	ug/m3	87.306	7648	13.789	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	ES	ES1631A	ES1631A-ARCO DE LADRILLO II	ug/m3	75.171	6585	13.474	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	ES	ES1633A	ES1633A-SAN BASILIO	ug/m3	64.521	5652	18.703	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	ES	ES1646A	ES1646A-BARAJAS I	ug/m3	99.566	8722	15.905	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	ES	ES1670A	ES1670A-CAUDETE DE LAS FUENTES	ug/m3	13.231	1159	8.057	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	ES	ES1671A	ES1671A-VILLAR DEL ARZOBISPO	ug/m3	14.669	1285	10.378	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	ES	ES1676A	ES1676A-MONOVER	ug/m3	9.429	826	8.823	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	ES	ES1677A	ES1677A-ORIHUELA	ug/m3	14.110	1236	16.977	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	ES	ES1685A	ES1685A-ALCORA	ug/m3	82.272	7207	16.419	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	ES	ES1686A	ES1686A-ALMASSORA	ug/m3	84.612	7412	22.072	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	ES	ES1687A	ES1687A-BENICASSIM	ug/m3	77.865	6821	14.763	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	ES	ES1688A	ES1688A-BURRIANA	ug/m3	93.630	8202	17.449	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	ES	ES1689A	ES1689A-CIRAT	ug/m3	7.237	634	7.650	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	ES	ES1691A	ES1691A-VIVER	ug/m3	12.945	1134	10.455	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	ES	ES1709A	ES1709A-BENIGANIM	ug/m3	11.884	1041	15.300	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	ES	ES1710A	ES1710A-L'ELIANA	ug/m3	21.256	1862	13.898	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	ES	ES1711A	ES1711A-ONTINYENT	ug/m3	14.509	1271	11.051	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	ES	ES1746A	ES1746A-GALILEA	ug/m3	98.413	8621	10.346	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	ES	ES1747A	ES1747A-ROTXAPEA	ug/m3	89.840	7870	9.307	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	ES	ES1749A	ES1749A-ALSASUA	ug/m3	55.308	4845	11.704	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	ES	ES1753A	ES1753A-PRADEJÓN	ug/m3	96.164	8424	11.025	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	ES	ES1755A	ES1755A-SANGUESA	ug/m3	86.267	7557	14.877	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	ES	ES1779A	ES1779A-ARRÚBAL	ug/m3	97.580	8548	13.371	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	FI	FI0007R	Virolahti	ug/m3	97.945	8580	7.428	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	FI	FI0009R	Utö	ug/m3	93.767	8214	6.092	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	FI	FI0124A	Kallio 2	ug/m3	97.009	8498	8.320	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	FI	FI0126A	Vaasan keskusta	ug/m3	80.057	7013	5.843	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	FI	FI0131A	Oulun keskusta 2	ug/m3	98.676	8644	9.385	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	FI	FI0148A	Mannerheimintie	ug/m3	97.968	8582	10.706	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	GB	GB0036R	HARWELL	ug/m3	98.345	8615	10.503	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	GB	GB0566A	LONDON BLOOMSBURY	ug/m3	94.395	8269	12.794	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	GB	GB0617A	ROCHESTER STOKE	ug/m3	98.276	8609	10.794	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	GB	GB0682A	LONDON MARYLEBONE ROAD	ug/m3	97.511	8542	19.186	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	IS	IS0005A	Grensas	ug/m3	99.247	8694	19.632	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	IS	IS0006A	Husdyragardurinn	ug/m3	98.973	8670	7.695	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	NO	NO0011A	Kirkeveien	ug/m3	95.788	8391	12.293	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	NO	NO0059A	Danmarks plass	ug/m3	55.822	4890	14.859	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	NO	NO0060A	Elgeseter	ug/m3	50.068	4386	13.634	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	NO	NO0066A	Teknostallen	ug/m3	77.009	6746	9.520	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	NO	NO0068A	Bakke Kirke	ug/m3	74.829	6555	11.447	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	NO	NO0071A	Manglerud	ug/m3	93.938	8229	12.658	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	NO	NO0074A	Bankplassen	ug/m3	83.185	7287	10.665	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	NO	NO0075A	Barnehagen	ug/m3	80.879	7085	8.605	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	PT	PT0053A	Monte Velho	ug/m3	69.715	6107	12.415	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	PT	PT0071A	Estarreja/Teixugueira	ug/m3	99.600	8725	26.387	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	PT	PT0087A	Olivais	ug/m3	94.087	8242	15.354	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	PT	PT0088A	Entrecampos	ug/m3	96.895	8488	22.610	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	PT	PT0105A	Vermoim	ug/m3	95.708	8384	27.150	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	PT	PT0113A	Afonso III	ug/m3	96.187	8426	15.086	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	PT	PT0126A	Fundão	ug/m3	97.123	8508	9.805	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	PT	PT0128A	Chamusca	ug/m3	94.384	8268	14.946	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	PT	PT0132A	Quinta Magnólia	ug/m3	63.311	5546	8.272	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	PT	PT0133A	São Gonçalo	ug/m3	55.365	4850	9.040	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	PT	PT0134A	São João	ug/m3	60.913	5336	23.928	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	PT	PT0135A	Porto Santo	ug/m3	47.774	4185	6.943	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	PT	PT0142A	Lamas de Olo	ug/m3	66.073	5788	13.880	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	PT	PT0143A	Ervedeira	ug/m3	96.975	8495	33.867	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	PT	PT0146A	Terena	ug/m3	65.970	5779	10.525	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	PT	PT0149A	Joaquim Magalhães	ug/m3	99.361	8704	12.496	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	PT	PT0150A	Cerro	ug/m3	96.804	8480	7.946	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	SE	SE0001A	Rådhuset	ug/m3	99.703	8734	11.149	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	SE	SE0003A	Hornsgatan	ug/m3	97.100	8506	15.958	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	SE	SE0011R	Vavihill	ug/m3	80.422	7045	10.972	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	SE	SE0012R	Aspvreten	ug/m3	89.760	7863	9.651	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	SE	SE0022A	Södermalm	ug/m3	70.525	6178	11.149	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	SE	SE0027A	Sveavägen	ug/m3	94.783	8303	12.905	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	SE	SE0050A	Norrlandsg	ug/m3	83.116	7281	11.943	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	SK	SK0012A	Prievidza - J. Hollého	ug/m3	99.852	8747	32.351	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	SK	SK0019A	ilina - Ve¾ká Okru ná	ug/m3	32.021	2805	30.935	
+Particulate matter < 2.5 µm (aerosol)	2005	hour	SK	SK0039A	Martin - Jesenského	ug/m3	99.920	8753	20.690	
+
